@@ -76,8 +76,6 @@ services:
      # - ZURG_LOG_LEVEL=DEBUG
      # - ZURG_VERSION=v0.9.2-hotfix.4
      # - ZURG_UPDATE=true
-     # - PLEX_REFRESH=true
-     # - PLEX_MOUNT_DIR=/DMB 
      # - ZURG_USER=
      # - ZURG_PASS=
      # - ZURG_PORT=8800
@@ -98,7 +96,7 @@ services:
      # - RCLONE_VFS_READ_CHUNK_SIZE_LIMIT=1G
      # - RCLONE_TRANSFERS=8
       ## Riven Required Settings
-      - Riven_ENABLED=true
+      - RIVEN_ENABLED=true
       - ORIGIN=http://0.0.0.0:3000
       ## The following environment variables are optional for Riven, but if not set, will require using Riven's Web UI
       - PLEX_USER=
@@ -126,6 +124,25 @@ services:
     security_opt:
       - apparmor:unconfined    
       - no-new-privileges
+```
+
+## Example Plex Docker-compose
+```YAML
+version: "3.8"
+
+services:
+  plex_test:
+    image: plexinc/pms-docker:latest
+    container_name: plex
+    devices:
+     - /dev/dri:/dev/dri    
+    volumes:
+      - /plex/library:/config
+      - /plex/transcode:/transcode
+      - /DMB/zurg:/data # rclone mount location from DMB must be shared to Plex container. Don't add to plex library
+      - /DMB/mnt:/mnt  # Riven symlink location from DMB must be shared to Plex container. Add to plex library    
+    environment:
+      - TZ=${TZ}
 ```
 
 ## Docker Build
