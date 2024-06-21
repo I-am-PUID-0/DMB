@@ -1,0 +1,9 @@
+python-dotenv
+regex
+schedule
+psutil
+plexapi
+requests
+packaging
+ruamel.yaml
+poetry
