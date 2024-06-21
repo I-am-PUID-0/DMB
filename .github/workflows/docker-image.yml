@@ -38,7 +38,7 @@ jobs:
         name: Set environment variables
         run: |
           echo "REPO_OWNER_LOWER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-          echo "REPO_NAME=$(echo ${{ github.repository }} | cut -d'/' -f2)" >> $GITHUB_ENV
+          echo "REPO_NAME=$(echo ${{ github.repository }} | cut -d'/' -f2 | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       -
         name: Login to Docker Hub
         uses: docker/login-action@v3
