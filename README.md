@@ -131,7 +131,7 @@ services:
 version: "3.8"
 
 services:
-  plex_test:
+  plex:
     image: plexinc/pms-docker:latest
     container_name: plex
     devices:
