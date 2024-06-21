@@ -310,7 +310,7 @@ For additional details on deployment, see the [DMB Wiki](https://github.com/I-am
 ### DMB
 - For questions related to DMB, see the GitHub [discussions](https://github.com/I-am-PUID-0/DMB/discussions)
 - or create a new [issue](https://github.com/I-am-PUID-0/DMB/issues) if you find a bug or have an idea for an improvement.
-- or join the DMB [discord server](https://discord.gg/EPSWqmeeXM)
+- or join the DMB [discord server](https://discord.gg/8dqKUBtbp5)
 
 ### Riven Media
 - For questions related to Riven, see the GitHub [discussions](https://github.com/orgs/rivenmedia/discussions) 
