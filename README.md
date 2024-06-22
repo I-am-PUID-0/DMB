@@ -162,10 +162,6 @@ To use Riven with Jellyfin/Emby, the following environment variables are require
 ### Note: Additional setup required for Jellyfin
 Riven requires the Library collection service to be set for Trakt Collection: see the Riven [Trakt Collections](https://github.com/itsToggle/Riven#open_file_folder-library-collection-service) for more details
 
-## Plex Refresh
-
-To enable Plex library refresh with Zurg, the following environment variables are required: PLEX_REFRESH, PLEX_MOUNT_DIR, PLEX_ADDRESS, PLEX_TOKEN, ZURG_ENABLED, RD_API_KEY, RCLONE_MOUNT_NAME
-
 ## SEERR Integration
 
 To enable either Overseerr or Jellyseerr integration with Riven, the following environment variables are required: SEERR_API_KEY, SEERR_ADDRESS
@@ -173,7 +169,7 @@ To enable either Overseerr or Jellyseerr integration with Riven, the following e
 
 ## Automatic Updates
 If you would like to enable automatic updates for Riven, utilize the ```RIVEN_UPDATE``` environment variable. 
-Additional details can be found in the [DMB Wiki](https://github.com/I-am-PUID-0/DMB/wiki#automatic-update-of-Riven-to-the-latest-version)~~ deprecated; plex_drbrid is no longer maintained
+Additional details can be found in the [DMB Wiki](https://github.com/I-am-PUID-0/DMB/wiki#automatic-update-of-Riven-to-the-latest-version)
 
 If you would like to enable automatic updates for Zurg, utilize the ```ZURG_UPDATE``` environment variable. 
 Additional details can be found in the [DMB Wiki](https://github.com/I-am-PUID-0/DMB/wiki#automatic-update-of-zurg-to-the-latest-version)
@@ -200,12 +196,10 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`PLEX_USER`| The [Plex Username](https://app.plex.tv/desktop/#!/settings/account) for your account | || :heavy_check_mark:|
 |`PLEX_TOKEN`| The [Plex Token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/) associated with PLEX_USER |  || :heavy_check_mark:|
 |`PLEX_ADDRESS`| The URL of your Plex server. Example: http://192.168.0.100:32400 or http://plex:32400 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (32400). E.g., ```/``` ||| :heavy_check_mark:|
-|`PLEX_REFRESH`| Set the value "true" to enable Plex library refresh called by the Zurg process  | `false ` | | | |
-|`PLEX_MOUNT_DIR`| Set the value to the mount location used within Plex to enable Plex library refresh called by the Zurg process  |  | | | |
 |`SHOW_MENU`| Enable the Riven menu to show upon startup, requiring user interaction before the program runs. Conversely, if the Riven menu is disabled, the program will automatically run upon successful startup. If used, the value must be ```true``` or ```false``` | `true` |
-|`PD_ENABLED`| Set the value "true" to enable the Riven process | `false ` | | :heavy_check_mark: | |
-|`PD_LOGFILE`| Log file for Riven. The log file will appear in the ```/config``` as ```Riven.log```. If used, the value must be ```true``` or ```false``` | `false` |
-|~~`PD_UPDATE`~~| ~~Enable automatic updates of Riven. Adding this variable will enable automatic updates to the latest version of Riven locally within the container.~~ deprecated; plex_drbrid is no longer maintained| `false` |
+|`RIVEN_ENABLED`| Set the value "true" to enable the Riven process | `false ` | | :heavy_check_mark: | |
+|`RIVEN_LOGFILE`| Log file for Riven. The log file will appear in the ```/config``` as ```Riven.log```. If used, the value must be ```true``` or ```false``` | `false` |
+|`RIVEN_UPDATE`| Enable automatic updates of Riven. Adding this variable will enable automatic updates to the latest version of Riven locally within the container.| `false` |
 |`AUTO_UPDATE_INTERVAL`| Interval between automatic update checks in hours. Vaules can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes, and 1.5 would yield one and a half hours | `24` |
 |`DUPLICATE_CLEANUP`| Automated cleanup of duplicate content in Plex.  | `false` |
 |`CLEANUP_INTERVAL`| Interval between duplicate cleanup in hours. Values can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes and 1.5 would yield one and a half hours | `24` |
@@ -298,7 +292,7 @@ secrets:
 
 ## TODO
 
-See the [DMB roadmap](https://github.com/users/I-am-PUID-0/projects/5) for a list of planned features and enhancements.
+See the [DMB roadmap](https://github.com/users/I-am-PUID-0/projects/6) for a list of planned features and enhancements.
 
 ## Deployment
 
