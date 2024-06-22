@@ -143,19 +143,6 @@ def zurg_setup():
                 update_creds(config_file_path, ZURGUSER, ZURGPASS)
             os.environ[f'ZURG_PORT_{key_type}'] = str(port)       
             logger.debug(f"Zurg w/ {key_type} instance configured to port: {port}")
-            if PLEXREFRESH is not None and PLEXREFRESH.lower() == "true":
-                if PLEXADD and PLEXTOKEN and PLEXMOUNT:
-                    plex_refresh(config_file_path)
-                    if not os.path.exists(refresh_file_path):
-                        logger.debug(f"Copying Plex Refresh script from base: /zurg/plex_refresh.py to {refresh_file_path}")
-                        shutil.copy('/zurg/plex_refresh.py', refresh_file_path)
-                else:
-                    if not PLEXTOKEN:
-                        raise Exception("PLEX_TOKEN is required for Plex Refresh")
-                    if not PLEXADD:
-                        raise Exception("PLEX_ADDRESS is required for Plex Refresh") 
-                    if not PLEXMOUNT:
-                        raise Exception("PLEX_MOUNT_DIR is required for Plex Refresh")
         except Exception as e:
             raise Exception(f"Error setting up Zurg instance for {key_type}: {e}")        
 

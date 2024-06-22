@@ -37,8 +37,12 @@ class ZurgUpdate(BaseUpdate):
         
     def update_check(self):
         try:
-            repo_owner = 'debridmediamanager'
-            repo_name = 'zurg-testing'            
+            if GHTOKEN:
+              repo_owner = 'debridmediamanager'
+              repo_name = 'zurg'               
+            else:
+             repo_owner = 'debridmediamanager'
+             repo_name = 'zurg-testing'            
 
             if ZURGVERSION:
                 self.logger.info(f"ZURG_VERSION is set to: {ZURGVERSION}. Automatic updates will not be applied!")

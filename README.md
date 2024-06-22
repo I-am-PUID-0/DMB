@@ -74,6 +74,7 @@ services:
       - RD_API_KEY=
       ## Zurg Optional Settings
      # - ZURG_LOG_LEVEL=DEBUG
+     # - GITHUB_TOKEN=       #Use with private Zurg repo
      # - ZURG_VERSION=v0.9.2-hotfix.4
      # - ZURG_UPDATE=true
      # - ZURG_USER=
@@ -180,14 +181,14 @@ To customize some properties of the container, the following environment
 variables can be passed via the `-e` parameter (one for each variable), or via the docker-compose file within the ```environment:``` section, or with a .env file saved to the config directory -- See the wiki for more info on using the [.env](https://github.com/I-am-PUID-0/DMB/wiki/Settings#use-of-env-file-for-setting-environment-variables).  Value
 of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 
-| Variable       | Description                                  | Default | Required for rclone| Required for Riven| Required for zurg|
+| Variable       | Description                                  | Default | Used w/ rclone| Used w/ Riven| Used w/ zurg|
 |----------------|----------------------------------------------|---------|:-:|:-:|:-:|
 |`TZ`| [TimeZone](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) used by the container |  |
 |`RD_API_KEY`| [RealDebrid API key](https://real-debrid.com/apitoken) |  | | :heavy_check_mark:| :heavy_check_mark:|
 |`AD_API_KEY`| [AllDebrid API key](https://alldebrid.com/apikeys/) |  | | :heavy_check_mark:| :heavy_check_mark:|
 |`RCLONE_MOUNT_NAME`| A name for the rclone mount |  | :heavy_check_mark:|
-|`RCLONE_LOG_LEVEL`| [Log level](https://rclone.org/docs/#log-level-level) for rclone | `NOTICE` |
-|`RCLONE_LOG_FILE`| [Log file](https://rclone.org/docs/#log-file-file) for rclone |  |
+|`RCLONE_LOG_LEVEL`| [Log level](https://rclone.org/docs/#log-level-level) for rclone | `NOTICE` | :heavy_check_mark:|
+|`RCLONE_LOG_FILE`| [Log file](https://rclone.org/docs/#log-file-file) for rclone |  | :heavy_check_mark: |
 |`RCLONE_DIR_CACHE_TIME`| [How long a directory should be considered up to date and not refreshed from the backend](https://rclone.org/commands/rclone_mount/#vfs-directory-cache) #optional, but recommended is 10s. | `5m` |
 |`RCLONE_CACHE_DIR`| [Directory used for caching](https://rclone.org/docs/#cache-dir-dir). |  |
 |`RCLONE_VFS_CACHE_MODE`| [Cache mode for VFS](https://rclone.org/commands/rclone_mount/#vfs-file-caching) |  |
@@ -196,8 +197,8 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`PLEX_USER`| The [Plex Username](https://app.plex.tv/desktop/#!/settings/account) for your account | || :heavy_check_mark:|
 |`PLEX_TOKEN`| The [Plex Token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/) associated with PLEX_USER |  || :heavy_check_mark:|
 |`PLEX_ADDRESS`| The URL of your Plex server. Example: http://192.168.0.100:32400 or http://plex:32400 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (32400). E.g., ```/``` ||| :heavy_check_mark:|
-|`SHOW_MENU`| Enable the Riven menu to show upon startup, requiring user interaction before the program runs. Conversely, if the Riven menu is disabled, the program will automatically run upon successful startup. If used, the value must be ```true``` or ```false``` | `true` |
 |`RIVEN_ENABLED`| Set the value "true" to enable the Riven process | `false ` | | :heavy_check_mark: | |
+|`RIVEN_BRANCH`| Set the value to the appropriate branch  | `main` | | :heavy_check_mark: | |
 |`RIVEN_LOGFILE`| Log file for Riven. The log file will appear in the ```/config``` as ```Riven.log```. If used, the value must be ```true``` or ```false``` | `false` |
 |`RIVEN_UPDATE`| Enable automatic updates of Riven. Adding this variable will enable automatic updates to the latest version of Riven locally within the container.| `false` |
 |`AUTO_UPDATE_INTERVAL`| Interval between automatic update checks in hours. Vaules can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes, and 1.5 would yield one and a half hours | `24` |
@@ -206,7 +207,8 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`PDZURG_LOG_LEVEL`| The level at which logs should be captured. See the python [Logging Levels](https://docs.python.org/3/library/logging.html#logging-levels) documentation for more details  | `INFO` |
 |`PDZURG_LOG_COUNT`| The number logs to retain. Result will be value + current log  | `2` |
 |`ZURG_ENABLED`| Set the value "true" to enable the Zurg process | `false ` | | | :heavy_check_mark:|
-|`ZURG_VERSION`| The version of Zurg to use. If enabled, the value should contain v0.9.x or v0.9.x-hotfix.x format | `latest` | | | |
+|`GITHUB_TOKEN`| GitHub Personal Token for use with Zurg private repo | `false ` | | | :heavy_check_mark:|
+|`ZURG_VERSION`| The version of Zurg to use. If enabled, the value should contain v0.9.x or v0.9.x-hotfix.x format | `latest` | | | :heavy_check_mark: |
 |`ZURG_UPDATE`| Enable automatic updates of Zurg. Adding this variable will enable automatic updates to the latest version of Zurg locally within the container. | `false` | | | |
 |`ZURG_LOG_LEVEL`| Set the log level for Zurg | `INFO` | | | |
 |`JF_API_KEY`| The Jellyfin/Emby API Key ||| ||
@@ -238,8 +240,9 @@ format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 
 DMB supports the use of docker secrets for the following environment variables:
 
-| Variable       | Description                                  | Default | Required for rclone| Required for Riven| Required for zurg|
+| Variable       | Description                                  | Default | Used w/ rclone| Used w/ Riven| Used w/ zurg|
 |----------------|----------------------------------------------|---------|:-:|:-:|:-:|
+|`GITHUB_TOKEN_`| [GitHub Personal Token](https://github.com/settings/tokens) | ` ` | | | :heavy_check_mark:|
 |`RD_API_KEY`| [RealDebrid API key](https://real-debrid.com/apitoken) | ` ` | | :heavy_check_mark:| :heavy_check_mark:|
 |`AD_API_KEY`| [AllDebrid API key](https://alldebrid.com/apikeys/) | ` ` | | :heavy_check_mark:| :heavy_check_mark:|
 |`PLEX_USER`| The [Plex USERNAME](https://app.plex.tv/desktop/#!/settings/account) for your account | ` ` || :heavy_check_mark:|
@@ -258,6 +261,7 @@ services:
   DMB:
     image: iampuid0/DMB:latest
     secrets:
+      - github_token
       - rd_api_key
       - ad_api_key
       - plex_user
@@ -269,6 +273,8 @@ services:
       - seerr_address
 
 secrets:
+  github_token:
+	file: ./path/to/github_token.txt
   rd_api_key:
     file: ./path/to/rd_api_key.txt
   ad_api_key:

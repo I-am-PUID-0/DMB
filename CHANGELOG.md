@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [0.2.0] - 2024-22-06
+
+### Added
+
+- Zurg: GITHUB_TOKEN environment variable to use for access to the private sponsored zurg repository
+
+### Removed
+
+- Zurg: PLEX_REFRESH environment variable
+- Zurg: PLEX_MOUNT environment variable
+
+
 ## Version [0.1.0] - 2024-22-06
 
 ### Added

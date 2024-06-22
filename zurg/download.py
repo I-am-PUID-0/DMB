@@ -50,8 +50,11 @@ def parse_custom_version(version_str):
 def get_latest_release(repo_owner, repo_name):
     try:
         logger.info("Fetching latest Zurg release.")
+        headers = {}
+        if GHTOKEN:
+            headers['Authorization'] = f'token {GHTOKEN}'
         api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
-        response = requests.get(api_url, timeout=10)
+        response = requests.get(api_url, headers=headers, timeout=10)
         if response.status_code != 200:
             logger.error("Unable to access the repository API. Status code: %s", response.status_code)
             return None, "Error: Unable to access the repository API."
@@ -90,21 +93,28 @@ def get_architecture():
 
 def download_and_unzip_release(repo_owner, repo_name, release_version, architecture):
     try:
+        headers = {}
+        if GHTOKEN:
+            headers['Authorization'] = f'token {GHTOKEN}'
         api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/tags/{release_version}"
-        response = requests.get(api_url, timeout=10)
+        response = requests.get(api_url, headers=headers, timeout=10)
         if response.status_code != 200:
             logger.error("Failed to get release assets. Status code: %s", response.status_code)
             return False
         assets = response.json().get('assets', [])
         download_url = ""
+        asset_id = None
         for asset in assets:
             if architecture in asset['name']:
                 download_url = asset['browser_download_url']
+                asset_id = asset['id']
                 break
-        if not download_url:
+        if not asset_id:
             logger.error("No matching asset found for architecture: %s", architecture)
             return False        
-        response = requests.get(download_url, timeout=10)
+        download_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/assets/{asset_id}"
+        headers['Accept'] = 'application/octet-stream'
+        response = requests.get(download_url, headers=headers, timeout=10)
         logger.debug("Downloading from URL: %s", download_url)
         if response.status_code == 200:
             zip_file = zipfile.ZipFile(io.BytesIO(response.content))
@@ -124,12 +134,18 @@ def download_and_unzip_release(repo_owner, repo_name, release_version, architect
         logger.error(f"Error in download and extraction: {e}")
         return False
 
+
+
 def version_check():
     try:
         architecture = get_architecture()
         os.environ['CURRENT_ARCHITECTURE'] = architecture
-        repo_owner = 'debridmediamanager'
-        repo_name = 'zurg-testing'
+        if GHTOKEN:
+            repo_owner = 'debridmediamanager'
+            repo_name = 'zurg'               
+        else:
+            repo_owner = 'debridmediamanager'
+            repo_name = 'zurg-testing'          
         
         if ZURGVERSION:
             release_version = ZURGVERSION if ZURGVERSION.startswith('v') else 'v' + ZURGVERSION
