@@ -1,4 +1,5 @@
 from json import load, dump
+from token import RBRACE
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime, timedelta
 import logging
@@ -244,7 +245,7 @@ def load_secret_or_env(secret_name, default=None):
     except IOError:
         return os.getenv(secret_name.upper(), default)
 
-PLEXDEBRID = os.getenv("PD_ENABLED")
+
 PLEXUSER = load_secret_or_env('plex_user')
 PLEXTOKEN = load_secret_or_env('plex_token')
 JFADD = load_secret_or_env('jf_address')
@@ -258,7 +259,6 @@ ZURGUSER = load_secret_or_env('zurg_user')
 ZURGPASS = load_secret_or_env('zurg_pass')
 SHOWMENU = os.getenv('SHOW_MENU')
 LOGFILE = os.getenv('PD_LOGFILE')
-PDUPDATE = os.getenv('PD_UPDATE')
 DUPECLEAN = os.getenv('DUPLICATE_CLEANUP')
 CLEANUPINT = os.getenv('CLEANUP_INTERVAL')
 RCLONEMN = os.getenv("RCLONE_MOUNT_NAME")
@@ -273,3 +273,4 @@ NFSPORT = os.getenv('NFS_PORT')
 ZURGPORT = os.getenv('ZURG_PORT')
 RIVEN = os.getenv("RIVEN_ENABLED")
 RUPDATE = os.getenv('RIVEN_UPDATE')
+RBRANCH = os.getenv('RIVEN_BRANCH')

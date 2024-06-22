@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [0.1.0] - 2024-22-06
+
+### Added
+
+- Riven: RIVEN_BRANCH environment variable to select the branch to use for the riven repository
+
+### Fixed
+
+- rclone: Fixed rclone process w/ Riven
+- healthcheck: Fixed healthcheck process w/ Riven
+
+
 ## Version [0.0.1] - 2024-21-06
 
 ### Added

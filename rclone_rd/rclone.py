@@ -95,7 +95,7 @@ def setup():
                     rclone_command = ["rclone", "serve", "nfs", f"{mn}:", "--config", "/config/rclone.config", "--addr", f"0.0.0.0:{port}", "--vfs-cache-mode=full", "--dir-cache-time=10"]                    
             else:
                 rclone_command = ["rclone", "mount", f"{mn}:", f"/data/{mn}", "--config", "/config/rclone.config", "--allow-other", "--poll-interval=0", "--dir-cache-time=10"]
-            if not PLEXDEBRID or idx != len(mount_names) - 1:
+            if not RIVEN or idx != len(mount_names) - 1:
                 rclone_command.append("--daemon")
     
             logger.info(f"Starting rclone{' daemon' if '--daemon' in rclone_command else ''} for {mn}")

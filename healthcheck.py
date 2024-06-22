@@ -24,7 +24,6 @@ try:
         RCLONEMN_RD = RCLONEMN_AD = RCLONEMN
 
     mount_type = "serve nfs" if not NFSMOUNT is None and str(NFSMOUNT).lower() == 'true' else "mount"
-    plex_debrid_should_run = str(PLEXDEBRID).lower() == 'true' and os.getenv('PLEX_CONNECTED', 'False') == 'True'
     
     process_info = {
         "zurg_rd": {
@@ -37,10 +36,15 @@ try:
             "error_message": "The Zurg AD process is not running.",
             "should_run": str(ZURG).lower() == 'true' and ADAPIKEY
         },
-        "plex_debrid": {
-            "regex": re.compile(r'python ./plex_debrid/main.py --config-dir /config'),
-            "error_message": "The plex_debrid process is not running.",
-            "should_run": plex_debrid_should_run
+        "riven_frontend": {
+            "regex": re.compile(r'node build'),
+            "error_message": "The Riven frontend process is not running.",
+            "should_run": str(RIVEN).lower() == 'true'
+        },
+        "riven_backend": {
+            "regex": re.compile(r'/venv/bin/python backend/main.py'),
+            "error_message": "The Riven backend process is not running.",
+            "should_run": str(RIVEN).lower() == 'true'
         },
         "rclonemn_rd": {
             "regex": re.compile(rf'rclone {mount_type} {re.escape(RCLONEMN_RD)}:'),
