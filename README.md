@@ -207,7 +207,7 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`PDZURG_LOG_LEVEL`| The level at which logs should be captured. See the python [Logging Levels](https://docs.python.org/3/library/logging.html#logging-levels) documentation for more details  | `INFO` |
 |`PDZURG_LOG_COUNT`| The number logs to retain. Result will be value + current log  | `2` |
 |`ZURG_ENABLED`| Set the value "true" to enable the Zurg process | `false ` | | | :heavy_check_mark:|
-|`GITHUB_TOKEN`| GitHub Personal Token for use with Zurg private repo | `false ` | | | :heavy_check_mark:|
+|`GITHUB_TOKEN`| GitHub Personal Token for use with Zurg private repo. Requires Zurg [sponsorship](https://github.com/sponsors/debridmediamanager) | `false ` | | | :heavy_check_mark:|
 |`ZURG_VERSION`| The version of Zurg to use. If enabled, the value should contain v0.9.x or v0.9.x-hotfix.x format | `latest` | | | :heavy_check_mark: |
 |`ZURG_UPDATE`| Enable automatic updates of Zurg. Adding this variable will enable automatic updates to the latest version of Zurg locally within the container. | `false` | | | |
 |`ZURG_LOG_LEVEL`| Set the log level for Zurg | `INFO` | | | |
@@ -242,7 +242,7 @@ DMB supports the use of docker secrets for the following environment variables:
 
 | Variable       | Description                                  | Default | Used w/ rclone| Used w/ Riven| Used w/ zurg|
 |----------------|----------------------------------------------|---------|:-:|:-:|:-:|
-|`GITHUB_TOKEN_`| [GitHub Personal Token](https://github.com/settings/tokens) | ` ` | | | :heavy_check_mark:|
+|`GITHUB_TOKEN`| [GitHub Personal Token](https://github.com/settings/tokens) | ` ` | | | :heavy_check_mark:|
 |`RD_API_KEY`| [RealDebrid API key](https://real-debrid.com/apitoken) | ` ` | | :heavy_check_mark:| :heavy_check_mark:|
 |`AD_API_KEY`| [AllDebrid API key](https://alldebrid.com/apikeys/) | ` ` | | :heavy_check_mark:| :heavy_check_mark:|
 |`PLEX_USER`| The [Plex USERNAME](https://app.plex.tv/desktop/#!/settings/account) for your account | ` ` || :heavy_check_mark:|
@@ -274,7 +274,7 @@ services:
 
 secrets:
   github_token:
-	file: ./path/to/github_token.txt
+    file: ./path/to/github_token.txt
   rd_api_key:
     file: ./path/to/rd_api_key.txt
   ad_api_key:
