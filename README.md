@@ -64,7 +64,7 @@ services:
       ## Location for rclone mount to host
       - /DMB/zurg:/data:shared  
       ## Location for Riven data
-      - /DMB/data:/data:/riven/data
+      - /DMB/data:/riven/data
       ## Location for Riven symlinks
       - /DMB/mnt:/mnt
     environment:
