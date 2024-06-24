@@ -140,3 +140,13 @@ jobs:
         run: |
           gh api -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" /repos/${{ github.repository }}/discussions/${{ env.DISCUSSION_ID }}/pin
 
+      - name: Post announcement to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          VERSION: ${{ needs.build-and-push.outputs.version }}
+        run: |
+          RELEASE_NOTES=$(awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md)
+          ANNOUNCEMENT_BODY="🚀 **New Release: ${{ env.VERSION }}**\n\n${RELEASE_NOTES}\n\nDownload the release [here](https://github.com/${{ github.repository }}/releases/tag/${{ env.VERSION }})."
+          curl -H "Content-Type: application/json" \
+               -d "{\"content\": \"${ANNOUNCEMENT_BODY}\"}" \
+               $DISCORD_WEBHOOK_URL
