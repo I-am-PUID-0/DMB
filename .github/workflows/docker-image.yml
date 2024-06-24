@@ -92,4 +92,51 @@ jobs:
               --draft=false \
               --prerelease=false
 
+  announce:
+    needs: [build-and-push]
+    if: needs.build-and-push.outputs.release_exists == 'false'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Post announcement to Discussions
+        id: post_announcement
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.create_release.outputs.VERSION }}
+        run: |
+          DISCUSSION_CATEGORY_ID=$(gh api \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            /repos/${{ github.repository }}/discussions/categories \
+            | jq -r '.[] | select(.name=="Announcements") | .id')
+
+          RELEASE_NOTES=$(awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md)
+
+          ANNOUNCEMENT_BODY="🚀 **New Release: ${{ env.VERSION }}**\n\n${RELEASE_NOTES}\n\nDownload the release [here](https://github.com/${{ github.repository }}/releases/tag/${{ env.VERSION }})."
+
+          DISCUSSION_ID=$(gh api \
+            -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            /repos/${{ github.repository }}/discussions \
+            -d "{\"title\":\"New Release: ${{ env.VERSION }}\",\"body\":\"${ANNOUNCEMENT_BODY}\",\"category_id\":\"$DISCUSSION_CATEGORY_ID\"}" \
+            | jq -r '.id')
+
+          echo "DISCUSSION_ID=$DISCUSSION_ID" >> $GITHUB_ENV
+
+      - name: Unpin previous announcements
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -H "Authorization: token $GITHUB_TOKEN" /repos/${{ github.repository }}/discussions | jq -r '.[] | select(.category.name=="Announcements" and .is_pinned==true) | .node_id' | while read -r node_id; do
+            gh api -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" /repos/${{ github.repository }}/discussions/$node_id/unpin
+          done
+
+      - name: Pin new announcement
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" /repos/${{ github.repository }}/discussions/${{ env.DISCUSSION_ID }}/pin
 
