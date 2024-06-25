@@ -1,7 +1,7 @@
 from base import *
 import riven_ as r
 import zurg as z 
-from rclone_rd import rclone
+from rclone import rclone
 from cleanup import duplicate_cleanup
 from update import auto_update
 
@@ -9,7 +9,7 @@ from update import auto_update
 def main():
     logger = get_logger()
 
-    version = '0.2.0'
+    version = '1.0.0'
 
     ascii_art = f'''
                                                                        
@@ -37,6 +37,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
     logger.info(ascii_art.format(version=version)  + "\n" + "\n")
 
     def healthcheck():
+        time.sleep(60)
         while True:
             time.sleep(10)
             try:
@@ -92,11 +93,13 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 r.setup.r_setup()
                 r_updater = r.update.RivenUpdate()
                 if RUPDATE:
+                    r_updater.auto_update('Riven_backend', True)                    
+                    r.settings.load_settings()                    
                     r_updater.auto_update('Riven_frontend', True)
-                    r_updater.auto_update('Riven_backend', True)
                 else:
-                    r_updater.start_process('Riven_frontend')
                     r_updater.start_process('Riven_backend')
+                    r.settings.load_settings()
+                    r_updater.start_process('Riven_frontend')                    
             except Exception as e:
                 logger.error(f"An error occurred in the Riven setup: {e}")
     except:

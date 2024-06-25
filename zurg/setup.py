@@ -20,6 +20,17 @@ def zurg_setup():
     except Exception as e:
         logger.error(f"Error setting Zurg log level from 'ZURG_LOG_LEVEL': {e}")
 
+    def update_plex(file_path):
+        logger.debug(f"Disabling plex_update.sh in config file: {file_path}")
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+        with open(file_path, 'w') as file:
+            for line in lines:
+                if line.strip().startswith("on_library_update:"):
+                    file.write("# on_library_update:\n")
+                else:
+                    file.write(line)
+                    
     def update_token(file_path, token):
         logger.debug(f"Updating token in config file: {file_path}")
         with open(file_path, 'r') as file:
@@ -54,35 +65,7 @@ def zurg_setup():
                 elif line.strip().startswith("password:") or line.strip().startswith("# password:"):
                     file.write(f"password: {zurgpass}\n")
                 else:
-                    file.write(line)  
-                    
-    def plex_refresh(file_path):
-        logger.info(f"Updating Plex Refresh in config file: {file_path}")
-        yaml = YAML()
-        yaml.indent(mapping=4, sequence=4, offset=2)
-        yaml.preserve_quotes = True
-        with open(file_path, 'r') as file:
-            config = yaml.load(file)
-
-        config['on_library_update'] = (
-            "tmpfile=$(mktemp)\n"
-            "for arg in \"$@\"\n"
-            "do\n"
-            "    echo \"$arg\" >> \"$tmpfile\"\n"
-            "done\n\n"
-            "unique_args=$(sort -u \"$tmpfile\")\n\n"
-            "if [ -n \"$unique_args\" ]; then\n"
-            "    IFS=$'\\n'\n"
-            "    for line in $unique_args; do\n"
-            "        python plex_refresh.py \"$line\"\n"
-            "    done\n"
-            "    unset IFS\n"
-            "fi\n"
-            "rm \"$tmpfile\"\n"
-        )
-
-        with open(file_path, 'w') as file:
-            yaml.dump(config, file)
+                    file.write(line)                     
 
     def check_and_set_zurg_version(dir_path):
         zurg_binary_path = os.path.join(dir_path, 'zurg')
@@ -106,7 +89,6 @@ def zurg_setup():
         try:    
             zurg_executable_path = os.path.join(config_dir, 'zurg')
             config_file_path = os.path.join(config_dir, 'config.yml')
-            refresh_file_path = os.path.join(config_dir, 'plex_refresh.py')
             logger.info(f"Preparing Zurg instance for {key_type}")
         
             if os.path.exists(zurg_app_override):
@@ -130,6 +112,7 @@ def zurg_setup():
                 shutil.copy(zurg_config_base, config_file_path)
             else:
                 logger.info(f"Using Zurg config found for {key_type} in {config_dir}")
+                
             if ZURGPORT:
                 port = ZURGPORT
                 logger.debug(f"Setting port {port} for Zurg w/ {key_type} instance")
@@ -138,11 +121,16 @@ def zurg_setup():
                 port = random.randint(9001, 9999)
                 logger.debug(f"Selected port {port} for Zurg w/ {key_type} instance")
                 update_port(config_file_path, port)       
-            update_token(config_file_path, token)
+                            
             if ZURGUSER and ZURGPASS:
                 update_creds(config_file_path, ZURGUSER, ZURGPASS)
+               
             os.environ[f'ZURG_PORT_{key_type}'] = str(port)       
             logger.debug(f"Zurg w/ {key_type} instance configured to port: {port}")
+            
+            update_token(config_file_path, token)            
+            update_plex(config_file_path)
+            
         except Exception as e:
             raise Exception(f"Error setting up Zurg instance for {key_type}: {e}")        
 

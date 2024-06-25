@@ -55,6 +55,10 @@ class SubprocessLogger:
         else:
             log_level = 'UNKNOWN'
             message = line
+            
+        date_time_prefix_pattern = re.compile(r'^\d{2}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} ')
+        message = date_time_prefix_pattern.sub('', message).strip()           
+
         return log_level, message
 
     def monitor_stderr(self, process, mount_name, process_name):
@@ -204,16 +208,16 @@ class CustomTimedRotatingFileHandler(TimedRotatingFileHandler):
             result = result[:len(result) - self.backupCount]
         return result
 
-def get_logger(log_name='PDZURG', log_dir='./log'):
+def get_logger(log_name='DMB', log_dir='./log'):
     current_date = time.strftime("%Y-%m-%d")
     log_filename = f"{log_name}-{current_date}.log"
     logger = logging.getLogger(log_name)
-    backupCount_env = os.getenv('PDZURG_LOG_COUNT')
+    backupCount_env = os.getenv('DMB_LOG_COUNT')
     try:
         backupCount = int(backupCount_env)
     except (ValueError, TypeError):
         backupCount = 2
-    log_level_env = os.getenv('PDZURG_LOG_LEVEL')
+    log_level_env = os.getenv('DMB_LOG_LEVEL')
     if log_level_env:
         log_level = log_level_env.upper()
         os.environ['LOG_LEVEL'] = log_level
@@ -246,20 +250,15 @@ def load_secret_or_env(secret_name, default=None):
         return os.getenv(secret_name.upper(), default)
 
 
-PLEXUSER = load_secret_or_env('plex_user')
 PLEXTOKEN = load_secret_or_env('plex_token')
-JFADD = load_secret_or_env('jf_address')
-JFAPIKEY = load_secret_or_env('jf_api_key')
+PLEXADD = load_secret_or_env('plex_address')
 RDAPIKEY = load_secret_or_env('rd_api_key')
 ADAPIKEY = load_secret_or_env('ad_api_key')
-SEERRAPIKEY = load_secret_or_env('seerr_api_key')
-SEERRADD = load_secret_or_env('seerr_address')
-PLEXADD = load_secret_or_env('plex_address')
 ZURGUSER = load_secret_or_env('zurg_user')
 ZURGPASS = load_secret_or_env('zurg_pass')
 GHTOKEN = load_secret_or_env('GITHUB_TOKEN')
-SHOWMENU = os.getenv('SHOW_MENU')
-LOGFILE = os.getenv('PD_LOGFILE')
+SEERRAPIKEY = load_secret_or_env('seerr_api_key')
+SEERRADD = load_secret_or_env('seerr_address')
 DUPECLEAN = os.getenv('DUPLICATE_CLEANUP')
 CLEANUPINT = os.getenv('CLEANUP_INTERVAL')
 RCLONEMN = os.getenv("RCLONE_MOUNT_NAME")

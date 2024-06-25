@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [1.0.0] - 2024-25-06
+
+### Breaking Changes
+
+- DMB: Updated PDZURG_LOG_LEVEL to DMB_LOG_LEVEL
+- DMB: Updated PDZURG_LOG_COUNT to DMB_LOG_COUNT
+
+### Changed
+
+- [Issue #5](https://github.com/I-am-PUID-0/DMB/issues/5): Added intital sleep time to allow for services to start
+- [Issue #6](https://github.com/I-am-PUID-0/DMB/issues/6): Disabled Zurg plex_update.sh - not needed
+- [Issue #7](https://github.com/I-am-PUID-0/DMB/issues/7): Cleanup Riven logging
+
+### Added
+
+- [Issue #1](https://github.com/I-am-PUID-0/DMB/issues/1): All Riven settings now assignable with environment variables
+- Riven: RIVEN_LOG_LEVEL environment variable - Riven log level is only configurable to DEBUG or INFO; Default is INFO
+
+### Removed
+
+- [Issue #3](https://github.com/I-am-PUID-0/DMB/issues/3): Removed Jellyfin enviornement variables
+- [Issue #2](https://github.com/I-am-PUID-0/DMB/issues/2): Removed PLEX_REFRESH environment variable
+
+
 ## Version [0.2.0] - 2024-22-06
 
 ### Added
@@ -28,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - rclone: Fixed rclone process w/ Riven
-- healthcheck: Fixed healthcheck process w/ Riven
+- Healthcheck: Fixed healthcheck process w/ Riven
 
 
 ## Version [0.0.1] - 2024-21-06

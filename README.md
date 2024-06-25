@@ -22,11 +22,11 @@ Debrid Media Bridge (DMB) is an All-In-One (AIO) docker image for the unified de
  - [Debrid service API Key passed to Zurg and Riven via docker environment variable](https://github.com/I-am-PUID-0/DMB/wiki#debrid-api-key-passed-to-zurg-and-Riven-via-docker-environment-variable)
  - [rclone config automatically generated](https://github.com/I-am-PUID-0/DMB/wiki#rclone-config-automatically-generated)
  - [rclone flags passed via docker environment variable](https://github.com/I-am-PUID-0/DMB/wiki#rclone-flags-passed-via-docker-environment-variable)
- - [Fuse.conf ```user_allow_other``` applied within the container vs. the host](https://github.com/I-am-PUID-0/DMB/wiki#fuseconf-user_allow_other-applied-within-the-container-vs-the-host)
- - [Plex server values passed to Riven settings.json via docker environment variables](https://github.com/I-am-PUID-0/DMB/wiki#plex-server-values-passed-to-Riven-settingsjson-via-docker-environment-variables)
+ - [Riven settings.json updated via docker environment variables](https://github.com/I-am-PUID-0/DMB/wiki#plex-server-values-passed-to-Riven-settingsjson-via-docker-environment-variables)
  - [Automatic Update of Riven to the latest version](https://github.com/I-am-PUID-0/DMB/wiki#automatic-update-of-Riven-to-the-latest-version)
  - [Automatic Update of Zurg to the latest version](https://github.com/I-am-PUID-0/DMB/wiki#automatic-update-of-zurg-to-the-latest-version)
  - [Version selection of Zurg to the user-defined version](https://github.com/I-am-PUID-0/DMB/wiki#version-selection-of-zurg-to-the-user-defined-version)
+ - [Branch selection of Riven to the user-defined branch](https://github.com/I-am-PUID-0/DMB/wiki#riven-branch)
  - [Use of .env file for setting environment variables](https://github.com/I-am-PUID-0/DMB/wiki#use-of-env-file-for-setting-environment-variables)
  - [Use of Docker Secret file for setting sensitive variables](https://github.com/I-am-PUID-0/DMB#docker-secrets)
  - [Duplicate Cleanup](https://github.com/I-am-PUID-0/DMB/wiki#duplicate-cleanup) 
@@ -58,15 +58,15 @@ services:
       ## Location for logs
       - /DMB/log:/log
       ## Location for Zurg RealDebrid active configuration
-      - /DMB/RD:/zurg/RD
-      ## Location for Zurg AllDebrid active configuration -- when supported by Zurg     
-      - /DMB/AD:/zurg/AD   
+      - /DMB/Zurg/RD:/zurg/RD
+      ## Location for Zurg AllDebrid active configuration - Riven does not currently support AllDebrid   
+      - /DMB/Zurg/AD:/zurg/AD   
       ## Location for rclone mount to host
-      - /DMB/zurg:/data:shared  
+      - /DMB/Zurg/mnt:/data:shared  
       ## Location for Riven data
-      - /DMB/data:/riven/data
+      - /DMB/Riven/data:/riven/data
       ## Location for Riven symlinks
-      - /DMB/mnt:/mnt
+      - /DMB/Riven/mnt:/mnt
     environment:
       - TZ=
       ## Zurg Required Settings
@@ -83,6 +83,8 @@ services:
       ## Rclone Required Settings
       - RCLONE_MOUNT_NAME=DMB
       ## Rclone Optional Settings - See rclone docs for full list
+     # - RCLONE_UID=1000
+     # - RCLONE_GID=1000
      # - NFS_ENABLED=true
      # - NFS_PORT=8000
      # - RCLONE_LOG_LEVEL=DEBUG
@@ -90,32 +92,25 @@ services:
      # - RCLONE_DIR_CACHE_TIME=10s
      # - RCLONE_VFS_CACHE_MODE=full
      # - RCLONE_VFS_CACHE_MAX_SIZE=100G
-     # - RCLONE_ATTR_TIMEOUT=8700h
      # - RCLONE_BUFFER_SIZE=32M
      # - RCLONE_VFS_CACHE_MAX_AGE=4h
-     # - RCLONE_VFS_READ_CHUNK_SIZE=32M
-     # - RCLONE_VFS_READ_CHUNK_SIZE_LIMIT=1G
-     # - RCLONE_TRANSFERS=8
       ## Riven Required Settings
       - RIVEN_ENABLED=true
-      - ORIGIN=http://0.0.0.0:3000
-      ## The following environment variables are optional for Riven, but if not set, will require using Riven's Web UI
-      - PLEX_USER=
-      - PLEX_TOKEN=
-      - PLEX_ADDRESS=
-      ## To utilize Riven with Jellyfin, the following environment variables are required - Note that Riven will require addtional setup befor use with Jellyfin
-     # - JF_ADDRESS
-     # - JF_API_KEY
+      - ORIGIN=http://0.0.0.0:3000 # See Riven documentation for more details
       ## Riven Optional Settings
-     # - RIVEN_UPDATE=true # deprecated; plex_drbrid is no longer maintained 
+     # - PLEX_TOKEN=
+     # - PLEX_ADDRESS=
+     # - RIVEN_UPDATE=true 
+     # - RIVEN_BRANCH=main
+     # - RIVEN_LOG_LEVEL=DEBUG
      # - SEERR_API_KEY=
      # - SEERR_ADDRESS=
       ## Special Features
      # - AUTO_UPDATE_INTERVAL=12
      # - DUPLICATE_CLEANUP=true
      # - CLEANUP_INTERVAL=1
-     # - PDZURG_LOG_LEVEL=DEBUG
-     # - PDZURG_LOG_COUNT=2
+     # - DMB_LOG_LEVEL=DEBUG  # Master log level for all program logs in DMB
+     # - DMB_LOG_COUNT=2
     # Example to attach to gluetun vpn container if realdebrid blocks IP address 
     # network_mode: container:gluetun  
     devices:
@@ -140,8 +135,8 @@ services:
     volumes:
       - /plex/library:/config
       - /plex/transcode:/transcode
-      - /DMB/zurg:/data # rclone mount location from DMB must be shared to Plex container. Don't add to plex library
-      - /DMB/mnt:/mnt  # Riven symlink location from DMB must be shared to Plex container. Add to plex library    
+      - /DMB/Zurg/mnt:/data # rclone mount location from DMB must be shared to Plex container. Don't add to plex library
+      - /DMB/Riven/mnt:/mnt  # Riven symlink location from DMB must be shared to Plex container. Add to plex library    
     environment:
       - TZ=${TZ}
 ```
@@ -154,18 +149,11 @@ services:
 docker build -t your-image-name https://github.com/I-am-PUID-0/DMB.git
 ```
 
-## Plex or Jellyfin/Emby deployment
 
-To use Riven with Plex, the following environment variables are required: PD_ENABLED, PLEX_USER, PLEX_TOKEN, PLEX_ADDRESS
-
-To use Riven with Jellyfin/Emby, the following environment variables are required: PD_ENABLED, JF_ADDRESS, JF_API_KEY
-
-### Note: Additional setup required for Jellyfin
-Riven requires the Library collection service to be set for Trakt Collection: see the Riven [Trakt Collections](https://github.com/itsToggle/Riven#open_file_folder-library-collection-service) for more details
 
 ## SEERR Integration
 
-To enable either Overseerr or Jellyseerr integration with Riven, the following environment variables are required: SEERR_API_KEY, SEERR_ADDRESS
+To enable Overseerr integration with Riven, the following environment variables are required: SEERR_API_KEY, SEERR_ADDRESS
 
 
 ## Automatic Updates
@@ -189,37 +177,34 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`RCLONE_MOUNT_NAME`| A name for the rclone mount |  | :heavy_check_mark:|
 |`RCLONE_LOG_LEVEL`| [Log level](https://rclone.org/docs/#log-level-level) for rclone | `NOTICE` | :heavy_check_mark:|
 |`RCLONE_LOG_FILE`| [Log file](https://rclone.org/docs/#log-file-file) for rclone |  | :heavy_check_mark: |
-|`RCLONE_DIR_CACHE_TIME`| [How long a directory should be considered up to date and not refreshed from the backend](https://rclone.org/commands/rclone_mount/#vfs-directory-cache) #optional, but recommended is 10s. | `5m` |
+|`RCLONE_DIR_CACHE_TIME`| [How long a directory should be considered up to date and not refreshed from the backend](https://rclone.org/commands/rclone_mount/#vfs-directory-cache) #optional, but recommended is 10s. | `10s` |
 |`RCLONE_CACHE_DIR`| [Directory used for caching](https://rclone.org/docs/#cache-dir-dir). |  |
 |`RCLONE_VFS_CACHE_MODE`| [Cache mode for VFS](https://rclone.org/commands/rclone_mount/#vfs-file-caching) |  |
 |`RCLONE_VFS_CACHE_MAX_SIZE`| [Max size of the VFS cache](https://rclone.org/commands/rclone_mount/#vfs-file-caching) | |
 |`RCLONE_VFS_CACHE_MAX_AGE`| [Max age of the VFS cache](https://rclone.org/commands/rclone_mount/#vfs-file-caching) |  |
-|`PLEX_USER`| The [Plex Username](https://app.plex.tv/desktop/#!/settings/account) for your account | || :heavy_check_mark:|
-|`PLEX_TOKEN`| The [Plex Token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/) associated with PLEX_USER |  || :heavy_check_mark:|
+|`PLEX_TOKEN`| The [Plex Token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/) associated with your Plex user |  || :heavy_check_mark:|
 |`PLEX_ADDRESS`| The URL of your Plex server. Example: http://192.168.0.100:32400 or http://plex:32400 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (32400). E.g., ```/``` ||| :heavy_check_mark:|
 |`RIVEN_ENABLED`| Set the value "true" to enable the Riven process | `false ` | | :heavy_check_mark: | |
 |`RIVEN_BRANCH`| Set the value to the appropriate branch  | `main` | | :heavy_check_mark: | |
-|`RIVEN_LOGFILE`| Log file for Riven. The log file will appear in the ```/config``` as ```Riven.log```. If used, the value must be ```true``` or ```false``` | `false` |
-|`RIVEN_UPDATE`| Enable automatic updates of Riven. Adding this variable will enable automatic updates to the latest version of Riven locally within the container.| `false` |
-|`AUTO_UPDATE_INTERVAL`| Interval between automatic update checks in hours. Vaules can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes, and 1.5 would yield one and a half hours | `24` |
+|`RIVEN_LOGFILE`| Log file for Riven. The log file will appear in the ```/config``` as ```Riven.log```. If used, the value must be ```true``` or ```false``` | `false` || :heavy_check_mark:| |
+|`RIVEN_UPDATE`| Enable automatic updates of Riven. Adding this variable will enable automatic updates to the latest version of Riven locally within the container.| `false` || :heavy_check_mark:|
+|`AUTO_UPDATE_INTERVAL`| Interval between automatic update checks in hours. Vaules can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes, and 1.5 would yield one and a half hours | `24` || :heavy_check_mark:| :heavy_check_mark:|
 |`DUPLICATE_CLEANUP`| Automated cleanup of duplicate content in Plex.  | `false` |
-|`CLEANUP_INTERVAL`| Interval between duplicate cleanup in hours. Values can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes and 1.5 would yield one and a half hours | `24` |
-|`PDZURG_LOG_LEVEL`| The level at which logs should be captured. See the python [Logging Levels](https://docs.python.org/3/library/logging.html#logging-levels) documentation for more details  | `INFO` |
-|`PDZURG_LOG_COUNT`| The number logs to retain. Result will be value + current log  | `2` |
+|`CLEANUP_INTERVAL`| Interval between duplicate cleanup in hours. Values can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes and 1.5 would yield one and a half hours | `24` || :heavy_check_mark: | :heavy_check_mark:|
+|`DMB_LOG_LEVEL`| The level at which logs should be captured. See the python [Logging Levels](https://docs.python.org/3/library/logging.html#logging-levels) documentation for more details  | `INFO` |
+|`DMB_LOG_COUNT`| The number logs to retain. Result will be value + current log  | `2` |
 |`ZURG_ENABLED`| Set the value "true" to enable the Zurg process | `false ` | | | :heavy_check_mark:|
 |`GITHUB_TOKEN`| GitHub Personal Token for use with Zurg private repo. Requires Zurg [sponsorship](https://github.com/sponsors/debridmediamanager) | `false ` | | | :heavy_check_mark:|
 |`ZURG_VERSION`| The version of Zurg to use. If enabled, the value should contain v0.9.x or v0.9.x-hotfix.x format | `latest` | | | :heavy_check_mark: |
 |`ZURG_UPDATE`| Enable automatic updates of Zurg. Adding this variable will enable automatic updates to the latest version of Zurg locally within the container. | `false` | | | |
 |`ZURG_LOG_LEVEL`| Set the log level for Zurg | `INFO` | | | |
-|`JF_API_KEY`| The Jellyfin/Emby API Key ||| ||
-|`JF_ADDRESS`| The URL of your Jellyfin/Emby server. Example: http://192.168.0.101:8096 or http://jellyfin:8096 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (8096). E.g., ```/``` ||| |
 |`SEERR_API_KEY`| The Jellyseerr or Overseerr API Key ||| ||
 |`SEERR_ADDRESS`| The URL of your Jellyseerr or Overseerr server. Example: http://192.168.0.102:5055 or http://Overseerr:5055 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (8096). E.g., ```/``` ||| |
-|`ZURG_USER`| The username to be used for protecting the Zurg endpoints.  | `none `| | | |
-|`ZURG_PASS`| The password to be used for protecting the Zurg endpoints.  | `none `  | | | |
-|`ZURG_PORT`| The port to be used for the Zurg server | `random ` | | | |
-|`NFS_ENABLED`| Set the value "true" to enable the NFS server for rclone | `false ` | | | |
-|`NFS_PORT`| The port to be used for the rclone NFS server | `random ` | | | |
+|`ZURG_USER`| The username to be used for protecting the Zurg endpoints.  | `none `| | | :heavy_check_mark: |
+|`ZURG_PASS`| The password to be used for protecting the Zurg endpoints.  | `none `  | | | :heavy_check_mark: |
+|`ZURG_PORT`| The port to be used for the Zurg server | `random ` | | | :heavy_check_mark: |
+|`NFS_ENABLED`| Set the value "true" to enable the NFS server for rclone | `false ` | :heavy_check_mark:| | |
+|`NFS_PORT`| The port to be used for the rclone NFS server | `random ` | :heavy_check_mark:| | |
 
 
 ## Data Volumes
@@ -230,11 +215,13 @@ format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 
 | Container path  | Permissions | Description |
 |-----------------|-------------|-------------|
-|`/config`| rw | This is where the application stores the rclone.conf, Riven settings.json, and any files needing persistence. CAUTION: rclone.conf is overwritten upon start/restart of the container. Do NOT use an existing rclone.conf file if you have other rclone services |
+|`/config`| rw | This is where the application stores the rclone.conf, and any files needing persistence. CAUTION: rclone.conf is overwritten upon start/restart of the container. Do NOT use an existing rclone.conf file if you have other rclone services |
 |`/log`| rw | This is where the application stores its log files |
-|`/data`| rshared  | This is where rclone will be mounted. Not required when only utilizing Riven   |
+|`/data`| shared  | This is where rclone will be mounted. Not required when only utilizing Riven   |
 |`/zurg/RD`| rw| This is where Zurg will store the active configuration and data for RealDebrid. Not required when only utilizing Riven   |
 |`/zurg/AD`| rw | This is where Zurg will store the active configuration and data for AllDebrid. Not required when only utilizing Riven   |
+|`/riven/data`| rw | This is where Riven will store its data. Not required when only utilizing Zurg   |
+|`/riven/mnt`| rw | This is where Riven will set its symlinks. Not required when only utilizing Zurg   |
 
 ## Docker Secrets
 
@@ -244,12 +231,9 @@ DMB supports the use of docker secrets for the following environment variables:
 |----------------|----------------------------------------------|---------|:-:|:-:|:-:|
 |`GITHUB_TOKEN`| [GitHub Personal Token](https://github.com/settings/tokens) | ` ` | | | :heavy_check_mark:|
 |`RD_API_KEY`| [RealDebrid API key](https://real-debrid.com/apitoken) | ` ` | | :heavy_check_mark:| :heavy_check_mark:|
-|`AD_API_KEY`| [AllDebrid API key](https://alldebrid.com/apikeys/) | ` ` | | :heavy_check_mark:| :heavy_check_mark:|
-|`PLEX_USER`| The [Plex USERNAME](https://app.plex.tv/desktop/#!/settings/account) for your account | ` ` || :heavy_check_mark:|
-|`PLEX_TOKEN`| The [Plex Token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/) associated with PLEX_USER | ` ` || :heavy_check_mark:|
+|`AD_API_KEY`| [AllDebrid API key](https://alldebrid.com/apikeys/) | ` ` | | | :heavy_check_mark:|
+|`PLEX_TOKEN`| The [Plex Token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/) associated with  | ` ` || :heavy_check_mark:|
 |`PLEX_ADDRESS`| The URL of your Plex server. Example: http://192.168.0.100:32400 or http://plex:32400 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (32400). E.g., ```/``` | ` ` || :heavy_check_mark:|
-|`JF_API_KEY`| The Jellyfin API Key | ` ` || :heavy_check_mark:||
-|`JF_ADDRESS`| The URL of your Jellyfin server. Example: http://192.168.0.101:8096 or http://jellyfin:8096 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (8096). E.g., ```/``` | ` ` || :heavy_check_mark:|
 |`SEERR_API_KEY`| The Jellyseerr or Overseerr API Key | ` ` || :heavy_check_mark:||
 |`SEERR_ADDRESS`| The URL of your Jellyseerr or Overseerr server. Example: http://192.168.0.102:5055 or http://Overseerr:5055 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (8096). E.g., ```/``` | ` ` || :heavy_check_mark:|
 
@@ -264,11 +248,8 @@ services:
       - github_token
       - rd_api_key
       - ad_api_key
-      - plex_user
       - plex_token
       - plex_address
-      - jf_api_key
-      - jf_address
       - seerr_api_key
       - seerr_address
 
@@ -279,16 +260,10 @@ secrets:
     file: ./path/to/rd_api_key.txt
   ad_api_key:
     file: ./path/to/ad_api_key.txt
-  plex_user:
-    file: ./path/to/plex_user.txt
   plex_token:
     file: ./path/to/plex_token.txt
   plex_address:
     file: ./path/to/plex_address.txt
-  jf_api_key:
-    file: ./path/to/jf_api_key.txt
-  jf_address:
-    file: ./path/to/jf_address.txt
   seerr_api_key:
     file: ./path/to/seerr_api_key.txt
   seerr_address:

@@ -1,1 +1,1 @@
-from . import setup, update, download
+from . import setup, update, download, settings
