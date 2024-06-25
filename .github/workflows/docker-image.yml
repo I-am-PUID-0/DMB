@@ -107,7 +107,12 @@ jobs:
           DISCUSSION_CATEGORY_ID=$(gh api \
             -H "Authorization: token $GITHUB_TOKEN" \
             /repos/${{ github.repository }}/discussions/categories \
-            | jq -r '.[] | select(.name=="Announcements") | .id')
+            | jq -r '.[] | select(.slug=="announcements") | .id')
+
+          if [ -z "$DISCUSSION_CATEGORY_ID" ]; then
+            echo "Error: Could not find Announcements category ID"
+            exit 1
+          fi
 
           RELEASE_NOTES=$(awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md)
 
@@ -121,13 +126,18 @@ jobs:
             -d "{\"title\":\"New Release: ${{ env.VERSION }}\",\"body\":\"${ANNOUNCEMENT_BODY}\",\"category_id\":\"$DISCUSSION_CATEGORY_ID\"}" \
             | jq -r '.id')
 
+          if [ -z "$DISCUSSION_ID" ]; then
+            echo "Error: Could not create discussion"
+            exit 1
+          fi
+
           echo "DISCUSSION_ID=$DISCUSSION_ID" >> $GITHUB_ENV
 
       - name: Unpin previous announcements
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh api -H "Authorization: token $GITHUB_TOKEN" /repos/${{ github.repository }}/discussions | jq -r '.[] | select(.category.name=="Announcements" and .is_pinned==true) | .node_id' | while read -r node_id; do
+          gh api -H "Authorization: token $GITHUB_TOKEN" /repos/${{ github.repository }}/discussions | jq -r '.[] | select(.category.slug=="announcements" and .is_pinned==true) | .node_id' | while read -r node_id; do
             gh api -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" /repos/${{ github.repository }}/discussions/$node_id/unpin
           done
 
