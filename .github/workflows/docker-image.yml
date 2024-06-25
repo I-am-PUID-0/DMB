@@ -106,35 +106,36 @@ jobs:
         run: |
           echo "Fetching discussion categories..."
           RESPONSE=$(gh api -H "Authorization: token $GITHUB_TOKEN" /repos/${{ github.repository }}/discussions/categories 2>&1)
+          echo "Response: $RESPONSE"
+          
           if [[ $? -ne 0 ]]; then
             echo "Error: Unable to fetch discussion categories"
-            echo "$RESPONSE"
             exit 1
           fi
           
-          echo "Response from fetching categories: $RESPONSE"
-
           DISCUSSION_CATEGORY_ID=$(echo "$RESPONSE" | jq -r '.[] | select(.slug=="announcements") | .id')
+          echo "DISCUSSION_CATEGORY_ID: $DISCUSSION_CATEGORY_ID"
+          
           if [[ -z "$DISCUSSION_CATEGORY_ID" ]]; then
             echo "Error: Could not find Announcements category ID"
             exit 1
           fi
 
           RELEASE_NOTES=$(awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md)
-
           ANNOUNCEMENT_BODY="🚀 **New Release: ${{ env.VERSION }}**\n\n${RELEASE_NOTES}\n\nDownload the release [here](https://github.com/${{ github.repository }}/releases/tag/${{ env.VERSION }})."
 
           echo "Creating discussion post..."
           RESPONSE=$(gh api -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" /repos/${{ github.repository }}/discussions -d "{\"title\":\"New Release: ${{ env.VERSION }}\",\"body\":\"${ANNOUNCEMENT_BODY}\",\"category_id\":\"$DISCUSSION_CATEGORY_ID\"}" 2>&1)
+          echo "Response: $RESPONSE"
+          
           if [[ $? -ne 0 ]]; then
             echo "Error: Unable to create discussion post"
-            echo "$RESPONSE"
             exit 1
           fi
 
-          echo "Response from creating discussion: $RESPONSE"
-
           DISCUSSION_ID=$(echo "$RESPONSE" | jq -r '.id')
+          echo "DISCUSSION_ID: $DISCUSSION_ID"
+          
           if [[ -z "$DISCUSSION_ID" ]]; then
             echo "Error: Could not create discussion"
             exit 1
