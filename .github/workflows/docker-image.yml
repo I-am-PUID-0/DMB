@@ -107,7 +107,7 @@ jobs:
           DISCUSSION_CATEGORY_ID=$(gh api \
             -H "Authorization: token $GITHUB_TOKEN" \
             /repos/${{ github.repository }}/discussions/categories \
-            | jq -r '.[] | select(.slug=="announcements") | .id')
+            | jq -r '.[] | select(.slug=="Announcements") | .id')
 
           if [ -z "$DISCUSSION_CATEGORY_ID" ]; then
             echo "Error: Could not find Announcements category ID"
@@ -137,7 +137,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh api -H "Authorization: token $GITHUB_TOKEN" /repos/${{ github.repository }}/discussions | jq -r '.[] | select(.category.slug=="announcements" and .is_pinned==true) | .node_id' | while read -r node_id; do
+          gh api -H "Authorization: token $GITHUB_TOKEN" /repos/${{ github.repository }}/discussions | jq -r '.[] | select(.category.slug=="Announcements" and .is_pinned==true) | .node_id' | while read -r node_id; do
             gh api -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" /repos/${{ github.repository }}/discussions/$node_id/unpin
           done
 
