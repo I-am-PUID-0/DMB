@@ -33,8 +33,9 @@ jobs:
         run: |
           VERSION=$(grep -Po "(?<=version = ')[^']+" main.py)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "::set-output name=version::$VERSION"
-          echo "Extracted version is $VERSION"
+          echo "version=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_ENV/extract_version_output
+        shell: bash
       - name: Set environment variables
         run: |
           echo "REPO_OWNER_LOWER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
@@ -69,10 +70,13 @@ jobs:
         run: |
           if gh release view ${{ steps.extract_version.outputs.version }} --repo ${{ github.repository }}; then
             echo "Release already exists for version ${{ steps.extract_version.outputs.version }}"
-            echo "::set-output name=release_exists::true"
+            echo "release_exists=true" >> $GITHUB_ENV
+            echo "release_exists=true" >> $GITHUB_ENV/check_release_output
           else
             echo "Release does not exist for version ${{ steps.extract_version.outputs.version }}"
-            echo "::set-output name=release_exists::false"
+            echo "release_exists=false" >> $GITHUB_ENV
+            echo "release_exists=false" >> $GITHUB_ENV/check_release_output
+        shell: bash
       - name: Create Release with CHANGELOG Notes
         if: steps.check_release.outputs.release_exists == 'false'
         id: create_release
@@ -86,6 +90,7 @@ jobs:
             --notes "$RELEASE_NOTES" \
             --draft=false \
             --prerelease=false
+        shell: bash
 
   announce:
     needs: build-and-push
@@ -120,6 +125,7 @@ jobs:
             | jq -r '.id')
 
           echo "DISCUSSION_ID=$DISCUSSION_ID" >> $GITHUB_ENV
+        shell: bash
 
       - name: Unpin previous announcements
         env:
@@ -128,12 +134,14 @@ jobs:
           gh api -H "Authorization: token $GITHUB_TOKEN" /repos/${{ github.repository }}/discussions | jq -r '.[] | select(.category.name=="Announcements" and .is_pinned==true) | .node_id' | while read -r node_id; do
             gh api -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" /repos/${{ github.repository }}/discussions/$node_id/unpin
           done
+        shell: bash
 
       - name: Pin new announcement
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh api -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" /repos/${{ github.repository }}/discussions/${{ env.DISCUSSION_ID }}/pin
+        shell: bash
 
       - name: Post announcement to Discord
         env:
@@ -145,3 +153,4 @@ jobs:
           curl -H "Content-Type: application/json" \
                -d "{\"content\": \"${ANNOUNCEMENT_BODY}\"}" \
                $DISCORD_WEBHOOK_URL
+        shell: bash
