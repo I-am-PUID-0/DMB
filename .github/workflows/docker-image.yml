@@ -74,6 +74,7 @@ jobs:
             echo "Release does not exist for version ${{ steps.extract_version.outputs.version }}"
             echo "release_exists=false" >> $GITHUB_ENV
             echo "release_exists=false" >> $GITHUB_OUTPUT
+          fi
       - name: Create Release with CHANGELOG Notes
         if: steps.check_release.outputs.release_exists == 'false'
         id: create_release
