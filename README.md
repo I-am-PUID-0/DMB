@@ -1,5 +1,5 @@
-<div align="center" style="max-width: 100%; height: auto;">
-  <h1>Debrid Media Bridge</h1>
+﻿<div align="center" style="max-width: 100%; height: auto;">
+  <h1>🎬 Debrid Media Bridge 🎬</h1>
   <a href="https://github.com/I-am-PUID-0/DMB">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://github.com/I-am-PUID-0/DMB/assets/36779668/d0cbc785-2e09-41da-b226-924fdfcc1f21">
@@ -8,34 +8,25 @@
   </a>
 </div>
 
+## 📜 Description
+**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of **[Riven Media's](https://github.com/rivenmedia)**, **[yowmamasita's](https://github.com/yowmamasita)**, and **[ncw's](https://github.com/ncw)** projects -- **[Riven](https://github.com/rivenmedia/riven)**, **[zurg](https://github.com/debridmediamanager/zurg-testing)**, and **[rclone](https://github.com/rclone/rclone)**.
 
-## Description
-Debrid Media Bridge (DMB) is an All-In-One (AIO) docker image for the unified deployment of **[Riven Media's](https://github.com/rivenmedia)**, **[yowmamasita's](https://github.com/yowmamasita)**, and **[ncw's](https://github.com/ncw)** projects -- **[Riven](https://github.com/rivenmedia/riven)**, **[zurg](https://github.com/debridmediamanager/zurg-testing)**, and **[rclone](https://github.com/rclone/rclone)**
-
-> [!IMPORTANT]
-> Docker Desktop **CANNOT** be used to run DMB. \
-> Docker Desktop does not support the [mount propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation) required for rclone mounts. \
-> ![image](https://github.com/I-am-PUID-0/DMB/assets/36779668/aff06342-1099-4554-a5a4-72a7c82cb16e)\
+> ⚠️ **IMPORTANT**: Docker Desktop **CANNOT** be used to run DMB. Docker Desktop does not support the [mount propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation) required for rclone mounts.
+>
+> ![image](https://github.com/I-am-PUID-0/DMB/assets/36779668/aff06342-1099-4554-a5a4-72a7c82cb16e)
+>
 > See the wiki for [alternative solutions](https://github.com/I-am-PUID-0/DMB/wiki/Setup-Guides) to run DMB on Windows through WSL2.
 
+## 🌟 Features
+See the DMB [Wiki](https://github.com/I-am-PUID-0/DMB/wiki) for a full list of features and settings.
 
+## 🐳 Docker Hub
+A prebuilt image is hosted on [Docker Hub](https://hub.docker.com/r/iampuid0/dmb).
 
-## Features
+## 🏷️ GitHub Container Registry
+A prebuilt image is hosted on [GitHub Container Registry](https://github.com/I-am-PUID-0/DMB/pkgs/container/DMB).
 
-See the DMB [Wiki](https://github.com/I-am-PUID-0/DMB/wiki) for a full list of features and settings
-
-
-
-## Docker Hub
-A prebuilt image is hosted on [docker hub](https://hub.docker.com/r/iampuid0/dmb) 
-
-
-
-## GitHub Container Registry
-A prebuilt image is hosted on [GitHub Container Registry](https://github.com/I-am-PUID-0/DMB/pkgs/container/DMB)
-
-
-## Docker-compose
+## 🛠️ Docker-compose
 ```YAML
 version: "3.8"
 
@@ -117,7 +108,7 @@ services:
       - no-new-privileges
 ```
 
-## Example Plex Docker-compose
+## 🎥 Example Plex Docker-compose
 ```YAML
 version: "3.8"
 
@@ -136,7 +127,7 @@ services:
       - TZ=${TZ}
 ```
 
-## Docker Build
+## 🔨 Docker Build
 
 ### Docker CLI
 
@@ -145,7 +136,7 @@ docker build -t your-image-name https://github.com/I-am-PUID-0/DMB.git
 ```
 
 
-## Environment Variables
+## 🌐 Environment Variables
 
 To customize some properties of the container, the following environment
 variables can be passed via the `-e` parameter (one for each variable), or via the docker-compose file within the ```environment:``` section, or with a .env file saved to the config directory -- See the wiki for more info on using the [.env](https://github.com/I-am-PUID-0/DMB/wiki/Settings#use-of-env-file-for-setting-environment-variables).  Value
@@ -190,7 +181,7 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 
 
 
-## Data Volumes
+## 📂 Data Volumes
 
 The following table describes the data volumes used by the container.  The mappings
 are set via the `-v` parameter or via the docker-compose file within the ```volumes:``` section.  Each mapping is specified with the following
@@ -208,7 +199,7 @@ format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 
 
 
-## Docker Secrets
+## 🗝️ Docker Secrets
 
 DMB supports the use of docker secrets for the following environment variables:
 
@@ -257,13 +248,13 @@ secrets:
 
 
 
-## TODO
+## 📝 TODO
 
 See the [DMB roadmap](https://github.com/users/I-am-PUID-0/projects/6) for a list of planned features and enhancements.
 
 
 
-## Deployment
+## 🚀 Deployment
 
 DMB allows for the simultaneous or individual deployment of Riven and/or Zurg w/ rclone
 
@@ -271,7 +262,7 @@ For additional details on deployment, see the [DMB Wiki](https://github.com/I-am
 
 
 
-## Community
+## 🌍 Community
 
 ### DMB
 - For questions related to DMB, see the GitHub [discussions](https://github.com/I-am-PUID-0/DMB/discussions)
@@ -284,17 +275,17 @@ For additional details on deployment, see the [DMB Wiki](https://github.com/I-am
 - or join the Riven [discord server](https://discord.gg/rivenmedia) 
 
 
-## Buy **[Riven Media](https://github.com/rivenmedia)** a beer/coffee? :)
+## 🍻 Buy **[Riven Media](https://github.com/rivenmedia)** a beer/coffee? :)
 
 If you enjoy the underlying projects and want to buy Riven Media a beer/coffee, feel free to use the [GitHub sponsor link](https://github.com/sponsors/dreulavelle/)
 
-## Buy **[yowmamasita](https://github.com/yowmamasita)** a beer/coffee? :)
+## 🍻 Buy **[yowmamasita](https://github.com/yowmamasita)** a beer/coffee? :)
 
 If you enjoy the underlying projects and want to buy yowmamasita a beer/coffee, feel free to use the [GitHub sponsor link](https://github.com/sponsors/debridmediamanager)
 
-## Buy **[ncw](https://github.com/ncw)** a beer/coffee? :) 
+## 🍻 Buy **[ncw](https://github.com/ncw)** a beer/coffee? :) 
 
 If you enjoy the underlying projects and want to buy Nick Craig-Wood a beer/coffee, feel free to use the website's [sponsor links](https://rclone.org/sponsor/)
 
-## GitHub Workflow Status
+## ✅ GitHub Workflow Status
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/I-am-PUID-0/DMB/docker-image.yml)
