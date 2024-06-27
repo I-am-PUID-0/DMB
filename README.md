@@ -153,7 +153,7 @@ docker build -t your-image-name https://github.com/I-am-PUID-0/DMB.git
 
 ## SEERR Integration
 
-To enable Overseerr integration with Riven, the following environment variables are required: SEERR_API_KEY, SEERR_ADDRESS
+To enable Overseerr integration via environment variables with Riven, the following are required: SEERR_API_KEY, SEERR_ADDRESS - Alternatively, the Riven Web UI can be used to configure the Overseerr integration.
 
 
 ## Automatic Updates
@@ -177,11 +177,11 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`RCLONE_MOUNT_NAME`| A name for the rclone mount |  | :heavy_check_mark:|
 |`RCLONE_LOG_LEVEL`| [Log level](https://rclone.org/docs/#log-level-level) for rclone | `NOTICE` | :heavy_check_mark:|
 |`RCLONE_LOG_FILE`| [Log file](https://rclone.org/docs/#log-file-file) for rclone |  | :heavy_check_mark: |
-|`RCLONE_DIR_CACHE_TIME`| [How long a directory should be considered up to date and not refreshed from the backend](https://rclone.org/commands/rclone_mount/#vfs-directory-cache) #optional, but recommended is 10s. | `10s` |
-|`RCLONE_CACHE_DIR`| [Directory used for caching](https://rclone.org/docs/#cache-dir-dir). |  |
-|`RCLONE_VFS_CACHE_MODE`| [Cache mode for VFS](https://rclone.org/commands/rclone_mount/#vfs-file-caching) |  |
-|`RCLONE_VFS_CACHE_MAX_SIZE`| [Max size of the VFS cache](https://rclone.org/commands/rclone_mount/#vfs-file-caching) | |
-|`RCLONE_VFS_CACHE_MAX_AGE`| [Max age of the VFS cache](https://rclone.org/commands/rclone_mount/#vfs-file-caching) |  |
+|`RCLONE_DIR_CACHE_TIME`| [How long a directory should be considered up to date and not refreshed from the backend](https://rclone.org/commands/rclone_mount/#vfs-directory-cache) #optional, but recommended is 10s. | `10s` | :heavy_check_mark:|
+|`RCLONE_CACHE_DIR`| [Directory used for caching](https://rclone.org/docs/#cache-dir-dir). |  | :heavy_check_mark:|
+|`RCLONE_VFS_CACHE_MODE`| [Cache mode for VFS](https://rclone.org/commands/rclone_mount/#vfs-file-caching) |  | :heavy_check_mark:|
+|`RCLONE_VFS_CACHE_MAX_SIZE`| [Max size of the VFS cache](https://rclone.org/commands/rclone_mount/#vfs-file-caching) | | :heavy_check_mark:|
+|`RCLONE_VFS_CACHE_MAX_AGE`| [Max age of the VFS cache](https://rclone.org/commands/rclone_mount/#vfs-file-caching) |  | :heavy_check_mark:|
 |`PLEX_TOKEN`| The [Plex Token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/) associated with your Plex user |  || :heavy_check_mark:|
 |`PLEX_ADDRESS`| The URL of your Plex server. Example: http://192.168.0.100:32400 or http://plex:32400 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (32400). E.g., ```/``` ||| :heavy_check_mark:|
 |`RIVEN_ENABLED`| Set the value "true" to enable the Riven process | `false ` | | :heavy_check_mark: | |
@@ -196,10 +196,10 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`ZURG_ENABLED`| Set the value "true" to enable the Zurg process | `false ` | | | :heavy_check_mark:|
 |`GITHUB_TOKEN`| GitHub Personal Token for use with Zurg private repo. Requires Zurg [sponsorship](https://github.com/sponsors/debridmediamanager) | `false ` | | | :heavy_check_mark:|
 |`ZURG_VERSION`| The version of Zurg to use. If enabled, the value should contain v0.9.x or v0.9.x-hotfix.x format | `latest` | | | :heavy_check_mark: |
-|`ZURG_UPDATE`| Enable automatic updates of Zurg. Adding this variable will enable automatic updates to the latest version of Zurg locally within the container. | `false` | | | |
-|`ZURG_LOG_LEVEL`| Set the log level for Zurg | `INFO` | | | |
-|`SEERR_API_KEY`| The Jellyseerr or Overseerr API Key ||| ||
-|`SEERR_ADDRESS`| The URL of your Jellyseerr or Overseerr server. Example: http://192.168.0.102:5055 or http://Overseerr:5055 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (8096). E.g., ```/``` ||| |
+|`ZURG_UPDATE`| Enable automatic updates of Zurg. Adding this variable will enable automatic updates to the latest version of Zurg locally within the container. | `false` | | | :heavy_check_mark:|
+|`ZURG_LOG_LEVEL`| Set the log level for Zurg | `INFO` | | | :heavy_check_mark:|
+|`SEERR_API_KEY`| The Overseerr API Key ||| :heavy_check_mark:||
+|`SEERR_ADDRESS`| The URL of your Overseerr server. Example: http://192.168.0.102:5055 or http://Overseerr:5055 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (5055). E.g., ```/``` || | :heavy_check_mark:|
 |`ZURG_USER`| The username to be used for protecting the Zurg endpoints.  | `none `| | | :heavy_check_mark: |
 |`ZURG_PASS`| The password to be used for protecting the Zurg endpoints.  | `none `  | | | :heavy_check_mark: |
 |`ZURG_PORT`| The port to be used for the Zurg server | `random ` | | | :heavy_check_mark: |
