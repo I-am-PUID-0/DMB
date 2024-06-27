@@ -1,11 +1,9 @@
-# Debrid Media Bridge
-
-
-<div align="center">
+<div align="center" style="max-width: 100%; height: auto;">
+  <h1>Debrid Media Bridge</h1>
   <a href="https://github.com/I-am-PUID-0/DMB">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://github.com/I-am-PUID-0/DMB/assets/36779668/d0cbc785-2e09-41da-b226-924fdfcc1f21">
-      <img alt="DMB" src="https://github.com/I-am-PUID-0/DMB/assets/36779668/d0cbc785-2e09-41da-b226-924fdfcc1f21">
+      <img alt="DMB" src="https://github.com/I-am-PUID-0/DMB/assets/36779668/d0cbc785-2e09-41da-b226-924fdfcc1f21" style="max-width: 100%; height: auto;">
     </picture>
   </a>
 </div>
@@ -14,27 +12,24 @@
 ## Description
 Debrid Media Bridge (DMB) is an All-In-One (AIO) docker image for the unified deployment of **[Riven Media's](https://github.com/rivenmedia)**, **[yowmamasita's](https://github.com/yowmamasita)**, and **[ncw's](https://github.com/ncw)** projects -- **[Riven](https://github.com/rivenmedia/riven)**, **[zurg](https://github.com/debridmediamanager/zurg-testing)**, and **[rclone](https://github.com/rclone/rclone)**
 
+> [!IMPORTANT]
+> Docker Desktop **CANNOT** be used to run DMB. \
+> Docker Desktop does not support the [mount propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation) required for rclone mounts. \
+> ![image](https://github.com/I-am-PUID-0/DMB/assets/36779668/aff06342-1099-4554-a5a4-72a7c82cb16e)\
+> See the wiki for [alternative solutions](https://github.com/I-am-PUID-0/DMB/wiki/Setup-Guides) to run DMB on Windows through WSL2.
+
+
 
 ## Features
- - [Optional independent or combined utilization of Riven and Zurg w/ rclone](https://github.com/I-am-PUID-0/DMB/wiki#optional-independent-or-combined-utilization-of--Riven-and-zurg-w-rclone)
- - [Simultaneous independent rclone mounts](https://github.com/I-am-PUID-0/DMB/wiki#simultaneous-independent-rclone-mounts)
- - [Bind-mounts rclone to the host](https://github.com/I-am-PUID-0/DMB/wiki#bind-mounts-rclone-to-the-host)
- - [Debrid service API Key passed to Zurg and Riven via docker environment variable](https://github.com/I-am-PUID-0/DMB/wiki#debrid-api-key-passed-to-zurg-and-Riven-via-docker-environment-variable)
- - [rclone config automatically generated](https://github.com/I-am-PUID-0/DMB/wiki#rclone-config-automatically-generated)
- - [rclone flags passed via docker environment variable](https://github.com/I-am-PUID-0/DMB/wiki#rclone-flags-passed-via-docker-environment-variable)
- - [Riven settings.json updated via docker environment variables](https://github.com/I-am-PUID-0/DMB/wiki#plex-server-values-passed-to-Riven-settingsjson-via-docker-environment-variables)
- - [Automatic Update of Riven to the latest version](https://github.com/I-am-PUID-0/DMB/wiki#automatic-update-of-Riven-to-the-latest-version)
- - [Automatic Update of Zurg to the latest version](https://github.com/I-am-PUID-0/DMB/wiki#automatic-update-of-zurg-to-the-latest-version)
- - [Version selection of Zurg to the user-defined version](https://github.com/I-am-PUID-0/DMB/wiki#version-selection-of-zurg-to-the-user-defined-version)
- - [Branch selection of Riven to the user-defined branch](https://github.com/I-am-PUID-0/DMB/wiki#riven-branch)
- - [Use of .env file for setting environment variables](https://github.com/I-am-PUID-0/DMB/wiki#use-of-env-file-for-setting-environment-variables)
- - [Use of Docker Secret file for setting sensitive variables](https://github.com/I-am-PUID-0/DMB#docker-secrets)
- - [Duplicate Cleanup](https://github.com/I-am-PUID-0/DMB/wiki#duplicate-cleanup) 
- - [NFS Server for rclone](https://github.com/I-am-PUID-0/DMB/wiki/Features#rclone-nfs-server) 
- - [Zurg username and password configuration](https://github.com/I-am-PUID-0/DMB/wiki/Features#zurg_user--zurg_pass)
+
+See the DMB [Wiki](https://github.com/I-am-PUID-0/DMB/wiki) for a full list of features and settings
+
+
 
 ## Docker Hub
 A prebuilt image is hosted on [docker hub](https://hub.docker.com/r/iampuid0/dmb) 
+
+
 
 ## GitHub Container Registry
 A prebuilt image is hosted on [GitHub Container Registry](https://github.com/I-am-PUID-0/DMB/pkgs/container/DMB)
@@ -150,19 +145,6 @@ docker build -t your-image-name https://github.com/I-am-PUID-0/DMB.git
 ```
 
 
-
-## SEERR Integration
-
-To enable Overseerr integration via environment variables with Riven, the following are required: SEERR_API_KEY, SEERR_ADDRESS - Alternatively, the Riven Web UI can be used to configure the Overseerr integration.
-
-
-## Automatic Updates
-If you would like to enable automatic updates for Riven, utilize the ```RIVEN_UPDATE``` environment variable. 
-Additional details can be found in the [DMB Wiki](https://github.com/I-am-PUID-0/DMB/wiki#automatic-update-of-Riven-to-the-latest-version)
-
-If you would like to enable automatic updates for Zurg, utilize the ```ZURG_UPDATE``` environment variable. 
-Additional details can be found in the [DMB Wiki](https://github.com/I-am-PUID-0/DMB/wiki#automatic-update-of-zurg-to-the-latest-version)
-
 ## Environment Variables
 
 To customize some properties of the container, the following environment
@@ -207,6 +189,7 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`NFS_PORT`| The port to be used for the rclone NFS server | `random ` | :heavy_check_mark:| | |
 
 
+
 ## Data Volumes
 
 The following table describes the data volumes used by the container.  The mappings
@@ -222,6 +205,8 @@ format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 |`/zurg/AD`| rw | This is where Zurg will store the active configuration and data for AllDebrid. Not required when only utilizing Riven   |
 |`/riven/data`| rw | This is where Riven will store its data. Not required when only utilizing Zurg   |
 |`/riven/mnt`| rw | This is where Riven will set its symlinks. Not required when only utilizing Zurg   |
+
+
 
 ## Docker Secrets
 
@@ -271,15 +256,21 @@ secrets:
 ```
 
 
+
 ## TODO
 
 See the [DMB roadmap](https://github.com/users/I-am-PUID-0/projects/6) for a list of planned features and enhancements.
+
+
 
 ## Deployment
 
 DMB allows for the simultaneous or individual deployment of Riven and/or Zurg w/ rclone
 
 For additional details on deployment, see the [DMB Wiki](https://github.com/I-am-PUID-0/DMB/wiki/Setup-Guides#deployment-options)
+
+
+
 ## Community
 
 ### DMB
