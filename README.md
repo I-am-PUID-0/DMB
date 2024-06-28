@@ -99,6 +99,8 @@ services:
      # - DMB_LOG_COUNT=2
     # Example to attach to gluetun vpn container if realdebrid blocks IP address 
     # network_mode: container:gluetun  
+    ports:
+      - "3000:3000"
     devices:
       - /dev/fuse:/dev/fuse:rwm
     cap_add:
@@ -125,6 +127,8 @@ services:
       - /DMB/Riven/mnt:/mnt  # Riven symlink location from DMB must be shared to Plex container. Add to plex library    
     environment:
       - TZ=${TZ}
+    ports:
+      - "32400:32400"
 ```
 
 ## 🔨 Docker Build
