@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [1.0.3] - 2024-16-07
+
+### Fixed
+
+- Rclone: Fixed WebDAV URL check for Zurg startup processes when Zurg user and password are set in config.yml
+
+
 ## Version [1.0.2] - 2024-16-07
 
 ### Fixed

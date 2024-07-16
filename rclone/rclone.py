@@ -24,10 +24,18 @@ def obscure_password(password):
 
 def wait_for_url(url, endpoint="/dav/", timeout=600):
     start_time = time.time()
-    logger.info(f"Waiting to start the rclone process until the Zurg WebDAV {url}{endpoint} is accessible.")    
+    logger.info(f"Waiting to start the rclone process until the Zurg WebDAV {url}{endpoint} is accessible.")
+    auth = None
+    if 'ZURGUSER' in globals() and 'ZURGPASS' in globals() and ZURGUSER and ZURGPASS:
+        auth = (ZURGUSER, ZURGPASS)
+        
     while time.time() - start_time < timeout:
         try:
-            response = requests.get(f"{url}{endpoint}")
+            if auth:
+                response = requests.get(f"{url}{endpoint}", auth=auth)
+            else:
+                response = requests.get(f"{url}{endpoint}")
+            
             if response.status_code == 207:
                 logger.debug(f"Zurg WebDAV {url}{endpoint} is accessible.")
                 return True
@@ -36,6 +44,7 @@ def wait_for_url(url, endpoint="/dav/", timeout=600):
         except requests.ConnectionError as e:
             logger.debug(f"Connection error while waiting for the Zurg WebDAV {url}{endpoint} to be accessible: {e}")
         time.sleep(5)
+    
     logger.error(f"Timeout: Zurg WebDAV {url}{endpoint} is not accessible after {timeout} seconds.")
     return False
 
