@@ -9,7 +9,7 @@ from update import auto_update
 def main():
     logger = get_logger()
 
-    version = '1.0.0'
+    version = '1.0.1'
 
     ascii_art = f'''
                                                                        

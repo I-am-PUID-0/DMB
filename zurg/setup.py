@@ -120,7 +120,8 @@ def zurg_setup():
             else:    
                 port = random.randint(9001, 9999)
                 logger.debug(f"Selected port {port} for Zurg w/ {key_type} instance")
-                update_port(config_file_path, port)       
+                update_port(config_file_path, port)
+                
                             
             if ZURGUSER and ZURGPASS:
                 update_creds(config_file_path, ZURGUSER, ZURGPASS)

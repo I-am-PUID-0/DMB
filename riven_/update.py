@@ -8,6 +8,10 @@ class RivenUpdate(BaseUpdate):
         self.backend_process = None
 
     def start_process(self, process_name, config_dir=None):
+        directory = f"/data/{RCLONEMN}/__all__"         
+        while not os.path.exists(directory):
+            self.logger.info(f"Waiting for symlink directory {directory} to become available before starting Riven")
+            time.sleep(10)       
         if process_name == 'Riven_frontend':
             command = ["node", "build"]
             config_dir = "./riven/frontend"

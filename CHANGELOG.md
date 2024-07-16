@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [1.0.1] - 2024-16-07
+
+### Fixed
+
+- DMB: Introduced a Riven startup check for the symlinked directory to ensure the Zurg startup processes have finished before starting Riven
+- DMB: Introduced a Rclone startup check for the Zurg WebDAV URL to ensure the Zurg startup processes have finished before starting Rclone
+
+
 ## Version [1.0.0] - 2024-25-06
 
 ### Breaking Changes

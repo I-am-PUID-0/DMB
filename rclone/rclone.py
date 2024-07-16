@@ -11,7 +11,7 @@ def get_port_from_config(config_file_path, key_type):
                     return port
     except Exception as e:
         logger.error(f"Error reading port from config file: {e}")
-    return '9999'  
+    return '9999'
 
 def obscure_password(password):
     """Obscure the password using rclone."""
@@ -19,12 +19,29 @@ def obscure_password(password):
         result = subprocess.run(["rclone", "obscure", password], check=True, stdout=subprocess.PIPE)
         return result.stdout.decode().strip()
     except subprocess.CalledProcessError as e:
-        print("Error obscuring password:", e)
+        logger.error(f"Error obscuring password: {e}")
         return None
+
+def wait_for_url(url, endpoint="/dav/", timeout=600):
+    start_time = time.time()
+    logger.info(f"Waiting to start the rclone process until the Zurg WebDAV {url}{endpoint} is accessible.")    
+    while time.time() - start_time < timeout:
+        try:
+            response = requests.get(f"{url}{endpoint}")
+            if response.status_code == 207:
+                logger.debug(f"Zurg WebDAV {url}{endpoint} is accessible.")
+                return True
+            else:
+                logger.debug(f"Received status code {response.status_code} while waiting for {url}{endpoint} to be accessible.")
+        except requests.ConnectionError as e:
+            logger.debug(f"Connection error while waiting for the Zurg WebDAV {url}{endpoint} to be accessible: {e}")
+        time.sleep(5)
+    logger.error(f"Timeout: Zurg WebDAV {url}{endpoint} is not accessible after {timeout} seconds.")
+    return False
 
 def setup():
     logger.info("Checking rclone flags")
- 
+
     try:
         if not RCLONEMN:
             raise Exception("Please set a name for the rclone mount")
@@ -84,25 +101,33 @@ def setup():
             logger.info(f"Configuring rclone for {mn}")
             subprocess.run(["umount", f"/data/{mn}"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             os.makedirs(f"/data/{mn}", exist_ok=True)
+
             if NFSMOUNT is not None and NFSMOUNT.lower() == "true":
                 if NFSPORT:
-                    port = NFSPORT                    
+                    port = NFSPORT
                     logger.info(f"Setting up rclone NFS mount server for {mn} at 0.0.0.0:{port}")
                     rclone_command = ["rclone", "serve", "nfs", f"{mn}:", "--config", "/config/rclone.config", "--addr", f"0.0.0.0:{port}", "--vfs-cache-mode=full", "--dir-cache-time=10"]
-                else: 
-                    port = random.randint(8001, 8999)                    
+                else:
+                    port = random.randint(8001, 8999)
                     logger.info(f"Setting up rclone NFS mount server for {mn} at 0.0.0.0:{port}")
-                    rclone_command = ["rclone", "serve", "nfs", f"{mn}:", "--config", "/config/rclone.config", "--addr", f"0.0.0.0:{port}", "--vfs-cache-mode=full", "--dir-cache-time=10"]                    
+                    rclone_command = ["rclone", "serve", "nfs", f"{mn}:", "--config", "/config/rclone.config", "--addr", f"0.0.0.0:{port}", "--vfs-cache-mode=full", "--dir-cache-time=10"]
             else:
                 rclone_command = ["rclone", "mount", f"{mn}:", f"/data/{mn}", "--config", "/config/rclone.config", "--allow-other", "--poll-interval=0", "--dir-cache-time=10"]
             if not RIVEN or idx != len(mount_names) - 1:
                 rclone_command.append("--daemon")
-    
-            logger.info(f"Starting rclone{' daemon' if '--daemon' in rclone_command else ''} for {mn}")
-            process_name = "rclone"
-            subprocess_logger = SubprocessLogger(logger, process_name)
-            process = subprocess.Popen(rclone_command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-            subprocess_logger.start_monitoring_stderr(process, mn, process_name)
+
+            url = f"http://localhost:{rd_port if mn == RCLONEMN_RD else ad_port}"
+            if os.path.exists(f"/healthcheck/{mn}"):
+                os.rmdir(f"/healthcheck/{mn}")
+            if wait_for_url(url):
+                os.makedirs(f"/healthcheck/{mn}") # makdir for healthcheck. Don't like it, but it works for now...
+                logger.info(f"The Zurg WebDAV URL {url}/dav is accessible. Starting rclone{' daemon' if '--daemon' in rclone_command else ''} for {mn}")
+                process_name = "rclone"
+                subprocess_logger = SubprocessLogger(logger, process_name)
+                process = subprocess.Popen(rclone_command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+                subprocess_logger.start_monitoring_stderr(process, mn, process_name)
+            else:
+                logger.error(f"The Zurg WebDav URL {url}/dav is not accessible within the timeout period. Skipping rclone setup for {mn}")
 
         logger.info("rclone startup complete")
 

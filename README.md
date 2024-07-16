@@ -83,6 +83,7 @@ services:
       ## Riven Required Settings
       - RIVEN_ENABLED=true
       - ORIGIN=http://0.0.0.0:3000 # See Riven documentation for more details
+      - BACKEND_URL=http://127.0.0.1:8080 # Required to be left as is
       ## Riven Optional Settings
      # - PLEX_TOKEN=
      # - PLEX_ADDRESS=
