@@ -103,7 +103,8 @@ jobs:
           VERSION: ${{ needs.build-and-push.outputs.version }}
         run: |
           RELEASE_NOTES=$(awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md)
-          ANNOUNCEMENT_BODY="🚀 **New Release: ${{ env.VERSION }}**\n\n${RELEASE_NOTES}\n\nDownload the release [here](https://github.com/${{ github.repository }}/releases/tag/${{ env.VERSION }})."
+          ANNOUNCEMENT_BODY="🚀 **New Release: ${{ env.VERSION }}**\n\n${RELEASE_NOTES}\n\n[Download the release](https://github.com/${{ github.repository }}/releases/tag/${{ env.VERSION }})"
+          ESCAPED_BODY=$(echo "$ANNOUNCEMENT_BODY" | jq -Rsa .)
           curl -H "Content-Type: application/json" \
-               -d "{\"content\": \"${ANNOUNCEMENT_BODY}\"}" \
+               -d "{\"content\": ${ESCAPED_BODY}}" \
                $DISCORD_WEBHOOK_URL
