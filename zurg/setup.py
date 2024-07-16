@@ -10,13 +10,12 @@ def zurg_setup():
     zurg_config_base = '/zurg/config.yml'
   
     try:
-        if ZURGLOGLEVEL is not None:    # Needs addtional testing
+        if ZURGLOGLEVEL is not None:    # Needs additional testing
             os.environ['LOG_LEVEL'] = ZURGLOGLEVEL
             LOGLEVEL = os.environ.get('LOG_LEVEL')
-        #    logger.debug(f"'LOG_LEVEL' set to '{LOGLEVEL}' based on 'ZURG_LOG_LEVEL'")
-        #else:
-        #    logger.info("'ZURG_LOG_LEVEL' not set. Default log level INFO will be used for Zurg.")
-
+            # logger.debug(f"'LOG_LEVEL' set to '{LOGLEVEL}' based on 'ZURG_LOG_LEVEL'")
+        # else:
+            # logger.info("'ZURG_LOG_LEVEL' not set. Default log level INFO will be used for Zurg.")
     except Exception as e:
         logger.error(f"Error setting Zurg log level from 'ZURG_LOG_LEVEL': {e}")
 
@@ -30,7 +29,7 @@ def zurg_setup():
                     file.write("# on_library_update:\n")
                 else:
                     file.write(line)
-                    
+
     def update_token(file_path, token):
         logger.debug(f"Updating token in config file: {file_path}")
         with open(file_path, 'r') as file:
@@ -52,20 +51,27 @@ def zurg_setup():
                     file.write(f"port: {port}\n")
                 else:
                     file.write(line)
-                    
+
     def update_creds(file_path, zurguser, zurgpass):
         logger.debug(f"Updating username and password in config file: {file_path}")
         with open(file_path, 'r') as file:
             lines = file.readlines()
-
         with open(file_path, 'w') as file:
             for line in lines:
-                if line.strip().startswith("username:") or line.strip().startswith("# username:"):
-                    file.write(f"username: {zurguser}\n")
-                elif line.strip().startswith("password:") or line.strip().startswith("# password:"):
-                    file.write(f"password: {zurgpass}\n")
+                if zurguser and zurgpass:
+                    if line.strip().startswith("username:") or line.strip().startswith("# username:"):
+                        file.write(f"username: {zurguser}\n")
+                    elif line.strip().startswith("password:") or line.strip().startswith("# password:"):
+                        file.write(f"password: {zurgpass}\n")
+                    else:
+                        file.write(line)
                 else:
-                    file.write(line)                     
+                    if line.strip().startswith("username:"):
+                        file.write("# username:\n")
+                    elif line.strip().startswith("password:"):
+                        file.write("# password:\n")
+                    else:
+                        file.write(line)
 
     def check_and_set_zurg_version(dir_path):
         zurg_binary_path = os.path.join(dir_path, 'zurg')
@@ -86,7 +92,7 @@ def zurg_setup():
             version_check()
 
     def setup_zurg_instance(config_dir, token, key_type):
-        try:    
+        try:
             zurg_executable_path = os.path.join(config_dir, 'zurg')
             config_file_path = os.path.join(config_dir, 'config.yml')
             logger.info(f"Preparing Zurg instance for {key_type}")
@@ -122,10 +128,8 @@ def zurg_setup():
                 logger.debug(f"Selected port {port} for Zurg w/ {key_type} instance")
                 update_port(config_file_path, port)
                 
-                            
-            if ZURGUSER and ZURGPASS:
-                update_creds(config_file_path, ZURGUSER, ZURGPASS)
-               
+            update_creds(config_file_path, ZURGUSER, ZURGPASS if ZURGUSER and ZURGPASS else None)
+            
             os.environ[f'ZURG_PORT_{key_type}'] = str(port)       
             logger.debug(f"Zurg w/ {key_type} instance configured to port: {port}")
             
@@ -133,7 +137,7 @@ def zurg_setup():
             update_plex(config_file_path)
             
         except Exception as e:
-            raise Exception(f"Error setting up Zurg instance for {key_type}: {e}")        
+            raise Exception(f"Error setting up Zurg instance for {key_type}: {e}")
 
     try:
         if not RDAPIKEY and not ADAPIKEY:
@@ -165,4 +169,3 @@ def zurg_setup():
 
 if __name__ == "__main__":
     zurg_setup()
-
