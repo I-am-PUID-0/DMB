@@ -1,4 +1,5 @@
 from base import *
+from utils.logger import *
 
 
 logger = get_logger()

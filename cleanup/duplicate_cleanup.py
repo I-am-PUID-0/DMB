@@ -1,4 +1,5 @@
 from base import *
+from utils.logger import *
 from plexapi.server import PlexServer
 from plexapi import exceptions as plexapi_exceptions
 from requests.exceptions import HTTPError

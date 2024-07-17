@@ -1,5 +1,7 @@
 from base import *
+from utils.logger import *
 from update.auto_update import BaseUpdate
+
 
 class RivenUpdate(BaseUpdate):
     def __init__(self):

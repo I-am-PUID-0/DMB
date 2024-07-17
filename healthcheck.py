@@ -1,4 +1,5 @@
 from base import *
+from utils.logger import *
 
 def check_processes(process_info):
     found_processes = {key: False for key in process_info.keys()}

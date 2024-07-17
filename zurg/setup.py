@@ -1,4 +1,5 @@
 from base import *
+from utils.logger import *
 
 
 def zurg_setup():

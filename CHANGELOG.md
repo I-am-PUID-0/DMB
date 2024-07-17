@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [1.1.0] - 2024-17-07
+
+### Changed
+
+- Rclone: WebDAV URL check for Zurg startup processes accepts any 200 status code as a valid response
+- DMB: Refactored to use common functions under utils 
+
+
 ## Version [1.0.3] - 2024-16-07
 
 ### Fixed

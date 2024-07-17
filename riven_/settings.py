@@ -1,47 +1,38 @@
-from re import DEBUG
 from base import *
+from utils.logger import *
 
 
 logger = get_logger()
 
-try:
-    if os.getenv('DMB_LOG_LEVEL') == DEBUG:
-        os.environ['DEBUG'] = "true"
-except Exception as e:
-    logger.error(f"Error setting debug: {e}")
-try:
-    if os.getenv('RIVEN_LOG_LEVEL') == DEBUG:
-        os.environ['DEBUG'] = "true"
-except Exception as e:
-    logger.error(f"Error setting debug: {e}")    
-try: 
-    if RDAPIKEY:
-        os.environ['DOWNLOADERS_REAL_DEBRID_API_KEY'] = RDAPIKEY  
-except Exception as e:
-    logger.error(f"Error setting downloaders.real_debrid.api.key: {e}")
-try:
-    if PLEXADD:
-        os.environ['PLEX_URL'] = PLEXADD
-except Exception as e:
-    logger.error(f"Error setting plex.url: {e}")
-try: 
-    if SEERRADD:
-        os.environ['CONTENT_OVERSEERR_URL'] = SEERRADD
-except Exception as e:
-    logger.error(f"Error setting content.overseerr.url: {e}")
-try:
-    if SEERRAPIKEY:
-        os.environ['CONTENT_OVERSEERR_API_KEY'] = SEERRAPIKEY
-except Exception as e:
-    logger.error(f"Error setting content.overseerr.api.key: {e}")
-try:
-    os.environ['SYMLINK_RCLONE_PATH'] = f"/data/{RCLONEMN}/__all__"
-except Exception as e:
-    logger.error(f"Error setting symlink.rclone.path: {e}")
-try: 
-    os.environ['SYMLINK_LIBRARY_PATH'] = "/mnt"
-except Exception as e:
-    logger.error(f"Error setting symlink.library.path: {e}")
+def set_debug_level(env_var_name):
+    try:
+        log_level = os.getenv(env_var_name)
+        logger.debug(f"Retrieved log_level: {log_level} for {env_var_name}")
+        if log_level in ['DEBUG', '2']:
+            os.environ['DEBUG'] = "true"
+        else:
+            os.environ['DEBUG'] = "false"
+        logger.debug(f"{env_var_name} set to {log_level}") 
+    except Exception as e:
+        logger.error(f"Error setting debug for {env_var_name}: {e}")
+        
+
+def set_env_variable(key, value):
+    try:
+        if value:
+            os.environ[key] = value
+            logger.debug(f"Successfully set {key}")
+    except Exception as e:
+        logger.error(f"Error setting {key}: {e}")
+env_vars = {
+    'DOWNLOADERS_REAL_DEBRID_API_KEY': RDAPIKEY,
+    'PLEX_URL': PLEXADD,
+    'CONTENT_OVERSEERR_URL': SEERRADD,
+    'CONTENT_OVERSEERR_API_KEY': SEERRAPIKEY,
+    'SYMLINK_RCLONE_PATH': f"/data/{RCLONEMN}/__all__",
+    'SYMLINK_LIBRARY_PATH': "/mnt"
+}
+
 
 def fetch_settings(url, max_retries=5, delay=5):
     time.sleep(delay)
@@ -105,6 +96,11 @@ def update_settings(current_settings, updated_settings, prefix=''):
 
 def load_settings():
     logger.info("Loading Riven settings")
+    for key, value in env_vars.items():
+        set_env_variable(key, value)
+    #set_debug_level('RIVEN_LOG_LEVEL') # An error occurred in the Riven setup: 'bool' object has no attribute 'items'
+    #set_debug_level('DMB_LOG_LEVEL') # An error occurred in the Riven setup: 'bool' object has no attribute 'items'
+       
     try:
         get_url = 'http://127.0.0.1:8080/settings/get/all'
         settings_response = fetch_settings(get_url)

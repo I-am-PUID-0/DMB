@@ -1,4 +1,5 @@
 from base import *
+from utils.logger import *
 import riven_ as r
 import zurg as z 
 from rclone import rclone
@@ -9,7 +10,7 @@ from update import auto_update
 def main():
     logger = get_logger()
 
-    version = '1.0.3'
+    version = '1.1.0'
 
     ascii_art = f'''
                                                                        

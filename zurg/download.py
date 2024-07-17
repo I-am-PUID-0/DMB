@@ -1,4 +1,6 @@
 from base import *
+from utils.logger import *
+from utils.download import download_and_extract, set_permissions
 
 
 logger = get_logger()
@@ -90,18 +92,27 @@ def get_architecture():
     except Exception as e:
         logger.error(f"Error determining system architecture: {e}")
         return 'unknown'
-
+    
 def download_and_unzip_release(repo_owner, repo_name, release_version, architecture):
     try:
         headers = {}
         if GHTOKEN:
             headers['Authorization'] = f'token {GHTOKEN}'
         api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/tags/{release_version}"
+        logger.info(f"Fetching release information from {api_url}")
         response = requests.get(api_url, headers=headers, timeout=10)
+        
         if response.status_code != 200:
             logger.error("Failed to get release assets. Status code: %s", response.status_code)
             return False
+        
         assets = response.json().get('assets', [])
+        logger.debug(f"Assets found: {assets}")
+
+        if not assets:
+            logger.error("No assets found for release.")
+            return False
+
         download_url = ""
         asset_id = None
         for asset in assets:
@@ -109,32 +120,28 @@ def download_and_unzip_release(repo_owner, repo_name, release_version, architect
                 download_url = asset['browser_download_url']
                 asset_id = asset['id']
                 break
+        
         if not asset_id:
             logger.error("No matching asset found for architecture: %s", architecture)
             return False        
+
         download_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/assets/{asset_id}"
         headers['Accept'] = 'application/octet-stream'
-        response = requests.get(download_url, headers=headers, timeout=10)
-        logger.debug("Downloading from URL: %s", download_url)
-        if response.status_code == 200:
-            zip_file = zipfile.ZipFile(io.BytesIO(response.content))
-            zip_file.extractall('zurg')
-            logger.info(f"Download and extraction of zurg-{release_version}-{architecture} successful.")
-            extracted_files = os.listdir('zurg')
-            logger.debug(f"Extracted files: {extracted_files}")           
-            extracted_file_path = os.path.join('zurg', 'zurg')
-            os.chmod(extracted_file_path, 0o755)
-            logger.debug("Set 'zurg' file as executable.")
+        logger.debug(f"Requesting Zurg release from: {download_url}")
+
+        zip_folder_name = f'zurg-{release_version}-{architecture}'
+
+        success, error = download_and_extract(download_url, 'zurg', zip_folder_name=zip_folder_name, headers=headers)
+        if success:
+            set_permissions(os.path.join('zurg', 'zurg'), 0o755)
             os.environ['ZURG_CURRENT_VERSION'] = release_version
+            return True
         else:
-            logger.error("Unable to download the file. Status code: %s", response.status_code)
+            logger.error(f"Error in download and extraction: {error}")
             return False
-        return True
     except Exception as e:
         logger.error(f"Error in download and extraction: {e}")
         return False
-
-
 
 def version_check():
     try:

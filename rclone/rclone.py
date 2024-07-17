@@ -1,4 +1,6 @@
 from base import *
+from utils.logger import *
+
 
 logger = get_logger()
 
@@ -36,8 +38,8 @@ def wait_for_url(url, endpoint="/dav/", timeout=600):
             else:
                 response = requests.get(f"{url}{endpoint}")
             
-            if response.status_code == 207:
-                logger.debug(f"Zurg WebDAV {url}{endpoint} is accessible.")
+            if 200 <= response.status_code < 300:
+                logger.debug(f"Zurg WebDAV {url}{endpoint} is accessible with status code {response.status_code}.")
                 return True
             else:
                 logger.debug(f"Received status code {response.status_code} while waiting for {url}{endpoint} to be accessible.")
