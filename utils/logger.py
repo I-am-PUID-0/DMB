@@ -124,63 +124,155 @@ def time_to_complete(start_time):
         time_string += f"{seconds} second(s)"
     return time_string
 
-class CustomTimedRotatingFileHandler(TimedRotatingFileHandler):
-    def __init__(self, filename, when='h', interval=1, backupCount=0, encoding=None, delay=False, utc=False, atTime=None):
-        self.rollover_filename = filename
-        TimedRotatingFileHandler.__init__(self, self.rollover_filename, when, interval, backupCount, encoding, delay, utc, atTime)
-
+class CustomRotatingFileHandler(BaseRotatingHandler):
+    def __init__(self, filename, when='midnight', interval=1, backupCount=0, maxBytes=0, encoding=None, delay=False, utc=False, atTime=None):
+        self.when = when
+        self.backupCount = backupCount
+        self.maxBytes = maxBytes
+        self.utc = utc
+        self.atTime = atTime
+        self.interval = self.computeInterval(when, interval)
+        self.rolloverAt = self.computeRollover(time.time())
+        self.logger = logging.getLogger('CustomRotatingFileHandler')
+        self.logger.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%b %e, %Y %H:%M:%S')
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
+        if not self.logger.hasHandlers():
+            self.logger.addHandler(stream_handler)               
+        super().__init__(filename, 'a', encoding, delay)
+    
+    def computeInterval(self, when, interval):
+        if when == 'S':
+            return interval
+        elif when == 'M':
+            return interval * 60
+        elif when == 'H':
+            return interval * 60 * 60
+        elif when == 'D' or when == 'midnight':
+            return interval * 60 * 60 * 24
+        elif when.startswith('W'):
+            day = int(when[1])
+            current_day = time.localtime().tm_wday
+            days_to_wait = (day - current_day) % 7
+            return interval * 60 * 60 * 24 * 7 + days_to_wait * 60 * 60 * 24
+        else:
+            raise ValueError("Invalid rollover interval specified: %s" % when)
+    
+    def computeRollover(self, currentTime):
+        if self.when == 'midnight':
+            t = time.localtime(currentTime)
+            current_hour = t.tm_hour
+            current_minute = t.tm_min
+            current_second = t.tm_sec
+            seconds_until_midnight = ((24 - current_hour - 1) * 3600) + ((60 - current_minute - 1) * 60) + (60 - current_second)
+            rollover_time = currentTime + seconds_until_midnight + 1
+        else:
+            rollover_time = currentTime + self.interval        
+        return rollover_time
+    
+    def shouldRollover(self, record):
+        if self.stream is None:  
+            self.stream = self._open()
+        if self.maxBytes > 0:  
+            self.stream.seek(0, 2)  
+            if self.stream.tell() + len(self.format(record)) >= self.maxBytes:
+                return 1
+        t = int(time.time())
+        if t >= self.rolloverAt:
+            return 1
+        return 0
+    
     def doRollover(self):
+        self.logger.debug("Performing rollover")
         if self.stream:
             self.stream.close()
-            self.stream = None
-
-        base_file_name_without_date = self.baseFilename.rsplit('-', 3)[0]
-        current_date = time.strftime("%Y-%m-%d")
-        correct_filename = base_file_name_without_date + '-' + current_date + '.log'
-
-        if self.rollover_filename != correct_filename:
-            new_filename = correct_filename
+        current_time = int(time.time())
+        base_filename_with_path, ext = os.path.splitext(self.baseFilename)
+        base_filename = os.path.basename(base_filename_with_path)
+        dir_name = os.path.dirname(base_filename_with_path)    
+        match = re.search(r'(\d{4}-\d{2}-\d{2})', base_filename)
+        if match:
+            base_date = match.group(1)
         else:
-            new_filename = self.rollover_filename
-
-        filenames_to_delete = self.getFilesToDelete()
-        for filename in filenames_to_delete:
-            os.remove(filename)
-
-        self.rollover_filename = new_filename
-        self.baseFilename = self.rollover_filename
-        self.stream = self._open()
-
-        new_rollover_at = self.computeRollover(self.rolloverAt)
-        while new_rollover_at <= time.time():
-            new_rollover_at = new_rollover_at + self.interval
-        if self.utc:
-            dst_at_rollover = time.localtime(new_rollover_at)[-1]
+            base_date = None
+        current_date = time.strftime("%Y-%m-%d", time.localtime(current_time))   
+        if base_date:
+            base_filename_without_date = base_filename.replace(f"-{base_date}", "")
         else:
-            dst_at_rollover = time.gmtime(new_rollover_at)[-1]
+            base_filename_without_date = base_filename    
+        for i in range(self.backupCount - 1, 0, -1):
+            sfn = os.path.join(dir_name, f"{base_filename_without_date}-{base_date}_{i}.log" if base_date else f"{base_filename_without_date}_{i}.log")
+            dfn = os.path.join(dir_name, f"{base_filename_without_date}-{base_date}_{i + 1}.log" if base_date else f"{base_filename_without_date}_{i + 1}.log")
+            if os.path.exists(sfn):
+                self.logger.debug(f"Renaming {sfn} to {dfn}")
+                if os.path.exists(dfn):
+                    os.remove(dfn)
+                os.rename(sfn, dfn)   
+        dfn = os.path.join(dir_name, f"{base_filename_without_date}-{base_date}_1.log" if base_date else f"{base_filename_without_date}_1.log")
+        self.logger.debug(f"Renaming {self.baseFilename} to {dfn}")
+        if os.path.exists(dfn):
+            os.remove(dfn)
+        os.rename(self.baseFilename, dfn)    
+        if self.backupCount > 0:
+            files_to_delete = self.getFilesToDelete(base_filename_without_date)
+            for s in files_to_delete:
+                self.logger.debug(f"Deleting old log file {s}")
+                os.remove(s)
+        new_log_filename = os.path.join(dir_name, f"{base_filename_without_date}-{current_date}.log")
+        self.baseFilename = new_log_filename
+        if not self.delay:
+            self.stream = self._open()
+        self.rolloverAt = self.computeRollover(current_time)
 
-        if time.localtime(time.time())[-1] != dst_at_rollover:
-            addend = -3600 if time.localtime(time.time())[-1] else 3600
-            new_rollover_at += addend
-        self.rolloverAt = new_rollover_at
-
-    def getFilesToDelete(self):
-        dirName, baseName = os.path.split(self.baseFilename)
-        fileNames = os.listdir(dirName)
+    def getFilesToDelete(self, base_filename):
+        dir_name = os.path.dirname(self.baseFilename)
+        file_names = os.listdir(dir_name)
         result = []
-        prefix = baseName.split('-', 1)[0] + "-"
-        plen = len(prefix)
-        for fileName in fileNames:
-            if fileName[:plen] == prefix:
-                suffix = fileName[plen:]
-                if re.compile(r"^\d{4}-\d{2}-\d{2}.log$").match(suffix):
-                    result.append(os.path.join(dirName, fileName))
-        result.sort()
-        if len(result) < self.backupCount:
-            result = []
+        base_filename_without_date = re.sub(r'-\d{4}-\d{2}-\d{2}', '', os.path.basename(base_filename))
+        base_filename_pattern = re.escape(base_filename_without_date) + r"-\d{4}-\d{2}-\d{2}(_\d+)?\.log$"
+        self.logger.debug(f"Base filename pattern: {base_filename_pattern}")
+        pattern = re.compile(base_filename_pattern)
+        for file_name in file_names:
+            self.logger.debug(f"Checking file: {file_name}")
+            if pattern.match(file_name):
+                self.logger.debug(f"Matched file: {file_name}")
+                result.append(os.path.join(dir_name, file_name))
+        result.sort(key=lambda x: (self.extract_date(x), self.extract_index(x)))
+        self.logger.debug(f"Files considered for deletion: {result}")
+        if len(result) <= self.backupCount:
+            return []
         else:
-            result = result[:len(result) - self.backupCount]
-        return result
+            files_to_delete = result[:len(result) - self.backupCount]
+            self.logger.debug(f"Files to delete: {files_to_delete}")
+            return files_to_delete
+
+    @staticmethod
+    def extract_date(file_path):
+        file_name = os.path.basename(file_path)
+        match = re.search(r"(\d{4}-\d{2}-\d{2})", file_name)
+        if match:
+            return match.group(1)
+        return "9999-99-99"
+
+    @staticmethod
+    def extract_index(file_path):
+        file_name = os.path.basename(file_path)
+        match = re.search(r"_(\d+)\.log$", file_name)
+        if match:
+            return int(match.group(1))
+        return 0
+
+def parse_size(size_str):
+    size_str = size_str.strip().upper()
+    if size_str.endswith('K'):
+        return int(size_str[:-1]) * 1024
+    elif size_str.endswith('M'):
+        return int(size_str[:-1]) * 1024 * 1024
+    elif size_str.endswith('G'):
+        return int(size_str[:-1]) * 1024 * 1024 * 1024
+    else:
+        return int(size_str)
 
 def get_logger(log_name='DMB', log_dir='./log'):
     current_date = time.strftime("%Y-%m-%d")
@@ -194,20 +286,24 @@ def get_logger(log_name='DMB', log_dir='./log'):
     log_level_env = os.getenv('DMB_LOG_LEVEL')
     if log_level_env:
         log_level = log_level_env.upper()
-        os.environ['LOG_LEVEL'] = log_level
-        os.environ['RCLONE_LOG_LEVEL'] = log_level
     else:
         log_level = 'INFO'
-    numeric_level = getattr(logging, log_level, logging.INFO)
-    logger.setLevel(numeric_level)
+    numeric_level = getattr(logging, log_level, logging.INFO)   
+    logger.setLevel(numeric_level)  
+    max_log_size_env = os.getenv('DMB_LOG_SIZE')
+    try:
+        max_log_size = parse_size(max_log_size_env) if max_log_size_env else 10 * 1024 * 1024
+    except (ValueError, TypeError):
+        max_log_size = 10 * 1024 * 1024
+    
     log_path = os.path.join(log_dir, log_filename)
-    handler = CustomTimedRotatingFileHandler(log_path, when="midnight", interval=1, backupCount=backupCount)
+    handler = CustomRotatingFileHandler(log_path, when="midnight", interval=1, backupCount=backupCount, maxBytes=max_log_size)
     os.chmod(log_path, 0o666)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%b %e, %Y %H:%M:%S')
     handler.setFormatter(formatter)
     stdout_handler = logging.StreamHandler(sys.stdout)
     stdout_handler.setFormatter(formatter)
-
+    
     for hdlr in logger.handlers[:]:
         logger.removeHandler(hdlr)
     logger.addHandler(handler)

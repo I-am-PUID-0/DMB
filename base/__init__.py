@@ -3,7 +3,7 @@ from token import RBRACE
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime, timedelta
 import logging
-from logging.handlers import TimedRotatingFileHandler
+from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler, BaseRotatingHandler
 from packaging.version import Version, parse as parse_version
 import time
 import os

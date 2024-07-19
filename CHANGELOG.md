@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [1.2.0] - 2024-19-07
+
+### Added
+
+- [Issue #18](https://github.com/I-am-PUID-0/DMB/issues/18): Added DMB_LOG_SIZE environment variable to set the maximum size of the log file; Default is 10MB
+
+
 ## Version [1.1.0] - 2024-17-07
 
 ### Changed
