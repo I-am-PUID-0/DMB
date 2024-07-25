@@ -1,9 +1,9 @@
 from base import *
 from utils.logger import *
-from utils.download import download_and_extract, set_permissions
-
+from utils.download import Downloader
 
 logger = get_logger()
+downloader = Downloader()
 
 class CustomVersion:
     def __init__(self, main_version, hotfix=0, subversion=''):
@@ -50,90 +50,30 @@ def parse_custom_version(version_str):
         return None
 
 def get_latest_release(repo_owner, repo_name):
-    try:
-        logger.info("Fetching latest Zurg release.")
-        headers = {}
-        if GHTOKEN:
-            headers['Authorization'] = f'token {GHTOKEN}'
-        api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
-        response = requests.get(api_url, headers=headers, timeout=10)
-        if response.status_code != 200:
-            logger.error("Unable to access the repository API. Status code: %s", response.status_code)
-            return None, "Error: Unable to access the repository API."
-        latest_release = response.json()
-        version_tag = latest_release['tag_name']
-        logger.info("Zurg latest release: %s", version_tag)
-        return version_tag, None
-    except Exception as e:
-        logger.error(f"Error fetching latest Zurg release: {e}")
-        return None, str(e)
+    return downloader.get_latest_release(repo_owner, repo_name)
 
 def get_architecture():
-    try:
-        arch_map = {
-            ('AMD64', 'Windows'): 'windows-amd64',
-            ('AMD64', 'Linux'): 'linux-amd64',
-            ('AMD64', 'Darwin'): 'darwin-amd64',
-            ('x86_64', 'Linux'): 'linux-amd64',  
-            ('x86_64', 'Darwin'): 'darwin-amd64', 
-            ('arm64', 'Linux'): 'linux-arm64',
-            ('arm64', 'Darwin'): 'darwin-arm64',
-            ('aarch64', 'Linux'): 'linux-arm64',  
-            ('mips64', 'Linux'): 'linux-mips64',
-            ('mips64le', 'Linux'): 'linux-mips64le',
-            ('ppc64le', 'Linux'): 'linux-ppc64le',
-            ('riscv64', 'Linux'): 'linux-riscv64',
-            ('s390x', 'Linux'): 'linux-s390x',
-        }
-        system_arch = platform.machine()
-        system_os = platform.system()
-        logger.debug("System Architecture: %s, Operating System: %s", system_arch, system_os)
-        return arch_map.get((system_arch, system_os), 'unknown')
-    except Exception as e:
-        logger.error(f"Error determining system architecture: {e}")
-        return 'unknown'
+    return downloader.get_architecture()
     
 def download_and_unzip_release(repo_owner, repo_name, release_version, architecture):
     try:
         headers = {}
         if GHTOKEN:
-            headers['Authorization'] = f'token {GHTOKEN}'
-        api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/tags/{release_version}"
-        logger.info(f"Fetching release information from {api_url}")
-        response = requests.get(api_url, headers=headers, timeout=10)
-        
-        if response.status_code != 200:
-            logger.error("Failed to get release assets. Status code: %s", response.status_code)
-            return False
-        
-        assets = response.json().get('assets', [])
-        logger.debug(f"Assets found: {assets}")
-
-        if not assets:
-            logger.error("No assets found for release.")
-            return False
-
-        download_url = ""
-        asset_id = None
-        for asset in assets:
-            if architecture in asset['name']:
-                download_url = asset['browser_download_url']
-                asset_id = asset['id']
-                break
-        
-        if not asset_id:
-            logger.error("No matching asset found for architecture: %s", architecture)
+            headers['Authorization'] = f'token {GHTOKEN}'           
+        release_info, error = downloader.fetch_github_release_info(repo_owner, repo_name, release_version, headers)        
+        if error:
+            logger.error(error)
             return False        
-
+        download_url, asset_id = downloader.find_asset_download_url(release_info, architecture)        
+        if not download_url:
+            return False        
         download_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/assets/{asset_id}"
         headers['Accept'] = 'application/octet-stream'
-        logger.debug(f"Requesting Zurg release from: {download_url}")
-
+        logger.debug(f"Requesting {repo_name} release {release_version} from: {download_url}")
         zip_folder_name = f'zurg-{release_version}-{architecture}'
-
-        success, error = download_and_extract(download_url, 'zurg', zip_folder_name=zip_folder_name, headers=headers)
+        success, error = downloader.download_and_extract(download_url, 'zurg', zip_folder_name=zip_folder_name, headers=headers)
         if success:
-            set_permissions(os.path.join('zurg', 'zurg'), 0o755)
+            downloader.set_permissions(os.path.join('zurg', 'zurg'), 0o755)
             os.environ['ZURG_CURRENT_VERSION'] = release_version
             return True
         else:
@@ -142,6 +82,7 @@ def download_and_unzip_release(repo_owner, repo_name, release_version, architect
     except Exception as e:
         logger.error(f"Error in download and extraction: {e}")
         return False
+
 
 def version_check():
     try:

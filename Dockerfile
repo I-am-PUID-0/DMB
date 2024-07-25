@@ -13,7 +13,7 @@ ENV \
   TERM=xterm
 
 RUN \
-  apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base linux-headers py3-cffi libffi-dev rust cargo openssl openssl-dev pkgconfig git npm && \
+  apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base linux-headers py3-cffi libffi-dev rust cargo openssl openssl-dev pkgconfig git npm ffmpeg && \
   mkdir /log && \
   python3 -m venv /venv && \
   source /venv/bin/activate && \

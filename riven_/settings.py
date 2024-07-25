@@ -17,21 +17,38 @@ def set_debug_level(env_var_name):
         logger.error(f"Error setting debug for {env_var_name}: {e}")
         
 
-def set_env_variable(key, value):
-    try:
-        if value:
-            os.environ[key] = value
-            logger.debug(f"Successfully set {key}")
-    except Exception as e:
-        logger.error(f"Error setting {key}: {e}")
-env_vars = {
-    'DOWNLOADERS_REAL_DEBRID_API_KEY': RDAPIKEY,
-    'PLEX_URL': PLEXADD,
-    'CONTENT_OVERSEERR_URL': SEERRADD,
-    'CONTENT_OVERSEERR_API_KEY': SEERRAPIKEY,
-    'SYMLINK_RCLONE_PATH': f"/data/{RCLONEMN}/__all__",
-    'SYMLINK_LIBRARY_PATH': "/mnt"
-}
+def set_env_variables():
+    def set_env_variable(key, value, default=None):
+        try:
+            if value is not None:
+                os.environ[key] = value
+            elif default is not None and key not in os.environ:
+                os.environ[key] = default
+            if key in os.environ:
+                logger.debug(f"Successfully set {key} to {os.environ[key]}")
+            else:
+                logger.debug(f"{key} not set because no value or default was provided")
+        except Exception as e:
+            logger.error(f"Error setting {key}: {e}")
+
+    env_vars = {
+        'DOWNLOADERS_REAL_DEBRID_API_KEY': RDAPIKEY,
+        'PLEX_URL': PLEXADD,
+        'CONTENT_OVERSEERR_URL': SEERRADD,
+        'CONTENT_OVERSEERR_API_KEY': SEERRAPIKEY,
+        'SYMLINK_RCLONE_PATH': f"/data/{RCLONEMN}/__all__",
+        'SYMLINK_LIBRARY_PATH': "/mnt",
+        'BACKEND_URL': BACKENDURL,
+        'RIVEN_DATABASE_HOST': RIVENDATABASEHOST
+    }
+
+    default_env_vars = {
+        'RIVEN_DATABASE_HOST': 'sqlite:////riven/backend/data/media.db',
+        'BACKEND_URL': 'http://127.0.0.1:8080'
+    }
+
+    for key, value in env_vars.items():
+        set_env_variable(key, value, default_env_vars.get(key))
 
 
 def fetch_settings(url, max_retries=5, delay=5):
@@ -96,8 +113,8 @@ def update_settings(current_settings, updated_settings, prefix=''):
 
 def load_settings():
     logger.info("Loading Riven settings")
-    for key, value in env_vars.items():
-        set_env_variable(key, value)
+    
+    set_env_variables()
     #set_debug_level('RIVEN_LOG_LEVEL') # An error occurred in the Riven setup: 'bool' object has no attribute 'items'
     #set_debug_level('DMB_LOG_LEVEL') # An error occurred in the Riven setup: 'bool' object has no attribute 'items'
        

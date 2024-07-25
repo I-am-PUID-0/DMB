@@ -7,3 +7,4 @@ requests
 packaging
 ruamel.yaml
 poetry
+colorlog

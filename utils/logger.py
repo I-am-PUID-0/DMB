@@ -4,6 +4,9 @@ from base import *
 class SubprocessLogger:
     def __init__(self, logger, key_type):
         self.logger = logger
+        self.stdout_thread = None
+        self.stderr_thread = None
+        self.stop_event = threading.Event()        
         self.key_type = key_type
         self.log_methods = {
             'DEBUG': logger.debug,
@@ -45,12 +48,14 @@ class SubprocessLogger:
                 log_level, message = SubprocessLogger.parse_log_level_and_message(line, process_name)
                 log_func = self.log_methods.get(log_level, self.logger.info)
                 if process_name == 'rclone':
-                    log_func(f"rclone mount name \"{mount_name}\": {message}") 
+                    log_func(f"rclone mount name \"{mount_name}\": {message}")
                 else:
                     log_func(f"{process_name}: {message}")
 
     def start_monitoring_stderr(self, process, mount_name, process_name):
-        threading.Thread(target=self.monitor_stderr, args=(process, mount_name, process_name)).start()
+        self.stderr_thread = threading.Thread(target=self.monitor_stderr, args=(process, mount_name, process_name))
+        self.stderr_thread.daemon = True
+        self.stderr_thread.start()
 
     def log_subprocess_output(self, pipe):
         try:
@@ -67,9 +72,19 @@ class SubprocessLogger:
             self.logger.error(f"Error reading subprocess output for {self.key_type}: {e}")
 
     def start_logging_stdout(self, process):
-        log_thread = threading.Thread(target=self.log_subprocess_output, args=(process.stdout,))
-        log_thread.daemon = True
-        log_thread.start()
+        self.stdout_thread = threading.Thread(target=self.log_subprocess_output, args=(process.stdout,))
+        self.stdout_thread.daemon = True
+        self.stdout_thread.start()
+
+    def stop_logging_stdout(self):
+        if self.stdout_thread:
+            self.stop_event.set()
+            self.stdout_thread.join()
+
+    def stop_monitoring_stderr(self):
+        if self.stderr_thread:
+            self.stop_event.set()
+            self.stderr_thread.join()       
 
 class MissingAPIKeyException(Exception):
     def __init__(self):
@@ -299,10 +314,47 @@ def get_logger(log_name='DMB', log_dir='./log'):
     log_path = os.path.join(log_dir, log_filename)
     handler = CustomRotatingFileHandler(log_path, when="midnight", interval=1, backupCount=backupCount, maxBytes=max_log_size)
     os.chmod(log_path, 0o666)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%b %e, %Y %H:%M:%S')
-    handler.setFormatter(formatter)
-    stdout_handler = logging.StreamHandler(sys.stdout)
-    stdout_handler.setFormatter(formatter)
+    
+
+    file_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%b %e, %Y %H:%M:%S')
+    handler.setFormatter(file_formatter)
+
+    enable_color_log = os.getenv('COLOR_LOG_ENABLED', 'false').lower() == 'true'
+    if enable_color_log:
+        color_formatter = ColoredFormatter(
+            "%(log_color)s%(asctime)s - %(levelname)s - %(message)s",
+            datefmt='%b %e, %Y %H:%M:%S',
+            reset=True,
+            log_colors={
+                'DEBUG': 'cyan',
+                'INFO': 'green',
+                'WARNING': 'yellow',
+                'ERROR': 'red',
+                'CRITICAL': 'bold_red',
+            },
+            secondary_log_colors={
+                'message': {
+                    'DEBUG': 'cyan',
+                    'INFO': 'green',
+                    'WARNING': 'yellow',
+                    'ERROR': 'red',
+                    'CRITICAL': 'red',
+                },
+                'levelname': {
+                    'DEBUG': 'blue',
+                    'INFO': 'green',
+                    'WARNING': 'yellow',
+                    'ERROR': 'red',
+                    'CRITICAL': 'red',
+                },
+            },
+            style='%'
+        )
+        stdout_handler = logging.StreamHandler(sys.stdout)
+        stdout_handler.setFormatter(color_formatter)
+    else:
+        stdout_handler = logging.StreamHandler(sys.stdout)
+        stdout_handler.setFormatter(file_formatter)
     
     for hdlr in logger.handlers[:]:
         logger.removeHandler(hdlr)

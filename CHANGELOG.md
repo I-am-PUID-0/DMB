@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [2.0.0] - 2024-25-07
+
+### Breaking Changes
+
+- Riven: Directory structure has changed to allow for split riven instances - backend and frontend - please update your compose file volumes accordingly
+- RIVEN_BRANCH: Is now split into RIVEN_FRONTEND_BRANCH and RIVEN_BACKEND_BRANCH
+- RIVEN_ENABLED: Environment variable will enable the Riven backend and frontend without the need to set the RIVEN_FRONTEND_ENABLED and RIVEN_BACKEND_ENABLED variables
+- RIVEN_UPDATE: Environment variable to update the Riven backend and frontend; Default is false
+
+### Added
+
+- RIVEN_BACKEND_ENABLED: Environment variable to enable the Riven backend; Default is false
+- RIVEN_FRONTEND_ENABLED: Environment variable to enable the Riven frontend; Default is false
+- RIVEN_BACKEND_BRANCH: Environment variable to set the Riven backend branch; Default is main
+- RIVEN_FRONTEND_BRANCH: Environment variable to set the Riven frontend branch; Default is main
+- RIVEN_BACKEND_UPDATE: Environment variable to update the Riven backend; Default is false
+- RIVEN_FRONTEND_UPDATE: Environment variable to update the Riven frontend; Default is false
+- RIVEN_BACKEND_VERSION: Environment variable to set the Riven backend version; Default is latest
+- RIVEN_FRONTEND_VERSION: Environment variable to set the Riven frontend version; Default is latest
+- BACKEND_URL: Environment variable to set the Riven backend URL; Default is http://127.0.0.1:8080
+- RIVEN_DATABASE_HOST: Environment variable to set the Riven database host; Default is sqlite:////riven/backend/data/media.db
+- COLOR_LOG_ENABLED: Environment variable to enable color logging; Default is false
+- ffmpeg: Added ffmpeg to the Dockerfile for Zurg use of ffprobe to extract media information from files, enhancing media metadata accuracy.
+
+
+### Notes
+
+- **Delete all Riven files and directories within the data directory before starting the new version of Riven!**
+- **Automatic updates for Riven backend and frontend are not funtioal yet; will be fixed in a follow-on release.**
+- **Other features may also not be functional yet; will be fixed in a follow-on release.**
+- This release resolves [Issue #19](https://github.com/I-am-PUID-0/DMB/issues/19), [Issue #20](https://github.com/I-am-PUID-0/DMB/issues/20), and [Issue #10](https://github.com/I-am-PUID-0/DMB/issues/10)
+
+
+
 ## Version [1.2.0] - 2024-19-07
 
 ### Added
@@ -53,7 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- [Issue #5](https://github.com/I-am-PUID-0/DMB/issues/5): Added intital sleep time to allow for services to start
+- [Issue #5](https://github.com/I-am-PUID-0/DMB/issues/5): Added initial sleep time to allow for services to start
 - [Issue #6](https://github.com/I-am-PUID-0/DMB/issues/6): Disabled Zurg plex_update.sh - not needed
 - [Issue #7](https://github.com/I-am-PUID-0/DMB/issues/7): Cleanup Riven logging
 
@@ -64,7 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- [Issue #3](https://github.com/I-am-PUID-0/DMB/issues/3): Removed Jellyfin enviornement variables
+- [Issue #3](https://github.com/I-am-PUID-0/DMB/issues/3): Removed Jellyfin environment variables
 - [Issue #2](https://github.com/I-am-PUID-0/DMB/issues/2): Removed PLEX_REFRESH environment variable
 
 

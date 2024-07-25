@@ -3,14 +3,13 @@ from utils.logger import *
 import riven_ as r
 import zurg as z 
 from rclone import rclone
-from cleanup import duplicate_cleanup
-from update import auto_update
+from utils import duplicate_cleanup
 
 
 def main():
     logger = get_logger()
 
-    version = '1.2.0'
+    version = '2.0.0'
 
     ascii_art = f'''
                                                                        
@@ -61,7 +60,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                     try:
                         z.setup.zurg_setup() 
                         z_updater = z.update.ZurgUpdate()
-                        if ZURGUPDATE:
+                        if ZURGUPDATE and not ZURGVERSION:
                             z_updater.auto_update('Zurg',True)
                         else:
                             z_updater.auto_update('Zurg',False)
@@ -87,24 +86,36 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
         logger.error(e)
         
     try:
-        if RIVEN is None or str(RIVEN).lower() == 'false':
+        if RIVENBACKEND is None or str(RIVENBACKEND).lower() == 'false':
             pass
-        elif str(RIVEN).lower() == 'true':
+        elif str(RIVENBACKEND).lower() or str(RIVEN).lower() == 'true':
             try:
-                r.setup.r_setup()
+                r.setup.riven_setup('Riven_backend')
                 r_updater = r.update.RivenUpdate()
-                if RUPDATE:
-                    r_updater.auto_update('Riven_backend', True)                    
-                    r.settings.load_settings()                    
-                    r_updater.auto_update('Riven_frontend', True)
+                if RBUPDATE or RUPDATE:
+                    r_updater.auto_update('Riven_backend', True)                                        
                 else:
-                    r_updater.start_process('Riven_backend')
-                    r.settings.load_settings()
-                    r_updater.start_process('Riven_frontend')                    
+                    r_updater.auto_update('Riven_backend', False)              
             except Exception as e:
-                logger.error(f"An error occurred in the Riven setup: {e}")
+                logger.error(f"An error occurred in the Riven backend setup: {e}")
     except:
         pass
+
+    try:
+        if RIVENFRONTEND is None or str(RIVENFRONTEND).lower() == 'false':
+            pass
+        elif str(RIVENFRONTEND).lower() or str(RIVEN).lower() == 'true':
+            try:
+                r.setup.riven_setup('Riven_frontend', RFBRANCH, RFVERSION)
+                r_updater = r.update.RivenUpdate()
+                if RFUPDATE or RUPDATE:       
+                    r_updater.auto_update('Riven_frontend', True)
+                else:
+                    r_updater.auto_update('Riven_frontend', False)                    
+            except Exception as e:
+                logger.error(f"An error occurred in the Riven frontend setup: {e}")
+    except:
+        pass    
     
     def perpetual_wait():
         stop_event = threading.Event()
