@@ -106,5 +106,5 @@ jobs:
           ANNOUNCEMENT_BODY="🚀 **New Release: Version [${{ env.VERSION }}]**${RELEASE_NOTES}"
           ESCAPED_BODY=$(echo "$ANNOUNCEMENT_BODY" | jq -Rsa .)
           curl -H "Content-Type: application/json" \
-               -d "{\"content\": $ESCAPED_BODY}" \
+               -d "{\"content\": $ESCAPED_BODY, \"flags\": 4}" \
                $DISCORD_WEBHOOK_URL

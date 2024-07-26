@@ -42,7 +42,7 @@ class ZurgUpdate(Update, ProcessHandler):
                 command = [zurg_executable]
                 super().start_process(process_name, dir_to_check, command, key_type)
         
-    def update_check(self):
+    def update_check(self, process_name):
         try:
             if GHTOKEN:
                 repo_owner = 'debridmediamanager'
@@ -59,20 +59,20 @@ class ZurgUpdate(Update, ProcessHandler):
             latest_release, error = get_latest_release(repo_owner, repo_name)
 
             if error:
-                self.logger.error(f"Failed to fetch the latest Zurg release: {error}")
+                self.logger.error(f"Failed to fetch the latest {process_name} release: {error}")
                 return
 
-            self.logger.info(f"Zurg current version: {current_version}")
-            self.logger.debug(f"Zurg latest available version: {latest_release}")
+            self.logger.info(f"{process_name} current version: {current_version}")
+            self.logger.debug(f"{process_name} latest available version: {latest_release}")
 
             if current_version == latest_release:
-                self.logger.info("Zurg is already up to date.")
+                self.logger.info(f"{process_name} is already up to date.")
             else:
-                self.logger.info("A new version of Zurg is available. Applying updates.")
+                self.logger.info(f"A new version of {process_name} is available. Applying updates.")
                 architecture = get_architecture()
                 success = download_and_unzip_release(repo_owner, repo_name, latest_release, architecture)
                 if not success:
-                    raise Exception("Failed to download and extract the release.")
+                    raise Exception(f"Failed to download and extract the release for {process_name}.")
                 
                 directories_to_check = ["/zurg/RD", "/zurg/AD"]
                 zurg_presence = {dir_to_check: os.path.exists(os.path.join(dir_to_check, 'zurg')) for dir_to_check in directories_to_check}
@@ -87,4 +87,4 @@ class ZurgUpdate(Update, ProcessHandler):
                         self.start_process('Zurg', dir_to_check)
 
         except Exception as e:
-            self.logger.error(f"An error occurred in update_check: {e}")
+            self.logger.error(f"An error occurred in update_check for {process_name}: {e}")

@@ -9,7 +9,7 @@ from utils import duplicate_cleanup
 def main():
     logger = get_logger()
 
-    version = '2.0.0'
+    version = '3.0.0'
 
     ascii_art = f'''
                                                                        
@@ -86,9 +86,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
         logger.error(e)
         
     try:
-        if RIVENBACKEND is None or str(RIVENBACKEND).lower() == 'false':
-            pass
-        elif str(RIVENBACKEND).lower() or str(RIVEN).lower() == 'true':
+        if (RIVENBACKEND is not None and str(RIVENBACKEND).lower() == 'true') or (RIVEN is not None and str(RIVEN).lower() == 'true'):
             try:
                 r.setup.riven_setup('Riven_backend')
                 r_updater = r.update.RivenUpdate()
@@ -102,9 +100,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
         pass
 
     try:
-        if RIVENFRONTEND is None or str(RIVENFRONTEND).lower() == 'false':
-            pass
-        elif str(RIVENFRONTEND).lower() or str(RIVEN).lower() == 'true':
+        if (RIVENFRONTEND is not None and str(RIVENFRONTEND).lower() == 'true') or (RIVEN is not None and str(RIVEN).lower() == 'true'):
             try:
                 r.setup.riven_setup('Riven_frontend', RFBRANCH, RFVERSION)
                 r_updater = r.update.RivenUpdate()
@@ -115,7 +111,8 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
             except Exception as e:
                 logger.error(f"An error occurred in the Riven frontend setup: {e}")
     except:
-        pass    
+        pass
+   
     
     def perpetual_wait():
         stop_event = threading.Event()

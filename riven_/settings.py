@@ -38,12 +38,12 @@ def set_env_variables():
         'CONTENT_OVERSEERR_API_KEY': SEERRAPIKEY,
         'SYMLINK_RCLONE_PATH': f"/data/{RCLONEMN}/__all__",
         'SYMLINK_LIBRARY_PATH': "/mnt",
-        'BACKEND_URL': BACKENDURL,
-        'RIVEN_DATABASE_HOST': RIVENDATABASEHOST
+        'BACKEND_URL': RIVENBACKENDURL,
+        'DATABASE_HOST': RIVENDATABASEHOST
     }
 
     default_env_vars = {
-        'RIVEN_DATABASE_HOST': 'sqlite:////riven/backend/data/media.db',
+        'DATABASE_HOST': 'sqlite:////riven/backend/data/media.db',
         'BACKEND_URL': 'http://127.0.0.1:8080'
     }
 
