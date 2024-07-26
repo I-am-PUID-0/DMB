@@ -6,10 +6,26 @@ from rclone import rclone
 from utils import duplicate_cleanup
 
 
+def shutdown(signum, frame):
+    logger = get_logger()
+    logger.info("Shutdown signal received. Cleaning up...")
+
+    for mount_point in os.listdir('/data'):
+        full_path = os.path.join('/data', mount_point)
+        if os.path.ismount(full_path):
+            logger.info(f"Unmounting {full_path}...")
+            umount = subprocess.run(['umount', full_path], capture_output=True, text=True)
+            if umount.returncode == 0:
+                logger.info(f"Successfully unmounted {full_path}")
+            else:
+                logger.error(f"Failed to unmount {full_path}: {umount.stderr.strip()}")
+    
+    sys.exit(0)
+
 def main():
     logger = get_logger()
 
-    version = '3.0.0'
+    version = '3.1.0'
 
     ascii_art = f'''
                                                                        
@@ -119,4 +135,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
         stop_event.wait()
     perpetual_wait()    
 if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, shutdown)
+    signal.signal(signal.SIGINT, shutdown)
+    
     main()

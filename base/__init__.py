@@ -23,6 +23,7 @@ import random
 import zipfile
 import platform
 import fnmatch
+import signal
 from colorlog import ColoredFormatter
 from ruamel.yaml import YAML
 

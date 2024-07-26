@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [3.1.0] - 2024-26-07 🚀
+
+### Added ✨
+
+- Shutdown: Added a shutdown function to gracefully stop the DMB container; e.g., unmount the rclone mounts 🛑
+
+
 ## Version [3.0.0] - 2024-26-07 🚀
 
 ### Breaking Changes ⚠️
