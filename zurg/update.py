@@ -40,8 +40,8 @@ class ZurgUpdate(Update, ProcessHandler):
                 elif dir_to_check == "/zurg/AD":
                     key_type = "AllDebrid"
                 command = [zurg_executable]
-                super().start_process(process_name, dir_to_check, command, key_type)
-        
+                super().start_process(process_name, dir_to_check, command, key_type)    
+                
     def update_check(self, process_name):
         try:
             if GHTOKEN:
@@ -51,29 +51,40 @@ class ZurgUpdate(Update, ProcessHandler):
                 repo_owner = 'debridmediamanager'
                 repo_name = 'zurg-testing'
 
-            if ZURGVERSION:
-                self.logger.info(f"ZURG_VERSION is set to: {ZURGVERSION}. Automatic updates will not be applied!")
-                return
-
             current_version = os.getenv('ZURG_CURRENT_VERSION')
-            latest_release, error = get_latest_release(repo_owner, repo_name)
 
-            if error:
-                self.logger.error(f"Failed to fetch the latest {process_name} release: {error}")
-                return
+            nightly = False
+
+            if ZURGVERSION:
+                if "nightly" in ZURGVERSION.lower():
+                    self.logger.info(f"ZURG_VERSION is set to nightly build. Checking for updates.")
+                    latest_release, error = get_latest_release(repo_owner, repo_name, nightly=True)
+                    if error:
+                        self.logger.error(f"Failed to fetch the latest nightly {process_name} release: {error}")
+                        return False                    
+                else:
+                    self.logger.info(f"ZURG_VERSION is set to: {ZURGVERSION}. Automatic updates will not be applied!")
+                    return False
+            else:
+                latest_release, error = get_latest_release(repo_owner, repo_name)
+                if error:
+                    self.logger.error(f"Failed to fetch the latest {process_name} release: {error}")
+                    return False
+
 
             self.logger.info(f"{process_name} current version: {current_version}")
             self.logger.debug(f"{process_name} latest available version: {latest_release}")
 
             if current_version == latest_release:
                 self.logger.info(f"{process_name} is already up to date.")
+                return False
             else:
                 self.logger.info(f"A new version of {process_name} is available. Applying updates.")
                 architecture = get_architecture()
                 success = download_and_unzip_release(repo_owner, repo_name, latest_release, architecture)
                 if not success:
                     raise Exception(f"Failed to download and extract the release for {process_name}.")
-                
+
                 directories_to_check = ["/zurg/RD", "/zurg/AD"]
                 zurg_presence = {dir_to_check: os.path.exists(os.path.join(dir_to_check, 'zurg')) for dir_to_check in directories_to_check}
 
@@ -82,9 +93,11 @@ class ZurgUpdate(Update, ProcessHandler):
                         key_type = "RealDebrid" if dir_to_check == "/zurg/RD" else "AllDebrid"
                         zurg_app_base = '/zurg/zurg'
                         zurg_executable_path = os.path.join(dir_to_check, 'zurg')
-                        self.terminate_zurg_instance('Zurg', dir_to_check, key_type)
+                        self.stop_process(process_name, key_type)
                         shutil.copy(zurg_app_base, zurg_executable_path)
                         self.start_process('Zurg', dir_to_check)
+                        return True
 
         except Exception as e:
             self.logger.error(f"An error occurred in update_check for {process_name}: {e}")
+            return False

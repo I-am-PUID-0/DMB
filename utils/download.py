@@ -46,16 +46,27 @@ class Downloader:
         self.logger.error(f"Failed to fetch {url} after {max_retries} attempts.")
         return None
 
-    def get_latest_release(self, repo_owner, repo_name):
+    def get_latest_release(self, repo_owner, repo_name, nightly=False):
         self.logger.info(f"Fetching latest {repo_name} release.")
         headers = self.get_headers()
-        api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
+        if nightly:
+            api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases"
+        else: 
+            api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
         response = self.fetch_with_retries(api_url, headers)
         if response and response.status_code == 200:
-            latest_release = response.json()
-            version_tag = latest_release['tag_name']
-            self.logger.info(f"{repo_name} latest release: {version_tag}")
-            return version_tag, None
+            releases = response.json()
+            if nightly:
+                nightly_releases = [release for release in releases if 'nightly' in release['tag_name']]
+                if nightly_releases:
+                    latest_nightly = max(nightly_releases, key=lambda x: x['tag_name'])
+                    return latest_nightly['tag_name'], None
+                return None, "No nightly releases found."
+            else:
+                latest_release = response.json()
+                version_tag = latest_release['tag_name']
+                self.logger.info(f"{repo_name} latest release: {version_tag}")
+                return version_tag, None
         else:
             return None, "Error: Unable to access the repository API."
 
@@ -136,7 +147,7 @@ class Downloader:
                                 shutil.copyfileobj(src, dst)
                         except Exception as e:
                             self.logger.error(f"Error while extracting {file_info.filename}: {e}")
-                    self.logger.info(f"Successfully downloaded {zip_folder_name} and extracted to {target_dir}")
+                    self.logger.debug(f"Successfully downloaded {zip_folder_name} and extracted to {target_dir}")
                     return True, None
                 except zipfile.BadZipFile as e:
                     self.logger.error(f"Failed to create ZipFile object: {e}")
@@ -150,7 +161,7 @@ class Downloader:
     def set_permissions(self, file_path, mode):
         try:
             os.chmod(file_path, mode)
-            self.logger.info(f"Set permissions for {file_path} to {oct(mode)}")
+            self.logger.debug(f"Set permissions for {file_path} to {oct(mode)}")
         except Exception as e:
             self.logger.error(f"Failed to set permissions for {file_path}: {e}")
 
@@ -178,4 +189,18 @@ class Downloader:
         except Exception as e:
             self.logger.error(f"Error determining system architecture: {e}")
             return 'unknown'
+        
+    def parse_repo_info(self, repo_info):
+        if not repo_info:
+            raise ValueError(f"{repo_info} environment variable is not set.")
+
+        parts = repo_info.split(',')
+        if len(parts) < 2:
+            raise ValueError(f"{repo_info} environment variable must contain at least username and repository name.")
+
+        username = parts[0].strip()
+        repository = parts[1].strip()
+        branch = parts[2].strip() if len(parts) > 2 else 'main'
+        self.logger.debug(f"Repository: {username}/{repository} branch: {branch}, being used for plex_debrid")
+        return username, repository, branch
 

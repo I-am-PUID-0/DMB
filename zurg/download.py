@@ -23,7 +23,7 @@ class CustomVersion:
         return self.subversion < other.subversion
 
     def __eq__(self, other):
-        return (self.main_version, self.hotfix, self.subversion) == (other.main_version, other.hotfix, other.subversion)
+        return (self.main_version, self.hotfix, self.subversion) == (other.main_version, other.hotfix, self.subversion)
 
     def __str__(self):
         version_str = f'v{self.main_version}'
@@ -49,12 +49,12 @@ def parse_custom_version(version_str):
         logger.error(f"Error parsing version string '{version_str}': {e}")
         return None
 
-def get_latest_release(repo_owner, repo_name):
-    return downloader.get_latest_release(repo_owner, repo_name)
+def get_latest_release(repo_owner, repo_name, nightly=False):
+    return downloader.get_latest_release(repo_owner, repo_name, nightly=nightly)
 
 def get_architecture():
     return downloader.get_architecture()
-    
+
 def download_and_unzip_release(repo_owner, repo_name, release_version, architecture):
     try:
         headers = {}
@@ -83,26 +83,39 @@ def download_and_unzip_release(repo_owner, repo_name, release_version, architect
         logger.error(f"Error in download and extraction: {e}")
         return False
 
-
 def version_check():
     try:
         architecture = get_architecture()
         os.environ['CURRENT_ARCHITECTURE'] = architecture
         if GHTOKEN:
             repo_owner = 'debridmediamanager'
-            repo_name = 'zurg'               
+            repo_name = 'zurg'
         else:
             repo_owner = 'debridmediamanager'
-            repo_name = 'zurg-testing'          
-        
+            repo_name = 'zurg-testing'
+
+        nightly = False
+
         if ZURGVERSION:
-            release_version = ZURGVERSION if ZURGVERSION.startswith('v') else 'v' + ZURGVERSION
-            logger.info("Using release version from environment variable: %s", release_version)
-        else:      
+            if "nightly" in ZURGVERSION.lower():
+                release_version = ZURGVERSION
+                logger.info("Using nightly release version from environment variable")
+                nightly = True
+            else:
+                release_version = ZURGVERSION if ZURGVERSION.startswith('v') else 'v' + ZURGVERSION
+                logger.info("Using release version from environment variable: %s", release_version)
+        else:
             release_version, error = get_latest_release(repo_owner, repo_name)
             if error:
                 logger.error(error)
                 raise Exception("Failed to get the latest release version.")
+
+        if nightly:
+            release_version, error = get_latest_release(repo_owner, repo_name, nightly=True)
+            if error:
+                logger.error(error)
+                raise Exception("Failed to get the latest nightly release version.")
+
         if not download_and_unzip_release(repo_owner, repo_name, release_version, architecture):
             raise Exception("Failed to download and extract the release.")
 

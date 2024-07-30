@@ -32,9 +32,9 @@ class SubprocessLogger:
         else:
             log_level = 'UNKNOWN'
             message = line
-            
+
         date_time_prefix_pattern = re.compile(r'^\d{2}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} ')
-        message = date_time_prefix_pattern.sub('', message).strip()           
+        message = date_time_prefix_pattern.sub('', message).strip()
 
         return log_level, message
 
@@ -301,6 +301,8 @@ def get_logger(log_name='DMB', log_dir='./log'):
     log_level_env = os.getenv('DMB_LOG_LEVEL')
     if log_level_env:
         log_level = log_level_env.upper()
+        os.environ['LOG_LEVEL'] = log_level
+        os.environ['RCLONE_LOG_LEVEL'] = log_level
     else:
         log_level = 'INFO'
     numeric_level = getattr(logging, log_level, logging.INFO)   

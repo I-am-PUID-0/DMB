@@ -7,6 +7,7 @@ WORKDIR /
 
 ADD . / ./
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/config.yml /zurg/
+ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/plex_update.sh /zurg/
 
 ENV \
   XDG_CONFIG_HOME=/config \

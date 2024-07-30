@@ -194,7 +194,7 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`COLOR_LOG_ENABLED`| Enable color logging for DMB.  | `false` | | | |
 |`ZURG_ENABLED`| Set the value "true" to enable the Zurg process | `false ` | | | :heavy_check_mark:|
 |`GITHUB_TOKEN`| GitHub Personal Token for use with Zurg private repo. Requires Zurg [sponsorship](https://github.com/sponsors/debridmediamanager) | `false ` | | | :heavy_check_mark:|
-|`ZURG_VERSION`| The version of Zurg to use. If enabled, the value should contain v0.9.x or v0.9.x-hotfix.x format | `latest` | | | :heavy_check_mark: |
+|`ZURG_VERSION`| The version of Zurg to use. If enabled, the value should contain v0.9.x or v0.9.x-hotfix.x format or "nightly" if wanting the nightly builds from Zurg private repo (requires GITHUB_TOKEN)  | `latest` | | | :heavy_check_mark: |
 |`ZURG_UPDATE`| Enable automatic updates of Zurg. Adding this variable will enable automatic updates to the latest version of Zurg locally within the container. | `false` | | | :heavy_check_mark:|
 |`ZURG_LOG_LEVEL`| Set the log level for Zurg | `INFO` | | | :heavy_check_mark:|
 |`SEERR_API_KEY`| The Overseerr API Key |`none`|| :heavy_check_mark:||

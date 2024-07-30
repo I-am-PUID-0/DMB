@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [3.2.0] - 2024-30-07 🚀
+
+### Changed 🔄
+
+- Update process: Refactored update process to apply updates to Zurg and Riven before starting the processes 🔄
+- Zurg: Disabling plex_update.sh in config file has been disbaled, for now. Comment out the line in the config file to disable the Zurg based plex update process if desired 🔄
+
+### Added ✨
+
+- Zurg: Allow nightly release custom versions for ZURG_VERSION
+- Zurg: Add plex_update.sh from Zurg to working directory for Zurg use 📦
+
+### Fixed 🛠️
+
+- Logging: Fixed logging for Zurg to ensure log levels are properly set 📝
+
+
 ## Version [3.1.0] - 2024-26-07 🚀
 
 ### Added ✨

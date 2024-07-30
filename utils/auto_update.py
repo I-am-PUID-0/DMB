@@ -6,9 +6,9 @@ class Update(ProcessHandler):
     def __init__(self):
         logger = get_logger()
         super().__init__(logger)
-        
+
     def update_schedule(self, process_name):
-        self.update_check(process_name)
+        #self.update_check(process_name)
         interval_minutes = int(self.auto_update_interval() * 60)
         schedule.every(interval_minutes).minutes.do(self.update_check, process_name)
 
@@ -26,9 +26,11 @@ class Update(ProcessHandler):
     def auto_update(self, process_name, enable_update):
         if enable_update:
             self.logger.info(f"Automatic updates set to {format_time(self.auto_update_interval())} for {process_name}")
+            initial_update = self.update_check(process_name)
             self.schedule_thread = threading.Thread(target=self.update_schedule, args=(process_name,))
             self.schedule_thread.start()
-            self.start_process(process_name)
+            if not initial_update:
+                self.start_process(process_name)
         else:
             self.logger.info(f"Automatic update disabled for {process_name}")
             self.start_process(process_name)

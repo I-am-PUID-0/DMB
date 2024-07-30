@@ -9,6 +9,7 @@ def zurg_setup():
     zurg_app_base = '/zurg/zurg'
     zurg_config_override = '/config/config.yml'
     zurg_config_base = '/zurg/config.yml'
+    zurg_plex_update_base = '/zurg/plex_update.sh'
   
     try:
         if ZURGLOGLEVEL is not None:    # Needs additional testing
@@ -73,7 +74,7 @@ def zurg_setup():
                         file.write("# password:\n")
                     else:
                         file.write(line)
-
+                                    
     def check_and_set_zurg_version(dir_path):
         zurg_binary_path = os.path.join(dir_path, 'zurg')
         if os.path.exists(zurg_binary_path) and not ZURGVERSION:
@@ -96,6 +97,8 @@ def zurg_setup():
         try:
             zurg_executable_path = os.path.join(config_dir, 'zurg')
             config_file_path = os.path.join(config_dir, 'config.yml')
+            plex_update_file_path = os.path.join(config_dir, 'plex_update.sh')
+            refresh_file_path = os.path.join(config_dir, 'plex_refresh.py')
             logger.info(f"Preparing Zurg instance for {key_type}")
         
             if os.path.exists(zurg_app_override):
@@ -119,7 +122,10 @@ def zurg_setup():
                 shutil.copy(zurg_config_base, config_file_path)
             else:
                 logger.info(f"Using Zurg config found for {key_type} in {config_dir}")
-                
+            
+            if not os.path.exists(plex_update_file_path):
+                shutil.copy(zurg_plex_update_base,plex_update_file_path)                
+
             if ZURGPORT:
                 port = ZURGPORT
                 logger.debug(f"Setting port {port} for Zurg w/ {key_type} instance")
@@ -135,8 +141,6 @@ def zurg_setup():
             logger.debug(f"Zurg w/ {key_type} instance configured to port: {port}")
             
             update_token(config_file_path, token)            
-            update_plex(config_file_path)
-            
         except Exception as e:
             raise Exception(f"Error setting up Zurg instance for {key_type}: {e}")
 
