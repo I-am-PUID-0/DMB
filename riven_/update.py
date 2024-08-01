@@ -1,9 +1,12 @@
 from ast import Try
+from os import error
 from base import *
 from utils.logger import *
 from utils.processes import ProcessHandler
 from utils.auto_update import Update
 from .download import get_latest_release, get_branch, download_and_unzip_release
+from .setup import riven_setup
+from .settings import set_env_variables
 
 
 class RivenUpdate(Update, ProcessHandler):
@@ -30,9 +33,17 @@ class RivenUpdate(Update, ProcessHandler):
             self.logger.info(f"Currently installed [v{current_version}] for {process_name}")
 
             if process_name == 'Riven_frontend':
-                version_url = "https://raw.githubusercontent.com/rivenmedia/riven-frontend/main/version.txt"
+                if RFBRANCH:
+                    branch = RFBRANCH.lower()
+                    version_url = f"https://raw.githubusercontent.com/rivenmedia/riven-frontend/{RFBRANCH}/version.txt"
+                else:    
+                    version_url = "https://raw.githubusercontent.com/rivenmedia/riven-frontend/main/version.txt"
             else:
-                version_url = "https://raw.githubusercontent.com/rivenmedia/riven/main/pyproject.toml"
+                if RBBRANCH:
+                    branch = RBBRANCH.lower()
+                    version_url = f"https://raw.githubusercontent.com/rivenmedia/riven/{branch}/pyproject.toml"
+                else:
+                    version_url = "https://raw.githubusercontent.com/rivenmedia/riven/main/pyproject.toml"                    
 
             response = requests.get(version_url, timeout=5)
             response.raise_for_status()
@@ -42,20 +53,26 @@ class RivenUpdate(Update, ProcessHandler):
 
             if current_version != latest_version:
                 self.logger.info(f"New version available [v{latest_version}] for {process_name}. Updating...")
-                if process_name == 'Riven_frontend':
-                    success, error = download_and_unzip_release("rivenmedia", "riven-frontend", latest_version, f"./riven/{process_name}")
-                else:
-                    success, error = get_branch("rivenmedia", "riven", "main", f"./riven/{process_name}", exclude_dirs=None)
+            
+                self.logger.debug(f"Calling riven_setup for {process_name}")
+                result = riven_setup(process_name)
+                self.logger.debug(f"riven_setup result for {process_name}: {result}")
+            
+                if result is None:
+                    self.logger.error(f"riven_setup returned None for {process_name}")
+                    return
+
+                success, error = result
 
                 if not success:
                     self.logger.error(f"Failed to download update for {process_name}: {error}")
                 else:
-                    self.logger.info(f"Automatic update installed for {process_name} [v{latest_version}]")
-                    self.logger.info(f"Restarting {process_name}")
+                    self.logger.info(f"Automatic update installed for {process_name} [v{latest_version}]")                    
                     if process_name == 'Riven_frontend' and self.frontend_process:
                         self.stop_process(process_name, None)
-                    elif process_name == 'Riven_backend' and self.backend_process:
+                    elif process_name == 'Riven_backend' and self.backend_process:                        
                         self.stop_process(process_name, None)
+                    self.logger.info(f"Restarting {process_name}")    
                     self.start_process(process_name)
             else:
                 self.logger.info(f"Automatic update not required for {process_name}")
@@ -113,6 +130,7 @@ class RivenUpdate(Update, ProcessHandler):
 
     def setup_poetry_environment(self, config_dir):
         try:
+            set_env_variables()
             self.logger.info(f"Setting up Poetry environment in {config_dir}")
             result = subprocess.run(
                 ["poetry", "install", "--no-root", "--without", "dev"],
@@ -145,13 +163,35 @@ class RivenUpdate(Update, ProcessHandler):
     def setup_npm_build(self, config_dir):
         try:
             self.logger.info("Setting up Riven_frontend")
+            set_env_variables()
+            vite_config_path = os.path.join(config_dir, 'vite.config.ts')
+            with open(vite_config_path, 'r') as file:
+                lines = file.readlines()
+            build_section_exists = any('build:' in line for line in lines)
+            if not build_section_exists:
+                for i, line in enumerate(lines):
+                    if line.strip().startswith('export default defineConfig({'):
+                        lines.insert(i + 1, '    build: {\n        minify: false\n    },\n')
+                        break       
+            with open(vite_config_path, 'w') as file:
+                file.writelines(lines)
+        
+            self.logger.info("vite.config.ts modified to disable minification")
+
             result = subprocess.run(["npm", "install"], cwd=config_dir, check=True, capture_output=True, text=True)
             self.logger.debug(f"npm install output: {result.stdout}")
             self.logger.debug(f"npm install errors: {result.stderr}")
-            result = subprocess.run(["npm", "run", "build"], cwd=config_dir, check=True, capture_output=True, text=True)
+            result = subprocess.run(
+                ["node", "--max-old-space-size=2048", "./node_modules/.bin/vite", "build"],
+                cwd=config_dir,
+                check=True,
+                capture_output=True,
+                text=True
+            )
             self.logger.debug(f"npm run build output: {result.stdout}")
             self.logger.debug(f"npm run build errors: {result.stderr}")
-            self.logger.info("npm install complete")
+
+            self.logger.info("npm install and build complete")
         except subprocess.CalledProcessError as e:
             self.logger.error(f"Error setting up npm environment: {e}")
             return None

@@ -96,6 +96,7 @@ services:
      # - RIVEN_LOG_LEVEL=DEBUG
      # - RIVEN_BACKEND_URL=http://127.0.0.1:8080 # Default is http://127.0.0.1:8080 when not enabled
      # - RIVEN_DATABASE_HOST=sqlite:////riven/backend/data/media.db # Default is sqlite:////riven/backend/data/media.db when not enabled
+     # - RIVEN_FRONTEND_DIALECT=sqlite
      # - PLEX_TOKEN=
      # - PLEX_ADDRESS=
      # - SEERR_API_KEY=
@@ -185,6 +186,7 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`ORIGIN`| The origin URL for the Riven frontend | http://0.0.0.0:3000 | | :heavy_check_mark: | |
 |`RIVEN_BACKEND_URL`| The URL for the Riven backend | http://127.0.0.1:8080 | | :heavy_check_mark: | |
 |`RIVEN_DATABASE_HOST`| The database host for Riven | `sqlite:////riven/backend/data/media.db` | | :heavy_check_mark: | |
+|`RIVEN_FRONTEND_DIALECT`| The dialect for the Riven frontend | `sqlite` | | :heavy_check_mark: | |
 |`AUTO_UPDATE_INTERVAL`| Interval between automatic update checks in hours. Vaules can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes, and 1.5 would yield one and a half hours | `24` || :heavy_check_mark:| :heavy_check_mark:|
 |`DUPLICATE_CLEANUP`| Automated cleanup of duplicate content in Plex.  | `false` |
 |`CLEANUP_INTERVAL`| Interval between duplicate cleanup in hours. Values can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes and 1.5 would yield one and a half hours | `24` || :heavy_check_mark: | :heavy_check_mark:|

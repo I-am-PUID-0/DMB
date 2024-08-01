@@ -7,7 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## Version [3.2.0] - 2024-30-07 🚀
+## Version [3.3.0] - 2024-08-01 🚀
+
+### Fixed 🛠️
+
+- [Issue #23](https://github.com/I-am-PUID-0/DMB/issues/23) Processes not properly killed during automatic updates 🐛
+- [Issue #24](https://github.com/I-am-PUID-0/DMB/issues/24) Riven automatic update extracts to wrong directory 🐛
+- [Issue #25](https://github.com/I-am-PUID-0/DMB/issues/25) Automatic update initiates update check multiple times for each instance 🐛
+- [Issue #26](https://github.com/I-am-PUID-0/DMB/issues/26) Riven Frontend breaking change requires DIALECT=sqlite env variable 🐛
+
+### Added ✨
+
+- Automatic Update: Enabled automatic updates for Riven branches - expands automatic updates to include branches 🔄
+- RIVEN_FRONTEND_DIALECT: Environment variable to set the Riven frontend database dialect; Default is sqlite - not required to be set in default configuration 🗃️
+- Riven Frontend: Set npm max_old_space_size to 2048MB for Riven frontend build process - limits resource usage 📦
+- Riven Frontend: Set vite minification to false for Riven frontend build process - speeds up build process and reduces resource usage 📦
+
+### Changed 🔄
+
+- healthcheck: Waits for Riven frontend setup to complete 🩺
+
+
+## Version [3.2.0] - 2024-07-30 🚀
 
 ### Changed 🔄
 
@@ -24,14 +45,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Logging: Fixed logging for Zurg to ensure log levels are properly set 📝
 
 
-## Version [3.1.0] - 2024-26-07 🚀
+## Version [3.1.0] - 2024-07-26 🚀
 
 ### Added ✨
 
 - Shutdown: Added a shutdown function to gracefully stop the DMB container; e.g., unmount the rclone mounts 🛑
 
 
-## Version [3.0.0] - 2024-26-07 🚀
+## Version [3.0.0] - 2024-07-26 🚀
 
 ### Breaking Changes ⚠️
 
@@ -58,7 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## Version [2.0.0] - 2024-25-07
+## Version [2.0.0] - 2024-07-25
 
 ### Breaking Changes
 
@@ -92,14 +113,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## Version [1.2.0] - 2024-19-07
+## Version [1.2.0] - 2024-07-19
 
 ### Added
 
 - [Issue #18](https://github.com/I-am-PUID-0/DMB/issues/18): Added DMB_LOG_SIZE environment variable to set the maximum size of the log file; Default is 10MB
 
 
-## Version [1.1.0] - 2024-17-07
+## Version [1.1.0] - 2024-07-17
 
 ### Changed
 
@@ -107,21 +128,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DMB: Refactored to use common functions under utils 
 
 
-## Version [1.0.3] - 2024-16-07
+## Version [1.0.3] - 2024-07-16
 
 ### Fixed
 
 - Rclone: Fixed WebDAV URL check for Zurg startup processes when Zurg user and password are set in config.yml
 
 
-## Version [1.0.2] - 2024-16-07
+## Version [1.0.2] - 2024-07-16
 
 ### Fixed
 
 - Zurg: Fixed the removal of Zurg user and password if previously set in config.yml
 
 
-## Version [1.0.1] - 2024-16-07
+## Version [1.0.1] - 2024-07-16
 
 ### Fixed
 
@@ -129,7 +150,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DMB: Introduced a Rclone startup check for the Zurg WebDAV URL to ensure the Zurg startup processes have finished before starting Rclone
 
 
-## Version [1.0.0] - 2024-25-06
+## Version [1.0.0] - 2024-06-25
 
 ### Breaking Changes
 
@@ -153,7 +174,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Issue #2](https://github.com/I-am-PUID-0/DMB/issues/2): Removed PLEX_REFRESH environment variable
 
 
-## Version [0.2.0] - 2024-22-06
+## Version [0.2.0] - 2024-06-22
 
 ### Added
 
@@ -165,7 +186,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Zurg: PLEX_MOUNT environment variable
 
 
-## Version [0.1.0] - 2024-22-06
+## Version [0.1.0] - 2024-06-22
 
 ### Added
 
@@ -177,7 +198,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Healthcheck: Fixed healthcheck process w/ Riven
 
 
-## Version [0.0.1] - 2024-21-06
+## Version [0.0.1] - 2024-06-21
 
 ### Added
 

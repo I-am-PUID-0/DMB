@@ -43,6 +43,8 @@ class ZurgUpdate(Update, ProcessHandler):
                 super().start_process(process_name, dir_to_check, command, key_type)    
                 
     def update_check(self, process_name):
+        self.logger.info(f"Checking for available {process_name} updates")
+        
         try:
             if GHTOKEN:
                 repo_owner = 'debridmediamanager'

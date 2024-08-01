@@ -39,12 +39,14 @@ def set_env_variables():
         'SYMLINK_RCLONE_PATH': f"/data/{RCLONEMN}/__all__",
         'SYMLINK_LIBRARY_PATH': "/mnt",
         'BACKEND_URL': RIVENBACKENDURL,
-        'DATABASE_HOST': RIVENDATABASEHOST
+        'DATABASE_HOST': RIVENDATABASEHOST,
+        'DIALECT' : RFDIALECT
     }
 
     default_env_vars = {
         'DATABASE_HOST': 'sqlite:////riven/backend/data/media.db',
-        'BACKEND_URL': 'http://127.0.0.1:8080'
+        'BACKEND_URL': 'http://127.0.0.1:8080',
+        'DIALECT' : 'sqlite'
     }
 
     for key, value in env_vars.items():
@@ -114,7 +116,7 @@ def update_settings(current_settings, updated_settings, prefix=''):
 def load_settings():
     logger.info("Loading Riven settings")
     
-    set_env_variables()
+    #set_env_variables()
     #set_debug_level('RIVEN_LOG_LEVEL') # An error occurred in the Riven setup: 'bool' object has no attribute 'items'
     #set_debug_level('DMB_LOG_LEVEL') # An error occurred in the Riven setup: 'bool' object has no attribute 'items'
        
