@@ -56,22 +56,10 @@ try:
             "regex": re.compile(rf'rclone {mount_type} {re.escape(RCLONEMN_AD)}:'),
             "error_message": f"The Rclone AD process for {RCLONEMN_AD} is not running.",
             "should_run": str(ZURG).lower() == 'true' and ADAPIKEY and os.path.exists(f'/healthcheck/{RCLONEMN}')
-        },
-        "vite_build": {
-            "regex": re.compile(r'node --max-old-space-size=2048 /riven/frontend/node_modules/.bin/vite build'),
-            "error_message": "",
-            "should_run": True
-        },
-        "npm_install": {
-            "regex": re.compile(r'npm install'),
-            "error_message": "",
-            "should_run": True
         }
     }
 
     process_status = check_processes(process_info)
-    if process_status["vite_build"] or process_status["npm_install"]:
-        process_info["riven_frontend"]["should_run"] = False
 
     for process_name, info in process_info.items():
         if info["should_run"] and not process_status[process_name]:
