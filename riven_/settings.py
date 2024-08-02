@@ -44,7 +44,7 @@ def set_env_variables():
     }
 
     default_env_vars = {
-        'DATABASE_HOST': 'sqlite:////riven/backend/data/media.db',
+        'DATABASE_URL': 'sqlite:////riven/backend/data/media.db',
         'BACKEND_URL': 'http://127.0.0.1:8080',
         'DIALECT' : 'sqlite'
     }
