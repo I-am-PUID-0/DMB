@@ -39,7 +39,7 @@ def set_env_variables():
         'SYMLINK_RCLONE_PATH': f"/data/{RCLONEMN}/__all__",
         'SYMLINK_LIBRARY_PATH': "/mnt",
         'BACKEND_URL': RIVENBACKENDURL,
-        'DATABASE_HOST': RIVENDATABASEHOST,
+        'DATABASE_URL': RIVENDATABASEHOST,
         'DIALECT' : RFDIALECT
     }
 
