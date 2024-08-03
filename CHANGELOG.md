@@ -5,7 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Version [3.3.2] - 2024-08-03 🚀
 
+### Fixed 🛠️
+
+[Issue #27](https://github.com/I-am-PUID-0/DMB/issues/27) Riven frontend needed a database connection to function properly 🐛
+
+### Added ✨
+
+- RIVEN_DATABASE_URL: Environment variable to set the Riven frontend database URL; Default is sqlite:////riven/backend/data/media.db 🗃️
+
+### Changed 🔄
+
+- GITHUB_TOKEN: Can be added to the environment variables to allow for repository downloads without rate limits 🔄
 
 ## Version [3.3.1] - 2024-08-01 🚀
 
