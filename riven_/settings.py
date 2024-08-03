@@ -39,12 +39,12 @@ def set_env_variables():
         'SYMLINK_RCLONE_PATH': f"/data/{RCLONEMN}/__all__",
         'SYMLINK_LIBRARY_PATH': "/mnt",
         'BACKEND_URL': RIVENBACKENDURL,
-        'DATABASE_URL': RIVENDATABASEHOST,
+        'DATABASE_HOST': RIVENDATABASEHOST,
         'DIALECT' : RFDIALECT
     }
 
     default_env_vars = {
-        'DATABASE_URL': 'sqlite:////riven/backend/data/media.db',
+        'DATABASE_HOST': 'sqlite:////riven/backend/data/media.db',
         'BACKEND_URL': 'http://127.0.0.1:8080',
         'DIALECT' : 'sqlite'
     }
