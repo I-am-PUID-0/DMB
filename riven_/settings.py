@@ -40,11 +40,13 @@ def set_env_variables():
         'SYMLINK_LIBRARY_PATH': "/mnt",
         'BACKEND_URL': RIVENBACKENDURL,
         'DATABASE_HOST': RIVENDATABASEHOST,
-        'DIALECT' : RFDIALECT
+        'DIALECT' : RFDIALECT,
+        'DATABASE_URL': RIVENDATABASEURL
     }
 
     default_env_vars = {
         'DATABASE_HOST': 'sqlite:////riven/backend/data/media.db',
+        'DATABASE_URL': 'sqlite:////riven/backend/data/media.db',
         'BACKEND_URL': 'http://127.0.0.1:8080',
         'DIALECT' : 'sqlite'
     }
@@ -119,7 +121,7 @@ def load_settings():
     #set_env_variables()
     #set_debug_level('RIVEN_LOG_LEVEL') # An error occurred in the Riven setup: 'bool' object has no attribute 'items'
     #set_debug_level('DMB_LOG_LEVEL') # An error occurred in the Riven setup: 'bool' object has no attribute 'items'
-       
+
     try:
         get_url = 'http://127.0.0.1:8080/settings/get/all'
         settings_response = fetch_settings(get_url)

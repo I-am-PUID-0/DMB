@@ -6,10 +6,15 @@ from utils.download import Downloader
 logger = get_logger()
 downloader = Downloader()
 
+def get_headers():
+    headers = {'Accept': 'application/vnd.github.v3+json'}
+    if GHTOKEN:
+        headers['Authorization'] = f'token {GHTOKEN}'
+    return headers
+
 def get_branch(repo_owner, repo_name, branch, target_dir, exclude_dirs):
     try:    
-        headers = {}
-        headers['Accept'] = 'application/octet-stream'
+        headers = get_headers()
         branch_url, zip_folder_name = downloader.get_branch(repo_owner, repo_name, branch, headers)
         if not branch_url:
             return False, f"Failed to get the {branch} branch for {repo_name}"
@@ -22,14 +27,14 @@ def get_branch(repo_owner, repo_name, branch, target_dir, exclude_dirs):
                 return True, None
     except Exception as e:
         logger.error(f"Error in download and extraction: {e}")
-        return False, str(e)    
+        return False, str(e)   
 
 def get_latest_release(repo_owner, repo_name):
     return downloader.get_latest_release(repo_owner, repo_name)
 
 def download_and_unzip_release(repo_owner, repo_name, release_version, target_dir, exclude_dirs=None):
     try:
-        headers = {}         
+        headers = get_headers()         
         release_info, error = downloader.fetch_github_release_info(repo_owner, repo_name, release_version, headers)        
         if error:
             logger.error(error)
@@ -37,23 +42,19 @@ def download_and_unzip_release(repo_owner, repo_name, release_version, target_di
         download_url, asset_id = downloader.find_asset_download_url(release_info)        
         if not download_url:
             return False        
-        #headers['Accept'] = 'application/octet-stream'
-        headers = headers or {"Accept": "application/vnd.github.v3+json"}
         logger.debug(f"Requesting {repo_name} release {release_version} from: {download_url}")
         zip_folder_name = f'{repo_owner}-{repo_name}*'
         success, error = downloader.download_and_extract(download_url, target_dir, zip_folder_name=zip_folder_name, headers=headers, exclude_dirs=exclude_dirs)
         if success:
             return True, None
         else:
-            logger.error(f"Error in download and extraction: {error}")
-            return False
+            return False, error
     except Exception as e:
         logger.error(f"Error in download and extraction: {e}")
         return False, str(e)
-    
+
 def version_check(repo_owner, repo_name, release_version):
-    try:
-              
+    try:      
         if ZURGVERSION:
             release_version = ZURGVERSION if ZURGVERSION.startswith('v') else 'v' + ZURGVERSION
             logger.info("Using release version from environment variable: %s", release_version)
