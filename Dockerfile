@@ -1,7 +1,9 @@
 ﻿FROM rclone/rclone:latest as rclone-stage
+#FROM spoked/riven-frontend:latest as frontend-stage
 
 FROM python:3.11-alpine
 COPY --from=rclone-stage /usr/local/bin/rclone /usr/local/bin/rclone
+#COPY --from=frontend-stage /riven /riven/frontend
 
 WORKDIR /
 
@@ -15,6 +17,7 @@ ENV \
 
 RUN \
   apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base linux-headers py3-cffi libffi-dev rust cargo openssl openssl-dev pkgconfig git npm ffmpeg && \
+  npm install -g pnpm && \
   mkdir /log && \
   python3 -m venv /venv && \
   source /venv/bin/activate && \

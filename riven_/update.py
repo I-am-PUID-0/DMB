@@ -110,15 +110,17 @@ class RivenUpdate(Update, ProcessHandler):
         if process_name == 'Riven_frontend':
             command = ["node", "build"]
             config_dir = "./riven/frontend"
-            self.setup_npm_build(config_dir)
+            if not self.setup_npm_build(config_dir):
+                self.logger.error(f"Failed to set up NPM build for {process_name}")
+                return
             self.frontend_process = ProcessHandler.start_process(self, process_name, config_dir, command, None)
         elif process_name == 'Riven_backend':
             config_dir = "./riven/backend"
             directory = f"/data/{RCLONEMN}/__all__"
             while not os.path.exists(directory):
                 self.logger.info(f"Waiting for symlink directory {directory} to become available before starting {process_name}")
-                time.sleep(10)            
-            venv_path = self.setup_poetry_environment(config_dir)            
+                time.sleep(10)
+            venv_path = self.setup_poetry_environment(config_dir)
             if not venv_path:
                 self.logger.error(f"Failed to set up Poetry environment for {process_name}")
                 return
@@ -130,68 +132,76 @@ class RivenUpdate(Update, ProcessHandler):
 
     def setup_poetry_environment(self, config_dir):
         try:
-            set_env_variables()
             self.logger.info(f"Setting up Poetry environment in {config_dir}")
-            result = subprocess.run(
-                ["poetry", "install", "--no-root", "--without", "dev"],
-                cwd=config_dir,
-                capture_output=True,
-                text=True
-            )
-            if result.stdout:
-                self.logger.debug(f"Poetry install stdout: {result.stdout}")
-            if result.stderr:
-                self.logger.debug(f"Poetry install stderr: {result.stderr}")
-            if result.returncode != 0:
-                self.logger.error(f"Error setting up Poetry environment: {result.stderr}")
-                return None
-            result = subprocess.run(
-                ["poetry", "env", "info", "-p"],
-                cwd=config_dir,
-                capture_output=True,
-                text=True
-            )
-            venv_path = result.stdout.strip()
+
+            poetry_install_process = ProcessHandler(self.logger)
+            poetry_install_process.start_process("poetry_install", config_dir, ["poetry", "install", "--no-root", "--without", "dev"])
+            poetry_install_process.wait()
+
+            if poetry_install_process.returncode != 0:
+                self.logger.error(f"Error setting up Poetry environment: {poetry_install_process.stderr}")
+                return False
+
+            poetry_env_process = ProcessHandler(self.logger)
+            poetry_env_process.start_process("poetry_env_setup", config_dir, ["poetry", "env", "info", "-p"])
+            poetry_env_process.wait()
+
+            if poetry_env_process.returncode != 0:
+                self.logger.error(f"Error getting Poetry environment info: {poetry_env_process.stderr}")
+                return False
+
+            venv_path = '/venv'
+
             if not venv_path or not os.path.exists(venv_path):
                 self.logger.error(f"Poetry environment setup failed, virtual environment not found at {venv_path}")
-                return None
+                return False
+            else:
+                self.logger.info("Poetry environment setup complete")
             return venv_path
         except subprocess.CalledProcessError as e:
             self.logger.error(f"Error setting up Poetry environment: {e}")
-            return None
+            return False
 
     def setup_npm_build(self, config_dir):
         try:
             self.logger.info("Setting up Riven_frontend")
-            set_env_variables()
+
             vite_config_path = os.path.join(config_dir, 'vite.config.ts')
             with open(vite_config_path, 'r') as file:
                 lines = file.readlines()
+
             build_section_exists = any('build:' in line for line in lines)
             if not build_section_exists:
                 for i, line in enumerate(lines):
                     if line.strip().startswith('export default defineConfig({'):
                         lines.insert(i + 1, '    build: {\n        minify: false\n    },\n')
-                        break       
+                        break
+
             with open(vite_config_path, 'w') as file:
                 file.writelines(lines)
-        
-            self.logger.info("vite.config.ts modified to disable minification")
 
-            result = subprocess.run(["npm", "install"], cwd=config_dir, check=True, capture_output=True, text=True)
-            self.logger.debug(f"npm install output: {result.stdout}")
-            self.logger.debug(f"npm install errors: {result.stderr}")
-            result = subprocess.run(
-                ["node", "--max-old-space-size=2048", "./node_modules/.bin/vite", "build"],
-                cwd=config_dir,
-                check=True,
-                capture_output=True,
-                text=True
-            )
-            self.logger.debug(f"npm run build output: {result.stdout}")
-            self.logger.debug(f"npm run build errors: {result.stderr}")
+            self.logger.debug("vite.config.ts modified to disable minification")
 
-            self.logger.info("npm install and build complete")
+            npm_install_process = ProcessHandler(self.logger)
+            npm_install_process.start_process("npm_install", config_dir, ["npm", "install"])
+            #npm_install_process.start_process("npm_install", config_dir, ["pnpm", "install"])
+            npm_install_process.wait()
+
+            if npm_install_process.returncode != 0:
+                self.logger.error(f"Error during npm install: {npm_install_process.stderr}")
+                return False
+
+            node_build_process = ProcessHandler(self.logger)
+            node_build_process.start_process("node_build", config_dir, ["node", "--max-old-space-size=2048", "./node_modules/.bin/vite", "build"])
+            #node_build_process.start_process("node_build", config_dir, ["pnpm", "run", "build"])
+            node_build_process.wait()
+
+            if node_build_process.returncode != 0:
+                self.logger.error(f"Error during node build: {node_build_process.stderr}")
+                return False
+
+            self.logger.info("npm install and build complete")            
+            return True
         except subprocess.CalledProcessError as e:
             self.logger.error(f"Error setting up npm environment: {e}")
-            return None
+            return False

@@ -1,7 +1,7 @@
 from base import *
 from utils.logger import *
 
-def check_processes(process_info):
+def check_processes(process_info, skip_conditions):
     found_processes = {key: False for key in process_info.keys()}
 
     for proc in psutil.process_iter():
@@ -10,6 +10,9 @@ def check_processes(process_info):
             for process_name, info in process_info.items():
                 if info['regex'].search(cmdline):
                     found_processes[process_name] = True
+            for condition in skip_conditions:
+                if condition['regex'].search(cmdline):
+                    condition['found'] = True
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
 
@@ -59,10 +62,25 @@ try:
         }
     }
 
-    process_status = check_processes(process_info)
+    skip_conditions = [
+        {
+            "regex": re.compile(r'npm install'),
+            "found": False
+        },
+        {
+            "regex": re.compile(r'node --max-old-space-size=2048 ./node_modules/.bin/vite build'),
+            "found": False
+        }
+    ]
+
+    process_status = check_processes(process_info, skip_conditions)
+
+    skip_riven_frontend = any(condition['found'] for condition in skip_conditions)
 
     for process_name, info in process_info.items():
         if info["should_run"] and not process_status[process_name]:
+            if process_name == "riven_frontend" and skip_riven_frontend:
+                continue  
             error_messages.append(info["error_message"])
 
     if error_messages:

@@ -4,6 +4,13 @@ from utils.logger import *
 
 logger = get_logger()
 
+SENSITIVE_KEY_PATTERN = re.compile(r'API|TOKEN|URL', re.IGNORECASE)
+
+def obfuscate_value(key, value, visible_chars=4):
+    if not value or not SENSITIVE_KEY_PATTERN.search(key):
+        return value
+    return value[:visible_chars] + '*' * (len(value) - visible_chars)
+
 def set_debug_level(env_var_name):
     try:
         log_level = os.getenv(env_var_name)
@@ -15,7 +22,6 @@ def set_debug_level(env_var_name):
         logger.debug(f"{env_var_name} set to {log_level}") 
     except Exception as e:
         logger.error(f"Error setting debug for {env_var_name}: {e}")
-        
 
 def set_env_variables():
     def set_env_variable(key, value, default=None):
@@ -25,7 +31,8 @@ def set_env_variables():
             elif default is not None and key not in os.environ:
                 os.environ[key] = default
             if key in os.environ:
-                logger.debug(f"Successfully set {key} to {os.environ[key]}")
+                obfuscated_value = obfuscate_value(key, os.environ[key])
+                logger.debug(f"Successfully set {key} to {obfuscated_value}")
             else:
                 logger.debug(f"{key} not set because no value or default was provided")
         except Exception as e:
@@ -33,27 +40,28 @@ def set_env_variables():
 
     env_vars = {
         'DOWNLOADERS_REAL_DEBRID_API_KEY': RDAPIKEY,
-        'PLEX_URL': PLEXADD,
+        'UPDATERS_PLEX_URL': PLEXADD,
+        'UPDATERS_PLEX_TOKEN': PLEXTOKEN,
         'CONTENT_OVERSEERR_URL': SEERRADD,
         'CONTENT_OVERSEERR_API_KEY': SEERRAPIKEY,
         'SYMLINK_RCLONE_PATH': f"/data/{RCLONEMN}/__all__",
         'SYMLINK_LIBRARY_PATH': "/mnt",
         'BACKEND_URL': RIVENBACKENDURL,
-        'DATABASE_HOST': RIVENDATABASEHOST,
         'DIALECT' : RFDIALECT,
-        'DATABASE_URL': RIVENDATABASEURL
+        'DATABASE_URL': RIVENDATABASEURL,
+        'DATABASE_HOST': RIVENDATABASEHOST
+
     }
 
     default_env_vars = {
         'DATABASE_HOST': 'sqlite:////riven/backend/data/media.db',
-        'DATABASE_URL': 'sqlite:////riven/backend/data/media.db',
+        'DATABASE_URL': '/riven/backend/data/media.db',
         'BACKEND_URL': 'http://127.0.0.1:8080',
         'DIALECT' : 'sqlite'
     }
 
     for key, value in env_vars.items():
         set_env_variable(key, value, default_env_vars.get(key))
-
 
 def fetch_settings(url, max_retries=5, delay=5):
     time.sleep(delay)
@@ -77,7 +85,8 @@ def fetch_settings(url, max_retries=5, delay=5):
 def get_env_value(key, default=None):
     env_key = key.replace('.', '_').upper()
     value = os.getenv(env_key, default)
-    logger.debug(f"Checking environment variable for key '{env_key}': '{value}'")
+    obfuscated_value = obfuscate_value(key, value)
+    logger.debug(f"Checking environment variable for key '{env_key}': '{obfuscated_value}'")
     return value
 
 def update_settings(current_settings, updated_settings, prefix=''):
@@ -109,7 +118,8 @@ def update_settings(current_settings, updated_settings, prefix=''):
                     logger.error(f"ValueError converting environment variable '{full_key}': {env_value}")
                     pass
                 updated_settings[key] = env_value
-                logger.debug(f"Setting '{full_key}' updated with value '{env_value}' from environment variable")
+                obfuscated_value = obfuscate_value(full_key, env_value)
+                logger.debug(f"Setting '{full_key}' updated with value '{obfuscated_value}' from environment variable")
                 if 'enabled' in current_settings:
                     updated_settings['enabled'] = True
                 if 'enable' in current_settings:
@@ -118,9 +128,7 @@ def update_settings(current_settings, updated_settings, prefix=''):
 def load_settings():
     logger.info("Loading Riven settings")
     
-    #set_env_variables()
-    #set_debug_level('RIVEN_LOG_LEVEL') # An error occurred in the Riven setup: 'bool' object has no attribute 'items'
-    #set_debug_level('DMB_LOG_LEVEL') # An error occurred in the Riven setup: 'bool' object has no attribute 'items'
+    set_env_variables()
 
     try:
         get_url = 'http://127.0.0.1:8080/settings/get/all'
@@ -142,8 +150,9 @@ def load_settings():
             try:
                 response = requests.post(set_url, json=payload)
                 if response.status_code == 200:
-                    for item in payload:
-                        logger.debug(f"Setting '{item['key']}' updated with value '{item['value']}'")
+#                    for item in payload:
+#                        obfuscated_value = obfuscate_value(item['value'], item['value'])
+#                        logger.debug(f"Setting '{item['key']}' updated with value '{obfuscated_value}'")
                     save_response = requests.post(save_url)
                     if save_response.status_code == 200:
                         logger.info('Settings saved successfully.')

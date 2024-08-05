@@ -50,7 +50,7 @@ class SubprocessLogger:
                 if process_name == 'rclone':
                     log_func(f"rclone mount name \"{mount_name}\": {message}")
                 else:
-                    log_func(f"{process_name}: {message}")
+                    log_func(f"{process_name} subprocess: {message}")
 
     def start_monitoring_stderr(self, process, mount_name, process_name):
         self.stderr_thread = threading.Thread(target=self.monitor_stderr, args=(process, mount_name, process_name))
@@ -84,7 +84,7 @@ class SubprocessLogger:
     def stop_monitoring_stderr(self):
         if self.stderr_thread:
             self.stop_event.set()
-            self.stderr_thread.join()       
+            self.stderr_thread.join()
 
 class MissingAPIKeyException(Exception):
     def __init__(self):
