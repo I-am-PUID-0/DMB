@@ -38,26 +38,26 @@ version: "3.8"
 services:
   DMB:
     container_name: DMB
-    image: iampuid0/dmb:latest
+    image: iampuid0/DMB:latest
     ## Optionally, specify a specific version of DMB
-    # image: iampuid0/dmb:2.0.0 #etc...
+    # image: iampuid0/DMB:2.0.0 #etc...
     stdin_open: true # docker run -i
     tty: true        # docker run -t    
     volumes:
       ## Location of configuration files. If a Zurg config.yml and/or Zurg app is placed here, it will be used to override the default configuration and/or app used at startup. 
-      - ~/docker/DMB/config:/config
+      - /home/username/docker/DMB/config:/config
       ## Location for logs
-      - ~/docker/DMB/log:/log
+      - /home/username/docker/DMB/log:/log
       ## Location for Zurg RealDebrid active configuration
-      - ~/docker/DMB/Zurg/RD:/zurg/RD
+      - /home/username/docker/DMB/Zurg/RD:/zurg/RD
       ## Location for Zurg AllDebrid active configuration - Riven does not currently support AllDebrid   
-      - ~/docker/DMB/Zurg/AD:/zurg/AD   
+      - /home/username/docker/DMB/Zurg/AD:/zurg/AD   
       ## Location for rclone mount to host
-      - ~/docker/DMB/Zurg/mnt:/data:shared  
+      - /home/username/docker/DMB/Zurg/mnt:/data:shared  
       ## Location for Riven backend data
-      - ~/docker/DMB/Riven/data:/riven/backend/data
+      - /home/username/docker/DMB/Riven/data:/riven/backend/data
       ## Location for Riven symlinks
-      - ~/docker/DMB/Riven/mnt:/mnt
+      - /home/username/docker/DMB/Riven/mnt:/mnt
     environment:
       - TZ=
       ## Zurg Required Settings
@@ -129,6 +129,10 @@ services:
 ```
 
 ## 🎥 Example Plex Docker-compose
+
+> [!NOTE] 
+> The Plex server must be started after the rclone mount is available.  The below example uses the ```depends_on``` parameter to delay the start of the Plex server until the rclone mount is available.  The rclone mount must be shared to the Plex container.  The rclone mount location should not be added to the Plex library.  The Riven symlink location must be shared to the Plex container and added to the Plex library.
+
 ```YAML
 version: "3.8"
 
@@ -139,14 +143,17 @@ services:
     devices:
       - /dev/dri:/dev/dri    
     volumes:
-      - ~/docker/plex/library:/config
-      - ~/docker/plex/transcode:/transcode
-      - ~/docker/DMB/Zurg/mnt:/data # rclone mount location from DMB must be shared to Plex container. Don't add to plex library
-      - ~/docker/DMB/Riven/mnt:/mnt  # Riven symlink location from DMB must be shared to Plex container. Add to plex library    
+      - /home/username/docker/plex/library:/config
+      - /home/username/docker/plex/transcode:/transcode
+      - /home/username/docker/DMB/Zurg/mnt:/data # rclone mount location from DMB must be shared to Plex container. Don't add to plex library
+      - /home/username/docker/DMB/Riven/mnt:/mnt  # Riven symlink location from DMB must be shared to Plex container. Add to plex library    
     environment:
       - TZ=${TZ}
     ports:
       - "32400:32400"
+    depends_on:  # Used to delay the startup of plex to ensure the rclone mount is available.
+      DMB: # set to the name of the container running rclone
+        condition: service_healthy 
 ```
 
 ## 🔨 Docker Build
