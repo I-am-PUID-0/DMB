@@ -137,7 +137,7 @@ services:
     image: plexinc/pms-docker:latest
     container_name: plex
     devices:
-     - /dev/dri:/dev/dri    
+      - /dev/dri:/dev/dri    
     volumes:
       - ~/docker/plex/library:/config
       - ~/docker/plex/transcode:/transcode
