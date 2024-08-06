@@ -22,3 +22,15 @@ jobs:
           curl -H "Content-Type: application/json" \
                -d "{\"content\": $ESCAPED_BODY, \"flags\": 4}" \
                $DISCORD_WEBHOOK_URL
+
+      - name: Publish the announcement
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          MESSAGE_ID: ${{ env.MESSAGE_ID }}
+        run: |
+          WEBHOOK_ID=$(echo $DISCORD_WEBHOOK_URL | sed -n 's|.*/\(.*\)/.*|\1|p')
+          WEBHOOK_TOKEN=$(echo $DISCORD_WEBHOOK_URL | sed -n 's|.*/\(.*\)$|\1|p')
+          curl -H "Content-Type: application/json" \
+               -X PATCH \
+               -d "{\"flags\": 0}" \
+               "https://discord.com/api/webhooks/$WEBHOOK_ID/$WEBHOOK_TOKEN/messages/$MESSAGE_ID"
