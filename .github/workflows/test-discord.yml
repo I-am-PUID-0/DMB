@@ -16,34 +16,9 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           VERSION: "1.0.2"
         run: |
-            RELEASE_NOTES=$(awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md)
-            ANNOUNCEMENT_BODY="🚀 **New Release: Version [${{ env.VERSION }}]**${RELEASE_NOTES}"
-            ESCAPED_BODY=$(echo "$ANNOUNCEMENT_BODY" | jq -Rsa .)
-            RESPONSE=$(curl -H "Content-Type: application/json" \
-                            -d "{\"content\": $ESCAPED_BODY, \"flags\": 4}" \
-                            -s -X POST $DISCORD_WEBHOOK_URL)
-            echo "RESPONSE: $RESPONSE"
-            MESSAGE_ID=$(echo $RESPONSE | jq -r '.id')
-            echo "MESSAGE_ID: $MESSAGE_ID"
-            WEBHOOK_ID=$(echo $DISCORD_WEBHOOK_URL | sed -n 's|.*webhooks/\([^/]*\)/.*|\1|p')
-            WEBHOOK_TOKEN=$(echo $DISCORD_WEBHOOK_URL | sed -n 's|.*/\([^/]*\)$|\1|p')
-            echo "MESSAGE_ID=$MESSAGE_ID" >> $GITHUB_ENV
-            echo "WEBHOOK_ID=$WEBHOOK_ID" >> $GITHUB_ENV
-            echo "WEBHOOK_TOKEN=$WEBHOOK_TOKEN" >> $GITHUB_ENV
-            echo "WEBHOOK_ID: $WEBHOOK_ID"
-            echo "WEBHOOK_TOKEN: $WEBHOOK_TOKEN"
-
-      - name: Publish the announcement
-        env:
-            MESSAGE_ID: ${{ env.MESSAGE_ID }}
-            WEBHOOK_ID: ${{ env.WEBHOOK_ID }}
-            WEBHOOK_TOKEN: ${{ env.WEBHOOK_TOKEN }}
-        run: |
-            echo "Publishing announcement..."
-            echo "WEBHOOK_ID: $WEBHOOK_ID"
-            echo "WEBHOOK_TOKEN: $WEBHOOK_TOKEN"
-            echo "MESSAGE_ID: $MESSAGE_ID"
-            curl -H "Content-Type: application/json" \
-                    -X PATCH \
-                    -d "{\"flags\": 0}" \
-                    "https://discord.com/api/v10/webhooks/$WEBHOOK_ID/$WEBHOOK_TOKEN/messages/$MESSAGE_ID"
+          RELEASE_NOTES=$(awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md)
+          ANNOUNCEMENT_BODY="🚀 **New Release: Version [${{ env.VERSION }}]**${RELEASE_NOTES}"
+          ESCAPED_BODY=$(echo "$ANNOUNCEMENT_BODY" | jq -Rsa .)
+          curl -H "Content-Type: application/json" \
+               -d "{\"content\": $ESCAPED_BODY, \"flags\": 4}" \
+               $DISCORD_WEBHOOK_URL
