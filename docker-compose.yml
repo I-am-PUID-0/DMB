@@ -10,19 +10,19 @@ services:
     tty: true        # docker run -t    
     volumes:
       ## Location of configuration files. If a Zurg config.yml and/or Zurg app is placed here, it will be used to override the default configuration and/or app used at startup. 
-      - /DMB/config:/config
+      - ~/docker/DMB/config:/config
       ## Location for logs
-      - /DMB/log:/log
+      - ~/docker/DMB/log:/log
       ## Location for Zurg RealDebrid active configuration
-      - /DMB/Zurg/RD:/zurg/RD
+      - ~/docker/DMB/Zurg/RD:/zurg/RD
       ## Location for Zurg AllDebrid active configuration - Riven does not currently support AllDebrid   
-      - /DMB/Zurg/AD:/zurg/AD   
+      - ~/docker/DMB/Zurg/AD:/zurg/AD   
       ## Location for rclone mount to host
-      - /DMB/Zurg/mnt:/data:shared  
-      ## Location for Riven data
-      - /DMB/Riven/data:/riven/data
+      - ~/docker/DMB/Zurg/mnt:/data:shared  
+      ## Location for Riven backend data
+      - ~/docker/DMB/Riven/data:/riven/backend/data
       ## Location for Riven symlinks
-      - /DMB/Riven/mnt:/mnt
+      - ~/docker/DMB/Riven/mnt:/mnt
     environment:
       - TZ=
       ## Zurg Required Settings
@@ -50,15 +50,26 @@ services:
      # - RCLONE_VFS_CACHE_MAX_SIZE=100G
      # - RCLONE_BUFFER_SIZE=32M
      # - RCLONE_VFS_CACHE_MAX_AGE=4h
-      ## Riven Required Settings
-      - RIVEN_ENABLED=true
+      ## Riven Backend Required Settings
+      - RIVEN_BACKEND_ENABLED=true
+      ## Riven Frontend Required Settings
+      - RIVEN_FRONTEND_ENABLED=true
       - ORIGIN=http://0.0.0.0:3000 # See Riven documentation for more details
       ## Riven Optional Settings
+     # - RIVEN_ENABLED=true
+     # - RIVEN_BACKEND_BRANCH=main
+     # - RIVEN_FRONTEND_BRANCH=main
+     # - RIVEN_BACKEND_VERSION=v0.8.4
+     # - RIVEN_FRONTEND_VERSION=v0.2.5
+     # - RIVEN_BACKEND_UPDATE=true
+     # - RIVEN_FRONTEND_UPDATE=true
+     # - RIVEN_LOG_LEVEL=DEBUG
+     # - RIVEN_BACKEND_URL=http://127.0.0.1:8080 # Default is http://127.0.0.1:8080 when not enabled
+     # - RIVEN_DATABASE_HOST=sqlite:////riven/backend/data/media.db # Default is sqlite:////riven/backend/data/media.db when not enabled
+     # - RIVEN_DATABASE_URL=/riven/backend/data/media.db  # Default is /riven/backend/data/media.db when not enabled
+     # - RIVEN_FRONTEND_DIALECT=sqlite
      # - PLEX_TOKEN=
      # - PLEX_ADDRESS=
-     # - RIVEN_UPDATE=true 
-     # - RIVEN_BRANCH=main
-     # - RIVEN_LOG_LEVEL=DEBUG
      # - SEERR_API_KEY=
      # - SEERR_ADDRESS=
       ## Special Features
@@ -67,8 +78,12 @@ services:
      # - CLEANUP_INTERVAL=1
      # - DMB_LOG_LEVEL=DEBUG  # Master log level for all program logs in DMB
      # - DMB_LOG_COUNT=2
+     # - DMB_LOG_SIZE=10M
+     # - COLOR_LOG_ENABLED=true
     # Example to attach to gluetun vpn container if realdebrid blocks IP address 
     # network_mode: container:gluetun  
+    ports:
+      - "3000:3000"
     devices:
       - /dev/fuse:/dev/fuse:rwm
     cap_add:

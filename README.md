@@ -27,6 +27,11 @@ A prebuilt image is hosted on [Docker Hub](https://hub.docker.com/r/iampuid0/dmb
 A prebuilt image is hosted on [GitHub Container Registry](https://github.com/I-am-PUID-0/DMB/pkgs/container/DMB).
 
 ## 🛠️ Docker-compose
+
+> [!NOTE] 
+> The below examples are not exhaustive and are intended to provide a starting point for deployment.
+> Additionally, the host directories used in the examples are based on [Define the directory structure](https://github.com/I-am-PUID-0/DMB/wiki/Setup-Guides#define-the-directory-structure) and provided for illustrative purposes and can be changed to suit your needs.
+
 ```YAML
 version: "3.8"
 
@@ -40,19 +45,19 @@ services:
     tty: true        # docker run -t    
     volumes:
       ## Location of configuration files. If a Zurg config.yml and/or Zurg app is placed here, it will be used to override the default configuration and/or app used at startup. 
-      - /DMB/config:/config
+      - ~/docker/DMB/config:/config
       ## Location for logs
-      - /DMB/log:/log
+      - ~/docker/DMB/log:/log
       ## Location for Zurg RealDebrid active configuration
-      - /DMB/Zurg/RD:/zurg/RD
+      - ~/docker/DMB/Zurg/RD:/zurg/RD
       ## Location for Zurg AllDebrid active configuration - Riven does not currently support AllDebrid   
-      - /DMB/Zurg/AD:/zurg/AD   
+      - ~/docker/DMB/Zurg/AD:/zurg/AD   
       ## Location for rclone mount to host
-      - /DMB/Zurg/mnt:/data:shared  
+      - ~/docker/DMB/Zurg/mnt:/data:shared  
       ## Location for Riven backend data
-      - /DMB/Riven/data:/riven/backend/data
+      - ~/docker/DMB/Riven/data:/riven/backend/data
       ## Location for Riven symlinks
-      - /DMB/Riven/mnt:/mnt
+      - ~/docker/DMB/Riven/mnt:/mnt
     environment:
       - TZ=
       ## Zurg Required Settings
@@ -134,10 +139,10 @@ services:
     devices:
      - /dev/dri:/dev/dri    
     volumes:
-      - /plex/library:/config
-      - /plex/transcode:/transcode
-      - /DMB/Zurg/mnt:/data # rclone mount location from DMB must be shared to Plex container. Don't add to plex library
-      - /DMB/Riven/mnt:/mnt  # Riven symlink location from DMB must be shared to Plex container. Add to plex library    
+      - ~/docker/plex/library:/config
+      - ~/docker/plex/transcode:/transcode
+      - ~/docker/DMB/Zurg/mnt:/data # rclone mount location from DMB must be shared to Plex container. Don't add to plex library
+      - ~/docker/DMB/Riven/mnt:/mnt  # Riven symlink location from DMB must be shared to Plex container. Add to plex library    
     environment:
       - TZ=${TZ}
     ports:
