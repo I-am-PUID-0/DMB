@@ -38,9 +38,9 @@ version: "3.8"
 services:
   DMB:
     container_name: DMB
-    image: iampuid0/DMB:latest
+    image: iampuid0/dmb:latest
     ## Optionally, specify a specific version of DMB
-    # image: iampuid0/DMB:2.0.0 #etc...
+    # image: iampuid0/dmb:2.0.0 #etc...
     stdin_open: true # docker run -i
     tty: true        # docker run -t    
     volumes:
