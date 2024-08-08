@@ -11,7 +11,7 @@ class ProcessHandler:
         self.stderr = ""
         self.returncode = None
 
-    def start_process(self, process_name, config_dir, command, key_type=None):
+    def start_process(self, process_name, config_dir, command, key_type=None, suppress_logging=False):
         try:
             if key_type is not None:
                 self.logger.info(f"Starting {process_name} w/ {key_type}")
@@ -28,9 +28,10 @@ class ProcessHandler:
                 universal_newlines=True,
                 bufsize=1
             )
-            self.subprocess_logger = SubprocessLogger(self.logger, f"{process_description}")
-            self.subprocess_logger.start_logging_stdout(self.process)
-            self.subprocess_logger.start_monitoring_stderr(self.process, key_type, process_name)
+            if not suppress_logging:
+                self.subprocess_logger = SubprocessLogger(self.logger, f"{process_description}")
+                self.subprocess_logger.start_logging_stdout(self.process)
+                self.subprocess_logger.start_monitoring_stderr(self.process, key_type, process_name)
             return self.process
         except Exception as e:
             self.logger.error(f"Error running subprocess for {process_description}: {e}")

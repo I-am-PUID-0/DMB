@@ -25,7 +25,7 @@ def shutdown(signum, frame):
 def main():
     logger = get_logger()
 
-    version = '3.4.0'
+    version = '3.5.0'
 
     ascii_art = f'''
                                                                        
@@ -104,12 +104,12 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
     try:
         if (RIVENBACKEND is not None and str(RIVENBACKEND).lower() == 'true') or (RIVEN is not None and str(RIVEN).lower() == 'true'):
             try:
-                r.setup.riven_setup('Riven_backend')
+                r.setup.riven_setup('riven_backend')
                 r_updater = r.update.RivenUpdate()
-                if RBUPDATE or RUPDATE:
-                    r_updater.auto_update('Riven_backend', True)                                        
+                if (RBUPDATE or RUPDATE) and not RBVERSION:
+                    r_updater.auto_update('riven_backend', True)                                        
                 else:
-                    r_updater.auto_update('Riven_backend', False)              
+                    r_updater.auto_update('riven_backend', False)              
             except Exception as e:
                 logger.error(f"An error occurred in the Riven backend setup: {e}")
     except:
@@ -118,12 +118,12 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
     try:
         if (RIVENFRONTEND is not None and str(RIVENFRONTEND).lower() == 'true') or (RIVEN is not None and str(RIVEN).lower() == 'true'):
             try:
-                r.setup.riven_setup('Riven_frontend', RFBRANCH, RFVERSION)
+                r.setup.riven_setup('riven_frontend', RFBRANCH, RFVERSION)
                 r_updater = r.update.RivenUpdate()
-                if RFUPDATE or RUPDATE:       
-                    r_updater.auto_update('Riven_frontend', True)
+                if (RFUPDATE or RUPDATE) and not RFVERSION:       
+                    r_updater.auto_update('riven_frontend', True)
                 else:
-                    r_updater.auto_update('Riven_frontend', False)                    
+                    r_updater.auto_update('riven_frontend', False)                    
             except Exception as e:
                 logger.error(f"An error occurred in the Riven frontend setup: {e}")
     except:

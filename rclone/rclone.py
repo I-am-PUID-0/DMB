@@ -1,6 +1,6 @@
 from base import *
 from utils.logger import *
-
+from utils.processes import ProcessHandler
 
 logger = get_logger()
 
@@ -106,7 +106,7 @@ def setup():
         if ADAPIKEY:
             mount_names.append(RCLONEMN_AD)
 
-        subprocesses = []
+        process_handler = ProcessHandler(logger)
 
         for idx, mn in enumerate(mount_names):
             logger.info(f"Configuring rclone for {mn}")
@@ -130,13 +130,15 @@ def setup():
             url = f"http://localhost:{rd_port if mn == RCLONEMN_RD else ad_port}"
             if os.path.exists(f"/healthcheck/{mn}"):
                 os.rmdir(f"/healthcheck/{mn}")
-            if wait_for_url(url):
+            if wait_for_url(url):             
                 os.makedirs(f"/healthcheck/{mn}") # makdir for healthcheck. Don't like it, but it works for now...
                 logger.info(f"The Zurg WebDAV URL {url}/dav is accessible. Starting rclone{' daemon' if '--daemon' in rclone_command else ''} for {mn}")
                 process_name = "rclone"
-                subprocess_logger = SubprocessLogger(logger, process_name)
-                process = subprocess.Popen(rclone_command, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-                subprocess_logger.start_monitoring_stderr(process, mn, process_name)
+                suppress_logging=False
+                if str(RCLONELOGLEVEL).lower()=='off':
+                    suppress_logging = True
+                    logger.info(f"Suppressing {process_name} logging")                     
+                rclone_process = process_handler.start_process(process_name, "/config", rclone_command, mn, suppress_logging=suppress_logging)
             else:
                 logger.error(f"The Zurg WebDav URL {url}/dav is not accessible within the timeout period. Skipping rclone setup for {mn}")
 

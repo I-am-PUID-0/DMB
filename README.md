@@ -177,7 +177,7 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`RD_API_KEY`| [RealDebrid API key](https://real-debrid.com/apitoken) | `none` | | :heavy_check_mark:| :heavy_check_mark:|
 |`AD_API_KEY`| [AllDebrid API key](https://alldebrid.com/apikeys/) | `none` | | :heavy_check_mark:| :heavy_check_mark:|
 |`RCLONE_MOUNT_NAME`| A name for the rclone mount | `none` | :heavy_check_mark:|
-|`RCLONE_LOG_LEVEL`| [Log level](https://rclone.org/docs/#log-level-level) for rclone | `NOTICE` | :heavy_check_mark:|
+|`RCLONE_LOG_LEVEL`| [Log level](https://rclone.org/docs/#log-level-level) for rclone - To suppress logs set value to OFF | `NOTICE` | :heavy_check_mark:|
 |`RCLONE_LOG_FILE`| [Log file](https://rclone.org/docs/#log-file-file) for rclone |`none`  | :heavy_check_mark: |
 |`RCLONE_DIR_CACHE_TIME`| [How long a directory should be considered up to date and not refreshed from the backend](https://rclone.org/commands/rclone_mount/#vfs-directory-cache) #optional, but recommended is 10s. | `10s` | :heavy_check_mark:|
 |`RCLONE_CACHE_DIR`| [Directory used for caching](https://rclone.org/docs/#cache-dir-dir). |`none`  | :heavy_check_mark:|
@@ -193,7 +193,7 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`RIVEN_FRONTEND_BRANCH`| Set the value to the appropriate branch  | `main` | | :heavy_check_mark: | |
 |`RIVEN_BACKEND_VERSION`| The version of Riven backend to use. If enabled, the value should contain v0.8.x format | `latest` | | :heavy_check_mark: | |
 |`RIVEN_FRONTEND_VERSION`| The version of Riven frontend to use. If enabled, the value should contain v0.8.x format | `latest` | | :heavy_check_mark: | |
-|`RIVEN_LOGFILE`| Log file for Riven. The log file will appear in the ```/config``` as ```Riven.log```. If used, the value must be ```true``` or ```false``` | `false` || :heavy_check_mark:| |
+|`RIVEN_LOG_LEVEL`| Log level for Riven - To suppress logs set value to OFF  | `INFO` || :heavy_check_mark:| |
 |`RIVEN_BACKEND_UPDATE`| Enable automatic updates of the Riven backend. Adding this variable will enable automatic updates to the latest version of Riven locally within the container.| `false` || :heavy_check_mark:|
 |`RIVEN_FRONTEND_UPDATE`| Enable automatic updates of the Riven frontend. Adding this variable will enable automatic updates to the latest version of Riven locally within the container.| `false` || :heavy_check_mark:|
 |`ORIGIN`| The origin URL for the Riven frontend | http://0.0.0.0:3000 | | :heavy_check_mark: | |
@@ -212,7 +212,7 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`GITHUB_TOKEN`| GitHub Personal Token for use with Zurg private repo. Requires Zurg [sponsorship](https://github.com/sponsors/debridmediamanager) | `false ` | | | :heavy_check_mark:|
 |`ZURG_VERSION`| The version of Zurg to use. If enabled, the value should contain v0.9.x or v0.9.x-hotfix.x format or "nightly" if wanting the nightly builds from Zurg private repo (requires GITHUB_TOKEN)  | `latest` | | | :heavy_check_mark: |
 |`ZURG_UPDATE`| Enable automatic updates of Zurg. Adding this variable will enable automatic updates to the latest version of Zurg locally within the container. | `false` | | | :heavy_check_mark:|
-|`ZURG_LOG_LEVEL`| Set the log level for Zurg | `INFO` | | | :heavy_check_mark:|
+|`ZURG_LOG_LEVEL`| Set the log level for Zurg - To suppress logs set value to OFF  | `INFO` | | | :heavy_check_mark:|
 |`SEERR_API_KEY`| The Overseerr API Key |`none`|| :heavy_check_mark:||
 |`SEERR_ADDRESS`| The URL of your Overseerr server. Example: http://192.168.0.102:5055 or http://Overseerr:5055 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (5055). E.g., ```/``` |`none`| | :heavy_check_mark:|
 |`ZURG_USER`| The username to be used for protecting the Zurg endpoints.  | `none `| | | :heavy_check_mark: |

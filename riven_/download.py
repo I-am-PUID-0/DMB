@@ -1,4 +1,3 @@
-from email import header
 from base import *
 from utils.logger import *
 from utils.download import Downloader
@@ -38,10 +37,10 @@ def download_and_unzip_release(repo_owner, repo_name, release_version, target_di
         release_info, error = downloader.fetch_github_release_info(repo_owner, repo_name, release_version, headers)        
         if error:
             logger.error(error)
-            return False        
+            return False, error        
         download_url, asset_id = downloader.find_asset_download_url(release_info)        
         if not download_url:
-            return False        
+            return False, error       
         logger.debug(f"Requesting {repo_name} release {release_version} from: {download_url}")
         zip_folder_name = f'{repo_owner}-{repo_name}*'
         success, error = downloader.download_and_extract(download_url, target_dir, zip_folder_name=zip_folder_name, headers=headers, exclude_dirs=exclude_dirs)
@@ -53,19 +52,40 @@ def download_and_unzip_release(repo_owner, repo_name, release_version, target_di
         logger.error(f"Error in download and extraction: {e}")
         return False, str(e)
 
-def version_check(repo_owner, repo_name, release_version):
-    try:      
-        if ZURGVERSION:
-            release_version = ZURGVERSION if ZURGVERSION.startswith('v') else 'v' + ZURGVERSION
-            logger.info("Using release version from environment variable: %s", release_version)
-        else:      
-            release_version, error = get_latest_release(repo_owner, repo_name)
-            if error:
-                logger.error(error)
-                raise Exception("Failed to get the latest release version.")
-        if not download_and_unzip_release(repo_owner, repo_name, release_version):
-            raise Exception("Failed to download and extract the release.")
-
+def version_check(version_path=None, process_name=None):
+    try:
+        if process_name == 'riven_frontend':
+            version_path = "./riven/frontend/version.txt"
+        else:
+            version_path = "./riven/backend/pyproject.toml"
+        
+        with open(version_path, 'r') as f:
+            if process_name == 'riven_frontend':
+                return f"v{f.read().strip()}", None
+            elif process_name == 'riven_backend':
+                for line in f:
+                    if line.startswith("version = "):
+                        return line.split("=")[1].strip().replace("\"", ""), None
+        return None, "Version not found"
     except Exception as e:
-        logger.error(f"An error occurred: {e}")
-        exit(1)
+        logger.error(f"Error reading current version for {process_name} from {version_path}: {e}")
+        return None, str(e)
+
+def compare_versions(process_name, repo_owner, repo_name):
+    try:
+        from .download import get_latest_release
+        latest_release_version, error = get_latest_release(repo_owner, repo_name)
+        if not latest_release_version:
+            logger.error(f"Failed to get the latest release for {process_name}: {error}")
+            return False, error
+
+        from .download import version_check
+        current_version, error = version_check(version_path=None, process_name=process_name)
+        if not current_version:
+            logger.error(f"Failed to get the current version for {process_name}: {error}")
+            return False, error
+        if current_version == latest_release_version:
+            return True, None
+    except Exception as e:
+        logger.error(f"Exception during version comparison {process_name}: {e}")
+        return False, str(e)

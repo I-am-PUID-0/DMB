@@ -44,8 +44,8 @@ def set_env_variables():
         'UPDATERS_PLEX_TOKEN': PLEXTOKEN,
         'CONTENT_OVERSEERR_URL': SEERRADD,
         'CONTENT_OVERSEERR_API_KEY': SEERRAPIKEY,
-        'SYMLINK_RCLONE_PATH': f"/data/{RCLONEMN}/__all__",
-        'SYMLINK_LIBRARY_PATH': "/mnt",
+        'SYMLINK_RCLONE_PATH': SYMLINKRCLONEPATH,
+        'SYMLINK_LIBRARY_PATH': SYMLINKLIBRARYPATH,
         'BACKEND_URL': RIVENBACKENDURL,
         'DIALECT' : RFDIALECT,
         'DATABASE_URL': RIVENDATABASEURL,
@@ -54,6 +54,8 @@ def set_env_variables():
     }
 
     default_env_vars = {
+        'SYMLINK_RCLONE_PATH': f'/data/{RCLONEMN}/__all__',
+        'SYMLINK_LIBRARY_PATH': '/mnt',
         'DATABASE_HOST': 'sqlite:////riven/backend/data/media.db',
         'DATABASE_URL': '/riven/backend/data/media.db',
         'BACKEND_URL': 'http://127.0.0.1:8080',

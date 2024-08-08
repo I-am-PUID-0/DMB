@@ -29,7 +29,10 @@ class ZurgUpdate(Update, ProcessHandler):
         if not found_process:
             self.logger.debug(f"No matching {process_name} w/ {key_type} processes found")
         
-    def start_process(self, process_name, config_dir=None):
+    def start_process(self, process_name, config_dir=None, suppress_logging=False):
+        if str(ZURGLOGLEVEL).lower()=='off':
+            suppress_logging = True
+            self.logger.info(f"Suppressing {process_name} logging")
         directories_to_check = ["/zurg/RD", "/zurg/AD"]
 
         for dir_to_check in directories_to_check:
@@ -40,7 +43,7 @@ class ZurgUpdate(Update, ProcessHandler):
                 elif dir_to_check == "/zurg/AD":
                     key_type = "AllDebrid"
                 command = [zurg_executable]
-                super().start_process(process_name, dir_to_check, command, key_type)    
+                super().start_process(process_name, dir_to_check, command, key_type, suppress_logging=suppress_logging)    
                 
     def update_check(self, process_name):
         self.logger.info(f"Checking for available {process_name} updates")

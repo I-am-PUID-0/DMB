@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [3.5.0] - 2024-08-08 🚀
+
+### Added ✨
+
+- Suppress Logs: If the LOG_LEVEL for a process is set to OFF, then logs will be suppressed for the process 🤫
+- Riven Frontend: Added the latest version of the Riven frontend to the Dockerfile for image build 📦 
+
+### Notes 📝
+
+- The DMB image is built nightly and will include the latest version of the Riven frontend at the time of build 🌙
+
+
 ## Version [3.4.0] - 2024-08-05 🚀
 
 
