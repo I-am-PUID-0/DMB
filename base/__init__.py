@@ -7,6 +7,8 @@ from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler, Base
 from packaging.version import Version, parse as parse_version
 import time
 import os
+import pwd
+import grp
 import ast
 import requests
 import zipfile
@@ -77,3 +79,9 @@ RFUPDATE = os.getenv('RIVEN_FRONTEND_UPDATE')
 RFDIALECT = os.getenv('RIVEN_FRONTEND_DIALECT')
 SYMLINKLIBRARYPATH = os.getenv('SYMLINK_LIBRARY_PATH')
 SYMLINKRCLONEPATH = os.getenv('SYMLINK_RCLONE_PATH')
+postgres_system_user = "DMB"
+postgres_data = os.getenv('POSTGRES_DATA', '/postgres_data')
+postgres_user = os.getenv('POSTGRES_USER', 'postgres')
+postgres_password = os.getenv('POSTGRES_PASSWORD', 'postgres')
+postgres_db = os.getenv('POSTGRES_DB', 'riven')
+db_host = '127.0.0.1'  

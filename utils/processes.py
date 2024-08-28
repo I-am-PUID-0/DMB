@@ -13,21 +13,54 @@ class ProcessHandler:
 
     def start_process(self, process_name, config_dir, command, key_type=None, suppress_logging=False):
         try:
+            user_id = int(os.getenv('PUID', 1001))
+            group_id = int(os.getenv('PGID', 1001))
+
+            try:
+                pwd.getpwuid(user_id)
+            except KeyError:
+                self.logger.error(f"UID {user_id} does not exist. Process will not start.")
+                return None
+
+            try:
+                grp.getgrgid(group_id)
+            except KeyError:
+                self.logger.error(f"GID {group_id} does not exist. Process will not start.")
+                return None
+
+            def preexec_fn():
+                os.setgid(group_id)
+                os.setuid(user_id)
+
             if key_type is not None:
-                self.logger.info(f"Starting {process_name} w/ {key_type}")
+                self.logger.info(f"Starting {process_name} w/ {key_type} subprocess")
                 process_description = f"{process_name} w/ {key_type}"
             else:
-                self.logger.info(f"Starting {process_name}")
+                self.logger.info(f"Starting {process_name} subprocess")
                 process_description = f"{process_name}"
-            self.process = subprocess.Popen(
-                command,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                start_new_session=True,
-                cwd=config_dir,
-                universal_newlines=True,
-                bufsize=1
-            )
+                
+            if process_name in ["rclone", "poetry_install", "poetry_env_setup", "PostgreSQL", "PostgreSQL_init"]:
+                self.process = subprocess.Popen(
+                    command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    start_new_session=True,
+                    cwd=config_dir,
+                    universal_newlines=True,
+                    bufsize=1
+                )
+            else:
+                self.process = subprocess.Popen(
+                    command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    start_new_session=True,
+                    cwd=config_dir,
+                    universal_newlines=True,
+                    bufsize=1,
+                    preexec_fn=preexec_fn 
+                )
+                
             if not suppress_logging:
                 self.subprocess_logger = SubprocessLogger(self.logger, f"{process_description}")
                 self.subprocess_logger.start_logging_stdout(self.process)

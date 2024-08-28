@@ -3,9 +3,9 @@ version: "3.8"
 services:
   DMB:
     container_name: DMB
-    image: iampuid0/DMB:latest
+    image: iampuid0/dmb:latest
     ## Optionally, specify a specific version of DMB
-    # image: iampuid0/DMB:2.0.0 #etc...
+    # image: iampuid0/dmb:2.0.0 #etc...
     stdin_open: true # docker run -i
     tty: true        # docker run -t    
     volumes:
@@ -23,8 +23,12 @@ services:
       - /home/username/docker/DMB/Riven/data:/riven/backend/data
       ## Location for Riven symlinks
       - /home/username/docker/DMB/Riven/mnt:/mnt
+      ## Location for PostgreSQL database if using Riven
+      - /home/username/docker/DMB/PostgreSQL/data:/postgres_data
     environment:
       - TZ=
+      - PUID=
+      - PGID=
       ## Zurg Required Settings
       - ZURG_ENABLED=true      
       - RD_API_KEY=
@@ -50,6 +54,11 @@ services:
      # - RCLONE_VFS_CACHE_MAX_SIZE=100G
      # - RCLONE_BUFFER_SIZE=32M
      # - RCLONE_VFS_CACHE_MAX_AGE=4h
+      ## PostgreSQL Optional Settings
+     # - POSTGRES_DATA=/postgres_data
+     # - POSTGRES_USER=postgres
+     # - POSTGRES_PASSWORD=postgres
+     # - POSTGRES_DB=riven
       ## Riven Backend Required Settings
       - RIVEN_BACKEND_ENABLED=true
       ## Riven Frontend Required Settings
@@ -64,10 +73,10 @@ services:
      # - RIVEN_BACKEND_UPDATE=true
      # - RIVEN_FRONTEND_UPDATE=true
      # - RIVEN_LOG_LEVEL=DEBUG
-     # - RIVEN_BACKEND_URL=http://127.0.0.1:8080 # Default is http://127.0.0.1:8080 when not enabled
-     # - RIVEN_DATABASE_HOST=sqlite:////riven/backend/data/media.db # Default is sqlite:////riven/backend/data/media.db when not enabled
-     # - RIVEN_DATABASE_URL=/riven/backend/data/media.db  # Default is /riven/backend/data/media.db when not enabled
-     # - RIVEN_FRONTEND_DIALECT=sqlite
+     # - RIVEN_BACKEND_URL=
+     # - RIVEN_DATABASE_HOST=
+     # - RIVEN_DATABASE_URL= 
+     # - RIVEN_FRONTEND_DIALECT=
      # - PLEX_TOKEN=
      # - PLEX_ADDRESS=
      # - SEERR_API_KEY=

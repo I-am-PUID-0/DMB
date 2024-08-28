@@ -58,8 +58,12 @@ services:
       - /home/username/docker/DMB/Riven/data:/riven/backend/data
       ## Location for Riven symlinks
       - /home/username/docker/DMB/Riven/mnt:/mnt
+      ## Location for PostgreSQL database if using Riven
+      - /home/username/docker/DMB/PostgreSQL/data:/postgres_data
     environment:
       - TZ=
+      - PUID=
+      - PGID=
       ## Zurg Required Settings
       - ZURG_ENABLED=true      
       - RD_API_KEY=
@@ -85,6 +89,11 @@ services:
      # - RCLONE_VFS_CACHE_MAX_SIZE=100G
      # - RCLONE_BUFFER_SIZE=32M
      # - RCLONE_VFS_CACHE_MAX_AGE=4h
+      ## PostgreSQL Optional Settings
+     # - POSTGRES_DATA=/postgres_data
+     # - POSTGRES_USER=postgres
+     # - POSTGRES_PASSWORD=postgres
+     # - POSTGRES_DB=riven
       ## Riven Backend Required Settings
       - RIVEN_BACKEND_ENABLED=true
       ## Riven Frontend Required Settings
@@ -99,10 +108,10 @@ services:
      # - RIVEN_BACKEND_UPDATE=true
      # - RIVEN_FRONTEND_UPDATE=true
      # - RIVEN_LOG_LEVEL=DEBUG
-     # - RIVEN_BACKEND_URL=http://127.0.0.1:8080 # Default is http://127.0.0.1:8080 when not enabled
-     # - RIVEN_DATABASE_HOST=sqlite:////riven/backend/data/media.db # Default is sqlite:////riven/backend/data/media.db when not enabled
-     # - RIVEN_DATABASE_URL=/riven/backend/data/media.db  # Default is /riven/backend/data/media.db when not enabled
-     # - RIVEN_FRONTEND_DIALECT=sqlite
+     # - RIVEN_BACKEND_URL=
+     # - RIVEN_DATABASE_HOST=
+     # - RIVEN_DATABASE_URL= 
+     # - RIVEN_FRONTEND_DIALECT=
      # - PLEX_TOKEN=
      # - PLEX_ADDRESS=
      # - SEERR_API_KEY=
@@ -174,6 +183,8 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 | Variable       | Description                                  | Default | Used w/ rclone| Used w/ Riven| Used w/ zurg|
 |----------------|----------------------------------------------|---------|:-:|:-:|:-:|
 |`TZ`| [TimeZone](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) used by the container |  |
+|`PUID`| The user ID of the user running the container | `1001` | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
+|`PGID`| The group ID of the user running the container | `1001` | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
 |`RD_API_KEY`| [RealDebrid API key](https://real-debrid.com/apitoken) | `none` | | :heavy_check_mark:| :heavy_check_mark:|
 |`AD_API_KEY`| [AllDebrid API key](https://alldebrid.com/apikeys/) | `none` | | :heavy_check_mark:| :heavy_check_mark:|
 |`RCLONE_MOUNT_NAME`| A name for the rclone mount | `none` | :heavy_check_mark:|
@@ -186,6 +197,10 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`RCLONE_VFS_CACHE_MAX_AGE`| [Max age of the VFS cache](https://rclone.org/commands/rclone_mount/#vfs-file-caching) |`none`  | :heavy_check_mark:|
 |`PLEX_TOKEN`| The [Plex Token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/) associated with your Plex user |`none`  || :heavy_check_mark:|
 |`PLEX_ADDRESS`| The URL of your Plex server. Example: http://192.168.0.100:32400 or http://plex:32400 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (32400). E.g., ```/``` |`none`|| :heavy_check_mark:|
+|`POSTGRES_DATA`| The location of the PostgreSQL database |`/postgres_data`|| :heavy_check_mark:|
+|`POSTGRES_USER`| The username for the PostgreSQL database |`postgres`|| :heavy_check_mark:|
+|`POSTGRES_PASSWORD`| The password for the PostgreSQL database |`postgres`|| :heavy_check_mark:|
+|`POSTGRES_DB`| The name of the PostgreSQL database |`riven`|| :heavy_check_mark:|
 |`RIVEN_ENABLED`| Set the value "true" to enable the Riven backend and frontend processes | `false ` | | :heavy_check_mark: | |
 |`RIVEN_BACKEND_ENABLED`| Set the value "true" to enable the Riven backend process | `false ` | | :heavy_check_mark: | |
 |`RIVEN_FRONTEND_ENABLED`| Set the value "true" to enable the Riven frontend process | `false ` | | :heavy_check_mark: | |
@@ -198,8 +213,8 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`RIVEN_FRONTEND_UPDATE`| Enable automatic updates of the Riven frontend. Adding this variable will enable automatic updates to the latest version of Riven locally within the container.| `false` || :heavy_check_mark:|
 |`ORIGIN`| The origin URL for the Riven frontend | http://0.0.0.0:3000 | | :heavy_check_mark: | |
 |`RIVEN_BACKEND_URL`| The URL for the Riven backend | http://127.0.0.1:8080 | | :heavy_check_mark: | |
-|`RIVEN_DATABASE_HOST`| The database host for Riven backend | `sqlite:////riven/backend/data/media.db` | | :heavy_check_mark: | |
-|`RIVEN_DATABASE_URL`| The database URL for Riven frontend | `/riven/backend/data/media.db` | | :heavy_check_mark: | |
+|`RIVEN_DATABASE_HOST`| The database host for Riven backend | `postgresql+psycopg2://postgres:postgres@127.0.0.1/riven` | | :heavy_check_mark: | |
+|`RIVEN_DATABASE_URL`| The database URL for Riven frontend | `postgres://postgres:postgres@127.0.0.1/riven` | | :heavy_check_mark: | |
 |`RIVEN_FRONTEND_DIALECT`| The dialect for the Riven frontend | `sqlite` | | :heavy_check_mark: | |
 |`AUTO_UPDATE_INTERVAL`| Interval between automatic update checks in hours. Vaules can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes, and 1.5 would yield one and a half hours | `24` || :heavy_check_mark:| :heavy_check_mark:|
 |`DUPLICATE_CLEANUP`| Automated cleanup of duplicate content in Plex.  | `false` |
@@ -233,11 +248,12 @@ format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 |-----------------|-------------|-------------|
 |`/config`| rw | This is where the application stores the rclone.conf, and any files needing persistence. CAUTION: rclone.conf is overwritten upon start/restart of the container. Do NOT use an existing rclone.conf file if you have other rclone services |
 |`/log`| rw | This is where the application stores its log files |
-|`/data`| shared  | This is where rclone will be mounted. Not required when only utilizing Riven   |
+|`/data`| shared  | This is where rclone will be mounted.|
 |`/zurg/RD`| rw| This is where Zurg will store the active configuration and data for RealDebrid. Not required when only utilizing Riven   |
 |`/zurg/AD`| rw | This is where Zurg will store the active configuration and data for AllDebrid. Not required when only utilizing Riven   |
 |`/riven/data`| rw | This is where Riven will store its data. Not required when only utilizing Zurg   |
 |`/riven/mnt`| rw | This is where Riven will set its symlinks. Not required when only utilizing Zurg   |
+|`/postgres_data`| rw | This is where PostgreSQL will store its data. Not required when only utilizing Zurg   |
 
 
 

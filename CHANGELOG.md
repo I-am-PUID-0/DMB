@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [4.0.0] - 2024-08-28 🚀
+
+### Breaking Changes ⚠️
+
+- Riven: Riven backend no longer supports sqlite as a database option; PostgreSQL is now the only supported database option 📉
+- PostgreSQL: To ensure the database files are persisted, a volume must be mounted to /postgres_data 📂
+
+### Added ✨
+
+- PUID & PGID: Environment variables to set the user and group IDs for the DMB container; Default is 1001 🆔
+- POSTGRES_DATA: Environment variable to set the path for the PostgreSQL database files; Default is /postgres_data 📁
+- POSTGRES_PASSWORD: Environment variable to set the password for the PostgreSQL database; Default is postgres 🔐
+- POSTGRES_USER: Environment variable to set the user for the PostgreSQL database; Default is postgres 👤
+- POSTGRES_DB: Environment variable to set the database name for the PostgreSQL database; Default is riven 🗄️
+
+### Changed 🔄
+
+- Riven: Riven backend now uses PostgreSQL as the database option; Default is postgresql+psycopg2://postgres:postgres@127.0.0.1/riven 🔧
+- Riven: Riven frontend now uses PostgreSQL as the database option; Default is postgres://postgres:postgres@127.0.0.1/riven 🔄
+
+### Fixed 🛠️
+
+- [Issue #8](https://github.com/I-am-PUID-0/DMB/issues/8) Add support for PUID/GUID ✨
+- [Issue #34](https://github.com/I-am-PUID-0/DMB/issues/34) Add PostgreSQL option for Riven backend ✨
+- [Issue #35](https://github.com/I-am-PUID-0/DMB/issues/35) Riven frontend not properly connecting to the database 🐛
+
+### Notes 📝📌
+
+- If the Riven backend shows errors related to the database or alembic, then the Riven data directory may need to be deleted before starting the new version of Riven w/ PostgreSQL 🗑️ - backup your settings.json before deleting the data directory 📂
+
+
 ## Version [3.5.0] - 2024-08-08 🚀
 
 ### Added ✨

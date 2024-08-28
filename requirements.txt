@@ -8,3 +8,4 @@ packaging
 ruamel.yaml
 poetry
 colorlog
+psycopg2-binary

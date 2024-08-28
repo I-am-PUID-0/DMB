@@ -1,5 +1,8 @@
 from base import *
 from utils.logger import *
+import psycopg2
+from psycopg2 import sql
+from utils.processes import ProcessHandler
 
 
 logger = get_logger()
@@ -47,19 +50,18 @@ def set_env_variables():
         'SYMLINK_RCLONE_PATH': SYMLINKRCLONEPATH,
         'SYMLINK_LIBRARY_PATH': SYMLINKLIBRARYPATH,
         'BACKEND_URL': RIVENBACKENDURL,
-        'DIALECT' : RFDIALECT,
+        'DIALECT': RFDIALECT,
         'DATABASE_URL': RIVENDATABASEURL,
         'DATABASE_HOST': RIVENDATABASEHOST
-
     }
 
     default_env_vars = {
         'SYMLINK_RCLONE_PATH': f'/data/{RCLONEMN}/__all__',
         'SYMLINK_LIBRARY_PATH': '/mnt',
-        'DATABASE_HOST': 'sqlite:////riven/backend/data/media.db',
-        'DATABASE_URL': '/riven/backend/data/media.db',
+        'DATABASE_HOST': f'postgresql+psycopg2://{postgres_user}:{postgres_password}@{db_host}/{postgres_db}',
+        'DATABASE_URL': f'postgres://{postgres_user}:{postgres_password}@{db_host}/{postgres_db}',
         'BACKEND_URL': 'http://127.0.0.1:8080',
-        'DIALECT' : 'sqlite'
+        'DIALECT': 'postgres'
     }
 
     for key, value in env_vars.items():

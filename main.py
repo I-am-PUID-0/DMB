@@ -3,8 +3,7 @@ from utils.logger import *
 import riven_ as r
 import zurg as z 
 from rclone import rclone
-from utils import duplicate_cleanup
-
+from utils import duplicate_cleanup, user_management, postgres
 
 def shutdown(signum, frame):
     logger = get_logger()
@@ -25,7 +24,7 @@ def shutdown(signum, frame):
 def main():
     logger = get_logger()
 
-    version = '3.5.0'
+    version = '4.0.0'
 
     ascii_art = f'''
                                                                        
@@ -66,7 +65,9 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
     thread = threading.Thread(target=healthcheck)
     thread.daemon = True
     thread.start()
-       
+    
+    user_management.create_system_user()
+    
     try:
         if ZURG is None or str(ZURG).lower() == 'false':
             pass
@@ -104,6 +105,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
     try:
         if (RIVENBACKEND is not None and str(RIVENBACKEND).lower() == 'true') or (RIVEN is not None and str(RIVEN).lower() == 'true'):
             try:
+                postgres.postgres_setup()
                 r.setup.riven_setup('riven_backend')
                 r_updater = r.update.RivenUpdate()
                 if (RBUPDATE or RUPDATE) and not RBVERSION:
