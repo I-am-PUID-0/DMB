@@ -103,14 +103,14 @@ jobs:
         run: |
             if gh release view "${{ env.VERSION }}" --repo I-am-PUID-0/DMB_private > /dev/null 2>&1; then
               echo "Release already exists for version"
-              echo "release_exists=true" >> $GITHUB_ENV
+              echo "::set-output name=release_exists::true"
             else
               echo "Release does not exist for version"
-              echo "release_exists=false" >> $GITHUB_ENV
+              echo "::set-output name=release_exists::false"
             fi
 
       - name: Create Release with CHANGELOG Notes
-        if: env.release_exists == 'false'
+        if: steps.check_release.outputs.release_exists == 'false'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
