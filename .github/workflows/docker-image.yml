@@ -102,11 +102,13 @@ jobs:
           VERSION: ${{ env.VERSION }}
         run: |
             if gh release view "${{ env.VERSION }}" --repo ${{ env.REPO_NAME}} > /dev/null 2>&1; then
-              echo "Release already exists for version"
+              echo "Release already exists for version ${{ needs.build-and-push.outputs.version }}"
               echo "release_exists=true" >> $GITHUB_ENV
+              echo "release_exists=true" >> $GITHUB_OUTPUT
             else
-              echo "Release does not exist for version"
+              echo "Release does not exist for version ${{ needs.build-and-push.outputs.version }}"
               echo "release_exists=false" >> $GITHUB_ENV
+              echo "release_exists=false" >> $GITHUB_OUTPUT
             fi
       - name: Create Release with CHANGELOG Notes
         if: env.release_exists == 'false'
