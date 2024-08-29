@@ -124,7 +124,7 @@ jobs:
 
   announce:
     needs: release
-    if: needs.release.outputs.release_exists == 'false'
+    if: ${{ needs.release.outputs.release_exists == 'false' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
