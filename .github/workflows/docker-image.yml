@@ -87,6 +87,8 @@ jobs:
   release:
     needs: build-and-push
     runs-on: ubuntu-latest
+    outputs:
+      release_exists: ${{ steps.check_release.outputs.release_exists }}
     env:
       VERSION: ${{ needs.build-and-push.outputs.version }}
       REPO_OWNER_LOWER: ${{ needs.build-and-push.outputs.repo_owner_lower }}
@@ -112,6 +114,7 @@ jobs:
             fi
       - name: Create Release with CHANGELOG Notes
         if: env.release_exists == 'false'
+        id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
