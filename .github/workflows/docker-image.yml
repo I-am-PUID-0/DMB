@@ -101,7 +101,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ env.VERSION }}
         run: |
-            if gh release view "${{ env.VERSION }}" --repo I-am-PUID-0/DMB_private > /dev/null 2>&1; then
+            if gh release view "${{ env.VERSION }}" --repo ${{ env.REPO_NAME}} > /dev/null 2>&1; then
               echo "Release already exists for version"
               echo "release_exists=true" >> $GITHUB_ENV
             else
@@ -122,7 +122,7 @@ jobs:
               --prerelease=false
 
   announce:
-    needs: release
+    needs: [release, build-and-push]
     if: needs.release.outputs.release_exists == 'false'
     runs-on: ubuntu-latest
     steps:
