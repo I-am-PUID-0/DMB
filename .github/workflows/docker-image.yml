@@ -103,14 +103,13 @@ jobs:
         run: |
             if gh release view "${{ env.VERSION }}" --repo I-am-PUID-0/DMB_private > /dev/null 2>&1; then
               echo "Release already exists for version"
-              echo "::set-output name=release_exists::true"
+              echo "release_exists=true" >> $GITHUB_ENV
             else
               echo "Release does not exist for version"
-              echo "::set-output name=release_exists::false"
+              echo "release_exists=false" >> $GITHUB_ENV
             fi
-
       - name: Create Release with CHANGELOG Notes
-        if: steps.check_release.outputs.release_exists == 'false'
+        if: env.release_exists == 'false'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -124,7 +123,7 @@ jobs:
 
   announce:
     needs: release
-    if: ${{ needs.release.outputs.release_exists == 'false' }}
+    if: needs.release.outputs.release_exists == 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -132,7 +131,7 @@ jobs:
       - name: Post announcement to Discord
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          VERSION: ${{ needs.release.outputs.version }}
+          VERSION: ${{ needs.build-and-push.outputs.version }}
         run: |
           RELEASE_NOTES=$(awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md)
           ANNOUNCEMENT_BODY="🚀 **New Release: Version [${{ env.VERSION }}]**${RELEASE_NOTES}"
