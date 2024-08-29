@@ -13,8 +13,8 @@ class ProcessHandler:
 
     def start_process(self, process_name, config_dir, command, key_type=None, suppress_logging=False):
         try:
-            user_id = int(os.getenv('PUID', 1001))
-            group_id = int(os.getenv('PGID', 1001))
+#            user_id = int(os.getenv('PUID', 1001))
+#            group_id = int(os.getenv('PGID', 1001))
 
             try:
                 pwd.getpwuid(user_id)

@@ -56,7 +56,7 @@ def set_env_variables():
     }
 
     default_env_vars = {
-        'SYMLINK_RCLONE_PATH': f'/data/{RCLONEMN}/__all__',
+        'SYMLINK_RCLONE_PATH': f'{RCLONEDIR}/{RCLONEMN}/__all__',
         'SYMLINK_LIBRARY_PATH': '/mnt',
         'DATABASE_HOST': f'postgresql+psycopg2://{postgres_user}:{postgres_password}@{db_host}/{postgres_db}',
         'DATABASE_URL': f'postgres://{postgres_user}:{postgres_password}@{db_host}/{postgres_db}',

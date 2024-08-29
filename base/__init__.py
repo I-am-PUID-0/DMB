@@ -41,6 +41,21 @@ def load_secret_or_env(secret_name, default=None):
     except IOError:
         return os.getenv(secret_name.upper(), default)
 
+def get_valid_env(env_var, default):
+    value = os.getenv(env_var)
+    if value is None or value.strip() == "":
+        return default
+    try:
+        if isinstance(default, int):
+            return int(value)
+        elif isinstance(default, float):
+            return float(value)
+        elif isinstance(default, bool):
+            return value.lower() in ['true', '1', 'yes']
+        else:
+            return value
+    except ValueError:
+        return default
 
 PLEXTOKEN = load_secret_or_env('plex_token')
 PLEXADD = load_secret_or_env('plex_address')
@@ -79,9 +94,13 @@ RFUPDATE = os.getenv('RIVEN_FRONTEND_UPDATE')
 RFDIALECT = os.getenv('RIVEN_FRONTEND_DIALECT')
 SYMLINKLIBRARYPATH = os.getenv('SYMLINK_LIBRARY_PATH')
 SYMLINKRCLONEPATH = os.getenv('SYMLINK_RCLONE_PATH')
+RCLONELOGS = os.getenv('RCLONE_LOGS')
 postgres_system_user = "DMB"
-postgres_data = os.getenv('POSTGRES_DATA', '/postgres_data')
-postgres_user = os.getenv('POSTGRES_USER', 'postgres')
-postgres_password = os.getenv('POSTGRES_PASSWORD', 'postgres')
-postgres_db = os.getenv('POSTGRES_DB', 'riven')
 db_host = '127.0.0.1'  
+user_id = get_valid_env('PUID', 1001)
+group_id = get_valid_env('PGID', 1001)
+postgres_data = get_valid_env('POSTGRES_DATA', '/postgres_data')
+postgres_user = get_valid_env('POSTGRES_USER', 'postgres')
+postgres_password = get_valid_env('POSTGRES_PASSWORD', 'postgres')
+postgres_db = get_valid_env('POSTGRES_DB', 'riven')
+RCLONEDIR = get_valid_env('RCLONE_DIR', '/data')

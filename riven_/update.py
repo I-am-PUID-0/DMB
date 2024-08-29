@@ -112,7 +112,7 @@ class RivenUpdate(Update, ProcessHandler):
                 suppress_logging = True
                 self.logger.info(f"Suppressing {process_name} logging")
             config_dir = "./riven/backend"
-            directory = f"/data/{RCLONEMN}/__all__"
+            directory = f"{RCLONEDIR}/{RCLONEMN}/__all__"
             while not os.path.exists(directory):
                 self.logger.info(f"Waiting for symlink directory {directory} to become available before starting {process_name}")
                 time.sleep(10)

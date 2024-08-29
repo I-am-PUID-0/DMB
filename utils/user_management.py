@@ -30,9 +30,6 @@ def chown_recursive(directory, user_id, group_id):
 
 def create_system_user(username='DMB'):
     try:
-        user_id = int(os.getenv('PUID', 1001))
-        group_id = int(os.getenv('PGID', 1001))
-
         try:
             grp.getgrgid(group_id)
             logger.info(f"Group with GID {group_id} already exists.")
@@ -52,7 +49,7 @@ def create_system_user(username='DMB'):
         if not os.path.exists(home_dir):
             os.makedirs(home_dir)
         zurg_dir = "/zurg"    
-        rclone_dir = "/data"
+        rclone_dir = f"{RCLONEDIR}"
         mnt_dir = "/mnt"
         log_dir = "/log"
         config_dir = "/config"
@@ -61,8 +58,8 @@ def create_system_user(username='DMB'):
         with open("/etc/passwd", "a") as passwd_file:
             passwd_file.write(f"{username}:x:{user_id}:{group_id}::/home/{username}:/bin/sh\n")       
         chown_recursive(zurg_dir, user_id, group_id)
-        chown_recursive(rclone_dir, user_id, group_id)
-        chown_recursive(mnt_dir, user_id, group_id)
+        os.chown(rclone_dir, user_id, group_id) 
+        os.chown(mnt_dir, user_id, group_id)
         chown_recursive(log_dir, user_id, group_id)
         chown_recursive(config_dir, user_id, group_id)
         chown_recursive(riven_dir, user_id, group_id)

@@ -43,12 +43,12 @@ try:
         "riven_frontend": {
             "regex": re.compile(r'node build'),
             "error_message": "The Riven frontend process is not running.",
-            "should_run": str(RIVENFRONTEND).lower() == 'true' or str(RIVEN).lower() == 'true' and os.path.exists(f'/data/{RCLONEMN}/__all__')
+            "should_run": str(RIVENFRONTEND).lower() == 'true' or str(RIVEN).lower() == 'true' and os.path.exists(f'{RCLONEDIR}/{RCLONEMN}/__all__')
         },
         "riven_backend": {
             "regex": re.compile(r'/venv/bin/python src/main.py'),
             "error_message": "The Riven backend process is not running.",
-            "should_run": str(RIVENBACKEND).lower() == 'true' or str(RIVEN).lower() == 'true' and os.path.exists(f'/data/{RCLONEMN}/__all__')
+            "should_run": str(RIVENBACKEND).lower() == 'true' or str(RIVEN).lower() == 'true' and os.path.exists(f'{RCLONEDIR}/{RCLONEMN}/__all__')
         },
         "rclonemn_rd": {
             "regex": re.compile(rf'rclone {mount_type} {re.escape(RCLONEMN_RD)}:'),
@@ -59,6 +59,11 @@ try:
             "regex": re.compile(rf'rclone {mount_type} {re.escape(RCLONEMN_AD)}:'),
             "error_message": f"The Rclone AD process for {RCLONEMN_AD} is not running.",
             "should_run": str(ZURG).lower() == 'true' and ADAPIKEY and os.path.exists(f'/healthcheck/{RCLONEMN}')
+        },
+        "PostgreSQL": {
+            "regex": re.compile(r'postgres -D'),
+            "error_message": f"The PostgreSQL process is not running.",
+            "should_run": str(RIVENBACKEND).lower() == 'true' or str(RIVEN).lower() == 'true' and os.path.exists(f'{RCLONEDIR}/{RCLONEMN}/__all__')
         }
     }
 

@@ -153,7 +153,6 @@ def postgres_setup():
             create_default_postgresql_conf(postgres_data)
 
         postgres_command = f"postgres -D {postgres_data} -c config_file={config_file_path}"        
-        logger.debug("Starting PostgreSQL subprocess...")
         process_handler.start_process("PostgreSQL", postgres_data, ["su", "DMB", "-s", "/bin/sh", "-c", postgres_command])
 
 

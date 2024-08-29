@@ -9,8 +9,21 @@ def shutdown(signum, frame):
     logger = get_logger()
     logger.info("Shutdown signal received. Cleaning up...")
 
-    for mount_point in os.listdir('/data'):
-        full_path = os.path.join('/data', mount_point)
+    try:
+        logger.info("Stopping PostgreSQL server...")
+        pg_stop = subprocess.run(
+            ['su', 'DMB', '-c', f'pg_ctl stop -D {postgres_data} -m fast'], 
+            capture_output=True, text=True
+        )
+        if pg_stop.returncode == 0:
+            logger.info("PostgreSQL server stopped successfully.")
+        else:
+            logger.error(f"Failed to stop PostgreSQL server: {pg_stop.stderr.strip()}")
+    except Exception as e:
+        logger.error(f"Exception occurred while stopping PostgreSQL: {str(e)}")
+
+    for mount_point in os.listdir(f'{RCLONEDIR}'):
+        full_path = os.path.join(f'{RCLONEDIR}', mount_point)
         if os.path.ismount(full_path):
             logger.info(f"Unmounting {full_path}...")
             umount = subprocess.run(['umount', full_path], capture_output=True, text=True)
@@ -24,7 +37,7 @@ def shutdown(signum, frame):
 def main():
     logger = get_logger()
 
-    version = '4.0.0'
+    version = '4.1.0'
 
     ascii_art = f'''
                                                                        

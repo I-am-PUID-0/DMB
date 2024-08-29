@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [4.1.0] - 2024-08-29 🚀
+
+### Added ✨
+
+- RCLONE_LOGS: Environment variable to disable the rclone process logging when value is set to OFF; Default is ON 📝
+- RCLONE_DIR: Environment variable to set the rclone directory; Default is /data 📁
+
+### Fixed 🛠️
+
+- [Issue #36](https://github.com/I-am-PUID-0/DMB/issues/36) Setting RCLONE_LOG_LEVEL=OFF causes the rclone process to fail 🐛
+- [Issue #37](https://github.com/I-am-PUID-0/DMB/issues/37) Error when PUID/PGID are set without values: PGID= 🐛
+- [Issue #38](https://github.com/I-am-PUID-0/DMB/issues/38) Recursive chown of /data throws errors if the mount is still present 🐛
+- [Issue #39](https://github.com/I-am-PUID-0/DMB/issues/39) Make rclone mount base path a variable - /data --> /user-defined ✨
+- [Issue #41](https://github.com/I-am-PUID-0/DMB/issues/41) Add healthcheck for PostgreSQL process ✨
+- [Issue #42](https://github.com/I-am-PUID-0/DMB/issues/42) Add clean shutdown for PostgreSQL server ✨
+
+
 ## Version [4.0.0] - 2024-08-28 🚀
 
 ### Breaking Changes ⚠️

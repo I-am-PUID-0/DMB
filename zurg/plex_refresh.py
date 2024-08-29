@@ -6,14 +6,14 @@ from pathlib import Path
 plex_refresh_path = Path(__file__).resolve()
 project_path = plex_refresh_path.parent.parent.parent
 sys.path.append(str(project_path))
-from base import PLEXTOKEN, PLEXADD, PLEXMOUNT, RCLONEMN
+from base import PLEXTOKEN, PLEXADD, PLEXMOUNT, RCLONEMN, RCLONEDIR
 
 
 # Configuration
 plex_url = PLEXADD.replace("'", "").replace('"', '')
 token = PLEXTOKEN.replace("'", "").replace('"', '')
 plex_mount = PLEXMOUNT.replace("'", "").replace('"', '')
-zurg_mount = f"/data/{RCLONEMN}"
+zurg_mount = f"{RCLONEDIR}/{RCLONEMN}"
 zurg_timeout = 300  # 5 minutes in seconds for Zurg file availability
 plex_timeout = 60   # Maximum time to wait for Plex to process the refresh
 wait_increment = 1  # Time increment for each wait step

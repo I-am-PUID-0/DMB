@@ -110,10 +110,10 @@ def setup():
 
         for idx, mn in enumerate(mount_names):
             logger.info(f"Configuring rclone for {mn}")
-            subprocess.run(["umount", f"/data/{mn}"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            os.makedirs(f"/data/{mn}", exist_ok=True)
-            user_id = int(os.getenv('PUID', 1001))
-            group_id = int(os.getenv('PGID', 1001))
+            subprocess.run(["umount", f"{RCLONEDIR}/{mn}"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            os.makedirs(f"{RCLONEDIR}/{mn}", exist_ok=True)
+#            user_id = int(os.getenv('PUID', 1001))
+#            group_id = int(os.getenv('PGID', 1001))
             if NFSMOUNT is not None and NFSMOUNT.lower() == "true":
                 if NFSPORT:
                     port = NFSPORT
@@ -124,7 +124,7 @@ def setup():
                     logger.info(f"Setting up rclone NFS mount server for {mn} at 0.0.0.0:{port}")
                     rclone_command = ["rclone", "serve", "nfs", f"{mn}:", "--config", "/config/rclone.config", "--addr", f"0.0.0.0:{port}", "--vfs-cache-mode=full", "--dir-cache-time=10"]
             else:
-                rclone_command = ["rclone", "mount", f"{mn}:", f"/data/{mn}", "--config", "/config/rclone.config", f"--uid={user_id}" , f"--gid={group_id}" , "--allow-other", "--poll-interval=0", "--dir-cache-time=10"]
+                rclone_command = ["rclone", "mount", f"{mn}:", f"{RCLONEDIR}/{mn}", "--config", "/config/rclone.config", f"--uid={user_id}" , f"--gid={group_id}" , "--allow-other", "--poll-interval=0", "--dir-cache-time=10"]
             if not RIVENBACKEND or idx != len(mount_names) - 1:
                 rclone_command.append("--daemon")
 
@@ -136,7 +136,7 @@ def setup():
                 logger.info(f"The Zurg WebDAV URL {url}/dav is accessible. Starting rclone{' daemon' if '--daemon' in rclone_command else ''} for {mn}")
                 process_name = "rclone"
                 suppress_logging=False
-                if str(RCLONELOGLEVEL).lower()=='off':
+                if str(RCLONELOGS).lower()=='off':
                     suppress_logging = True
                     logger.info(f"Suppressing {process_name} logging")                     
                 rclone_process = process_handler.start_process(process_name, "/config", rclone_command, mn, suppress_logging=suppress_logging)
