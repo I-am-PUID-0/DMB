@@ -103,7 +103,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ env.VERSION }}
         run: |
-            if gh release view "${{ env.VERSION }}" --repo ${{ env.REPO_NAME}}; then
+            if gh release view "${{ env.VERSION }}" --repo ${{ github.repository }}; then
               echo "Release already exists for version ${{ needs.build-and-push.outputs.version }}"
               echo "release_exists=true" >> $GITHUB_ENV
               echo "release_exists=true" >> $GITHUB_OUTPUT
