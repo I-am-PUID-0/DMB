@@ -1,15 +1,16 @@
 from base import *
 from utils.logger import *
-from utils.processes import ProcessHandler
 
-class Update(ProcessHandler):
+
+class Update:
     _scheduler_initialized = False
     _jobs = {}
 
-    def __init__(self):
-        logger = get_logger()
-        super().__init__(logger)
+    def __init__(self, process_handler):
+        self.process_handler = process_handler
+        self.logger = process_handler.logger
         self.updating = threading.Lock()
+
         if not Update._scheduler_initialized:
             self.scheduler = schedule.Scheduler()
             Update._scheduler_initialized = True

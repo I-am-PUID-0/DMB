@@ -2,10 +2,10 @@ from base import *
 from utils.logger import *
 import psycopg2
 from psycopg2 import sql
-from utils.processes import ProcessHandler
+
 
 logger = get_logger()
-process_handler = ProcessHandler(logger)
+
 
 def initialize_postgres_db(db_host, postgres_user, postgres_password, postgres_db):
     try:
@@ -52,14 +52,14 @@ def ensure_run_directory():
         if not os.path.exists(run_dir):
             os.makedirs(run_dir)
             logger.debug(f"Created directory {run_dir}.")
-        subprocess.run(["chown", "-R", "DMB:DMB", run_dir], check=True)
+        subprocess.run(["chown", "-R", f"{user_id}:{group_id}", run_dir], check=True)
         subprocess.run(["chmod", "775", run_dir], check=True)
         logger.debug(f"Set ownership and permissions for {run_dir}.")
     except Exception as e:
         logger.error(f"Error setting up /run/postgresql directory: {e}")
         raise
 
-def initialize_postgres_data_directory(postgres_data, postgres_system_user="DMB"):
+def initialize_postgres_data_directory(process_handler, postgres_data, postgres_user="DMB"):
     try:
         postmaster_pid = os.path.join(postgres_data, 'postmaster.pid')
         if os.path.exists(postmaster_pid):
@@ -68,7 +68,7 @@ def initialize_postgres_data_directory(postgres_data, postgres_system_user="DMB"
         else:
             logger.info(f"Initializing PostgreSQL data directory at {postgres_data}...")
             initialize_command = f"initdb -D {postgres_data} -U {postgres_user} --pwfile=<(echo {postgres_password})"
-            init = process_handler.start_process("PostgreSQL_init", postgres_data, ["su", postgres_system_user, "-s", "/bin/sh", "-c", initialize_command])
+            init = process_handler.start_process("PostgreSQL_init", postgres_data, ["su", postgres_user, "-s", "/bin/sh", "-c", initialize_command])
             init.wait()
             logger.info(f"Initialized PostgreSQL data directory at {postgres_data}.")
     except subprocess.CalledProcessError as e:
@@ -126,7 +126,7 @@ def postgres_role_exists(postgres_user, postgres_password, postgres_db, db_host)
         logger.error(f"Error checking if role '{postgres_user}' exists: {e}")
         raise
 
-def postgres_setup():
+def postgres_setup(process_handler=None):
     logger.info("Setting up PostgreSQL...")
     if postgres_data:
         if not os.path.exists(postgres_data):
@@ -139,11 +139,11 @@ def postgres_setup():
         else:
             logger.info(f"PostgreSQL data directory exists at {postgres_data}.")
 
-        subprocess.run(["chown", "-R", f"{postgres_system_user}:{postgres_system_user}", postgres_data], check=True)
+        subprocess.run(["chown", "-R", f"{user_id}:{group_id}", postgres_data], check=True)
         subprocess.run(["chmod", "-R", "700", postgres_data], check=True)
         logger.info(f"Changed ownership and set permissions of {postgres_data}.")
 
-        initialize_postgres_data_directory(postgres_data, postgres_system_user="DMB")
+        initialize_postgres_data_directory(process_handler, postgres_data, postgres_user="DMB")
 
         ensure_run_directory()
 
@@ -151,10 +151,9 @@ def postgres_setup():
         if not os.path.exists(config_file_path):
             logger.warning(f"PostgreSQL configuration file not found in {postgres_data}. Creating default configuration.")
             create_default_postgresql_conf(postgres_data)
-
         postgres_command = f"postgres -D {postgres_data} -c config_file={config_file_path}"        
-        process_handler.start_process("PostgreSQL", postgres_data, ["su", "DMB", "-s", "/bin/sh", "-c", postgres_command])
-
+        #process_handler.start_process("PostgreSQL", postgres_data, ["su", "DMB", "-s", "/bin/sh", "-c", postgres_command])
+        process_handler.start_process("PostgreSQL", postgres_data, postgres_command)
 
         if not check_postgresql_started():
             return

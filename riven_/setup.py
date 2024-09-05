@@ -1,25 +1,25 @@
+from os import chmod
 from base import *
 from utils.logger import *
-from utils.processes import ProcessHandler
+
 
 logger = get_logger()
 
-def setup_poetry_environment(config_dir):
+def setup_poetry_environment(process_handler=None, config_dir='./riven/backend'):
     try:
         logger.info(f"Setting up Poetry environment in {config_dir}")
 
-        poetry_install_process = ProcessHandler(logger)
+        poetry_install_process = process_handler
         poetry_install_process.start_process("poetry_install", config_dir, ["poetry", "install", "--no-root", "--without", "dev"])
-        poetry_install_process.wait()
+        poetry_install_process.wait("poetry_install")
 
         if poetry_install_process.returncode != 0:
             logger.error(f"Error setting up Poetry environment: {poetry_install_process.stderr}")
             return False
 
-        poetry_env_process = ProcessHandler(logger)
+        poetry_env_process = process_handler
         poetry_env_process.start_process("poetry_env_setup", config_dir, ["poetry", "env", "info", "-p"])
-        poetry_env_process.wait()
-
+        poetry_env_process.wait("poetry_env_setup")
         if poetry_env_process.returncode != 0:
             logger.error(f"Error getting Poetry environment info: {poetry_env_process.stderr}")
             return False
@@ -36,7 +36,7 @@ def setup_poetry_environment(config_dir):
         logger.error(f"Error setting up Poetry environment: {e}")
         return False
 
-def setup_npm_build(config_dir='./riven/frontend'):
+def setup_npm_build(process_handler=None,config_dir='./riven/frontend'):
     try:
         logger.info("Setting up riven_frontend")
 
@@ -56,23 +56,23 @@ def setup_npm_build(config_dir='./riven/frontend'):
 
         logger.debug("vite.config.ts modified to disable minification")
 
-        npm_install_process = ProcessHandler(logger)
+        npm_install_process = process_handler
         #npm_install_process.start_process("npm_install", config_dir, ["npm", "install"])
         npm_install_process.start_process("npm_install", config_dir, ["pnpm", "install"])
-        npm_install_process.wait()
+        npm_install_process.wait("npm_install")
 
         if npm_install_process.returncode != 0:
             logger.error(f"Error during npm install: {npm_install_process.stderr}")
             return False
 
-        node_build_process = ProcessHandler(logger)
+        node_build_process = process_handler
         #node_build_process.start_process("node_build", config_dir, ["node", "--max-old-space-size=2048", "./node_modules/.bin/vite", "build"])
         if RFDIALECT:
             pass
         else: 
             os.environ['DIALECT'] = 'sqlite'
         node_build_process.start_process("node_build", config_dir, ["pnpm", "run", "build"])
-        node_build_process.wait()
+        node_build_process.wait("node_build")
 
         if node_build_process.returncode != 0:
             logger.error(f"Error during node build: {node_build_process.stderr}")
@@ -84,7 +84,7 @@ def setup_npm_build(config_dir='./riven/frontend'):
         logger.error(f"Error setting up npm environment: {e}")
         return False
 
-def riven_setup(process_name, branch='main', release_version=None, running_process=False):
+def riven_setup(process_handler, process_name, branch='main', release_version=None, running_process=False):
     logger.info(f"Configuring {process_name}")
     riven_dir = "./riven"
     backend_dir = os.path.join(riven_dir, "backend")
@@ -105,6 +105,8 @@ def riven_setup(process_name, branch='main', release_version=None, running_proce
                     logger.error(f"Failed to download the {release_version} release in {branch} branch for {process_name}: {error}")
                     return False, error
                 logger.info(f"Successfully downloaded the {release_version} release in {branch} branch for {process_name}")
+                from utils.user_management import chown_recursive
+                chown_recursive(riven_dir, user_id, group_id)
 
             elif RBBRANCH:
                 logger.info(f"Using {RBBRANCH} branch for {process_name}")
@@ -115,6 +117,8 @@ def riven_setup(process_name, branch='main', release_version=None, running_proce
                     logger.error(f"Failed to download the {branch} branch for {process_name}: {error}")
                     return False, error
                 logger.info(f"Successfully downloaded {branch} branch for {process_name}")
+                from utils.user_management import chown_recursive
+                chown_recursive(riven_dir, user_id, group_id)
 
             else:
                 from .download import get_latest_release
@@ -128,6 +132,8 @@ def riven_setup(process_name, branch='main', release_version=None, running_proce
                     logger.error(f"Failed to download the latest release for {process_name}: {error}")
                     return False, error
                 logger.info(f"Successfully downloaded the latest release for {process_name}")
+                from utils.user_management import chown_recursive
+                chown_recursive(riven_dir, user_id, group_id)
 
         if process_name == 'riven_frontend':
             repo_owner = 'rivenmedia'
@@ -142,9 +148,11 @@ def riven_setup(process_name, branch='main', release_version=None, running_proce
                     logger.error(f"Failed to download the {release_version} release in {branch} branch for {process_name}: {error}")
                     return False, error
                 logger.info(f"Successfully downloaded the {release_version} release in {branch} branch for {process_name}")
-                if not setup_npm_build():
+                if not setup_npm_build(process_handler=process_handler):
                     logger.error(f"Failed to set up NPM build for {process_name}")
-                    return False, f"Failed to set up NPM build for {process_name}"               
+                    return False, f"Failed to set up NPM build for {process_name}" 
+                from utils.user_management import chown_recursive
+                chown_recursive(riven_dir, user_id, group_id)
 
             elif RFBRANCH:
                 logger.info(f"Using {RFBRANCH} branch for {process_name}")
@@ -155,9 +163,11 @@ def riven_setup(process_name, branch='main', release_version=None, running_proce
                     logger.error(f"Failed to download the {branch} branch for {process_name}: {error}")
                     return False, error
                 logger.info(f"Successfully downloaded {branch} branch for {process_name}")
-                if not setup_npm_build():
+                if not setup_npm_build(process_handler=process_handler):
                     logger.error(f"Failed to set up NPM build for {process_name}")
                     return False, f"Failed to set up NPM build for {process_name}"   
+                from utils.user_management import chown_recursive
+                chown_recursive(riven_dir, user_id, group_id)
                 
             else:
                 if running_process:
@@ -167,9 +177,11 @@ def riven_setup(process_name, branch='main', release_version=None, running_proce
                         logger.error(f"Failed to download the latest release for {process_name}: {error}")
                         return False, error
                     logger.info(f"Successfully downloaded the latest release for {process_name}")                    
-                    if not setup_npm_build():
+                    if not setup_npm_build(process_handler=process_handler):
                         logger.error(f"Failed to set up NPM build for {process_name}")
                         return False, f"Failed to set up NPM build for {process_name}"   
+                    from utils.user_management import chown_recursive
+                    chown_recursive(riven_dir, user_id, group_id)
                 else:    
                     from .download import get_latest_release
                     latest_release_version, error = get_latest_release(repo_owner, repo_name)

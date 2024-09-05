@@ -2,7 +2,7 @@ from base import *
 from utils.logger import *
 import psycopg2
 from psycopg2 import sql
-from utils.processes import ProcessHandler
+
 
 
 logger = get_logger()
@@ -68,22 +68,30 @@ def set_env_variables():
         set_env_variable(key, value, default_env_vars.get(key))
 
 def fetch_settings(url, max_retries=5, delay=5):
-    time.sleep(delay)
     for attempt in range(max_retries):
         try:
-            response = requests.get(url)
+            logger.info(f"Attempt {attempt + 1}/{max_retries} to fetch settings from {url}")
+            response = requests.get(url)           
             if response.status_code == 200:
-                logger.debug(f"Successfully fetched settings on attempt {attempt + 1}")
-                return response.json()
+                try:
+                    data = response.json()  
+                    if isinstance(data, dict): 
+                        logger.debug(f"Successfully fetched settings on attempt {attempt + 1}")
+                        return data
+                    else:
+                        logger.error(f"Unexpected JSON format: {data}")
+                except ValueError as e:
+                    logger.error(f"Error parsing JSON response: {e}")
             else:
-                logger.error(f"Failed to fetch settings: {response.text}")
+                logger.error(f"Failed to fetch settings: Status code {response.status_code}, Response: {response.text}")       
         except requests.ConnectionError as e:
-            logger.error(f"Error fetching settings: {e}")
-            if attempt < max_retries - 1:
-                logger.info(f"Retrying in {delay} seconds... ({attempt + 1}/{max_retries})")
-                time.sleep(delay)
-            else:
-                raise
+            logger.error(f"Error fetching settings: {e}")        
+        if attempt < max_retries - 1:
+            logger.info(f"Retrying in {delay} seconds... ({attempt + 1}/{max_retries})")
+            time.sleep(delay)
+        else:
+            logger.error(f"Max retries reached. Failed to fetch settings from {url}")
+            raise
     return None
 
 def get_env_value(key, default=None):
@@ -142,7 +150,10 @@ def load_settings():
             return
         current_settings = settings_response.get('data', {})
         updated_settings = {}
-        update_settings(current_settings, updated_settings)
+        if current_settings:  
+            update_settings(current_settings, updated_settings)
+        else:
+            logger.error("No current settings data to update")
         payload = [{"key": f"{prefix}.{key}", "value": value} for prefix, subdict in updated_settings.items() for key, value in subdict.items() if value != {}]
         set_url = 'http://127.0.0.1:8080/settings/set'
         save_url = 'http://127.0.0.1:8080/settings/save'

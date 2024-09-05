@@ -302,7 +302,8 @@ def get_logger(log_name='DMB', log_dir='./log'):
     if log_level_env:
         log_level = log_level_env.upper()
         os.environ['LOG_LEVEL'] = log_level
-        os.environ['RCLONE_LOG_LEVEL'] = log_level
+        if os.environ['RCLONE_LOG_LEVEL'] is None: 
+            os.environ['RCLONE_LOG_LEVEL'] = log_level
     else:
         log_level = 'INFO'
     numeric_level = getattr(logging, log_level, logging.INFO)   

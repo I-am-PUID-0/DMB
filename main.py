@@ -1,43 +1,48 @@
+from os import wait
 from base import *
 from utils.logger import *
 import riven_ as r
 import zurg as z 
 from rclone import rclone
 from utils import duplicate_cleanup, user_management, postgres
+from utils.processes import ProcessHandler
+
+logger = get_logger()
+process_handler = ProcessHandler(logger)
 
 def shutdown(signum, frame):
-    logger = get_logger()
     logger.info("Shutdown signal received. Cleaning up...")
-
-    try:
-        logger.info("Stopping PostgreSQL server...")
-        pg_stop = subprocess.run(
-            ['su', 'DMB', '-c', f'pg_ctl stop -D {postgres_data} -m fast'], 
-            capture_output=True, text=True
-        )
-        if pg_stop.returncode == 0:
-            logger.info("PostgreSQL server stopped successfully.")
-        else:
-            logger.error(f"Failed to stop PostgreSQL server: {pg_stop.stderr.strip()}")
-    except Exception as e:
-        logger.error(f"Exception occurred while stopping PostgreSQL: {str(e)}")
-
-    for mount_point in os.listdir(f'{RCLONEDIR}'):
-        full_path = os.path.join(f'{RCLONEDIR}', mount_point)
-        if os.path.ismount(full_path):
-            logger.info(f"Unmounting {full_path}...")
-            umount = subprocess.run(['umount', full_path], capture_output=True, text=True)
-            if umount.returncode == 0:
-                logger.info(f"Successfully unmounted {full_path}")
-            else:
-                logger.error(f"Failed to unmount {full_path}: {umount.stderr.strip()}")
     
+    def stop_process(process_name):
+        try:
+            process_handler.stop_process(process_name)
+        except Exception as e:
+            logger.error(f"Exception occurred while stopping {process_name}: {str(e)}")
+
+    def unmount_all():
+        for mount_point in os.listdir(f'{RCLONEDIR}'):
+            full_path = os.path.join(f'{RCLONEDIR}', mount_point)
+            if os.path.ismount(full_path):
+                logger.info(f"Unmounting {full_path}...")
+                umount = subprocess.run(['umount', full_path], capture_output=True, text=True)
+                if umount.returncode == 0:
+                    logger.info(f"Successfully unmounted {full_path}")
+                else:
+                    logger.error(f"Failed to unmount {full_path}: {umount.stderr.strip()}")
+
+    processes = ['riven_frontend', 'riven_backend', 'PostgreSQL', 'Zurg', 'rclone']
+    for process in processes:
+        stop_process(process)
+
+    unmount_all()   
+
+    logger.info("Shutdown complete.")
     sys.exit(0)
 
 def main():
-    logger = get_logger()
 
-    version = '4.1.0'
+
+    version = '5.0.0'
 
     ascii_art = f'''
                                                                        
@@ -88,9 +93,10 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
             try:
                 if RDAPIKEY or ADAPIKEY:
                     try:
-                        z.setup.zurg_setup() 
-                        z_updater = z.update.ZurgUpdate()
-                        if ZURGUPDATE and not ZURGVERSION:
+                        z.setup.zurg_setup(process_handler) 
+                        z_updater = z.update.ZurgUpdate(process_handler)
+                        logger.debug(f"Initialized ZurgUpdate: {z_updater}")
+                        if ZURGUPDATE and ZURGUPDATE.lower() == 'true' and (ZURGVERSION is None or ZURGVERSION.lower() == 'nightly'):
                             z_updater.auto_update('Zurg',True)
                         else:
                             z_updater.auto_update('Zurg',False)
@@ -103,7 +109,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                                     pass
                                 elif DUPECLEAN:
                                     duplicate_cleanup.setup()
-                                rclone.setup()      
+                                rclone.setup(process_handler)      
                             except Exception as e:
                                 logger.error(e)                         
                     except Exception as e:
@@ -118,9 +124,10 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
     try:
         if (RIVENBACKEND is not None and str(RIVENBACKEND).lower() == 'true') or (RIVEN is not None and str(RIVEN).lower() == 'true'):
             try:
-                postgres.postgres_setup()
-                r.setup.riven_setup('riven_backend')
-                r_updater = r.update.RivenUpdate()
+                postgres.postgres_setup(process_handler)
+                r.setup.riven_setup(process_handler,'riven_backend')
+                r_updater = r.update.RivenUpdate(process_handler)
+                logger.debug(f"Initialized RivenUpdate: {r_updater}")
                 if (RBUPDATE or RUPDATE) and not RBVERSION:
                     r_updater.auto_update('riven_backend', True)                                        
                 else:
@@ -133,8 +140,9 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
     try:
         if (RIVENFRONTEND is not None and str(RIVENFRONTEND).lower() == 'true') or (RIVEN is not None and str(RIVEN).lower() == 'true'):
             try:
-                r.setup.riven_setup('riven_frontend', RFBRANCH, RFVERSION)
-                r_updater = r.update.RivenUpdate()
+                r.setup.riven_setup(process_handler,'riven_frontend', RFBRANCH, RFVERSION)
+                r_updater = r.update.RivenUpdate(process_handler)
+                logger.debug(f"Initialized RivenUpdate: {r_updater}")
                 if (RFUPDATE or RUPDATE) and not RFVERSION:       
                     r_updater.auto_update('riven_frontend', True)
                 else:
@@ -152,5 +160,4 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
 if __name__ == "__main__":
     signal.signal(signal.SIGTERM, shutdown)
     signal.signal(signal.SIGINT, shutdown)
-    
     main()

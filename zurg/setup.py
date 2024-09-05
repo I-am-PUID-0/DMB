@@ -2,7 +2,7 @@ from base import *
 from utils.logger import *
 
 
-def zurg_setup():
+def zurg_setup(process_handler=None):
     logger = get_logger()
     logger.info("Setting up Zurg")
     zurg_app_override = '/config/zurg'
@@ -120,11 +120,12 @@ def zurg_setup():
             elif not os.path.exists(config_file_path):
                 logger.debug(f"Copying Zurg config from base: {zurg_config_base} to {config_file_path}")
                 shutil.copy(zurg_config_base, config_file_path)
-            else:
+                os.chown(config_file_path, user_id, group_id)
                 logger.info(f"Using Zurg config found for {key_type} in {config_dir}")
             
             if not os.path.exists(plex_update_file_path):
-                shutil.copy(zurg_plex_update_base,plex_update_file_path)                
+                shutil.copy(zurg_plex_update_base,plex_update_file_path)     
+                os.chown(plex_update_file_path, user_id, group_id)
 
             if ZURGPORT:
                 port = ZURGPORT

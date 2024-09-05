@@ -1,6 +1,6 @@
 from base import *
 from utils.logger import *
-from utils.processes import ProcessHandler
+
 
 logger = get_logger()
 
@@ -50,7 +50,7 @@ def wait_for_url(url, endpoint="/dav/", timeout=600):
     logger.error(f"Timeout: Zurg WebDAV {url}{endpoint} is not accessible after {timeout} seconds.")
     return False
 
-def setup():
+def setup(process_handler=None):
     logger.info("Checking rclone flags")
 
     try:
@@ -102,18 +102,16 @@ def setup():
 
         mount_names = []
         if RDAPIKEY:
+            os.chown(config_file_path_rd, user_id, group_id)
             mount_names.append(RCLONEMN_RD)
         if ADAPIKEY:
+            os.chown(config_file_path_ad, user_id, group_id)
             mount_names.append(RCLONEMN_AD)
-
-        process_handler = ProcessHandler(logger)
 
         for idx, mn in enumerate(mount_names):
             logger.info(f"Configuring rclone for {mn}")
             subprocess.run(["umount", f"{RCLONEDIR}/{mn}"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             os.makedirs(f"{RCLONEDIR}/{mn}", exist_ok=True)
-#            user_id = int(os.getenv('PUID', 1001))
-#            group_id = int(os.getenv('PGID', 1001))
             if NFSMOUNT is not None and NFSMOUNT.lower() == "true":
                 if NFSPORT:
                     port = NFSPORT
@@ -132,7 +130,7 @@ def setup():
             if os.path.exists(f"/healthcheck/{mn}"):
                 os.rmdir(f"/healthcheck/{mn}")
             if wait_for_url(url):             
-                os.makedirs(f"/healthcheck/{mn}") # makdir for healthcheck. Don't like it, but it works for now...
+                os.makedirs(f"/healthcheck/{mn}") # makedir for healthcheck. Don't like it, but it works for now...
                 logger.info(f"The Zurg WebDAV URL {url}/dav is accessible. Starting rclone{' daemon' if '--daemon' in rclone_command else ''} for {mn}")
                 process_name = "rclone"
                 suppress_logging=False

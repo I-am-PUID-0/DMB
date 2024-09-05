@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.0.0] - 2024-09-05 🚀
+
+### Breaking Changes ⚠️
+
+- PostgreSQL: The default database user has been changed from postgres to DMB 📉 - Please delete the existing PostgreSQL data directory before starting the new version of DMB 🗑️
+
+### Added ✨
+
+- FRONTEND_LOGS: Environment variable to disable the Riven frontend logging when value is set to OFF; Default is ON 📝
+- BACKEND_LOGS: Environment variable to disable the Riven backend logging when value is set to OFF; Default is ON 📝
+- Riven: Added shutdown for Riven backend and frontend processes 🛑
+
+### Fixed 🛠️
+
+- [Issue #44](https://github.com/I-am-PUID-0/DMB/issues/44) Add graceful shutdown for Riven frontend and backend ✨ 
+- [Issue #45](https://github.com/I-am-PUID-0/DMB/issues/45) Fix permissions for npm_install 🐛
+- [Issue #46](https://github.com/I-am-PUID-0/DMB/issues/46) Zurg config.yml not chown'd to the correct user 🐛
+- PostgreSQL: Fixed permissions for PostgreSQL 🐛 - Thanks @Unlearned6688 🙏
+- Zurg: Fixed automatic updates for Zurg nightly builds 🐛
+
+### Changed 🔄
+
+- Refactor: Refactored the use of ProcessHandler for consistent process management 🔄
+
+### Notes 📝
+
+- Add `stop_grace_period: 60s` to your compose file to allow for a 60 second grace period for all of the processes to shutdown before the container is stopped 🛑
+- [Issue #43](https://github.com/I-am-PUID-0/DMB/issues/43) Node issue when setting Riven frontend version 🐛 has not been resolved in this release 🚨, so please ensure to only use Riven frontend version that is built into the image - No automatic update / branch / version 📦
+- There may be an issue with the Riven frontend when trying to access settings; the logs will show `TypeError: Cannot read properties of undefined (reading 'enabled')` when trying to access settings - this is a known issue and you will need to delete the riven settings.json 🚨
+
+
 ## Version [4.1.0] - 2024-08-29 🚀
 
 ### Added ✨

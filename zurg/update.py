@@ -1,33 +1,16 @@
 from base import *
 from utils.logger import *
-from utils.processes import ProcessHandler
 from utils.auto_update import Update
 from zurg.download import get_latest_release, download_and_unzip_release, get_architecture
 
-class ZurgUpdate(Update, ProcessHandler):
-    def __init__(self):
-        Update.__init__(self)
-        ProcessHandler.__init__(self, self.logger)
+class ZurgUpdate(Update):
+    def __init__(self, process_handler):
+        super().__init__(process_handler)
 
-    def terminate_zurg_instance(self, process_name, config_dir, key_type):
-        regex_pattern = re.compile(rf'{re.escape(config_dir)}/zurg.*--preload', re.IGNORECASE)
-        found_process = False
-        self.logger.debug(f"Attempting to terminate {process_name} w/ {key_type} process")
-
-        for proc in psutil.process_iter():
-            try:
-                cmdline = ' '.join(proc.cmdline())
-                self.logger.debug(f"Checking process: PID={proc.pid}, Command Line='{cmdline}'")
-                if regex_pattern.search(cmdline):
-                    found_process = True
-                    self.process = proc
-                    self.stop_process(process_name, key_type)
-                    self.logger.debug(f"Terminated {process_name} w/ {key_type} process: PID={proc.pid}, Command Line='{cmdline}'")
-            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-                pass
-
-        if not found_process:
-            self.logger.debug(f"No matching {process_name} w/ {key_type} processes found")
+        
+    def auto_update(self, process_name, enable_update):
+        self.logger.debug(f"ZurgUpdate: auto_update called for {process_name}")
+        super().auto_update(process_name, enable_update)
         
     def start_process(self, process_name, config_dir=None, suppress_logging=False):
         if str(ZURGLOGLEVEL).lower()=='off':
@@ -43,8 +26,11 @@ class ZurgUpdate(Update, ProcessHandler):
                 elif dir_to_check == "/zurg/AD":
                     key_type = "AllDebrid"
                 command = [zurg_executable]
-                super().start_process(process_name, dir_to_check, command, key_type, suppress_logging=suppress_logging)    
+                self.process_handler.start_process(process_name, dir_to_check, command, key_type, suppress_logging=suppress_logging) 
                 
+    def stop_process(self, process_name, key_type=None):
+        self.process_handler.stop_process(process_name, key_type=key_type)
+        
     def update_check(self, process_name):
         self.logger.info(f"Checking for available {process_name} updates")
         

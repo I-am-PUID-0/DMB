@@ -41,6 +41,7 @@ services:
     image: iampuid0/dmb:latest
     ## Optionally, specify a specific version of DMB
     # image: iampuid0/dmb:2.0.0 #etc...
+    stop_grace_period: 60s
     stdin_open: true # docker run -i
     tty: true        # docker run -t    
     volumes:
@@ -200,7 +201,7 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`PLEX_TOKEN`| The [Plex Token](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/) associated with your Plex user |`none`  || :heavy_check_mark:|
 |`PLEX_ADDRESS`| The URL of your Plex server. Example: http://192.168.0.100:32400 or http://plex:32400 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (32400). E.g., ```/``` |`none`|| :heavy_check_mark:|
 |`POSTGRES_DATA`| The location of the PostgreSQL database |`/postgres_data`|| :heavy_check_mark:|
-|`POSTGRES_USER`| The username for the PostgreSQL database |`postgres`|| :heavy_check_mark:|
+|`POSTGRES_USER`| The username for the PostgreSQL database |`DMB`|| :heavy_check_mark:|
 |`POSTGRES_PASSWORD`| The password for the PostgreSQL database |`postgres`|| :heavy_check_mark:|
 |`POSTGRES_DB`| The name of the PostgreSQL database |`riven`|| :heavy_check_mark:|
 |`RIVEN_ENABLED`| Set the value "true" to enable the Riven backend and frontend processes | `false ` | | :heavy_check_mark: | |
@@ -210,7 +211,9 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`RIVEN_FRONTEND_BRANCH`| Set the value to the appropriate branch  | `main` | | :heavy_check_mark: | |
 |`RIVEN_BACKEND_VERSION`| The version of Riven backend to use. If enabled, the value should contain v0.8.x format | `latest` | | :heavy_check_mark: | |
 |`RIVEN_FRONTEND_VERSION`| The version of Riven frontend to use. If enabled, the value should contain v0.8.x format | `latest` | | :heavy_check_mark: | |
-|`RIVEN_LOG_LEVEL`| Log level for Riven - To suppress logs set value to OFF  | `INFO` || :heavy_check_mark:| |
+|`RIVEN_LOG_LEVEL`| Log level for Riven  | `INFO` || :heavy_check_mark:| |
+|`FRONTEND_LOGS`| Set value to OFF To disable the frontend process logging | `ON` || :heavy_check_mark:| |
+|`BACKEND_LOGS`| Set value to OFF To disable the backend process logging | `ON` || :heavy_check_mark:| |
 |`RIVEN_BACKEND_UPDATE`| Enable automatic updates of the Riven backend. Adding this variable will enable automatic updates to the latest version of Riven locally within the container.| `false` || :heavy_check_mark:|
 |`RIVEN_FRONTEND_UPDATE`| Enable automatic updates of the Riven frontend. Adding this variable will enable automatic updates to the latest version of Riven locally within the container.| `false` || :heavy_check_mark:|
 |`ORIGIN`| The origin URL for the Riven frontend | http://0.0.0.0:3000 | | :heavy_check_mark: | |

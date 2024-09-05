@@ -1,16 +1,17 @@
 from platform import release
+from venv import logger
 from base import *
 from utils.logger import *
-from utils.processes import ProcessHandler
 from utils.auto_update import Update
 from .setup import riven_setup, setup_poetry_environment, setup_npm_build
 
-class RivenUpdate(Update, ProcessHandler):
-    def __init__(self):
-        Update.__init__(self)
-        ProcessHandler.__init__(self, self.logger)
-        self.frontend_process = None
-        self.backend_process = None
+class RivenUpdate(Update):
+    def __init__(self, process_handler):
+        super().__init__(process_handler)
+
+    def auto_update(self, process_name, enable_update):
+        self.logger.debug(f"RivenUpdate: auto_update called for {process_name}")
+        super().auto_update(process_name, enable_update)
 
     def update_check(self, process_name):
         self.logger.info(f"Checking for available {process_name} updates")
@@ -51,7 +52,7 @@ class RivenUpdate(Update, ProcessHandler):
                 self.logger.info(f"New version available [v{latest_version}] for {process_name}. Updating...")
                 release_version = f"v{latest_version}"
                 self.logger.debug(f"Calling riven_setup for {process_name}")
-                result = riven_setup(process_name, branch='main', release_version=release_version, running_process=True)
+                result = riven_setup(self.process_handler, process_name, branch='main', release_version=release_version, running_process=True)
                 self.logger.debug(f"riven_setup result for {process_name}: {result}")
 
                 if result is None:
@@ -63,9 +64,9 @@ class RivenUpdate(Update, ProcessHandler):
                 if not success:
                     self.logger.error(f"Failed to download update for {process_name}: {error}")
                 else:
-                    if process_name == 'riven_frontend' and self.frontend_process:
+                    if process_name == 'riven_frontend':
                         self.stop_process(process_name, None)
-                    elif process_name == 'riven_backend' and self.backend_process:
+                    elif process_name == 'riven_backend':
                         self.stop_process(process_name, None)
                     self.logger.info(f"Automatic update installed for {process_name} [v{latest_version}]")                        
                     self.logger.info(f"Restarting {process_name}")
@@ -104,11 +105,14 @@ class RivenUpdate(Update, ProcessHandler):
 
     def start_process(self, process_name, config_dir=None, suppress_logging=False):
         if process_name == 'riven_frontend':
+            if str(FRONTENDLOGS).lower() == 'off':
+                suppress_logging = True
+                self.logger.info(f"Suppressing {process_name} logging")
             command = ["node", "build"]
             config_dir = "./riven/frontend"
-            self.frontend_process = ProcessHandler.start_process(self, process_name, config_dir, command, None)
+            self.process_handler.start_process(process_name, config_dir, command, None, suppress_logging=suppress_logging)
         elif process_name == 'riven_backend':
-            if str(RIVENLOGLEVEL).lower() == 'off':
+            if str(BACKENDLOGS).lower() == 'off':
                 suppress_logging = True
                 self.logger.info(f"Suppressing {process_name} logging")
             config_dir = "./riven/backend"
@@ -116,12 +120,15 @@ class RivenUpdate(Update, ProcessHandler):
             while not os.path.exists(directory):
                 self.logger.info(f"Waiting for symlink directory {directory} to become available before starting {process_name}")
                 time.sleep(10)
-            venv_path = setup_poetry_environment(config_dir)
+            venv_path = setup_poetry_environment(self.process_handler,config_dir)
             if not venv_path:
                 self.logger.error(f"Failed to set up Poetry environment for {process_name}")
                 return
             riven_python = os.path.join(venv_path, "bin", "python")
             command = [riven_python, "src/main.py"]
-            self.backend_process = ProcessHandler.start_process(self, process_name, config_dir, command, None, suppress_logging=suppress_logging)
+            self.process_handler.start_process(process_name, config_dir, command, None, suppress_logging=suppress_logging)       
             from .settings import load_settings
             load_settings()
+
+    def stop_process(self, process_name, key_type=None):
+        self.process_handler.stop_process(process_name, key_type=key_type)
