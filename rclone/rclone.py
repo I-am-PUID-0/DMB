@@ -25,6 +25,7 @@ def obscure_password(password):
         return None
 
 def wait_for_url(url, endpoint="/dav/", timeout=600):
+    time.sleep(5)
     start_time = time.time()
     logger.info(f"Waiting to start the rclone process until the Zurg WebDAV {url}{endpoint} is accessible.")
     auth = None

@@ -79,11 +79,10 @@ services:
       ## Rclone Required Settings
       - RCLONE_MOUNT_NAME=DMB
       ## Rclone Optional Settings - See rclone docs for full list
-     # - RCLONE_UID=1000
-     # - RCLONE_GID=1000
      # - NFS_ENABLED=true
      # - NFS_PORT=8000
      # - RCLONE_LOG_LEVEL=DEBUG
+     # - RCLONE_LOGS=OFF
      # - RCLONE_CACHE_DIR=/cache
      # - RCLONE_DIR_CACHE_TIME=10s
      # - RCLONE_VFS_CACHE_MODE=full
@@ -109,6 +108,8 @@ services:
      # - RIVEN_BACKEND_UPDATE=true
      # - RIVEN_FRONTEND_UPDATE=true
      # - RIVEN_LOG_LEVEL=DEBUG
+     # - FRONTEND_LOGS=OFF
+     # - BACKEND_LOGS=OFF
      # - RIVEN_BACKEND_URL=
      # - RIVEN_DATABASE_HOST=
      # - RIVEN_DATABASE_URL= 
@@ -181,7 +182,7 @@ To customize some properties of the container, the following environment
 variables can be passed via the `-e` parameter (one for each variable), or via the docker-compose file within the ```environment:``` section, or with a .env file saved to the config directory -- See the wiki for more info on using the [.env](https://github.com/I-am-PUID-0/DMB/wiki/Settings#use-of-env-file-for-setting-environment-variables).  Value
 of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 
-| Variable       | Description                                  | Default | Used w/ rclone| Used w/ Riven| Used w/ zurg|
+| Variable       | Description                                  | Default | Used w/ rclone| Used w/ Riven| Used w/ Zurg|
 |----------------|----------------------------------------------|---------|:-:|:-:|:-:|
 |`TZ`| [TimeZone](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) used by the container |  |
 |`PUID`| The user ID of the user running the container | `1001` | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
@@ -218,11 +219,11 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`RIVEN_FRONTEND_UPDATE`| Enable automatic updates of the Riven frontend. Adding this variable will enable automatic updates to the latest version of Riven locally within the container.| `false` || :heavy_check_mark:|
 |`ORIGIN`| The origin URL for the Riven frontend | http://0.0.0.0:3000 | | :heavy_check_mark: | |
 |`RIVEN_BACKEND_URL`| The URL for the Riven backend | http://127.0.0.1:8080 | | :heavy_check_mark: | |
-|`RIVEN_DATABASE_HOST`| The database host for Riven backend | `postgresql+psycopg2://postgres:postgres@127.0.0.1/riven` | | :heavy_check_mark: | |
-|`RIVEN_DATABASE_URL`| The database URL for Riven frontend | `postgres://postgres:postgres@127.0.0.1/riven` | | :heavy_check_mark: | |
-|`RIVEN_FRONTEND_DIALECT`| The dialect for the Riven frontend | `sqlite` | | :heavy_check_mark: | |
+|`RIVEN_DATABASE_HOST`| The database host for Riven backend | `postgresql+psycopg2://DMB:postgres@127.0.0.1/riven` | | :heavy_check_mark: | |
+|`RIVEN_DATABASE_URL`| The database URL for Riven frontend | `postgres://DMB:postgres@127.0.0.1/riven` | | :heavy_check_mark: | |
+|`RIVEN_FRONTEND_DIALECT`| The dialect for the Riven frontend - default w/o backend is sqlite, default w/ backend is postgres | `sqlite or postgres` | | :heavy_check_mark: | |
 |`HARD_RESET`| Set true to reset the database for Riven | `false` | | :heavy_check_mark: | |
-|`AUTO_UPDATE_INTERVAL`| Interval between automatic update checks in hours. Vaules can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes, and 1.5 would yield one and a half hours | `24` || :heavy_check_mark:| :heavy_check_mark:|
+|`AUTO_UPDATE_INTERVAL`| Interval between automatic update checks in hours. Values can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes, and 1.5 would yield one and a half hours | `24` || :heavy_check_mark:| :heavy_check_mark:|
 |`DUPLICATE_CLEANUP`| Automated cleanup of duplicate content in Plex.  | `false` |
 |`CLEANUP_INTERVAL`| Interval between duplicate cleanup in hours. Values can be any positive [whole](https://www.oxfordlearnersdictionaries.com/us/definition/english/whole-number) or [decimal](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095705740;jsessionid=3FDC96CC0D79CCE69702661D025B9E9B#:~:text=The%20separator%20used%20between%20the,number%20expressed%20in%20decimal%20representation.) point based number. Ex. a value of .5 would yield thirty minutes and 1.5 would yield one and a half hours | `24` || :heavy_check_mark: | :heavy_check_mark:|
 |`DMB_LOG_LEVEL`| The level at which logs should be captured. See the python [Logging Levels](https://docs.python.org/3/library/logging.html#logging-levels) documentation for more details  | `INFO` |

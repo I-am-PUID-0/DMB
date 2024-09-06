@@ -42,7 +42,7 @@ def shutdown(signum, frame):
 def main():
 
 
-    version = '5.0.0'
+    version = '5.0.1'
 
     ascii_art = f'''
                                                                        

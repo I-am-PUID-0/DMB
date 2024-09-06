@@ -76,7 +76,7 @@ def fetch_settings(url, max_retries=5, delay=5):
                 try:
                     data = response.json()  
                     if isinstance(data, dict): 
-                        logger.debug(f"Successfully fetched settings on attempt {attempt + 1}")
+                        logger.info(f"Successfully fetched settings on attempt {attempt + 1}")
                         return data
                     else:
                         logger.error(f"Unexpected JSON format: {data}")
@@ -144,6 +144,7 @@ def load_settings():
 
     try:
         get_url = 'http://127.0.0.1:8080/settings/get/all'
+        time.sleep(5)
         settings_response = fetch_settings(get_url)
         if not settings_response or not settings_response.get('success'):
             logger.error("Failed to fetch current settings")

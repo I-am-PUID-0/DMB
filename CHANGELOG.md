@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.0.1] - 2024-09-06 🚀
+
+### Fixed 🛠️
+
+- [Issue #47](https://github.com/I-am-PUID-0/DMB/issues/47) Error when RCLONE_LOG_LEVEL is not enabled 🐛
+
+
 ## Version [5.0.0] - 2024-09-05 🚀
 
 ### Breaking Changes ⚠️
