@@ -61,6 +61,8 @@ services:
       - /home/username/docker/DMB/Riven/mnt:/mnt
       ## Location for PostgreSQL database if using Riven
       - /home/username/docker/DMB/PostgreSQL/data:/postgres_data
+      ## Location for Zilean data if using Riven
+      - /home/username/docker/DMB/Zilean/data:/zilean/app/data
     environment:
       - TZ=
       - PUID=
