@@ -41,6 +41,9 @@ def set_env_variables():
         except Exception as e:
             logger.error(f"Error setting {key}: {e}")
 
+    if ZILEAN is not None and ZILEAN.lower() == 'true':
+        set_env_variable('SCRAPING_ZILEAN_URL', None, 'http://localhost:8182')
+
     env_vars = {
         'DOWNLOADERS_REAL_DEBRID_API_KEY': RDAPIKEY,
         'UPDATERS_PLEX_URL': PLEXADD,

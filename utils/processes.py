@@ -23,7 +23,7 @@ class ProcessHandler:
     def __init__(self, logger):
         pass
 
-    def start_process(self, process_name, config_dir, command, key_type=None, suppress_logging=False):
+    def start_process(self, process_name, config_dir, command, key_type=None, suppress_logging=False, env=None):
         try:
             try:
                 pwd.getpwuid(user_id)
@@ -50,8 +50,12 @@ class ProcessHandler:
 
             if isinstance(command, str):
                 command = shlex.split(command)      
-                
-            if process_name in ["rclone", "poetry_install", "poetry_env_setup", "PostgreSQL_init", "npm_install", "node_build"]:
+
+            process_env = os.environ.copy()  
+            if env:
+                process_env.update(env)  
+
+            if process_name in ["rclone", "poetry_install", "install_poetry", "poetry_env_setup", "PostgreSQL_init", "npm_install", "node_build", "python_env_setup", "install_requirements", "setup_env_and_install", "dotnet_env_restore", "dotnet_publish_api", "dotnet_publish_scraper"]:
                 process = subprocess.Popen(
                     command,
                     stdout=subprocess.PIPE,
@@ -59,7 +63,8 @@ class ProcessHandler:
                     start_new_session=True,
                     cwd=config_dir,
                     universal_newlines=True,
-                    bufsize=1
+                    bufsize=1,
+                    env=process_env  
                 )
             else:
                 process = subprocess.Popen(
@@ -70,19 +75,23 @@ class ProcessHandler:
                     cwd=config_dir,
                     universal_newlines=True,
                     bufsize=1,
-                    preexec_fn=preexec_fn 
+                    preexec_fn=preexec_fn,
+                    env=process_env  
                 )
-                
+
             if not suppress_logging:
                 self.subprocess_logger = SubprocessLogger(self.logger, f"{process_description}")
                 self.subprocess_logger.start_logging_stdout(process)
                 self.subprocess_logger.start_monitoring_stderr(process, key_type, process_name)
+        
             self.logger.info(f"{process_name} process started with PID: {process.pid}")
-            self.processes[process_name] = process  
+            self.processes[process_name] = process
             return process
+
         except Exception as e:
             self.logger.error(f"Error running subprocess for {process_description}: {e}")
             return None
+
 
     def wait(self, process_name):
         process = self.processes.get(process_name)

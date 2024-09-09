@@ -46,7 +46,7 @@ try:
             "should_run": str(RIVENFRONTEND).lower() == 'true' or str(RIVEN).lower() == 'true' and os.path.exists(f'{RCLONEDIR}/{RCLONEMN}/__all__')
         },
         "riven_backend": {
-            "regex": re.compile(r'/venv/bin/python src/main.py'),
+            "regex": re.compile(r'/riven/backend/venv/bin/python src/main.py'),
             "error_message": "The Riven backend process is not running.",
             "should_run": str(RIVENBACKEND).lower() == 'true' or str(RIVEN).lower() == 'true' and os.path.exists(f'{RCLONEDIR}/{RCLONEMN}/__all__')
         },
@@ -63,6 +63,11 @@ try:
         "PostgreSQL": {
             "regex": re.compile(r'postgres -D'),
             "error_message": f"The PostgreSQL process is not running.",
+            "should_run": str(RIVENBACKEND).lower() == 'true' or str(RIVEN).lower() == 'true' and os.path.exists(f'{RCLONEDIR}/{RCLONEMN}/__all__')
+        },
+        "Zilean": {
+            "regex": re.compile(r'/zilean-api'),
+            "error_message": f"The Zilean process is not running.",
             "should_run": str(RIVENBACKEND).lower() == 'true' or str(RIVEN).lower() == 'true' and os.path.exists(f'{RCLONEDIR}/{RCLONEMN}/__all__')
         }
     }

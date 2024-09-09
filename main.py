@@ -3,6 +3,7 @@ from base import *
 from utils.logger import *
 import riven_ as r
 import zurg as z 
+import zilean_ as zilean
 from rclone import rclone
 from utils import duplicate_cleanup, user_management, postgres
 from utils.processes import ProcessHandler
@@ -30,7 +31,7 @@ def shutdown(signum, frame):
                 else:
                     logger.error(f"Failed to unmount {full_path}: {umount.stderr.strip()}")
 
-    processes = ['riven_frontend', 'riven_backend', 'PostgreSQL', 'Zurg', 'rclone']
+    processes = ['riven_frontend', 'riven_backend', 'Zilean', 'PostgreSQL', 'Zurg', 'rclone']
     for process in processes:
         stop_process(process)
 
@@ -42,7 +43,7 @@ def shutdown(signum, frame):
 def main():
 
 
-    version = '5.0.1'
+    version = '5.1.0'
 
     ascii_art = f'''
                                                                        
@@ -101,7 +102,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                         else:
                             z_updater.auto_update('Zurg',False)
                     except Exception as e:
-                        raise Exception(f"Error in Zurg setup: {e}")
+                        raise Exception(f"An error occurred in the Zurg setup: {e}")
                     try:    
                         if RCLONEMN:
                             try:
@@ -113,7 +114,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                             except Exception as e:
                                 logger.error(e)                         
                     except Exception as e:
-                        raise Exception(f"Error in setup: {e}")                          
+                        raise Exception(f"An error occurred in the rclone setup: {e}")                          
                 else:
                     raise MissingAPIKeyException()
             except Exception as e:
@@ -125,6 +126,23 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
         if (RIVENBACKEND is not None and str(RIVENBACKEND).lower() == 'true') or (RIVEN is not None and str(RIVEN).lower() == 'true'):
             try:
                 postgres.postgres_setup(process_handler)
+            except Exception as e:
+                raise Exception(f"An error occurred in the PostgreSQL setup: {e}")
+            try:    
+                if ZILEAN is not None or str(ZILEAN).lower() == 'true':
+                    try:
+                        zilean.setup.zilean_setup(process_handler,'Zilean')
+                        zilean.updater = zilean.update.ZileanUpdate(process_handler)
+                        logger.debug(f"Initialized ZileanUpdate: {zilean.updater}")
+                        if (ZILEANUPDATE is not None and str(ZILEAN).lower() == 'true') and not ZILEANVERSION:
+                            zilean.updater.auto_update('Zilean', True)
+                        else:
+                            zilean.updater.auto_update('Zilean', False)                            
+                    except Exception as e:
+                        logger.error(e)                         
+            except Exception as e:
+                raise Exception(f"An error occurred in the Zilean setup: {e}")  
+            try:
                 r.setup.riven_setup(process_handler,'riven_backend')
                 r_updater = r.update.RivenUpdate(process_handler)
                 logger.debug(f"Initialized RivenUpdate: {r_updater}")
@@ -133,7 +151,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 else:
                     r_updater.auto_update('riven_backend', False)              
             except Exception as e:
-                logger.error(f"An error occurred in the Riven backend setup: {e}")
+                raise Exception(f"An error occurred in the Riven backend setup: {e}")                        
     except:
         pass
 
@@ -148,10 +166,9 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 else:
                     r_updater.auto_update('riven_frontend', False)                    
             except Exception as e:
-                logger.error(f"An error occurred in the Riven frontend setup: {e}")
+                raise Exception(f"An error occurred in the Riven frontend setup: {e}")
     except:
-        pass
-   
+        pass  
     
     def perpetual_wait():
         stop_event = threading.Event()

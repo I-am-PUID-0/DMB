@@ -13,7 +13,7 @@ ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/plex_
 ADD https://github.com/rivenmedia/riven-frontend/archive/refs/heads/main.zip /riven-frontend-main.zip
 
 RUN \
-  apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base linux-headers py3-cffi libffi-dev rust cargo openssl openssl-dev pkgconfig git npm ffmpeg postgresql-dev postgresql-client postgresql && \
+  apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base linux-headers py3-cffi libffi-dev rust cargo openssl openssl-dev pkgconfig git npm ffmpeg postgresql-dev postgresql-client postgresql dotnet-sdk-8.0 postgresql-contrib && \
   mkdir -p /log /riven /riven/frontend && \
   if [ -f /riven-frontend-main.zip ]; then echo "File exists"; else echo "File does not exist"; fi && \
   unzip /riven-frontend-main.zip -d /riven && \

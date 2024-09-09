@@ -94,6 +94,13 @@ services:
      # - POSTGRES_USER=postgres
      # - POSTGRES_PASSWORD=postgres
      # - POSTGRES_DB=riven
+      ## Zilean Required Settings
+     # - ZILEAN_ENABLED=true
+      ## Zilean Optional Settings
+     # - ZILEAN_VERSION=v1.5.3
+     # - ZILEAN_BRANCH=main
+     # - ZILEAN_UPDATE=true
+     # - ZILEAN_LOGS=OFF
       ## Riven Backend Required Settings
       - RIVEN_BACKEND_ENABLED=true
       ## Riven Frontend Required Settings
@@ -110,6 +117,7 @@ services:
      # - RIVEN_LOG_LEVEL=DEBUG
      # - FRONTEND_LOGS=OFF
      # - BACKEND_LOGS=OFF
+     # - HARD_RESET=true
      # - RIVEN_BACKEND_URL=
      # - RIVEN_DATABASE_HOST=
      # - RIVEN_DATABASE_URL= 
@@ -242,6 +250,11 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`ZURG_PORT`| The port to be used for the Zurg server | `random ` | | | :heavy_check_mark: |
 |`NFS_ENABLED`| Set the value "true" to enable the NFS server for rclone | `false ` | :heavy_check_mark:| | |
 |`NFS_PORT`| The port to be used for the rclone NFS server | `random ` | :heavy_check_mark:| | |
+|`ZILEAN_ENABLED`| Set the value "true" to enable the Zilean process - Will only run when Riven backend is enabled | `false ` | | :heavy_check_mark:||
+|`ZILEAN_VERSION`| The version of Zilean to use. If enabled, the value should contain v1.x.x format | `latest` | | :heavy_check_mark: | |
+|`ZILEAN_BRANCH`| The branch of Zilean to use.  | `main` | | :heavy_check_mark: | |
+|`ZILEAN_UPDATE`| Enable automatic updates of Zilean. Adding this variable will enable automatic updates to the latest version of Zilean locally within the container. | `false` | | :heavy_check_mark: | |
+|`ZILEAN_LOGS`| Set value to OFF To disable the Zilean process logging | `ON` | | :heavy_check_mark:| |
 
 
 

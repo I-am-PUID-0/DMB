@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.1.0] - 2024-09-09 🚀
+
+### Added ✨
+
+- [Issue #48](https://github.com/I-am-PUID-0/DMB/issues/48) Added Zilean to the DMB image for caching of the DebridMediaManager shared hashlists 📦
+- ZILEAN_ENABLED: Environment variable to enable Zilean; Default is false 🔄
+- ZILEAN_UPDATE: Environment variable to update Zilean; Default is false 🔄
+- ZILEAN_BRANCH: Environment variable to set the Zilean branch; Default is main 🔄
+- ZILEAN_VERSION: Environment variable to set the Zilean version; Default is latest 🔄
+- ZILEAN_LOGS: Environment variable to disable the Zilean logging when value is set to OFF; Default is ON 📝
+
+
 ## Version [5.0.1] - 2024-09-06 🚀
 
 ### Fixed 🛠️

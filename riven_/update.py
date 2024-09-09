@@ -32,7 +32,7 @@ class RivenUpdate(Update):
             if process_name == 'riven_frontend':
                 if RFBRANCH:
                     branch = RFBRANCH.lower()
-                    version_url = f"https://raw.githubusercontent.com/rivenmedia/riven-frontend/{RFBRANCH}/version.txt"
+                    version_url = f"https://raw.githubusercontent.com/rivenmedia/riven-frontend/{branch}/version.txt"
                 else:
                     version_url = "https://raw.githubusercontent.com/rivenmedia/riven-frontend/main/version.txt"
             else:
@@ -109,24 +109,29 @@ class RivenUpdate(Update):
                 suppress_logging = True
                 self.logger.info(f"Suppressing {process_name} logging")
             command = ["node", "build"]
-            config_dir = "./riven/frontend"
+            config_dir = "/riven/frontend"
             self.process_handler.start_process(process_name, config_dir, command, None, suppress_logging=suppress_logging)
+
         elif process_name == 'riven_backend':
             if str(BACKENDLOGS).lower() == 'off':
                 suppress_logging = True
                 self.logger.info(f"Suppressing {process_name} logging")
-            config_dir = "./riven/backend"
+            config_dir = "/riven/backend"
             directory = f"{RCLONEDIR}/{RCLONEMN}/__all__"
             while not os.path.exists(directory):
                 self.logger.info(f"Waiting for symlink directory {directory} to become available before starting {process_name}")
                 time.sleep(10)
-            venv_path = setup_poetry_environment(self.process_handler,config_dir)
-            if not venv_path:
+            venv_path, poetry_executable = setup_poetry_environment(self.process_handler, config_dir)
+            if not venv_path or not poetry_executable:
                 self.logger.error(f"Failed to set up Poetry environment for {process_name}")
                 return
             riven_python = os.path.join(venv_path, "bin", "python")
             command = [riven_python, "src/main.py"]
-            self.process_handler.start_process(process_name, config_dir, command, None, suppress_logging=suppress_logging)       
+            env = os.environ.copy()
+            env["PATH"] = f"{venv_path}/bin:" + env["PATH"]
+            env["POETRY_VIRTUALENVS_PATH"] = f"{config_dir}/.cache/pypoetry/virtualenvs"
+            env["POETRY_CACHE_DIR"] = f"{config_dir}/.cache/pypoetry"
+            self.process_handler.start_process(process_name, config_dir, command, None, suppress_logging=suppress_logging, env=env)
             from .settings import load_settings
             load_settings()
 

@@ -5,38 +5,46 @@ from utils.logger import *
 
 logger = get_logger()
 
-def setup_poetry_environment(process_handler=None, config_dir='./riven/backend'):
+def setup_poetry_environment(process_handler=None, config_dir='/riven/backend'):
     try:
         logger.info(f"Setting up Poetry environment in {config_dir}")
 
-        poetry_install_process = process_handler
-        poetry_install_process.start_process("poetry_install", config_dir, ["poetry", "install", "--no-root", "--without", "dev"])
-        poetry_install_process.wait("poetry_install")
+        venv_path = f"{config_dir}/venv"
+        python_executable = os.path.abspath(f"{venv_path}/bin/python")
+        poetry_executable = os.path.abspath(f"{venv_path}/bin/poetry")
 
+        python_env_process = process_handler
+        python_env_process.start_process("python_env_setup", config_dir, ["python", "-m", "venv", "venv"])
+        python_env_process.wait("python_env_setup")
+        if python_env_process.returncode != 0:
+            logger.error(f"Error setting up Python environment: {python_env_process.stderr}")
+            return False, None
+
+        env = os.environ.copy()
+        env["PATH"] = f"{venv_path}/bin:" + env["PATH"]
+        env["POETRY_VIRTUALENVS_CREATE"] = "false"
+        env["VIRTUAL_ENV"] = venv_path  
+
+        python_env_process.start_process("install_poetry", config_dir, [python_executable, "-m", "pip", "install", "poetry"], None, False, env=env)
+        python_env_process.wait("install_poetry")
+        if python_env_process.returncode != 0:
+            logger.error(f"Error installing Poetry: {python_env_process.stderr}")
+            return False, None
+
+        poetry_install_process = process_handler
+        poetry_install_process.start_process("poetry_install", config_dir, [poetry_executable, "install", "--no-root", "--without", "dev"], None, False, env=env)
+        poetry_install_process.wait("poetry_install")
         if poetry_install_process.returncode != 0:
             logger.error(f"Error setting up Poetry environment: {poetry_install_process.stderr}")
-            return False
+            return False, None
 
-        poetry_env_process = process_handler
-        poetry_env_process.start_process("poetry_env_setup", config_dir, ["poetry", "env", "info", "-p"])
-        poetry_env_process.wait("poetry_env_setup")
-        if poetry_env_process.returncode != 0:
-            logger.error(f"Error getting Poetry environment info: {poetry_env_process.stderr}")
-            return False
-
-        venv_path = '/venv'
-
-        if not venv_path or not os.path.exists(venv_path):
-            logger.error(f"Poetry environment setup failed, virtual environment not found at {venv_path}")
-            return False
-        else:
-            logger.info("Poetry environment setup complete")
-        return venv_path
+        logger.info(f"Poetry environment setup complete at {venv_path}")
+        return venv_path, poetry_executable  
     except subprocess.CalledProcessError as e:
         logger.error(f"Error setting up Poetry environment: {e}")
-        return False
+        return False, None
 
-def setup_npm_build(process_handler=None,config_dir='./riven/frontend'):
+def setup_npm_build(process_handler=None,config_dir='/riven/frontend'):
     try:
         logger.info("Setting up riven_frontend")
 
@@ -86,7 +94,7 @@ def setup_npm_build(process_handler=None,config_dir='./riven/frontend'):
 
 def riven_setup(process_handler, process_name, branch='main', release_version=None, running_process=False):
     logger.info(f"Configuring {process_name}")
-    riven_dir = "./riven"
+    riven_dir = "/riven"
     backend_dir = os.path.join(riven_dir, "backend")
     frontend_dir = os.path.join(riven_dir, "frontend")
     exclude_dirs = None
