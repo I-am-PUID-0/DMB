@@ -77,6 +77,8 @@ jobs:
           platforms: linux/amd64,linux/arm64 #linux/arm/v7
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
+          provenance: true
+          sbom: true         
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/${{ env.REPO_NAME }}:${{ env.VERSION }}
             ${{ secrets.DOCKER_USERNAME }}/${{ env.REPO_NAME }}:latest
