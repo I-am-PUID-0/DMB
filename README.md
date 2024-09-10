@@ -9,7 +9,7 @@
 </div>
 
 ## 📜 Description
-**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of **[Riven Media's](https://github.com/rivenmedia)**, **[yowmamasita's](https://github.com/yowmamasita)**, and **[ncw's](https://github.com/ncw)** projects -- **[Riven](https://github.com/rivenmedia/riven)**, **[zurg](https://github.com/debridmediamanager/zurg-testing)**, and **[rclone](https://github.com/rclone/rclone)**.
+**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of **[Riven Media's](https://github.com/rivenmedia)**, **[yowmamasita's](https://github.com/yowmamasita)**, **[iPromKnight's](https://github.com/iPromKnight/zilean)**, and **[ncw's](https://github.com/ncw)** projects -- **[Riven](https://github.com/rivenmedia/riven)**, **[zurg](https://github.com/debridmediamanager/zurg-testing)**, **[zilean](https://github.com/iPromKnight/zilean)**, and **[rclone](https://github.com/rclone/rclone)**.
 
 > ⚠️ **IMPORTANT**: Docker Desktop **CANNOT** be used to run DMB. Docker Desktop does not support the [mount propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation) required for rclone mounts.
 >
