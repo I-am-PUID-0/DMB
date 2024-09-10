@@ -68,7 +68,7 @@ try:
         "Zilean": {
             "regex": re.compile(r'/zilean-api'),
             "error_message": f"The Zilean process is not running.",
-            "should_run": str(RIVENBACKEND).lower() == 'true' or str(RIVEN).lower() == 'true' and os.path.exists(f'{RCLONEDIR}/{RCLONEMN}/__all__')
+            "should_run": str(ZILEAN).lower() == 'true' and os.path.exists(f'{RCLONEDIR}/{RCLONEMN}/__all__')
         }
     }
 

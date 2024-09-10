@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+# Version [5.1.2] - 2024-09-10 🚀
+
+### Fixed 🛠️
+
+- Healthcheck: Fixed healthcheck for Zilean 🩺
+
+
 # Version [5.1.1] - 2024-09-10 🚀
 
 ### Fixed 🛠️
