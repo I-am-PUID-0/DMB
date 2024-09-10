@@ -7,7 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## Version [5.1.0] - 2024-09-09 🚀
+# Version [5.1.1] - 2024-09-10 🚀
+
+### Fixed 🛠️
+
+- Zilean: `PostgreSQL subprocess: ... CEST [490] FATAL:  role "postgres" does not exist` 🐛
+
+### Notes 📝
+
+- On first run of Zilean, the PostgreSQL will create the database named zilean, so the message `PostgreSQL subprocess: ... CEST [596] FATAL:  database "zilean" does not exist` can be ignored 🗄️
+
+
+# Version [5.1.0] - 2024-09-09 🚀
 
 ### Added ✨
 

@@ -26,7 +26,7 @@ class ZileanUpdate(Update):
                 self.logger.error(f"Failed to get the current version for {process_name}")
                 return
 
-            self.logger.info(f"Currently installed [v{current_version}] for {process_name}")
+            self.logger.info(f"Currently installed [{current_version}] for {process_name}")
 
             latest_version, error = get_latest_release(repo_owner, repo_name)
 
@@ -77,7 +77,8 @@ class ZileanUpdate(Update):
                 "ASPNETCORE_URLS": "http://+:8182",
                 "PYTHONPATH": libpython_path,  
                 "PATH": f"{venv_path}/bin:" + os.environ["PATH"], 
-                "ZILEAN_PYTHON_PYLIB": "/usr/local/lib/libpython3.11.so.1.0"
+                "ZILEAN_PYTHON_PYLIB": "/usr/local/lib/libpython3.11.so.1.0",
+                "Zilean__Database__ConnectionString": f"Host=localhost;Port=5432;Database=zilean;Username={postgres_user};Password={postgres_password}"
             }
             process_env = os.environ.copy()
             process_env.update(env_exports)
