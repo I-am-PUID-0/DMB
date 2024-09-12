@@ -71,10 +71,13 @@ class RivenUpdate(Update):
                     self.logger.info(f"Automatic update installed for {process_name} [v{latest_version}]")                        
                     self.logger.info(f"Restarting {process_name}")
                     self.start_process(process_name)
+                    return True
             else:
                 self.logger.info(f"Automatic update not required for {process_name}")
+                return False   
         except Exception as e:
             self.logger.error(f"Automatic update failed for {process_name}: {e}")
+            return False
 
     def get_current_version(self, version_path, process_name):
         try:

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.1.4] - 2024-09-12 🚀
+
+### Fixed 🛠️
+
+- [Issue #51](https://github.com/I-am-PUID-0/DMB/issues/51) Duplicate start_process when update applied during initial startup 🐛
+
+
 ## Version [5.1.3] - 2024-09-12 🚀
 
 ### Fixed 🛠️
