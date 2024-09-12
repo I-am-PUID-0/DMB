@@ -108,9 +108,11 @@ class RivenUpdate(Update):
             if str(FRONTENDLOGS).lower() == 'off':
                 suppress_logging = True
                 self.logger.info(f"Suppressing {process_name} logging")
+            env = os.environ.copy()
+            env["DIALECT"] = "postgres"
             command = ["node", "build"]
             config_dir = "/riven/frontend"
-            self.process_handler.start_process(process_name, config_dir, command, None, suppress_logging=suppress_logging)
+            self.process_handler.start_process(process_name, config_dir, command, None, suppress_logging=suppress_logging, env=env)
 
         elif process_name == 'riven_backend':
             if str(BACKENDLOGS).lower() == 'off':

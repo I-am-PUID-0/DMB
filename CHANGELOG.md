@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.1.3] - 2024-09-12 🚀
+
+### Fixed 🛠️
+
+- [Issue #43](https://github.com/I-am-PUID-0/DMB/issues/43) Node issue when setting Riven frontend version 🐛
+
+### Notes 📝
+
+- The Riven frontend automatic update / branch / version should now work again 📦
+
+
 ## Version [5.1.2] - 2024-09-10 🚀
 
 ### Fixed 🛠️
