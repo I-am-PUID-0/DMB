@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.1.6] - 2024-09-13 🚀
+
+### Changed 🔄
+
+- Riven Frontend: Set the default path for the frontend version.txt to /riven/frontend 🔄
+
+
 ## Version [5.1.5] - 2024-09-13 🚀
 
 ### Fixed 🛠️

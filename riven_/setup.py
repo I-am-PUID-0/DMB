@@ -64,7 +64,7 @@ def setup_npm_build(process_handler=None, config_dir='/riven/frontend'):
         with open(about_page_path, 'r') as file:
             about_page_lines = file.readlines()
         for i, line in enumerate(about_page_lines):
-            if "versionFilePath = '/riven/version.txt';" in line:
+            if "versionFilePath: string = '/riven/version.txt';" in line:
                 about_page_lines[i] = line.replace("/riven/version.txt", "/riven/frontend/version.txt")
                 logger.debug(f"Modified versionFilePath in +page.server.ts to point to /riven/frontend/version.txt")
                 break
