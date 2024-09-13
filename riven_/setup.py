@@ -44,50 +44,51 @@ def setup_poetry_environment(process_handler=None, config_dir='/riven/backend'):
         logger.error(f"Error setting up Poetry environment: {e}")
         return False, None
 
-def setup_npm_build(process_handler=None,config_dir='/riven/frontend'):
+def setup_npm_build(process_handler=None, config_dir='/riven/frontend'):
     try:
         logger.info("Setting up riven_frontend")
-
         vite_config_path = os.path.join(config_dir, 'vite.config.ts')
         with open(vite_config_path, 'r') as file:
             lines = file.readlines()
-
         build_section_exists = any('build:' in line for line in lines)
         if not build_section_exists:
             for i, line in enumerate(lines):
                 if line.strip().startswith('export default defineConfig({'):
                     lines.insert(i + 1, '    build: {\n        minify: false\n    },\n')
                     break
-
         with open(vite_config_path, 'w') as file:
             file.writelines(lines)
-
         logger.debug("vite.config.ts modified to disable minification")
 
+        about_page_path = os.path.join(config_dir, 'src', 'routes', 'settings', 'about', '+page.server.ts')
+        with open(about_page_path, 'r') as file:
+            about_page_lines = file.readlines()
+        for i, line in enumerate(about_page_lines):
+            if "versionFilePath = '/riven/version.txt';" in line:
+                about_page_lines[i] = line.replace("/riven/version.txt", "/riven/frontend/version.txt")
+                logger.debug(f"Modified versionFilePath in +page.server.ts to point to /riven/frontend/version.txt")
+                break
+        with open(about_page_path, 'w') as file:
+            file.writelines(about_page_lines)
+
         npm_install_process = process_handler
-        #npm_install_process.start_process("npm_install", config_dir, ["npm", "install"])
         npm_install_process.start_process("npm_install", config_dir, ["pnpm", "install"])
         npm_install_process.wait("npm_install")
-
         if npm_install_process.returncode != 0:
             logger.error(f"Error during npm install: {npm_install_process.stderr}")
             return False
 
         node_build_process = process_handler
-        #node_build_process.start_process("node_build", config_dir, ["node", "--max-old-space-size=2048", "./node_modules/.bin/vite", "build"])
-        if RFDIALECT:
-            pass
-        else: 
-            os.environ['DIALECT'] = 'sqlite'
+        if 'RFDIALECT' not in os.environ:
+            os.environ['DIALECT'] = 'postgres'      
         node_build_process.start_process("node_build", config_dir, ["pnpm", "run", "build"])
         node_build_process.wait("node_build")
-
         if node_build_process.returncode != 0:
             logger.error(f"Error during node build: {node_build_process.stderr}")
             return False
-
         logger.info("npm install and build complete")
         return True
+
     except subprocess.CalledProcessError as e:
         logger.error(f"Error setting up npm environment: {e}")
         return False
@@ -144,7 +145,10 @@ def riven_setup(process_handler, process_name, branch='main', release_version=No
                 chown_recursive(riven_dir, user_id, group_id)
 
         if process_name == 'riven_frontend':
-            repo_owner = 'rivenmedia'
+            if RFOWNER: 
+                repo_owner = RFOWNER
+            else: 
+                repo_owner = 'rivenmedia'
             repo_name = 'riven-frontend'
             if RFVERSION is not None:
                 branch = 'main'                

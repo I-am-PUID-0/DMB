@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.1.5] - 2024-09-13 🚀
+
+### Fixed 🛠️
+
+- Riven Frontend: Fixed the default DIALECT set for node build process 🐛
+- Riven Frontend: Set the default path for the frontend version.txt 🐛
+
+### Added ✨
+
+- RIVEN_FRONTEND_OWNER: Environment variable to set the owner of the Riven frontend repository; Default is rivenmedia 🆔
+
+
 ## Version [5.1.4] - 2024-09-12 🚀
 
 ### Fixed 🛠️
