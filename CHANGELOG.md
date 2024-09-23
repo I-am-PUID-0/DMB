@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.1.8] - 2024-09-23 🚀
+
+### Fixed 🛠️
+
+- Riven Backend: Enabled not set to `true` for applied subordinate dictionary values 🐛
+
+
 ## Version [5.1.7] - 2024-09-23 🚀
 
 ### Fixed 🛠️

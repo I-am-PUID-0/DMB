@@ -119,6 +119,10 @@ def update_settings(current_settings, updated_settings, prefix=''):
             update_settings(value, nested_updated, full_key)
             if nested_updated:
                 updated_settings[key] = nested_updated
+                if 'enabled' in value:
+                    updated_settings[key]['enabled'] = True
+                if 'enable' in value:
+                    updated_settings[key]['enable'] = True
 
         elif isinstance(value, bool):
             updated_settings[key] = value
