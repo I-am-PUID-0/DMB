@@ -82,17 +82,17 @@ def initialize_postgres_data_directory(process_handler, postgres_data, postgres_
         logger.error(f"Error initializing PostgreSQL data directory: {e}")
         return False
 
-def check_postgresql_started(timeout=10):
+def check_postgresql_started(postgres_user, postgres_db, timeout=10):
     logger.info("Checking if PostgreSQL server has started...")
     time.sleep(2)
-    start_time = time.time()   
+    start_time = time.time()
     while time.time() - start_time < timeout:
-        result = subprocess.run(["pg_isready"], capture_output=True, text=True)
+        result = subprocess.run(["pg_isready", "-U", postgres_user, "-d", postgres_db], capture_output=True, text=True)
         if result.returncode == 0:
-            logger.info("PostgreSQL server has started.")
+            logger.info(f"PostgreSQL server has started.")
             return True
         else:
-            logger.info("PostgreSQL server has not started, waiting...")
+            logger.info(f"PostgreSQL server has not started, waiting... {result.stdout}")
         time.sleep(1)
     logger.error("PostgreSQL server failed to start within the timeout period.")
     return False
@@ -189,7 +189,7 @@ def postgres_setup(process_handler=None):
         #process_handler.start_process("PostgreSQL", postgres_data, ["su", "DMB", "-s", "/bin/sh", "-c", postgres_command])
         process_handler.start_process("PostgreSQL", postgres_data, postgres_command)
 
-        if not check_postgresql_started():
+        if not check_postgresql_started(postgres_user, postgres_db='postgres'):
             return False
 
         if not initialize_postgres_db(db_host, postgres_user, postgres_password, postgres_db):

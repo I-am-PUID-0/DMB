@@ -126,6 +126,8 @@ class RivenUpdate(Update):
             while not os.path.exists(directory):
                 self.logger.info(f"Waiting for symlink directory {directory} to become available before starting {process_name}")
                 time.sleep(10)
+            env_file_path = os.path.join(config_dir, "src", ".env")
+            load_dotenv(env_file_path)
             venv_path, poetry_executable = setup_poetry_environment(self.process_handler, config_dir)
             if not venv_path or not poetry_executable:
                 self.logger.error(f"Failed to set up Poetry environment for {process_name}")

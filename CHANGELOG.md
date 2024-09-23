@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.1.7] - 2024-09-23 🚀
+
+### Fixed 🛠️
+
+- [Issue #40](https://github.com/I-am-PUID-0/DMB/issues/40) Postgres. role "root" does not exist. 🐛 - Thanks @lukemuller 🙏
+
+### Added ✨
+
+- Riven Backend: Added the use of .env file for Riven backend settings 📝
+
+### Changed 🔄
+
+- Main Process: Refactored the main process to handle exceptions - graceful shutdown 🔄
+- Logger: Clean up logging 📝
+- Riven Backend: DEBUG is now linked to the DMB_LOG_LEVEL 🔄
+
+### Notes 📝
+
+- To use the .env file for Riven backend settings, create a .env file in the Riven data directory with settings in the format of `KEY=VALUE` as shown in the [env.example](https://github.com/rivenmedia/riven/blob/main/.env.example)📝
+
+
 ## Version [5.1.6] - 2024-09-13 🚀
 
 ### Changed 🔄

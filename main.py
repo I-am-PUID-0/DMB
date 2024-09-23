@@ -11,7 +11,7 @@ from utils.processes import ProcessHandler
 logger = get_logger()
 process_handler = ProcessHandler(logger)
 
-def shutdown(signum, frame):
+def shutdown(signum=None, frame=None, exit_code=0):
     logger.info("Shutdown signal received. Cleaning up...")
     
     def stop_process(process_name):
@@ -38,12 +38,12 @@ def shutdown(signum, frame):
     unmount_all()   
 
     logger.info("Shutdown complete.")
-    sys.exit(0)
+    sys.exit(exit_code)
 
 def main():
 
 
-    version = '5.1.6'
+    version = '5.1.7'
 
     ascii_art = f'''
                                                                        
@@ -85,8 +85,12 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
     thread.daemon = True
     thread.start()
     
-    user_management.create_system_user()
-    
+    try:
+        user_management.create_system_user()
+    except Exception as e:
+        logger.error(f"An error occurred while creating system user: {e}")
+        shutdown(exit_code=1)
+
     try:
         if ZURG is None or str(ZURG).lower() == 'false':
             pass
@@ -94,15 +98,15 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
             try:
                 if RDAPIKEY or ADAPIKEY:
                     try:
-                        z.setup.zurg_setup(process_handler) 
-                        z_updater = z.update.ZurgUpdate(process_handler)
-                        logger.debug(f"Initialized ZurgUpdate: {z_updater}")
-                        if ZURGUPDATE and ZURGUPDATE.lower() == 'true' and (ZURGVERSION is None or ZURGVERSION.lower() == 'nightly'):
-                            z_updater.auto_update('Zurg',True)
-                        else:
-                            z_updater.auto_update('Zurg',False)
+                        z.setup.zurg_setup(process_handler)
                     except Exception as e:
-                        raise Exception(f"An error occurred in the Zurg setup: {e}")
+                        raise e
+                    z_updater = z.update.ZurgUpdate(process_handler)
+                    logger.debug(f"Initialized ZurgUpdate: {z_updater}")
+                    if ZURGUPDATE and ZURGUPDATE.lower() == 'true' and (ZURGVERSION is None or ZURGVERSION.lower() == 'nightly'):
+                        z_updater.auto_update('Zurg', True)
+                    else:
+                        z_updater.auto_update('Zurg', False)
                     try:    
                         if RCLONEMN:
                             try:
@@ -118,57 +122,67 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 else:
                     raise MissingAPIKeyException()
             except Exception as e:
-                logger.error(e)                    
+                logger.error(f"An error occurred in the Zurg setup: {e}")
+                shutdown(exit_code=1)  
     except Exception as e:
         logger.error(e)
-        
+        shutdown(exit_code=1)  
+
     try:
         if (RIVENBACKEND is not None and str(RIVENBACKEND).lower() == 'true') or (RIVEN is not None and str(RIVEN).lower() == 'true'):
             try:
                 postgres.postgres_setup(process_handler)
             except Exception as e:
-                raise Exception(f"An error occurred in the PostgreSQL setup: {e}")
-            try:    
+                logger.error(f"An error occurred in the PostgreSQL setup: {e}")
+                shutdown(exit_code=1)  
+            try:
                 if ZILEAN is not None or str(ZILEAN).lower() == 'true':
                     try:
-                        zilean.setup.zilean_setup(process_handler,'Zilean')
-                        zilean.updater = zilean.update.ZileanUpdate(process_handler)
-                        logger.debug(f"Initialized ZileanUpdate: {zilean.updater}")
-                        if (ZILEANUPDATE is not None and str(ZILEAN).lower() == 'true') and not ZILEANVERSION:
-                            zilean.updater.auto_update('Zilean', True)
-                        else:
-                            zilean.updater.auto_update('Zilean', False)                            
+                        zilean.setup.zilean_setup(process_handler, 'Zilean')
                     except Exception as e:
-                        logger.error(e)                         
+                        raise e
+                    zilean_updater = zilean.update.ZileanUpdate(process_handler)
+                    logger.debug(f"Initialized ZileanUpdate: {zilean_updater}")
+                    if ZILEANUPDATE.lower() == 'true' and not ZILEANVERSION:
+                        zilean_updater.auto_update('Zilean', True)
+                    else:
+                        zilean_updater.auto_update('Zilean', False)
             except Exception as e:
-                raise Exception(f"An error occurred in the Zilean setup: {e}")  
+                logger.error(f"An error occurred in the Zilean setup: {e}")
+                shutdown(exit_code=1)  
             try:
-                r.setup.riven_setup(process_handler,'riven_backend')
+                try:
+                    r.setup.riven_setup(process_handler, 'riven_backend')
+                except Exception as e:
+                    raise e
                 r_updater = r.update.RivenUpdate(process_handler)
                 logger.debug(f"Initialized RivenUpdate: {r_updater}")
                 if (RBUPDATE or RUPDATE) and not RBVERSION:
-                    r_updater.auto_update('riven_backend', True)                                        
+                    r_updater.auto_update('riven_backend', True)
                 else:
-                    r_updater.auto_update('riven_backend', False)              
+                    r_updater.auto_update('riven_backend', False)
             except Exception as e:
-                raise Exception(f"An error occurred in the Riven backend setup: {e}")                        
-    except:
-        pass
+                logger.error(f"An error occurred in the Riven backend setup: {e}")
+                shutdown(exit_code=1)  
+    except Exception as e:
+        logger.error(e)
+        shutdown(exit_code=1)
 
     try:
         if (RIVENFRONTEND is not None and str(RIVENFRONTEND).lower() == 'true') or (RIVEN is not None and str(RIVEN).lower() == 'true'):
             try:
-                r.setup.riven_setup(process_handler,'riven_frontend', RFBRANCH, RFVERSION)
-                r_updater = r.update.RivenUpdate(process_handler)
-                logger.debug(f"Initialized RivenUpdate: {r_updater}")
-                if (RFUPDATE or RUPDATE) and not RFVERSION:       
-                    r_updater.auto_update('riven_frontend', True)
-                else:
-                    r_updater.auto_update('riven_frontend', False)                    
+                r.setup.riven_setup(process_handler, 'riven_frontend', RFBRANCH, RFVERSION)
             except Exception as e:
-                raise Exception(f"An error occurred in the Riven frontend setup: {e}")
-    except:
-        pass  
+                raise e
+            r_updater = r.update.RivenUpdate(process_handler)
+            logger.debug(f"Initialized RivenUpdate: {r_updater}")
+            if (RFUPDATE or RUPDATE) and not RFVERSION:
+                r_updater.auto_update('riven_frontend', True)
+            else:
+                r_updater.auto_update('riven_frontend', False)
+    except Exception as e:
+        logger.error(f"An error occurred in the Riven frontend setup: {e}")
+        shutdown(exit_code=1)  
     
     def perpetual_wait():
         stop_event = threading.Event()

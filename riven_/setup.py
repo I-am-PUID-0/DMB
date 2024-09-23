@@ -59,7 +59,6 @@ def setup_npm_build(process_handler=None, config_dir='/riven/frontend'):
         with open(vite_config_path, 'w') as file:
             file.writelines(lines)
         logger.debug("vite.config.ts modified to disable minification")
-
         about_page_path = os.path.join(config_dir, 'src', 'routes', 'settings', 'about', '+page.server.ts')
         with open(about_page_path, 'r') as file:
             about_page_lines = file.readlines()
@@ -99,12 +98,15 @@ def riven_setup(process_handler, process_name, branch='main', release_version=No
     backend_dir = os.path.join(riven_dir, "backend")
     frontend_dir = os.path.join(riven_dir, "frontend")
     exclude_dirs = None
+    data_env_path = os.path.join(backend_dir, "data", ".env")
+    src_env_path = os.path.join(backend_dir, "src", ".env")
+    
     try:
         if process_name == 'riven_backend':
             repo_owner = 'rivenmedia'
             repo_name = 'riven'
 
-            if RBVERSION is not None:
+            if RBVERSION:
                 logger.info(f"Using {branch} branch version {RBVERSION} for {process_name}")
                 release_version = RBVERSION
                 branch = 'main'
@@ -114,8 +116,6 @@ def riven_setup(process_handler, process_name, branch='main', release_version=No
                     logger.error(f"Failed to download the {release_version} release in {branch} branch for {process_name}: {error}")
                     return False, error
                 logger.info(f"Successfully downloaded the {release_version} release in {branch} branch for {process_name}")
-                from utils.user_management import chown_recursive
-                chown_recursive(riven_dir, user_id, group_id)
 
             elif RBBRANCH:
                 logger.info(f"Using {RBBRANCH} branch for {process_name}")
@@ -126,8 +126,6 @@ def riven_setup(process_handler, process_name, branch='main', release_version=No
                     logger.error(f"Failed to download the {branch} branch for {process_name}: {error}")
                     return False, error
                 logger.info(f"Successfully downloaded {branch} branch for {process_name}")
-                from utils.user_management import chown_recursive
-                chown_recursive(riven_dir, user_id, group_id)
 
             else:
                 from .download import get_latest_release
@@ -141,8 +139,16 @@ def riven_setup(process_handler, process_name, branch='main', release_version=No
                     logger.error(f"Failed to download the latest release for {process_name}: {error}")
                     return False, error
                 logger.info(f"Successfully downloaded the latest release for {process_name}")
-                from utils.user_management import chown_recursive
-                chown_recursive(riven_dir, user_id, group_id)
+
+            if os.path.exists(data_env_path):
+                logger.info(f"Found .env file in {data_env_path}, copying to {src_env_path}")
+                shutil.copy(data_env_path, src_env_path)
+                logger.info(f"Successfully copied .env file to {src_env_path}")
+            else:
+                logger.info(f"No .env file found in {data_env_path}")
+
+            from utils.user_management import chown_recursive
+            chown_recursive(riven_dir, user_id, group_id)
 
         if process_name == 'riven_frontend':
             if RFOWNER: 
@@ -150,7 +156,7 @@ def riven_setup(process_handler, process_name, branch='main', release_version=No
             else: 
                 repo_owner = 'rivenmedia'
             repo_name = 'riven-frontend'
-            if RFVERSION is not None:
+            if RFVERSION:
                 branch = 'main'                
                 logger.info(f"Using {branch} branch version {RFVERSION} for {process_name}")
                 release_version = RFVERSION

@@ -14,27 +14,84 @@ class SubprocessLogger:
             'NOTICE': logger.debug,
             'WARNING': logger.warning,
             'ERROR': logger.error,
+            'CRITICAL': logger.critical,
             'UNKNOWN': logger.info
         }
     @staticmethod
     def parse_log_level_and_message(line, process_name):
-        log_levels = {'DEBUG', 'INFO', 'NOTICE', 'WARNING', 'ERROR'}
+        log_levels = {'DEBUG', 'INFO', 'NOTICE', 'WARNING', 'ERROR', 'CRITICAL'}
+        alt_log_levels = {'DEBUG', 'INFO', 'NOTICE', 'WARN', 'ERROR', 'FATAL', 'LOG'}   
+
         log_level = None
         message = None
-        log_level_pattern = re.compile(r'({})\s*(.*)'.format('|'.join(log_levels)))
-        match = log_level_pattern.search(line)
 
-        if match:
-            log_level = match.group(1)
-            message = match.group(2).strip()
-            if process_name == 'rclone' and message.startswith(': '):
-                message = message[2:]
+        if 'Zurg' in process_name:
+            log_level_pattern = re.compile(r'({})\s*(.*)'.format('|'.join(alt_log_levels)))
+            match = log_level_pattern.search(line)
+            if match:
+                log_level = match.group(1)
+                message = match.group(2).strip()
+                message_parts = message.split()  
+                if len(message_parts) > 0:
+                    first_word = message_parts[1].strip()  
+                    rest_of_message = " ".join(message_parts[2:]).strip() 
+                    if rest_of_message:
+                        message = f"| {first_word} | {rest_of_message}"
+                    else:
+                        message = f"| {first_word} |"  
+                else:
+                    message = line
+            else:
+                message = line  
+
+        elif process_name == 'PostgreSQL':
+            log_level_pattern = re.compile(r'({})\s*(.*)'.format('|'.join(alt_log_levels)))
+            match = log_level_pattern.search(line)
+            if match:
+                log_level = match.group(1)
+                message = match.group(2).strip()
+                if message.startswith(':'):
+                    message = message.lstrip(':').strip()
+            else:
+                message = line  
+    
+        elif process_name == 'Zilean':
+            log_level_pattern = re.compile(r'({})\s*(.*)'.format('|'.join(alt_log_levels)))
+            match = log_level_pattern.search(line)
+            if match:
+                log_level = match.group(1)
+                message = match.group(2).strip()
+                time_prefix_pattern = re.compile(r'^\[\d{2}:\d{2}:\d{2}\] \| ')
+                message = time_prefix_pattern.sub('', message)
+                relevant_part_pattern = re.compile(r'\| (Zilean\..*)')
+                match = relevant_part_pattern.search(message)
+                if match:
+                    message = match.group(1).strip()
+            else:
+                message = line  
         else:
-            log_level = 'UNKNOWN'
-            message = line
+            log_level_pattern = re.compile(r'({})\s*(.*)'.format('|'.join(log_levels)))
+            match = log_level_pattern.search(line)
+            if match:
+                log_level = match.group(1)
+                message = match.group(2).strip()
+                if process_name == 'rclone' and message.startswith(': '):
+                    message = message[2:]
+                    if message.startswith(':'):
+                        message = message.lstrip(':').strip()
+            else:
+                log_level = 'UNKNOWN'
+                message = line  
+        
+            date_time_prefix_pattern = re.compile(r'^\d{2}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} ')
+            message = date_time_prefix_pattern.sub('', message).strip()
 
-        date_time_prefix_pattern = re.compile(r'^\d{2}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} ')
-        message = date_time_prefix_pattern.sub('', message).strip()
+        if log_level == 'WARN':
+            log_level = 'WARNING'
+        if log_level == 'LOG':
+            log_level = 'INFO'
+        elif log_level == 'FATAL':
+            log_level = 'CRITICAL'
 
         return log_level, message
 

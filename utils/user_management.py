@@ -32,18 +32,18 @@ def create_system_user(username='DMB'):
     try:
         try:
             grp.getgrgid(group_id)
-            logger.info(f"Group with GID {group_id} already exists.")
+            logger.debug(f"Group with GID {group_id} already exists.")
         except KeyError:
-            logger.info(f"Group with GID {group_id} does not exist. Creating group...")
+            logger.debug(f"Group with GID {group_id} does not exist. Creating group...")
             with open("/etc/group", "a") as group_file:
                 group_file.write(f"{username}:x:{group_id}:\n")
 
         try:
             pwd.getpwnam(username)
-            logger.info(f"User '{username}' with UID {user_id} already exists.")
+            logger.debug(f"User '{username}' with UID {user_id} already exists.")
             return
         except KeyError:
-            logger.info(f"User '{username}' does not exist. Creating user...")
+            logger.debug(f"User '{username}' does not exist. Creating user...")
 
         home_dir = f"/home/{username}"
         if not os.path.exists(home_dir):
@@ -64,7 +64,7 @@ def create_system_user(username='DMB'):
         chown_recursive(config_dir, user_id, group_id)
         chown_recursive(riven_dir, user_id, group_id)
         chown_recursive(home_dir, user_id, group_id)
-        logger.info(f"Created system user '{username}' with UID {user_id} and GID {group_id}.")
+        logger.debug(f"Created system user '{username}' with UID {user_id} and GID {group_id}.")
 
     except Exception as e:
         logger.error(f"Error creating system user '{username}': {e}")

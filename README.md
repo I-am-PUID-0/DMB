@@ -38,106 +38,30 @@ version: "3.8"
 services:
   DMB:
     container_name: DMB
-    image: iampuid0/dmb:latest
-    ## Optionally, specify a specific version of DMB
-    # image: iampuid0/dmb:2.0.0 #etc...
-    stop_grace_period: 60s
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t    
-    volumes:
-      ## Location of configuration files. If a Zurg config.yml and/or Zurg app is placed here, it will be used to override the default configuration and/or app used at startup. 
-      - /home/username/docker/DMB/config:/config
-      ## Location for logs
-      - /home/username/docker/DMB/log:/log
-      ## Location for Zurg RealDebrid active configuration
-      - /home/username/docker/DMB/Zurg/RD:/zurg/RD
-      ## Location for Zurg AllDebrid active configuration - Riven does not currently support AllDebrid   
-      - /home/username/docker/DMB/Zurg/AD:/zurg/AD   
-      ## Location for rclone mount to host
-      - /home/username/docker/DMB/Zurg/mnt:/data:shared  
-      ## Location for Riven backend data
-      - /home/username/docker/DMB/Riven/data:/riven/backend/data
-      ## Location for Riven symlinks
-      - /home/username/docker/DMB/Riven/mnt:/mnt
-      ## Location for PostgreSQL database if using Riven
-      - /home/username/docker/DMB/PostgreSQL/data:/postgres_data
-      ## Location for Zilean data if using Riven
-      - /home/username/docker/DMB/Zilean/data:/zilean/app/data
+    image: iampuid0/dmb:latest                                       ## Optionally, specify a specific version of DMB w/ image: iampuid0/dmb:2.0.0 
+    stop_grace_period: 30s                                           ## Adjust as need to allow for graceful shutdown of the container
+    stdin_open: true                                                 ## docker run -i
+    tty: true                                                        ## docker run -t    
+    volumes:   
+      - /home/username/docker/DMB/config:/config                     ## Location of configuration files. If a Zurg config.yml and/or Zurg app is placed here, it will be used to override the default configuration and/or app used at startup. 
+      - /home/username/docker/DMB/log:/log                           ## Location for logs
+      - /home/username/docker/DMB/Zurg/RD:/zurg/RD                   ## Location for Zurg RealDebrid active configuration  
+      - /home/username/docker/DMB/Zurg/mnt:/data:shared              ## Location for rclone mount to host
+      - /home/username/docker/DMB/Riven/data:/riven/backend/data     ## Location for Riven backend data
+      - /home/username/docker/DMB/Riven/mnt:/mnt                     ## Location for Riven symlinks
+      - /home/username/docker/DMB/PostgreSQL/data:/postgres_data     ## Location for PostgreSQL database if using Riven
+      - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data if using Riven
     environment:
       - TZ=
       - PUID=
       - PGID=
-      ## Zurg Required Settings
       - ZURG_ENABLED=true      
       - RD_API_KEY=
-      ## Zurg Optional Settings
-     # - ZURG_LOG_LEVEL=DEBUG
-     # - GITHUB_TOKEN=       #Use with private Zurg repo
-     # - ZURG_VERSION=v0.9.2-hotfix.4
-     # - ZURG_UPDATE=true
-     # - ZURG_USER=
-     # - ZURG_PASS=
-     # - ZURG_PORT=8800
-      ## Rclone Required Settings
       - RCLONE_MOUNT_NAME=DMB
-      ## Rclone Optional Settings - See rclone docs for full list
-     # - NFS_ENABLED=true
-     # - NFS_PORT=8000
-     # - RCLONE_LOG_LEVEL=DEBUG
-     # - RCLONE_LOGS=OFF
-     # - RCLONE_CACHE_DIR=/cache
-     # - RCLONE_DIR_CACHE_TIME=10s
-     # - RCLONE_VFS_CACHE_MODE=full
-     # - RCLONE_VFS_CACHE_MAX_SIZE=100G
-     # - RCLONE_BUFFER_SIZE=32M
-     # - RCLONE_VFS_CACHE_MAX_AGE=4h
-      ## PostgreSQL Optional Settings
-     # - POSTGRES_DATA=/postgres_data
-     # - POSTGRES_USER=postgres
-     # - POSTGRES_PASSWORD=postgres
-     # - POSTGRES_DB=riven
-      ## Zilean Required Settings
-     # - ZILEAN_ENABLED=true
-      ## Zilean Optional Settings
-     # - ZILEAN_VERSION=v1.5.3
-     # - ZILEAN_BRANCH=main
-     # - ZILEAN_UPDATE=true
-     # - ZILEAN_LOGS=OFF
-      ## Riven Backend Required Settings
-      - RIVEN_BACKEND_ENABLED=true
-      ## Riven Frontend Required Settings
-      - RIVEN_FRONTEND_ENABLED=true
-      - ORIGIN=http://0.0.0.0:3000 # See Riven documentation for more details
-      ## Riven Optional Settings
-     # - RIVEN_ENABLED=true
-     # - RIVEN_BACKEND_BRANCH=main
-     # - RIVEN_FRONTEND_BRANCH=main
-     # - RIVEN_BACKEND_VERSION=v0.8.4
-     # - RIVEN_FRONTEND_VERSION=v0.2.5
-     # - RIVEN_BACKEND_UPDATE=true
-     # - RIVEN_FRONTEND_UPDATE=true
-     # - RIVEN_LOG_LEVEL=DEBUG
-     # - FRONTEND_LOGS=OFF
-     # - BACKEND_LOGS=OFF
-     # - HARD_RESET=true
-     # - RIVEN_BACKEND_URL=
-     # - RIVEN_DATABASE_HOST=
-     # - RIVEN_DATABASE_URL= 
-     # - RIVEN_FRONTEND_DIALECT=
-     # - PLEX_TOKEN=
-     # - PLEX_ADDRESS=
-     # - SEERR_API_KEY=
-     # - SEERR_ADDRESS=
-      ## Special Features
-     # - AUTO_UPDATE_INTERVAL=12
-     # - DUPLICATE_CLEANUP=true
-     # - CLEANUP_INTERVAL=1
-     # - DMB_LOG_LEVEL=DEBUG  # Master log level for all program logs in DMB
-     # - DMB_LOG_COUNT=2
-     # - DMB_LOG_SIZE=10M
-     # - COLOR_LOG_ENABLED=true
-    # Example to attach to gluetun vpn container if realdebrid blocks IP address 
-    # network_mode: container:gluetun  
+      - ZILEAN_ENABLED=true
+      - RIVEN_ENABLED=true
+      - ORIGIN=http://0.0.0.0:3000                                  ## See Riven documentation for more details
+    # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address 
     ports:
       - "3000:3000"
     devices:
@@ -166,14 +90,20 @@ services:
     volumes:
       - /home/username/docker/plex/library:/config
       - /home/username/docker/plex/transcode:/transcode
-      - /home/username/docker/DMB/Zurg/mnt:/data # rclone mount location from DMB must be shared to Plex container. Don't add to plex library
-      - /home/username/docker/DMB/Riven/mnt:/mnt  # Riven symlink location from DMB must be shared to Plex container. Add to plex library    
+      - /home/username/docker/DMB/Zurg/mnt:/data            ## rclone mount location from DMB must be shared to Plex container. Don't add to plex library
+      - /home/username/docker/DMB/Riven/mnt:/mnt            ## Riven symlink location from DMB must be shared to Plex container. Add to plex library    
     environment:
       - TZ=${TZ}
     ports:
       - "32400:32400"
-    depends_on:  # Used to delay the startup of plex to ensure the rclone mount is available.
-      DMB: # set to the name of the container running rclone
+    healthcheck:
+      test: curl --connect-timeout 15 --silent --show-error --fail http://localhost:32400/identity
+      interval: 1m00s
+      timeout: 15s
+      retries: 3
+      start_period: 1m00s
+    depends_on:                                            ## Used to delay the startup of plex to ensure the rclone mount is available.
+      DMB:                                                 ## set to the name of the container running rclone
         condition: service_healthy 
 ```
 
