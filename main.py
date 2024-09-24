@@ -43,7 +43,7 @@ def shutdown(signum=None, frame=None, exit_code=0):
 def main():
 
 
-    version = '5.1.8'
+    version = '5.1.9'
 
     ascii_art = f'''
                                                                        
@@ -143,7 +143,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                         raise e
                     zilean_updater = zilean.update.ZileanUpdate(process_handler)
                     logger.debug(f"Initialized ZileanUpdate: {zilean_updater}")
-                    if ZILEANUPDATE.lower() == 'true' and not ZILEANVERSION:
+                    if ZILEANUPDATE and ZILEANUPDATE.lower() == 'true' and not ZILEANVERSION:
                         zilean_updater.auto_update('Zilean', True)
                     else:
                         zilean_updater.auto_update('Zilean', False)

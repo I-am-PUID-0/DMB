@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.1.9] - 2024-09-23 🚀
+
+### Fixed 🛠️
+
+- Riven Backend: Enabled not set to `true` for applied subordinate dictionary values - seriously this time 🐛
+- Riven Frontend: Set the default path for the frontend version.txt in dockerfile 🐛
+- [Issue #54](https://github.com/I-am-PUID-0/DMB/issues/54) An error occurred in the Zilean setup: 'NoneType' object has no attribute 'lower'
+
+
 ## Version [5.1.8] - 2024-09-23 🚀
 
 ### Fixed 🛠️

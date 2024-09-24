@@ -20,6 +20,10 @@ RUN \
   mv /riven/riven-frontend-main/* /riven/frontend && \
   rm -rf /riven/riven-frontend-main
 
+RUN sed -i '/export default defineConfig({/a\    build: {\n        minify: false\n    },' /riven/frontend/vite.config.ts
+
+RUN sed -i "s#/riven/version.txt#/riven/frontend/version.txt#g" /riven/frontend/src/routes/settings/about/+page.server.ts
+
 WORKDIR /riven/frontend
 
 RUN \ 

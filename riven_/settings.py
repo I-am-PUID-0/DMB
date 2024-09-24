@@ -91,16 +91,14 @@ def fetch_settings(url, max_retries=10, delay=5):
 def get_env_value(key, default=None):
     env_key = key.replace('.', '_').upper()
     value = os.getenv(env_key, default)
-    if value is None:
-        logger.debug(f"Environment variable for '{key}' not found")
-    logger.debug(f"Checking environment variable for key '{key}'")
+    obfuscated_value = obfuscate_value(key, value)
+    logger.debug(f"Checking environment variable for key '{env_key}': '{obfuscated_value}'")
     return value
 
-def update_settings(current_settings, updated_settings, prefix=''):
+def update_settings(current_settings, updated_settings, payload, prefix=''):
     if not isinstance(current_settings, dict):
         logger.error(f"Expected a dictionary for settings, but got {type(current_settings)}: {current_settings}")
         return
-
     for key, value in current_settings.items():
         full_key = f"{prefix}.{key}" if prefix else key
         logger.debug(f"Processing key '{full_key}' with value Type: {type(value)}")
@@ -108,67 +106,51 @@ def update_settings(current_settings, updated_settings, prefix=''):
             log_level = os.getenv('LOG_LEVEL', '').upper()
             if log_level == 'DEBUG':
                 updated_settings['debug'] = True
+                payload.append({"key": full_key, "value": True})
                 logger.info(f"LOG_LEVEL is DEBUG, setting 'debug' to True")
             else:
                 updated_settings['debug'] = False
+                payload.append({"key": full_key, "value": False})
                 logger.info(f"LOG_LEVEL is not DEBUG, setting 'debug' to False")
             continue
-
+        env_value = get_env_value(full_key)
         if isinstance(value, dict):
             nested_updated = {}
-            update_settings(value, nested_updated, full_key)
+            update_settings(value, nested_updated, payload, full_key)
             if nested_updated:
                 updated_settings[key] = nested_updated
-                if 'enabled' in value:
-                    updated_settings[key]['enabled'] = True
-                if 'enable' in value:
-                    updated_settings[key]['enable'] = True
-
-        elif isinstance(value, bool):
-            updated_settings[key] = value
-            obfuscated_value = obfuscate_value(full_key, str(value))
-            logger.debug(f"Setting '{full_key}' updated with boolean value '{obfuscated_value}'")
-
-        elif isinstance(value, list):
-            updated_settings[key] = value
-            obfuscated_value = obfuscate_value(full_key, str(value))
-            logger.debug(f"Setting '{full_key}' updated with list value '{obfuscated_value}'")
-
-        elif isinstance(value, (int, float, str)):
-            env_value = get_env_value(full_key)
-            if env_value is not None:
-                try:
-                    if env_value.lower() in ['true', 'false']:
-                        updated_settings[key] = env_value.lower() == 'true'
-                    elif env_value.isdigit():
-                        updated_settings[key] = int(env_value)
-                    else:
-                        try:
-                            updated_settings[key] = float(env_value)
-                        except ValueError:
-                            updated_settings[key] = env_value
-                except ValueError:
-                    logger.error(f"ValueError converting environment variable '{full_key}': {env_value}")
-                obfuscated_value = obfuscate_value(full_key, env_value)
-                logger.debug(f"Setting '{full_key}' updated with value '{obfuscated_value}' from environment variable")
-            else:
-                updated_settings[key] = value
-                if isinstance(value, (int, float)):
-                    logger.debug(f"Setting '{full_key}' retained its numeric value: {value}")
+                meaningful_change = any(k in nested_updated for k in value)
+                if meaningful_change:
+                    if 'enabled' in value:
+                        updated_settings[key]['enabled'] = True
+                        payload.append({"key": f"{full_key}.enabled", "value": True})
+                        logger.debug(f"'{full_key}.enabled' set to True due to updates in nested settings")
+                    elif 'enable' in value:
+                        updated_settings[key]['enable'] = True
+                        payload.append({"key": f"{full_key}.enable", "value": True})
+                        logger.debug(f"'{full_key}.enable' set to True due to updates in nested settings")
+        elif env_value is not None:
+            try:
+                if env_value.lower() in ['true', 'false']:
+                    updated_settings[key] = env_value.lower() == 'true'
+                elif env_value.isdigit():
+                    updated_settings[key] = int(env_value)
                 else:
-                    obfuscated_value = obfuscate_value(full_key, value)
-                    logger.debug(f"Setting '{full_key}' retained its value: {obfuscated_value}")
+                    try:
+                        updated_settings[key] = float(env_value)
+                    except ValueError:
+                        updated_settings[key] = env_value
+                payload.append({"key": full_key, "value": updated_settings[key]})
+                logger.debug(f"Setting '{full_key}' updated to '{env_value}' from environment variable")
+            except ValueError:
+                logger.error(f"ValueError converting environment variable '{full_key}': {env_value}")
         else:
-            logger.error(f"Unsupported value type for key '{key}': {type(value)}")
-            updated_settings[key] = value
-
+            logger.debug(f"No environment variable found for '{full_key}', keeping original value.")
         logger.debug(f"Processed setting for '{key}'")
 
 def load_settings():
     logger.info("Loading Riven settings")
-
     set_env_variables()
-
     try:
         get_url = 'http://127.0.0.1:8080/settings/get/all'
         time.sleep(5)
@@ -180,32 +162,20 @@ def load_settings():
         if not settings_response.get('success'):
             logger.error("Failed to fetch current settings")
             return
-
         current_settings = settings_response.get('data', {})
         if not isinstance(current_settings, dict):
             logger.error(f"Unexpected type for current settings: {type(current_settings)}")
-            return
-        
+            return       
         updated_settings = {}
+        payload = []  
         if current_settings:  
-            update_settings(current_settings, updated_settings)
+            update_settings(current_settings, updated_settings, payload) 
         else:
             logger.error("No current settings data to update")
-
-        logger.debug(f"Updated settings payload")
-        payload = []
-        for key, value in updated_settings.items():
-            if isinstance(value, dict):
-                for subkey, subvalue in value.items():
-                    if subvalue != {}:
-                        payload.append({"key": f"{key}.{subkey}", "value": subvalue})
-            else:
-                payload.append({"key": key, "value": value})
-
+        logger.debug(f"Updated settings payload: {payload}")
         if not payload:
             logger.info("No settings to update.")
             return
-
         set_url = 'http://127.0.0.1:8080/settings/set'
         save_url = 'http://127.0.0.1:8080/settings/save'
         max_retries = 10
@@ -228,7 +198,6 @@ def load_settings():
                     time.sleep(5)
                 else:
                     raise
-
     except Exception as e:
         logger.error(f"Error loading Riven settings: {e}")
         raise
