@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.1.10] - 2024-09-24 🚀
+
+### Fixed 🛠️
+
+- logger: Fixed obfuscation of sensitive data in logs 🐛
+
+
 ## Version [5.1.9] - 2024-09-23 🚀
 
 ### Fixed 🛠️

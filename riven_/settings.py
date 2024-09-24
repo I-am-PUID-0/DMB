@@ -141,9 +141,10 @@ def update_settings(current_settings, updated_settings, payload, prefix=''):
                     except ValueError:
                         updated_settings[key] = env_value
                 payload.append({"key": full_key, "value": updated_settings[key]})
-                logger.debug(f"Setting '{full_key}' updated to '{env_value}' from environment variable")
+                obfuscated_value = obfuscate_value(full_key, updated_settings[key])
+                logger.debug(f"Setting '{full_key}' updated to '{obfuscated_value}' from environment variable")
             except ValueError:
-                logger.error(f"ValueError converting environment variable '{full_key}': {env_value}")
+                logger.error(f"ValueError converting environment variable '{full_key}'")
         else:
             logger.debug(f"No environment variable found for '{full_key}', keeping original value.")
         logger.debug(f"Processed setting for '{key}'")
@@ -172,7 +173,7 @@ def load_settings():
             update_settings(current_settings, updated_settings, payload) 
         else:
             logger.error("No current settings data to update")
-        logger.debug(f"Updated settings payload: {payload}")
+        logger.debug(f"Updated settings payload")
         if not payload:
             logger.info("No settings to update.")
             return
