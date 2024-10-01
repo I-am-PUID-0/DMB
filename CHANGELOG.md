@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.2.0] - 2024-10-01 🚀
+
+### Added ✨
+
+- pgAdmin 4: Added pgAdmin 4 to the DMB image for PostgreSQL management 📦 - Resolves [Issue #49](https://github.com/I-am-PUID-0/DMB/issues/49)
+
+### Notes 📝
+
+- pgAdmin 4 is enabled by setting the `PGADMIN_SETUP_EMAIL` and `PGADMIN_SETUP_PASSWORD` environment variables 🆔🔐
+- The DMB PostgreSQL server is automatically added to pgAdmin4 Servers🗄️ 
+- On the first access of pgAdmin 4, the DMB PostgreSQL server password will need to be set in pgAdmin 4 🗄️ - the default PostgreSQL server password is `postgres` or set with `POSTGRES_PASSWORD` 🔐
+- To access pgAdmin 4, navigate to `http://<DMB_IP>:5050` in your browser 🌐
+- The pgAdmin 4 data is stored in the `/pgadmin/data` directory - though, not required to mounted to the host 📁
+- The pgAdmin 4 config_local.py is stored in the `/pgadmin/data` directory and symlinked at startup 📝 - review the [pgAdmin 4 documentation](https://www.pgadmin.org/docs/pgadmin4/latest/config_py.html) for additional configuration options 📚
+- Backups of the PostgreSQL database can be made using pgAdmin 4 and are stored in the `/pgadmin/storage` directory 🗄️
+- The following message can be ignored on initial startup: `ERROR - PostgreSQL subprocess: relation "version" does not exist at character 75` 
+
+
 ## Version [5.1.10] - 2024-09-24 🚀
 
 ### Fixed 🛠️

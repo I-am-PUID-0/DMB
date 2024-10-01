@@ -14,7 +14,7 @@ ADD https://github.com/rivenmedia/riven-frontend/archive/refs/heads/main.zip /ri
 
 RUN \
   apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base linux-headers py3-cffi libffi-dev rust cargo openssl openssl-dev pkgconfig git npm ffmpeg postgresql-dev postgresql-client postgresql dotnet-sdk-8.0 postgresql-contrib && \
-  mkdir -p /log /riven /riven/frontend && \
+  mkdir -p /log /riven /riven/frontend /pgadmin/venv /pgadmin/data && \
   if [ -f /riven-frontend-main.zip ]; then echo "File exists"; else echo "File does not exist"; fi && \
   unzip /riven-frontend-main.zip -d /riven && \
   mv /riven/riven-frontend-main/* /riven/frontend && \
@@ -34,15 +34,22 @@ WORKDIR /
 
 COPY . /./
 
-ENV \
-  XDG_CONFIG_HOME=/config \
-  TERM=xterm
+RUN \
+  python3 -m venv /pgadmin/venv && \
+  source /pgadmin/venv/bin/activate && \
+  pip install pip==24.0 setuptools==66.0.0 && \
+  pip install pgadmin4 && \
+  deactivate
 
 RUN \
   python3 -m venv /venv && \
   source /venv/bin/activate && \
   pip install --upgrade pip && \
   pip install -r /requirements.txt
+
+ENV \
+  XDG_CONFIG_HOME=/config \
+  TERM=xterm 
 
 HEALTHCHECK --interval=60s --timeout=10s \
   CMD ["/bin/sh", "-c", "source /venv/bin/activate && python /healthcheck.py"]

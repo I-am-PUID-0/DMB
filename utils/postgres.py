@@ -1,7 +1,9 @@
+from time import sleep
 from base import *
 from utils.logger import *
 import psycopg2
 from psycopg2 import sql
+import json
 
 
 logger = get_logger()
@@ -29,9 +31,9 @@ def initialize_postgres_db(db_host, postgres_user, postgres_password, postgres_d
             return True
         else:
             logger.info(f"Database '{postgres_db}' already exists.")
-            cur.close()
-            conn.close()
-            return True
+        cur.close()
+        conn.close()
+        return True
     except Exception as e:
         logger.error(f"Error initializing PostgreSQL database: {e}")
         return False 
@@ -116,6 +118,99 @@ def check_postgresql_ready(db_host, postgres_user, postgres_password, postgres_d
     logger.error("PostgreSQL database was not accessible within the timeout period.")
     return False
 
+def initialize_pgadmin_data_directory(pgadmin_data_dir):
+    try:
+        if not os.path.exists(pgadmin_data_dir):
+            os.makedirs(pgadmin_data_dir, exist_ok=True)
+            logger.info(f"Created pgAdmin data directory at {pgadmin_data_dir}.")
+        else:
+            logger.info(f"pgAdmin data directory exists at {pgadmin_data_dir}.")
+        subprocess.run(["chown", "-R", f"{user_id}:{group_id}", pgadmin_data_dir], check=True)
+        subprocess.run(["chmod", "-R", "700", pgadmin_data_dir], check=True)
+        logger.info(f"Changed ownership and set permissions of {pgadmin_data_dir}.")
+        return True
+    except OSError as e:
+        logger.error(f"Error creating pgAdmin data directory: {e}")
+        return False
+
+def create_pgadmin_config(pgadmin_data_dir, db_uri):
+    config_file_path = os.path.join(pgadmin_data_dir, "config_local.py")
+
+    pgadmin_install_dirs = glob.glob("/pgadmin/venv/lib/python*/site-packages/pgadmin4/")
+    
+    if not pgadmin_install_dirs:
+        logger.error("pgAdmin installation directory not found.")
+        return None
+    
+    pgadmin_install_dir = pgadmin_install_dirs[0]
+    symlink_path = os.path.join(pgadmin_install_dir, "config_local.py")
+    
+    if os.path.exists(config_file_path):
+        logger.info(f"pgAdmin configuration file already exists at {config_file_path}.")
+    else:
+        try:
+            with open(config_file_path, "w") as config_file:
+                config_file.write("SERVER_MODE = True\n")
+                config_file.write(f"DATA_DIR = '{pgadmin_data_dir}'\n")
+                config_file.write("DEFAULT_SERVER = '0.0.0.0'\n")
+                config_file.write("DEFAULT_SERVER_PORT = 5050\n")
+                config_file.write(f"LOG_FILE = '{pgadmin_data_dir}/pgadmin4.log'\n")
+                config_file.write(f"CONFIG_DATABASE_URI = '{db_uri}'\n")
+                config_file.write(f"SESSION_DB_PATH = '{pgadmin_data_dir}/sessions'\n")
+                config_file.write(f"STORAGE_DIR = '{pgadmin_data_dir}/storage'\n")
+                config_file.write("DEFAULT_BINARY_PATHS = {\n")
+                config_file.write("    'pg': '/usr/bin',\n")
+                config_file.write("    'pg-12': '/usr/bin',\n")
+                config_file.write("    'pg-13': '/usr/bin',\n")
+                config_file.write("    'pg-14': '/usr/bin',\n")
+                config_file.write("    'pg-15': '/usr/bin',\n")
+                config_file.write("    'pg-16': '/usr/bin',\n")
+                config_file.write("    'pg-17': '/usr/bin',\n")
+                config_file.write("    'ppas': '/usr/bin',\n")
+                config_file.write("    'ppas-12': '/usr/bin',\n")
+                config_file.write("    'ppas-13': '/usr/bin',\n")
+                config_file.write("    'ppas-14': '/usr/bin',\n")
+                config_file.write("    'ppas-15': '/usr/bin',\n")
+                config_file.write("    'ppas-16': '/usr/bin',\n")
+                config_file.write("    'ppas-17': '/usr/bin'\n")
+                config_file.write("}\n")            
+            logger.info(f"Created pgAdmin configuration file at {config_file_path}.")
+        except OSError as e:
+            logger.error(f"Error creating pgAdmin configuration file: {e}")
+            return None
+    try:
+        if os.path.exists(symlink_path):
+            os.remove(symlink_path) 
+        os.symlink(config_file_path, symlink_path)
+        logger.info(f"Created symlink for config_local.py at {symlink_path}.")
+    except OSError as e:
+        logger.error(f"Error creating symlink for pgAdmin configuration file: {e}")
+        return None
+    
+    return config_file_path
+
+def start_pgadmin(process_handler, pgadmin_data_dir, db_uri):
+    logger.info("Starting pgAdmin process with external PostgreSQL database...")
+    pgadmin_venv = "/pgadmin/venv"
+    
+    try:
+        config_file_path = create_pgadmin_config(pgadmin_data_dir, db_uri)
+        if not config_file_path:
+            return False
+
+        env = os.environ.copy()
+        env["PATH"] = f"{pgadmin_venv}/bin:" + env["PATH"]
+        env["VIRTUAL_ENV"] = pgadmin_venv
+
+        pgadmin_command = f"{pgadmin_venv}/bin/python3 /pgadmin/venv/lib/python*/site-packages/pgadmin4/pgAdmin4.py"
+        process_handler.start_process("pgAdmin", pgadmin_data_dir, ["sh", "-c", pgadmin_command], env=env)
+        
+        logger.info("pgAdmin process started successfully using PostgreSQL database.")
+        return True
+    except Exception as e:
+        logger.error(f"Error starting pgAdmin: {e}")
+        return False
+
 def postgres_role_exists(postgres_user, postgres_password, postgres_db, db_host):
     logger.info(f"Checking if role '{postgres_user}' exists...")
     try:
@@ -157,6 +252,70 @@ def list_database_sizes(db_host, postgres_user, postgres_password):
         logger.error(f"Error listing database sizes: {e}")
         raise
 
+
+def add_pgadmin_server_to_db(pgadmin_db_uri, server_details, timeout=60, interval=5):
+    try:
+        sleep(5)
+        logger.info(f"Connecting to pgAdmin database at {pgadmin_db_uri} to add server '{server_details['name']}'...")
+        conn = psycopg2.connect(pgadmin_db_uri)
+        conn.autocommit = True
+        cur = conn.cursor()
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            cur.execute("""
+                SELECT EXISTS (
+                    SELECT 1 
+                    FROM information_schema.tables 
+                    WHERE table_schema = 'public' 
+                    AND table_name = 'server'
+                );
+            """)
+            table_exists = cur.fetchone()[0]
+
+            if table_exists:
+                logger.info("pgAdmin 'server' table exists. Proceeding to add server.")
+                break
+            else:
+                logger.info(f"pgAdmin 'server' table does not exist yet. Waiting for {interval} seconds before retrying...")
+                time.sleep(interval)
+        else:
+            logger.error(f"Timeout reached after {timeout} seconds. The pgAdmin 'server' table still does not exist.")
+            cur.close()
+            conn.close()
+            return False
+
+        cur.execute("""
+            SELECT 1 FROM server WHERE name = %s AND host = %s AND port = %s
+        """, (server_details['name'], server_details['host'], server_details['port']))
+        if cur.fetchone():
+            logger.info(f"Server '{server_details['name']}' already exists in pgAdmin database.")
+            cur.close()
+            conn.close()
+            return True
+
+        connection_params_json = json.dumps(server_details['connection_parameters'])
+        cur.execute("""
+            INSERT INTO server (user_id, servergroup_id, name, host, port, maintenance_db, username, connection_params)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            1,
+            1,
+            server_details['name'],
+            server_details['host'],
+            server_details['port'],
+            server_details['maintenance_db'],
+            server_details['username'],
+            connection_params_json
+        ))
+        conn.commit()
+        logger.info(f"Server '{server_details['name']}' added successfully to pgAdmin database. The password will need to be entered in pgAdmin 4 upon first connection.")
+        cur.close()
+        conn.close()
+        return True
+    except Exception as e:
+        logger.error(f"Error adding server to pgAdmin database: {e}")
+        return False
+
 def postgres_setup(process_handler=None):
     logger.info("Setting up PostgreSQL...")
     if postgres_data:
@@ -186,7 +345,6 @@ def postgres_setup(process_handler=None):
             if not create_default_postgresql_conf(postgres_data):
                 return False
         postgres_command = f"postgres -D {postgres_data} -c config_file={config_file_path}"        
-        #process_handler.start_process("PostgreSQL", postgres_data, ["su", "DMB", "-s", "/bin/sh", "-c", postgres_command])
         process_handler.start_process("PostgreSQL", postgres_data, postgres_command)
 
         if not check_postgresql_started(postgres_user, postgres_db='postgres'):
@@ -200,3 +358,41 @@ def postgres_setup(process_handler=None):
 
         if not list_database_sizes(db_host, postgres_user, postgres_password):
             return
+
+        if not PGADMINEMAIL or not PGADMINPASS:
+            logger.info("PGADMIN_SETUP_EMAIL or PGADMIN_SETUP_PASSWORD not set. Skipping pgAdmin setup.")
+            logger.info("PostgreSQL setup completed successfully.")
+            return
+        else:
+            logger.info("Creating pgAdmin database...")
+            if not initialize_postgres_db(db_host, postgres_user, postgres_password, "pgadmin"):
+                return False
+
+            pgadmin_data_dir = "/pgadmin/data"
+            if not initialize_pgadmin_data_directory(pgadmin_data_dir):
+                return False
+
+            db_uri = f"postgresql://{postgres_user}:{postgres_password}@{db_host}/pgadmin"
+            if not start_pgadmin(process_handler, pgadmin_data_dir, db_uri):
+                return False
+
+            server_details = {
+                'name': 'DMB',
+                'host': 'localhost',
+                'port': 5432,
+                'maintenance_db': 'postgres',
+                'username': f'{postgres_user}', 
+                'connection_parameters': {
+                    'sslmode': 'prefer',
+                    'connect_timeout': 10,
+                    'sslcert': '<STORAGE_DIR>/.postgresql/postgresql.crt',
+                    'sslkey': '<STORAGE_DIR>/.postgresql/postgresql.key'
+                }
+            }
+            pgadmin_db_uri = f"postgresql://{postgres_user}:{postgres_password}@{db_host}/pgadmin"
+            
+            if not add_pgadmin_server_to_db(pgadmin_db_uri, server_details):
+                logger.error("Failed to add server connection to pgAdmin database.")
+                return False
+
+            logger.info("PostgreSQL and pgAdmin setup completed successfully.")

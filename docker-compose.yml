@@ -15,6 +15,7 @@ services:
       - /home/username/docker/DMB/Riven/data:/riven/backend/data     ## Location for Riven backend data
       - /home/username/docker/DMB/Riven/mnt:/mnt                     ## Location for Riven symlinks
       - /home/username/docker/DMB/PostgreSQL/data:/postgres_data     ## Location for PostgreSQL database if using Riven
+      - /home/username/docker/pgAdmin4/data:/pgadmin/data            ## Location for pgAdmin 4 data
       - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data if using Riven
     environment:
       - TZ=
@@ -26,6 +27,8 @@ services:
       - ZILEAN_ENABLED=true
       - RIVEN_ENABLED=true
       - ORIGIN=http://0.0.0.0:3000                                  ## See Riven documentation for more details
+      - PGADMIN_SETUP_EMAIL=                                        ## Set if using pgAdmin 4 - Ex. PGADMIN_SETUP_EMAIL=DMB@DMB.DMB
+      - PGADMIN_SETUP_PASSWORD=                                     ## Set if using pgAdmin 4
     # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address 
     ports:
       - "3000:3000"

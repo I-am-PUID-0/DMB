@@ -9,7 +9,7 @@
 </div>
 
 ## 📜 Description
-**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of **[Riven Media's](https://github.com/rivenmedia)**, **[yowmamasita's](https://github.com/yowmamasita)**, **[iPromKnight's](https://github.com/iPromKnight/zilean)**, and **[ncw's](https://github.com/ncw)** projects -- **[Riven](https://github.com/rivenmedia/riven)**, **[zurg](https://github.com/debridmediamanager/zurg-testing)**, **[zilean](https://github.com/iPromKnight/zilean)**, and **[rclone](https://github.com/rclone/rclone)**.
+**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of **[Riven Media's](https://github.com/rivenmedia)**, **[yowmamasita's](https://github.com/yowmamasita)**, **[iPromKnight's](https://github.com/iPromKnight/zilean)**, **[Nick Craig-Wood's](https://github.com/ncw)**, **[Michael Stonebraker's](https://en.wikipedia.org/wiki/Michael_Stonebraker)**, and **[Dave Page's](https://github.com/dpage)** projects -- **[Riven](https://github.com/rivenmedia/riven)**, **[Zurg](https://github.com/debridmediamanager/zurg-testing)**, **[Zilean](https://github.com/iPromKnight/zilean)**, **[rclone](https://github.com/rclone/rclone)**, **[PostgreSQL](https://www.postgresql.org/)**, and **[pgAdmin 4](https://www.pgadmin.org/)**.
 
 > ⚠️ **IMPORTANT**: Docker Desktop **CANNOT** be used to run DMB. Docker Desktop does not support the [mount propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation) required for rclone mounts.
 >
@@ -49,8 +49,9 @@ services:
       - /home/username/docker/DMB/Zurg/mnt:/data:shared              ## Location for rclone mount to host
       - /home/username/docker/DMB/Riven/data:/riven/backend/data     ## Location for Riven backend data
       - /home/username/docker/DMB/Riven/mnt:/mnt                     ## Location for Riven symlinks
-      - /home/username/docker/DMB/PostgreSQL/data:/postgres_data     ## Location for PostgreSQL database if using Riven
-      - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data if using Riven
+      - /home/username/docker/DMB/PostgreSQL/data:/postgres_data     ## Location for PostgreSQL database
+      - /home/username/docker/pgAdmin4/data:/pgadmin/data            ## Location for pgAdmin 4 data
+      - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data
     environment:
       - TZ=
       - PUID=
@@ -61,6 +62,8 @@ services:
       - ZILEAN_ENABLED=true
       - RIVEN_ENABLED=true
       - ORIGIN=http://0.0.0.0:3000                                  ## See Riven documentation for more details
+      - PGADMIN_SETUP_EMAIL=                                        ## Set if using pgAdmin 4 - Ex. PGADMIN_SETUP_EMAIL=DMB@DMB.DMB
+      - PGADMIN_SETUP_PASSWORD=                                     ## Set if using pgAdmin 4
     # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address 
     ports:
       - "3000:3000"
@@ -145,6 +148,8 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`POSTGRES_USER`| The username for the PostgreSQL database |`DMB`|| :heavy_check_mark:|
 |`POSTGRES_PASSWORD`| The password for the PostgreSQL database |`postgres`|| :heavy_check_mark:|
 |`POSTGRES_DB`| The name of the PostgreSQL database |`riven`|| :heavy_check_mark:|
+|`PGADMIN_SETUP_EMAIL`| The email for the pgAdmin setup |`none`|| :heavy_check_mark:|
+|`PGADMIN_SETUP_PASSWORD`| The password for the pgAdmin setup |`none`|| :heavy_check_mark:|
 |`RIVEN_ENABLED`| Set the value "true" to enable the Riven backend and frontend processes | `false ` | | :heavy_check_mark: | |
 |`RIVEN_BACKEND_ENABLED`| Set the value "true" to enable the Riven backend process | `false ` | | :heavy_check_mark: | |
 |`RIVEN_FRONTEND_ENABLED`| Set the value "true" to enable the Riven frontend process | `false ` | | :heavy_check_mark: | |
@@ -293,9 +298,13 @@ If you enjoy the underlying projects and want to buy Riven Media a beer/coffee, 
 
 If you enjoy the underlying projects and want to buy yowmamasita a beer/coffee, feel free to use the [GitHub sponsor link](https://github.com/sponsors/debridmediamanager)
 
-## 🍻 Buy **[ncw](https://github.com/ncw)** a beer/coffee? :) 
+## 🍻 Buy **[Nick Craig-Wood](https://github.com/ncw)** a beer/coffee? :) 
 
 If you enjoy the underlying projects and want to buy Nick Craig-Wood a beer/coffee, feel free to use the website's [sponsor links](https://rclone.org/sponsor/)
+
+## 🍻 Buy **[PostgreSQL](https://www.postgresql.org)** a beer/coffee? :)
+
+If you enjoy the underlying projects and want to buy PostgreSQL a beer/coffee, feel free to use the [sponsor link](https://www.postgresql.org/about/donate/)
 
 ## ✅ GitHub Workflow Status
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/I-am-PUID-0/DMB/docker-image.yml)
