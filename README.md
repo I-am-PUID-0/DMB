@@ -33,8 +33,6 @@ A prebuilt image is hosted on [GitHub Container Registry](https://github.com/I-a
 > Additionally, the host directories used in the examples are based on [Define the directory structure](https://github.com/I-am-PUID-0/DMB/wiki/Setup-Guides#define-the-directory-structure) and provided for illustrative purposes and can be changed to suit your needs.
 
 ```YAML
-version: "3.8"
-
 services:
   DMB:
     container_name: DMB
@@ -66,7 +64,8 @@ services:
       - PGADMIN_SETUP_PASSWORD=                                     ## Set if using pgAdmin 4
     # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address 
     ports:
-      - "3000:3000"
+      - "3000:3000"                                                 ## Riven frontend
+      - "5050:5050"   									            ## pgAdmin 4
     devices:
       - /dev/fuse:/dev/fuse:rwm
     cap_add:
@@ -82,8 +81,6 @@ services:
 > The Plex server must be started after the rclone mount is available.  The below example uses the ```depends_on``` parameter to delay the start of the Plex server until the rclone mount is available.  The rclone mount must be shared to the Plex container.  The rclone mount location should not be added to the Plex library.  The Riven symlink location must be shared to the Plex container and added to the Plex library.
 
 ```YAML
-version: "3.8"
-
 services:
   plex:
     image: plexinc/pms-docker:latest
@@ -109,6 +106,45 @@ services:
       DMB:                                                 ## set to the name of the container running rclone
         condition: service_healthy 
 ```
+
+
+## 📦 Docker Run
+
+### Docker CLI
+
+```bash
+docker run -d \
+  --name=DMB \
+  --restart unless-stopped \
+  -e TZ= \
+  -e PUID= \
+  -e PGID= \
+  -e ZURG_ENABLED=true \
+  -e RD_API_KEY= \
+  -e RCLONE_MOUNT_NAME=DMB \
+  -e ZILEAN_ENABLED=true \
+  -e RIVEN_ENABLED=true \
+  -e ORIGIN=http://
+  -e PGADMIN_SETUP_EMAIL= \
+  -e PGADMIN_SETUP_PASSWORD= \
+  -v /path/to/config:/config \
+  -v /path/to/log:/log \
+  -v /path/to/Zurg/RD:/zurg/RD \
+  -v /path/to/Zurg/mnt:/data:shared \
+  -v /path/to/Riven/data:/riven/backend/data \
+  -v /path/to/Riven/mnt:/mnt \
+  -v /path/to/PostgreSQL/data:/postgres_data \
+  -v /path/to/pgAdmin4/data:/pgadmin/data \
+  -v /path/to/Zilean/data:/zilean/app/data \
+  -p 3000:3000 \
+  -p 5050:5050 \
+  --device /dev/fuse:/dev/fuse:rwm \
+  --cap-add SYS_ADMIN \
+  --security-opt apparmor:unconfined \
+  --security-opt no-new-privileges \
+  iampuid0/dmb:latest
+  ```
+
 
 ## 🔨 Docker Build
 
@@ -148,8 +184,8 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`POSTGRES_USER`| The username for the PostgreSQL database |`DMB`|| :heavy_check_mark:|
 |`POSTGRES_PASSWORD`| The password for the PostgreSQL database |`postgres`|| :heavy_check_mark:|
 |`POSTGRES_DB`| The name of the PostgreSQL database |`riven`|| :heavy_check_mark:|
-|`PGADMIN_SETUP_EMAIL`| The email for the pgAdmin setup |`none`|| :heavy_check_mark:|
-|`PGADMIN_SETUP_PASSWORD`| The password for the pgAdmin setup |`none`|| :heavy_check_mark:|
+|`PGADMIN_SETUP_EMAIL`| The email for the pgAdmin setup - must be set for pgAdmin 4 to run |`none`|| :heavy_check_mark:|
+|`PGADMIN_SETUP_PASSWORD`| The password for the pgAdmin setup - must be set for pgAdmin 4 to run |`none`|| :heavy_check_mark:|
 |`RIVEN_ENABLED`| Set the value "true" to enable the Riven backend and frontend processes | `false ` | | :heavy_check_mark: | |
 |`RIVEN_BACKEND_ENABLED`| Set the value "true" to enable the Riven backend process | `false ` | | :heavy_check_mark: | |
 |`RIVEN_FRONTEND_ENABLED`| Set the value "true" to enable the Riven frontend process | `false ` | | :heavy_check_mark: | |
@@ -194,6 +230,22 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`ZILEAN_LOGS`| Set value to OFF To disable the Zilean process logging | `ON` | | :heavy_check_mark:| |
 
 
+## 🌐 Ports Used
+
+> [!NOTE] 
+> The below examples are default and may be configurable with the use of additional environment variables.
+
+The following table describes the ports used by the container.  The mappings are set via the `-p` parameter or via the docker-compose file within the ```ports:``` section.  Each mapping is specified with the following format: `<HOST_PORT>:<CONTAINER_PORT>[:PROTOCOL]`.
+
+| Container port | Protocol | Description |
+|----------------|----------|-------------|
+|`3000`| TCP | Riven frontend - A web UI is accessible at the assigned port|
+|`8080`| TCP | Riven backend - The API is accessible at the assigned port|
+|`5432`| TCP | PostgreSQL - The SQL server is accessible at the assigned port|
+|`5050`| TCP | pgAdmin 4 - A web UI is accessible at the assigned port|
+|`Random (9001-9999)`| TCP | Zurg - A web UI is accessible at the assigned port|
+
+
 
 ## 📂 Data Volumes
 
@@ -211,6 +263,7 @@ format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 |`/riven/data`| rw | This is where Riven will store its data. Not required when only utilizing Zurg   |
 |`/riven/mnt`| rw | This is where Riven will set its symlinks. Not required when only utilizing Zurg   |
 |`/postgres_data`| rw | This is where PostgreSQL will store its data. Not required when only utilizing Zurg   |
+|`/pgadmin/data`| rw | This is where pgAdmin 4 will store its data. Not required when only utilizing Zurg   |
 
 
 
@@ -227,6 +280,10 @@ DMB supports the use of docker secrets for the following environment variables:
 |`PLEX_ADDRESS`| The URL of your Plex server. Example: http://192.168.0.100:32400 or http://plex:32400 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (32400). E.g., ```/``` | ` ` || :heavy_check_mark:|
 |`SEERR_API_KEY`| The Jellyseerr or Overseerr API Key | ` ` || :heavy_check_mark:||
 |`SEERR_ADDRESS`| The URL of your Jellyseerr or Overseerr server. Example: http://192.168.0.102:5055 or http://Overseerr:5055 - format must include ```http://``` or ```https://``` and have no trailing characters after the port number (8096). E.g., ```/``` | ` ` || :heavy_check_mark:|
+|`ZURG_USER`| The username to be used for protecting the Zurg endpoints.  | ` ` | | | :heavy_check_mark: |
+|`ZURG_PASS`| The password to be used for protecting the Zurg endpoints.  | ` `  | | | :heavy_check_mark: |
+|`PGADMIN_SETUP_EMAIL`| The email for the pgAdmin setup | ` ` || :heavy_check_mark:|
+|`PGADMIN_SETUP_PASSWORD`| The password for the pgAdmin setup | ` ` || :heavy_check_mark:|
 
 To utilize docker secrets, remove the associated environment variables from the docker-compose, create a file with the case-sensitive naming convention identified and secret value, then reference the file in the docker-compose file as shown below:
 ```YAML
@@ -259,6 +316,14 @@ secrets:
     file: ./path/to/seerr_api_key.txt
   seerr_address:
     file: ./path/to/seerr_address.txt
+  zurg_user:
+	file: ./path/to/zurg_user.txt
+  zurg_pass:
+    file: ./path/to/zurg_pass.txt
+  pgadmin_setup_email:
+    file: ./path/to/pgadmin_setup_email.txt
+  pgadmin_setup_password:
+    file: ./path/to/pgadmin_setup_password.txt
 ```
 
 

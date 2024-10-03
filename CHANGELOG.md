@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.3.0] - 2024-10-03 🚀
+
+### Added ✨
+
+- pgAdmin 4: Added system_stats extension to pgAdmin 4 for host system monitoring 📦 
+- pgAdmin 4: Added pgAgent extension to pgAdmin 4 for job scheduling 📦
+
+### Fixed 🛠️
+
+- pgAdmin 4: Fixed the pgAdmin 4 config_local.py SSL settings 🐛
+
+### Changed 🔄
+
+- RIVEN_BACKEND_URL: Linked to the Riven backend load_settings function. [PR #57](https://github.com/I-am-PUID-0/DMB/pull/57) Thanks @FunkeCoder23 🙏
+
+
 ## Version [5.2.0] - 2024-10-01 🚀
 
 ### Added ✨

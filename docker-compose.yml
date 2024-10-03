@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   DMB:
     container_name: DMB
@@ -14,9 +12,9 @@ services:
       - /home/username/docker/DMB/Zurg/mnt:/data:shared              ## Location for rclone mount to host
       - /home/username/docker/DMB/Riven/data:/riven/backend/data     ## Location for Riven backend data
       - /home/username/docker/DMB/Riven/mnt:/mnt                     ## Location for Riven symlinks
-      - /home/username/docker/DMB/PostgreSQL/data:/postgres_data     ## Location for PostgreSQL database if using Riven
+      - /home/username/docker/DMB/PostgreSQL/data:/postgres_data     ## Location for PostgreSQL database
       - /home/username/docker/pgAdmin4/data:/pgadmin/data            ## Location for pgAdmin 4 data
-      - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data if using Riven
+      - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data
     environment:
       - TZ=
       - PUID=
@@ -31,7 +29,8 @@ services:
       - PGADMIN_SETUP_PASSWORD=                                     ## Set if using pgAdmin 4
     # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address 
     ports:
-      - "3000:3000"
+      - "3000:3000"                                                 ## Riven frontend
+      - "5050:5050"   									            ## pgAdmin 4
     devices:
       - /dev/fuse:/dev/fuse:rwm
     cap_add:

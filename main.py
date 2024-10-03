@@ -43,7 +43,7 @@ def shutdown(signum=None, frame=None, exit_code=0):
 def main():
 
 
-    version = '5.2.0'
+    version = '5.3.0'
 
     ascii_art = f'''
                                                                        

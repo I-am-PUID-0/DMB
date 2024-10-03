@@ -26,17 +26,42 @@ def initialize_postgres_db(db_host, postgres_user, postgres_password, postgres_d
                 sql.Identifier(postgres_user)
             ))
             logger.info(f"Database '{postgres_db}' created successfully with owner '{postgres_user}'.")
-            cur.close()
-            conn.close()
-            return True
         else:
             logger.info(f"Database '{postgres_db}' already exists.")
+
+        if postgres_db == 'postgres':
+            logger.info("Checking if pgAgent extension is installed in 'postgres' database...")
+            cur.execute("SELECT * FROM pg_extension WHERE extname = 'pgagent';")
+            if cur.fetchone() is None:
+                cur.execute("CREATE EXTENSION pgagent;")
+                logger.info("pgAgent extension installed successfully in 'postgres' database.")
+            else:
+                logger.info("pgAgent extension already exists in 'postgres' database.")
+        
+        if postgres_db == 'pgadmin':
+            conn_db = psycopg2.connect(
+                dbname=postgres_db,
+                user=postgres_user,
+                password=postgres_password,
+                host=db_host
+            )
+            conn_db.autocommit = True
+            cur_db = conn_db.cursor()
+            cur_db.execute("SELECT * FROM pg_extension WHERE extname = 'system_stats';")
+            if cur_db.fetchone() is None:
+                cur_db.execute("CREATE EXTENSION system_stats;")
+                logger.info(f"system_stats extension created in '{postgres_db}' database.")
+            else:
+                logger.info(f"system_stats extension already exists in '{postgres_db}' database.")
+            
+            cur_db.close()
+            conn_db.close()
         cur.close()
         conn.close()
         return True
     except Exception as e:
         logger.error(f"Error initializing PostgreSQL database: {e}")
-        return False 
+        return False
 
 def create_default_postgresql_conf(postgres_data):
     config_file_path = os.path.join(postgres_data, "postgresql.conf")
@@ -252,6 +277,14 @@ def list_database_sizes(db_host, postgres_user, postgres_password):
         logger.error(f"Error listing database sizes: {e}")
         raise
 
+def start_pgagent(process_handler, postgres_user):
+    try:               
+        pgagent_command = f"pgagent host=/var/run/postgresql -f dbname=postgres user={postgres_user}"
+        process_handler.start_process("pgAgent", "/var/run/postgresql", ["sh", "-c", pgagent_command])        
+        return True
+    except Exception as e:
+        logger.error(f"Error starting pgAgent daemon: {e}")
+        return False
 
 def add_pgadmin_server_to_db(pgadmin_db_uri, server_details, timeout=60, interval=5):
     try:
@@ -271,9 +304,9 @@ def add_pgadmin_server_to_db(pgadmin_db_uri, server_details, timeout=60, interva
                 );
             """)
             table_exists = cur.fetchone()[0]
-
+            
             if table_exists:
-                logger.info("pgAdmin 'server' table exists. Proceeding to add server.")
+                logger.info("pgAdmin 'server' table exists. Proceeding to check server.")
                 break
             else:
                 logger.info(f"pgAdmin 'server' table does not exist yet. Waiting for {interval} seconds before retrying...")
@@ -284,11 +317,21 @@ def add_pgadmin_server_to_db(pgadmin_db_uri, server_details, timeout=60, interva
             conn.close()
             return False
 
+        try:
+            server_port = int(server_details['port'])
+        except ValueError:
+            logger.error(f"Invalid port value: {server_details['port']}")
+            return False
+        server_name = server_details['name'].strip()
+        server_host = server_details['host'].strip()
+        logger.debug(f"Checking if server '{server_name}' with host '{server_host}' and port '{server_port}' already exists in the database.")
         cur.execute("""
-            SELECT 1 FROM server WHERE name = %s AND host = %s AND port = %s
-        """, (server_details['name'], server_details['host'], server_details['port']))
-        if cur.fetchone():
-            logger.info(f"Server '{server_details['name']}' already exists in pgAdmin database.")
+            SELECT name, host, port FROM server WHERE name = %s AND host = %s AND port = %s
+        """, (server_name, server_host, server_port))       
+        server_exists = cur.fetchone()
+        logger.debug(f"Query result: {server_exists}")       
+        if server_exists:
+            logger.info(f"Server '{server_name}' already exists in pgAdmin database.")
             cur.close()
             conn.close()
             return True
@@ -300,18 +343,19 @@ def add_pgadmin_server_to_db(pgadmin_db_uri, server_details, timeout=60, interva
         """, (
             1,
             1,
-            server_details['name'],
-            server_details['host'],
-            server_details['port'],
-            server_details['maintenance_db'],
-            server_details['username'],
+            server_name,
+            server_host,
+            server_port,
+            server_details['maintenance_db'].strip(),
+            server_details['username'].strip(),
             connection_params_json
         ))
         conn.commit()
-        logger.info(f"Server '{server_details['name']}' added successfully to pgAdmin database. The password will need to be entered in pgAdmin 4 upon first connection.")
+        logger.info(f"Server '{server_name}' added successfully to pgAdmin database. The password will need to be entered in pgAdmin 4 upon first connection.")      
         cur.close()
         conn.close()
         return True
+    
     except Exception as e:
         logger.error(f"Error adding server to pgAdmin database: {e}")
         return False
@@ -350,6 +394,9 @@ def postgres_setup(process_handler=None):
         if not check_postgresql_started(postgres_user, postgres_db='postgres'):
             return False
 
+        if not initialize_postgres_db(db_host, postgres_user, postgres_password, 'postgres'):
+            return False
+
         if not initialize_postgres_db(db_host, postgres_user, postgres_password, postgres_db):
             return False
 
@@ -383,16 +430,16 @@ def postgres_setup(process_handler=None):
                 'maintenance_db': 'postgres',
                 'username': f'{postgres_user}', 
                 'connection_parameters': {
-                    'sslmode': 'prefer',
-                    'connect_timeout': 10,
-                    'sslcert': '<STORAGE_DIR>/.postgresql/postgresql.crt',
-                    'sslkey': '<STORAGE_DIR>/.postgresql/postgresql.key'
+                    'connect_timeout': 10
                 }
             }
             pgadmin_db_uri = f"postgresql://{postgres_user}:{postgres_password}@{db_host}/pgadmin"
             
             if not add_pgadmin_server_to_db(pgadmin_db_uri, server_details):
                 logger.error("Failed to add server connection to pgAdmin database.")
+                return False
+
+            if not start_pgagent(process_handler, postgres_user):
                 return False
 
             logger.info("PostgreSQL and pgAdmin setup completed successfully.")

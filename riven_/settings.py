@@ -152,8 +152,9 @@ def update_settings(current_settings, updated_settings, payload, prefix=''):
 def load_settings():
     logger.info("Loading Riven settings")
     set_env_variables()
+    SETTINGS_URL = os.environ['BACKEND_URL'] + '/settings'
     try:
-        get_url = 'http://127.0.0.1:8080/settings/get/all'
+        get_url = SETTINGS_URL + '/get/all'
         time.sleep(5)
         settings_response = fetch_settings(get_url)
 
@@ -177,8 +178,8 @@ def load_settings():
         if not payload:
             logger.info("No settings to update.")
             return
-        set_url = 'http://127.0.0.1:8080/settings/set'
-        save_url = 'http://127.0.0.1:8080/settings/save'
+        set_url = SETTINGS_URL + '/set'
+        save_url = SETTINGS_URL + '/save'
         max_retries = 10
         for attempt in range(max_retries):
             try:
