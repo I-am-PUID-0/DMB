@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.3.1] - 2024-10-15 🚀
+
+### Fixed 🛠️
+
+- [Issue #59](https://github.com/I-am-PUID-0/DMB/issues/59) Zombie dotnet Processes Accumulating Over Time 🐛
+
+
 ## Version [5.3.0] - 2024-10-03 🚀
 
 ### Added ✨

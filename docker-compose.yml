@@ -13,7 +13,7 @@ services:
       - /home/username/docker/DMB/Riven/data:/riven/backend/data     ## Location for Riven backend data
       - /home/username/docker/DMB/Riven/mnt:/mnt                     ## Location for Riven symlinks
       - /home/username/docker/DMB/PostgreSQL/data:/postgres_data     ## Location for PostgreSQL database
-      - /home/username/docker/pgAdmin4/data:/pgadmin/data            ## Location for pgAdmin 4 data
+      - /home/username/docker/DMB/pgAdmin4/data:/pgadmin/data        ## Location for pgAdmin 4 data
       - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data
     environment:
       - TZ=

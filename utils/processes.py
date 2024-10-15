@@ -10,6 +10,7 @@ class ProcessHandler:
         if cls._instance is None:
             cls._instance = super(ProcessHandler, cls).__new__(cls)
             cls._instance.init_attributes(*args, **kwargs)
+            signal.signal(signal.SIGCHLD, cls._instance.reap_zombies)
         return cls._instance
 
     def init_attributes(self, logger):
@@ -22,6 +23,16 @@ class ProcessHandler:
 
     def __init__(self, logger):
         pass
+
+    def reap_zombies(self, signum, frame):
+        while True:
+            try:
+                pid, _ = os.waitpid(-1, os.WNOHANG)
+                if pid == 0:
+                    break
+                self.logger.info(f"Reaped zombie process with PID: {pid}")
+            except ChildProcessError:
+                break
 
     def start_process(self, process_name, config_dir, command, key_type=None, suppress_logging=False, env=None):
         try:
@@ -49,11 +60,11 @@ class ProcessHandler:
                 process_description = f"{process_name}"
 
             if isinstance(command, str):
-                command = shlex.split(command)      
+                command = shlex.split(command)
 
-            process_env = os.environ.copy()  
+            process_env = os.environ.copy()
             if env:
-                process_env.update(env)  
+                process_env.update(env)
 
             if process_name in ["rclone", "poetry_install", "install_poetry", "poetry_env_setup", "PostgreSQL_init", "npm_install", "node_build", "python_env_setup", "install_requirements", "setup_env_and_install", "dotnet_env_restore", "dotnet_publish_api", "dotnet_publish_scraper"]:
                 process = subprocess.Popen(
@@ -64,7 +75,7 @@ class ProcessHandler:
                     cwd=config_dir,
                     universal_newlines=True,
                     bufsize=1,
-                    env=process_env  
+                    env=process_env
                 )
             else:
                 process = subprocess.Popen(
@@ -76,14 +87,14 @@ class ProcessHandler:
                     universal_newlines=True,
                     bufsize=1,
                     preexec_fn=preexec_fn,
-                    env=process_env  
+                    env=process_env
                 )
 
             if not suppress_logging:
                 self.subprocess_logger = SubprocessLogger(self.logger, f"{process_description}")
                 self.subprocess_logger.start_logging_stdout(process)
                 self.subprocess_logger.start_monitoring_stderr(process, key_type, process_name)
-        
+
             self.logger.info(f"{process_name} process started with PID: {process.pid}")
             self.processes[process_name] = process
             return process
@@ -92,17 +103,21 @@ class ProcessHandler:
             self.logger.error(f"Error running subprocess for {process_description}: {e}")
             return None
 
-
     def wait(self, process_name):
         process = self.processes.get(process_name)
         if process:
-            self.stdout, self.stderr = process.communicate()
-            self.returncode = process.returncode
-            self.stdout = self.stdout.strip() if self.stdout else ""
-            self.stderr = self.stderr.strip() if self.stderr else ""
-            if self.subprocess_loggers.get(process_name):
-                self.subprocess_loggers[process_name].stop_logging_stdout()
-                self.subprocess_loggers[process_name].stop_monitoring_stderr()
+            try:
+                self.stdout, self.stderr = process.communicate()
+                self.returncode = process.returncode
+                self.stdout = self.stdout.strip() if self.stdout else ""
+                self.stderr = self.stderr.strip() if self.stderr else ""
+            except Exception as e:
+                self.logger.error(f"Error while waiting for process {process_name}: {e}")
+            finally:
+                if self.subprocess_loggers.get(process_name):
+                    self.subprocess_loggers[process_name].stop_logging_stdout()
+                    self.subprocess_loggers[process_name].stop_monitoring_stderr()
+                del self.processes[process_name]
         else:
             self.logger.error(f"No process found with the name {process_name}.")
 

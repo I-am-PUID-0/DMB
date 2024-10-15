@@ -48,7 +48,7 @@ services:
       - /home/username/docker/DMB/Riven/data:/riven/backend/data     ## Location for Riven backend data
       - /home/username/docker/DMB/Riven/mnt:/mnt                     ## Location for Riven symlinks
       - /home/username/docker/DMB/PostgreSQL/data:/postgres_data     ## Location for PostgreSQL database
-      - /home/username/docker/pgAdmin4/data:/pgadmin/data            ## Location for pgAdmin 4 data
+      - /home/username/docker/DMB/pgAdmin4/data:/pgadmin/data        ## Location for pgAdmin 4 data
       - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data
     environment:
       - TZ=
@@ -65,7 +65,7 @@ services:
     # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address 
     ports:
       - "3000:3000"                                                 ## Riven frontend
-      - "5050:5050"   									            ## pgAdmin 4
+      - "5050:5050"                                                 ## pgAdmin 4
     devices:
       - /dev/fuse:/dev/fuse:rwm
     cap_add:
@@ -243,8 +243,8 @@ The following table describes the ports used by the container.  The mappings are
 |`8080`| TCP | Riven backend - The API is accessible at the assigned port|
 |`5432`| TCP | PostgreSQL - The SQL server is accessible at the assigned port|
 |`5050`| TCP | pgAdmin 4 - A web UI is accessible at the assigned port|
+|`8182`| TCP | Zilean - The API and Web Ui (/swagger/index.html) is accessible at the assigned port|
 |`Random (9001-9999)`| TCP | Zurg - A web UI is accessible at the assigned port|
-
 
 
 ## 📂 Data Volumes
@@ -317,7 +317,7 @@ secrets:
   seerr_address:
     file: ./path/to/seerr_address.txt
   zurg_user:
-	file: ./path/to/zurg_user.txt
+    file: ./path/to/zurg_user.txt
   zurg_pass:
     file: ./path/to/zurg_pass.txt
   pgadmin_setup_email:

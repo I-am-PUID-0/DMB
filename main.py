@@ -31,7 +31,7 @@ def shutdown(signum=None, frame=None, exit_code=0):
                 else:
                     logger.error(f"Failed to unmount {full_path}: {umount.stderr.strip()}")
 
-    processes = ['riven_frontend', 'riven_backend', 'Zilean', 'PostgreSQL', 'Zurg', 'rclone', 'pgAdmin']
+    processes = ['riven_frontend', 'riven_backend', 'Zilean', 'PostgreSQL', 'Zurg', 'rclone', 'pgAdmin', 'pgAgent']
     for process in processes:
         stop_process(process)
 
@@ -43,7 +43,7 @@ def shutdown(signum=None, frame=None, exit_code=0):
 def main():
 
 
-    version = '5.3.0'
+    version = '5.3.1'
 
     ascii_art = f'''
                                                                        
