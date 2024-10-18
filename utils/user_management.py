@@ -4,6 +4,7 @@ from utils.logger import *
 
 logger = get_logger()
 
+
 def chown_recursive(directory, user_id, group_id):
     for root, dirs, files in os.walk(directory):
         for dir_name in dirs:
@@ -28,7 +29,8 @@ def chown_recursive(directory, user_id, group_id):
     except Exception as e:
         logger.error(f"Error changing ownership of directory '{directory}': {e}")
 
-def create_system_user(username='DMB'):
+
+def create_system_user(username="DMB"):
     try:
         try:
             grp.getgrgid(group_id)
@@ -48,7 +50,7 @@ def create_system_user(username='DMB'):
         home_dir = f"/home/{username}"
         if not os.path.exists(home_dir):
             os.makedirs(home_dir)
-        zurg_dir = "/zurg"    
+        zurg_dir = "/zurg"
         rclone_dir = f"{RCLONEDIR}"
         mnt_dir = "/mnt"
         log_dir = "/log"
@@ -56,15 +58,19 @@ def create_system_user(username='DMB'):
         riven_dir = "/riven"
 
         with open("/etc/passwd", "a") as passwd_file:
-            passwd_file.write(f"{username}:x:{user_id}:{group_id}::/home/{username}:/bin/sh\n")       
+            passwd_file.write(
+                f"{username}:x:{user_id}:{group_id}::/home/{username}:/bin/sh\n"
+            )
         chown_recursive(zurg_dir, user_id, group_id)
-        os.chown(rclone_dir, user_id, group_id) 
+        os.chown(rclone_dir, user_id, group_id)
         os.chown(mnt_dir, user_id, group_id)
         chown_recursive(log_dir, user_id, group_id)
         chown_recursive(config_dir, user_id, group_id)
         chown_recursive(riven_dir, user_id, group_id)
         chown_recursive(home_dir, user_id, group_id)
-        logger.debug(f"Created system user '{username}' with UID {user_id} and GID {group_id}.")
+        logger.debug(
+            f"Created system user '{username}' with UID {user_id} and GID {group_id}."
+        )
 
     except Exception as e:
         logger.error(f"Error creating system user '{username}': {e}")

@@ -19,24 +19,38 @@ class ZileanUpdate(Update):
         self.logger.info(f"Checking for available {process_name} updates")
 
         try:
-            repo_owner = 'iPromKnight'
-            repo_name = 'zilean'
-            current_version = os.getenv('ZILEAN_CURRENT_VERSION')
+            repo_owner = "iPromKnight"
+            repo_name = "zilean"
+            current_version = os.getenv("ZILEAN_CURRENT_VERSION")
             if current_version is None:
-                self.logger.error(f"Failed to get the current version for {process_name}")
+                self.logger.error(
+                    f"Failed to get the current version for {process_name}"
+                )
                 return
 
-            self.logger.info(f"Currently installed [{current_version}] for {process_name}")
+            self.logger.info(
+                f"Currently installed [{current_version}] for {process_name}"
+            )
 
             latest_version, error = get_latest_release(repo_owner, repo_name)
 
-            self.logger.info(f"Latest available version [{latest_version}] for {process_name}")
+            self.logger.info(
+                f"Latest available version [{latest_version}] for {process_name}"
+            )
 
             if current_version != latest_version:
-                self.logger.info(f"New version available [v{latest_version}] for {process_name}. Updating...")
+                self.logger.info(
+                    f"New version available [v{latest_version}] for {process_name}. Updating..."
+                )
                 release_version = f"v{latest_version}"
                 self.logger.debug(f"Calling zilean_setup for {process_name}")
-                result = zilean_setup(self.process_handler, process_name, branch='main', release_version=release_version, running_process=True)
+                result = zilean_setup(
+                    self.process_handler,
+                    process_name,
+                    branch="main",
+                    release_version=release_version,
+                    running_process=True,
+                )
                 self.logger.debug(f"zilean_setup result for {process_name}: {result}")
 
                 if result is None:
@@ -46,10 +60,14 @@ class ZileanUpdate(Update):
                 success, error = result
 
                 if not success:
-                    self.logger.error(f"Failed to download update for {process_name}: {error}")
+                    self.logger.error(
+                        f"Failed to download update for {process_name}: {error}"
+                    )
                 else:
                     self.stop_process(process_name, None)
-                    self.logger.info(f"Automatic update installed for {process_name} [v{latest_version}]")                        
+                    self.logger.info(
+                        f"Automatic update installed for {process_name} [v{latest_version}]"
+                    )
                     self.logger.info(f"Restarting {process_name}")
                     self.start_process(process_name)
             else:
@@ -58,15 +76,15 @@ class ZileanUpdate(Update):
             self.logger.error(f"Automatic update failed for {process_name}: {e}")
 
     def start_process(self, process_name, app_dir=None, suppress_logging=False):
-        if process_name == 'Zilean':
-            if str(ZILEANLOGS).lower() == 'off':
+        if process_name == "Zilean":
+            if str(ZILEANLOGS).lower() == "off":
                 suppress_logging = True
-                self.logger.info(f"Suppressing {process_name} logging")       
+                self.logger.info(f"Suppressing {process_name} logging")
             app_dir = "./zilean/app"
             command = ["./zilean-api"]
-            venv_path = "/zilean/venv"  
-            python_lib_path = f"{venv_path}/lib" 
-            python_version = "3.11" 
+            venv_path = "/zilean/venv"
+            python_lib_path = f"{venv_path}/lib"
+            python_version = "3.11"
             libpython_path = f"{python_lib_path}/python{python_version}/site-packages"
             env_exports = {
                 "DOTNET_RUNNING_IN_CONTAINER": "true",
@@ -75,20 +93,20 @@ class ZileanUpdate(Update):
                 "DOTNET_SYSTEM_GLOBALIZATION_INVARIANT": "true",
                 "PYTHONUNBUFFERED": "1",
                 "ASPNETCORE_URLS": "http://+:8182",
-                "PYTHONPATH": libpython_path,  
-                "PATH": f"{venv_path}/bin:" + os.environ["PATH"], 
+                "PYTHONPATH": libpython_path,
+                "PATH": f"{venv_path}/bin:" + os.environ["PATH"],
                 "ZILEAN_PYTHON_PYLIB": "/usr/local/lib/libpython3.11.so.1.0",
-                "Zilean__Database__ConnectionString": f"Host=localhost;Port=5432;Database=zilean;Username={postgres_user};Password={postgres_password}"
+                "Zilean__Database__ConnectionString": f"Host=localhost;Port=5432;Database=zilean;Username={postgres_user};Password={postgres_password}",
             }
             process_env = os.environ.copy()
             process_env.update(env_exports)
             self.process_handler.start_process(
-                process_name, 
-                app_dir, 
-                command, 
-                None, 
+                process_name,
+                app_dir,
+                command,
+                None,
                 suppress_logging=suppress_logging,
-                env=process_env  
+                env=process_env,
             )
 
     def stop_process(self, process_name, key_type=None):

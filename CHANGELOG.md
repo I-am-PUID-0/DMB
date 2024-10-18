@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.3.2] - 2024-10-18 🚀
+
+### Fixed 🛠️
+
+- [Issue #60](https://github.com/I-am-PUID-0/DMB/issues/60) Does not correctly handle deleted files in new Riven releases 🐛
+- [Issue #61](https://github.com/I-am-PUID-0/DMB/issues/61) Riven Backend v0.16.0 Broke Settings Update 🐛
+- [Issue #62](https://github.com/I-am-PUID-0/DMB/issues/62) Riven Frontend v0.14.0 Broke VersionFilePath 🐛
+- [Issue #63](https://github.com/I-am-PUID-0/DMB/issues/63) Riven Frontend v0.16.0 Broke Frontend Build 🐛 - This may be a temporary fix... 
+
+
 ## Version [5.3.1] - 2024-10-15 🚀
 
 ### Fixed 🛠️

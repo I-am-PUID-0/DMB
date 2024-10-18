@@ -19,10 +19,14 @@ class Update:
 
     def update_schedule(self, process_name):
         interval_minutes = int(self.auto_update_interval() * 60)
-        self.logger.debug(f"Scheduling automatic update check every {interval_minutes} minutes for {process_name}")
+        self.logger.debug(
+            f"Scheduling automatic update check every {interval_minutes} minutes for {process_name}"
+        )
 
         if process_name not in Update._jobs:
-            self.scheduler.every(interval_minutes).minutes.do(self.scheduled_update_check, process_name)
+            self.scheduler.every(interval_minutes).minutes.do(
+                self.scheduled_update_check, process_name
+            )
             Update._jobs[process_name] = True
             self.logger.debug(f"Scheduled automatic update check for {process_name}")
 
@@ -31,16 +35,20 @@ class Update:
             time.sleep(1)
 
     def auto_update_interval(self):
-        if os.getenv('AUTO_UPDATE_INTERVAL') is None:
+        if os.getenv("AUTO_UPDATE_INTERVAL") is None:
             interval = 24
         else:
-            interval = float(os.getenv('AUTO_UPDATE_INTERVAL'))
+            interval = float(os.getenv("AUTO_UPDATE_INTERVAL"))
         return interval
 
     def auto_update(self, process_name, enable_update):
         if enable_update:
-            self.logger.info(f"Automatic updates set to {format_time(self.auto_update_interval())} for {process_name}")
-            self.schedule_thread = threading.Thread(target=self.update_schedule, args=(process_name,))
+            self.logger.info(
+                f"Automatic updates set to {format_time(self.auto_update_interval())} for {process_name}"
+            )
+            self.schedule_thread = threading.Thread(
+                target=self.update_schedule, args=(process_name,)
+            )
             self.schedule_thread.start()
             self.initial_update_check(process_name)
         else:
@@ -55,4 +63,3 @@ class Update:
     def scheduled_update_check(self, process_name):
         with self.updating:
             self.update_check(process_name)
-
