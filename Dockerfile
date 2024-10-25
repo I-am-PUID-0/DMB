@@ -38,9 +38,9 @@ RUN RELEASE_TAG=$(curl -s https://api.github.com/repos/iPromKnight/zilean/releas
 
 WORKDIR /zilean
 RUN dotnet restore -a $TARGETARCH
-WORKDIR /build/src/Zilean.ApiService
+WORKDIR /zilean/src/Zilean.ApiService
 RUN dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/
-WORKDIR /build/src/Zilean.DmmScraper
+WORKDIR /zilean/src/Zilean.DmmScraper
 RUN dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/
 
 
