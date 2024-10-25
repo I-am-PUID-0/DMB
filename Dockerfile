@@ -29,7 +29,7 @@ RUN apk add --no-cache --virtual .build-deps \
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine3.19 AS zilean-builder
 ARG TARGETARCH
-
+RUN apk add --update --no-cache curl jq
 RUN RELEASE_TAG=$(curl -s https://api.github.com/repos/iPromKnight/zilean/releases/latest | jq -r .tag_name) && \
     curl -L https://github.com/iPromKnight/zilean/archive/refs/tags/$RELEASE_TAG.zip -o zilean-latest.zip && \
     unzip zilean-latest.zip && \
