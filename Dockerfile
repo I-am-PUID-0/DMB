@@ -1,4 +1,4 @@
-﻿FROM alpine:3.20 AS pgagent-builder
+FROM alpine:3.20 AS pgagent-builder
 RUN apk add --no-cache --virtual .build-deps \
     cmake boost-dev build-base linux-headers postgresql-dev curl unzip && \
   curl -L https://github.com/pgadmin-org/pgagent/archive/refs/heads/master.zip -o pgagent.zip && \
@@ -48,17 +48,15 @@ WORKDIR /
 
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/config.yml /zurg/
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/plex_update.sh /zurg/
-ADD https://github.com/rivenmedia/riven-frontend/archive/refs/heads/main.zip /riven-frontend-main.zip
 
 RUN \
   mkdir -p /log /riven /riven/frontend /pgadmin/venv /pgadmin/data && \
-  if [ -f /riven-frontend-main.zip ]; then echo "File exists"; else echo "File does not exist"; fi && \
-  unzip /riven-frontend-main.zip -d /riven && \
-  mv /riven/riven-frontend-main/* /riven/frontend && \
-  rm -rf /riven/riven-frontend-main
+  curl -s https://api.github.com/repos/rivenmedia/riven-frontend/releases/latest | \
+  sed -n 's/.*"tarball_url": "\(.*\)",.*/\1/p' | \
+  xargs -n1 wget -O - -q | \
+  tar -xz --strip-components=1 -C /riven/frontend
 
 RUN sed -i '/export default defineConfig({/a\    build: {\n        minify: false\n    },' /riven/frontend/vite.config.ts
-
 RUN sed -i "s#/riven/version.txt#/riven/frontend/version.txt#g" /riven/frontend/src/routes/settings/about/+page.server.ts
 RUN sed -i "s/export const prerender = true;/export const prerender = false;/g" /riven/frontend/src/routes/settings/about/+page.server.ts
 
