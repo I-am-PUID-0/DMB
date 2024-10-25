@@ -34,7 +34,7 @@ LABEL name="DMB" \
     url="https://github.com/I-am-PUID-0/DMB"
 
 RUN apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base \
-  boost-filesystem boost-thread linux-headers py3-cffi libffi-dev rust cargo openssl openssl-dev pkgconfig git npm \
+  boost-filesystem boost-thread linux-headers py3-cffi libffi-dev rust cargo jq openssl openssl-dev pkgconfig git npm \
   ffmpeg postgresql-dev postgresql-client postgresql dotnet-sdk-8.0 postgresql-contrib postgresql-client postgresql \
   dotnet-sdk-8.0 postgresql-contrib
 
@@ -48,24 +48,76 @@ WORKDIR /
 
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/config.yml /zurg/
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/plex_update.sh /zurg/
-ADD https://github.com/rivenmedia/riven-frontend/archive/refs/heads/main.zip /riven-frontend-main.zip
+
+RUN RELEASE_TAG=$(curl -s https://api.github.com/repos/rivenmedia/riven-frontend/releases/latest | jq -r .tag_name) && \
+  curl -L https://github.com/rivenmedia/riven-frontend/archive/refs/tags/$RELEASE_TAG.zip -o /riven-frontend-latest.zip
 
 RUN \
-  mkdir -p /log /riven /riven/frontend /pgadmin/venv /pgadmin/data && \
-  if [ -f /riven-frontend-main.zip ]; then echo "File exists"; else echo "File does not exist"; fi && \
-  unzip /riven-frontend-main.zip -d /riven && \
-  mv /riven/riven-frontend-main/* /riven/frontend && \
-  rm -rf /riven/riven-frontend-main
+  mkdir -p /log /config /riven /riven/frontend /riven/backend /zilean /pgadmin/venv /pgadmin/data && \
+  if [ -f /riven-frontend-latest.zip ]; then echo "File exists"; else echo "File does not exist"; fi && \
+  unzip /riven-frontend-latest.zip -d /riven && \
+  mv /riven/riven-frontend-*/* /riven/frontend && \
+  rm -rf /riven/riven-frontend-* && \
+  rm -rf /riven-frontend-latest.zip
 
 RUN sed -i '/export default defineConfig({/a\    build: {\n        minify: false\n    },' /riven/frontend/vite.config.ts
-
 RUN sed -i "s#/riven/version.txt#/riven/frontend/version.txt#g" /riven/frontend/src/routes/settings/about/+page.server.ts
 RUN sed -i "s/export const prerender = true;/export const prerender = false;/g" /riven/frontend/src/routes/settings/about/+page.server.ts
-
 
 WORKDIR /riven/frontend
 
 RUN npm install -g pnpm && pnpm install && pnpm run build && pnpm prune --prod
+
+WORKDIR /
+
+RUN RELEASE_TAG=$(curl -s https://api.github.com/repos/rivenmedia/riven/releases/latest | jq -r .tag_name) && \
+  curl -L https://github.com/rivenmedia/riven/archive/refs/tags/$RELEASE_TAG.zip -o /riven-latest.zip
+
+RUN \
+  if [ -f /riven-latest.zip ]; then echo "File exists"; else echo "File does not exist"; fi && \
+  unzip /riven-latest.zip -d /riven && \
+  mv /riven/riven-*/* /riven/backend && \
+  rm -rf /riven/riven-* && \
+  rm -rf /riven-latest.zip
+
+WORKDIR /riven/backend
+
+RUN python3 -m venv /riven/backend/venv && \
+    source /riven/backend/venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install poetry && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-root --without dev 
+
+WORKDIR /
+
+RUN RELEASE_TAG=$(curl -s https://api.github.com/repos/iPromKnight/zilean/releases/latest | jq -r .tag_name) && \
+  curl -L https://github.com/iPromKnight/zilean/archive/refs/tags/$RELEASE_TAG.zip -o /zilean-latest.zip && \
+  echo $RELEASE_TAG > /zilean/version.txt
+
+
+RUN \
+  if [ -f /zilean-latest.zip ]; then echo "File exists"; else echo "File does not exist"; fi && \
+  unzip /zilean-latest.zip && \
+  mv zilean-*/* /zilean/ && \
+  rm -rf zilean-* /zilean-latest.zip
+
+WORKDIR /zilean
+
+RUN \
+  python3 -m venv /zilean/venv && \
+  source /zilean/venv/bin/activate && \
+  pip install --upgrade pip && \
+  pip install -r /zilean/requirements.txt && \
+  dotnet restore
+
+WORKDIR /zilean/src/Zilean.ApiService
+
+RUN dotnet publish -c Release --no-restore -o /zilean/app/
+
+WORKDIR /zilean/src/Zilean.DmmScraper
+
+RUN dotnet publish -c Release --no-restore -o /zilean/app/
 
 WORKDIR /
 
@@ -87,6 +139,7 @@ RUN \
 ENV \
   XDG_CONFIG_HOME=/config \
   TERM=xterm 
+
 
 HEALTHCHECK --interval=60s --timeout=10s \
   CMD ["/bin/sh", "-c", "source /venv/bin/activate && python /healthcheck.py"]

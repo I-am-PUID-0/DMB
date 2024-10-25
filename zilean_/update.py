@@ -1,8 +1,10 @@
 from platform import release
+from sre_constants import SUCCESS
 from venv import logger
 from base import *
 from utils.logger import *
 from utils.auto_update import Update
+from utils.versions import Versions
 from .setup import zilean_setup, setup_python_environment
 from .download import get_latest_release, download_and_unzip_release
 
@@ -16,33 +18,28 @@ class ZileanUpdate(Update):
         super().auto_update(process_name, enable_update)
 
     def update_check(self, process_name):
+        self.logger.debug(f"ZileanUpdate: update_check called for {process_name}")
         self.logger.info(f"Checking for available {process_name} updates")
-
+        zilean_versions = Versions()
         try:
             repo_owner = "iPromKnight"
             repo_name = "zilean"
-            current_version = os.getenv("ZILEAN_CURRENT_VERSION")
-            if current_version is None:
-                self.logger.error(
-                    f"Failed to get the current version for {process_name}"
-                )
-                return
-
-            self.logger.info(
-                f"Currently installed [{current_version}] for {process_name}"
+            zilean_update_needed, zilean_update_info = zilean_versions.compare_versions(
+                process_name, repo_owner, repo_name
             )
-
-            latest_version, error = get_latest_release(repo_owner, repo_name)
-
-            self.logger.info(
-                f"Latest available version [{latest_version}] for {process_name}"
-            )
-
-            if current_version != latest_version:
+            if not zilean_update_needed:
                 self.logger.info(
-                    f"New version available [v{latest_version}] for {process_name}. Updating..."
+                    f"{zilean_update_info.get('message')} for {process_name}"
                 )
-                release_version = f"v{latest_version}"
+            else:
+                current_version = zilean_update_info.get("current_version")
+                latest_version = zilean_update_info.get("latest_version")
+                self.logger.info(
+                    f"{zilean_update_info.get('message')} for {process_name}. "
+                    f"Current version: {current_version}, updating to {latest_version}..."
+                )
+                release_version = latest_version
+                self.stop_process(process_name, None)
                 self.logger.debug(f"Calling zilean_setup for {process_name}")
                 result = zilean_setup(
                     self.process_handler,
@@ -55,7 +52,7 @@ class ZileanUpdate(Update):
 
                 if result is None:
                     self.logger.error(f"zilean_setup returned None for {process_name}")
-                    return
+                    return False
 
                 success, error = result
 
@@ -63,17 +60,28 @@ class ZileanUpdate(Update):
                     self.logger.error(
                         f"Failed to download update for {process_name}: {error}"
                     )
-                else:
-                    self.stop_process(process_name, None)
-                    self.logger.info(
-                        f"Automatic update installed for {process_name} [v{latest_version}]"
+                    return False
+                self.logger.info(
+                    f"Automatic update installed for {process_name} [{latest_version}]"
+                )
+                self.logger.info(f"Restarting {process_name}")
+                self.start_process(process_name)
+                zilean_version_write, zilean_version_write_message = (
+                    zilean_versions.version_write(
+                        process_name, version_path=None, version=release_version
                     )
-                    self.logger.info(f"Restarting {process_name}")
-                    self.start_process(process_name)
-            else:
-                self.logger.info(f"Automatic update not required for {process_name}")
+                )
+                if not zilean_version_write:
+                    logger.error(
+                        f"Failed to write version {release_version} for {process_name}: {zilean_version_write_message}"
+                    )
+                return True
+            self.logger.debug(
+                f"ZileanUpdate: update_check completed for {process_name}"
+            )
         except Exception as e:
             self.logger.error(f"Automatic update failed for {process_name}: {e}")
+            return False
 
     def start_process(self, process_name, app_dir=None, suppress_logging=False):
         if process_name == "Zilean":

@@ -1,4 +1,3 @@
-from os import chmod
 from base import *
 from utils.logger import *
 
@@ -125,17 +124,48 @@ def setup_npm_build(process_handler=None, config_dir="/riven/frontend"):
         return False
 
 
-def clear_directory(directory_path):
+def clear_directory(directory_path, exclude_dirs=None):
+    if exclude_dirs is None:
+        exclude_dirs = []
+    exclude_dirs = [
+        os.path.abspath(os.path.join(directory_path, exclude_dir))
+        for exclude_dir in exclude_dirs
+    ]
     if os.path.exists(directory_path):
         for item in os.listdir(directory_path):
             item_path = os.path.join(directory_path, item)
+            if any(item_path.startswith(exclude_dir) for exclude_dir in exclude_dirs):
+                continue
             if os.path.isfile(item_path) or os.path.islink(item_path):
                 os.unlink(item_path)
             elif os.path.isdir(item_path):
                 shutil.rmtree(item_path)
-        logger.info(f"Cleared contents of {directory_path}")
+        logger.debug(f"Cleared contents of {directory_path}, excluding {exclude_dirs}")
     else:
         logger.warning(f"Directory {directory_path} does not exist")
+
+
+def copy_server_config_to_frontend():
+    source_config_path = "/config/server-config.json"
+    destination_config_path = "/riven/frontend/server-config.json"
+
+    try:
+        if not os.path.exists(source_config_path):
+            logger.debug(
+                f"server-config.json not found at {source_config_path}, skipping copy."
+            )
+            return
+
+        if os.path.exists(destination_config_path):
+            logger.debug(
+                f"Overwriting existing server-config.json at {destination_config_path}"
+            )
+
+        shutil.copy2(source_config_path, destination_config_path)
+        logger.debug(f"Copied server-config.json to {destination_config_path}")
+
+    except Exception as e:
+        logger.error(f"Failed to copy server-config.json: {e}")
 
 
 def riven_setup(
@@ -159,6 +189,7 @@ def riven_setup(
             repo_name = "riven"
 
             if RBVERSION:
+                clear_directory(backend_dir, exclude_dirs=["data"])
                 logger.info(
                     f"Using {branch} branch version {RBVERSION} for {process_name}"
                 )
@@ -177,8 +208,20 @@ def riven_setup(
                 logger.info(
                     f"Successfully downloaded the {release_version} release in {branch} branch for {process_name}"
                 )
+                if not setup_poetry_environment(process_handler=process_handler):
+                    logger.error(
+                        f"Failed to set up Poetry environment for {process_name}"
+                    )
+                    return (
+                        False,
+                        f"Failed to set up Poetry environment for {process_name}",
+                    )
+                from utils.user_management import chown_recursive
+
+                chown_recursive(riven_dir, user_id, group_id)
 
             elif RBBRANCH:
+                clear_directory(backend_dir, exclude_dirs=["data"])
                 logger.info(f"Using {RBBRANCH} branch for {process_name}")
                 branch = RBBRANCH
                 from .download import get_branch
@@ -194,29 +237,67 @@ def riven_setup(
                 logger.info(
                     f"Successfully downloaded {branch} branch for {process_name}"
                 )
+                if not setup_poetry_environment(process_handler=process_handler):
+                    logger.error(
+                        f"Failed to set up Poetry environment for {process_name}"
+                    )
+                    return (
+                        False,
+                        f"Failed to set up Poetry environment for {process_name}",
+                    )
+                from utils.user_management import chown_recursive
+
+                chown_recursive(riven_dir, user_id, group_id)
 
             else:
-                from .download import get_latest_release
+                if running_process:
+                    clear_directory(backend_dir, exclude_dirs=["data"])
+                    from .download import get_latest_release
 
-                release_version, error = get_latest_release(repo_owner, repo_name)
-                if not release_version:
-                    logger.error(
-                        f"Failed to get the latest release for {process_name}: {error}"
-                    )
-                    return False, error
-                from .download import download_and_unzip_release
+                    release_version, error = get_latest_release(repo_owner, repo_name)
+                    if not release_version:
+                        logger.error(
+                            f"Failed to get the latest release for {process_name}: {error}"
+                        )
+                        return False, error
+                    from .download import download_and_unzip_release
 
-                success, error = download_and_unzip_release(
-                    repo_owner, repo_name, release_version, backend_dir
-                )
-                if not success:
-                    logger.error(
-                        f"Failed to download the latest release for {process_name}: {error}"
+                    success, error = download_and_unzip_release(
+                        repo_owner, repo_name, release_version, backend_dir
                     )
-                    return False, error
-                logger.info(
-                    f"Successfully downloaded the latest release for {process_name}"
-                )
+                    if not success:
+                        logger.error(
+                            f"Failed to download the latest release for {process_name}: {error}"
+                        )
+                        return False, error
+                    logger.info(
+                        f"Successfully downloaded the latest release for {process_name}"
+                    )
+                    if not setup_poetry_environment(process_handler=process_handler):
+                        logger.error(
+                            f"Failed to set up Poetry environment for {process_name}"
+                        )
+                        return (
+                            False,
+                            f"Failed to set up Poetry environment for {process_name}",
+                        )
+                    from utils.user_management import chown_recursive
+
+                    chown_recursive(riven_dir, user_id, group_id)
+                else:
+                    from .download import version_check
+
+                    current_version, error = version_check(
+                        version_path=None, process_name=process_name
+                    )
+                    if not current_version:
+                        logger.error(
+                            f"Failed to get the current version for {process_name}: {error}"
+                        )
+                        return False, error
+                    logger.info(f"{process_name} current version: {current_version}")
+                    if current_version == release_version:
+                        return True, None
 
             if os.path.exists(data_env_path):
                 logger.info(
@@ -226,10 +307,6 @@ def riven_setup(
                 logger.info(f"Successfully copied .env file to {src_env_path}")
             else:
                 logger.info(f"No .env file found in {data_env_path}")
-
-            from utils.user_management import chown_recursive
-
-            chown_recursive(riven_dir, user_id, group_id)
 
         if process_name == "riven_frontend":
             if RFOWNER:
@@ -257,6 +334,7 @@ def riven_setup(
                 logger.info(
                     f"Successfully downloaded the {release_version} release in {branch} branch for {process_name}"
                 )
+                copy_server_config_to_frontend()
                 if not setup_npm_build(process_handler=process_handler):
                     logger.error(f"Failed to set up NPM build for {process_name}")
                     return False, f"Failed to set up NPM build for {process_name}"
@@ -281,6 +359,7 @@ def riven_setup(
                 logger.info(
                     f"Successfully downloaded {branch} branch for {process_name}"
                 )
+                copy_server_config_to_frontend()
                 if not setup_npm_build(process_handler=process_handler):
                     logger.error(f"Failed to set up NPM build for {process_name}")
                     return False, f"Failed to set up NPM build for {process_name}"
@@ -304,6 +383,7 @@ def riven_setup(
                     logger.info(
                         f"Successfully downloaded the latest release for {process_name}"
                     )
+                    copy_server_config_to_frontend()
                     if not setup_npm_build(process_handler=process_handler):
                         logger.error(f"Failed to set up NPM build for {process_name}")
                         return False, f"Failed to set up NPM build for {process_name}"
@@ -311,6 +391,7 @@ def riven_setup(
 
                     chown_recursive(riven_dir, user_id, group_id)
                 else:
+                    copy_server_config_to_frontend()
                     from .download import get_latest_release
 
                     latest_release_version, error = get_latest_release(
@@ -335,15 +416,6 @@ def riven_setup(
                     logger.info(f"{process_name} current version: {current_version}")
                     if current_version == latest_release_version:
                         return True, None
-
-        #                else:
-        #                    from .download import download_and_unzip_release
-        #                    success, error = download_and_unzip_release(repo_owner, repo_name, latest_release_version, frontend_dir)
-        #                    if not success:
-        #                        logger.error(f"Failed to download the latest release for {process_name}: {error}")
-        #                        return False, error
-        #                    logger.info(f"Successfully downloaded the latest release for {process_name}")
-
         return True, None
     except Exception as e:
         logger.error(f"Exception during setup of {process_name}: {e}")

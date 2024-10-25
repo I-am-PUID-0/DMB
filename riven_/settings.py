@@ -20,6 +20,44 @@ def obfuscate_value(key, value, visible_chars=4):
     return value[:visible_chars] + "*" * (len(value) - visible_chars)
 
 
+def save_server_config(backend_url, api_key, config_dir="/config"):
+    server_config = {"backendUrl": backend_url, "apiKey": api_key}
+
+    os.makedirs(config_dir, exist_ok=True)
+
+    config_file_path = os.path.join(config_dir, "server-config.json")
+
+    try:
+        with open(config_file_path, "w") as config_file:
+            dump(server_config, config_file, indent=4)
+            logger.info(f"Server config saved to {config_file_path}")
+    except IOError as e:
+        logger.error(f"Error saving server config: {e}")
+
+
+def load_api_key_from_file(settings_file_path="/riven/backend/data/settings.json"):
+    try:
+        with open(settings_file_path, "r") as file:
+            settings = load(file)
+            api_key = settings.get("api_key")
+            backend_url = os.getenv("BACKEND_URL", "http://127.0.0.1:8080")
+
+            if api_key:
+                logger.info(f"API key loaded successfully from {settings_file_path}")
+
+                save_server_config(backend_url, api_key)
+
+                return api_key
+            else:
+                return None
+    except FileNotFoundError:
+        logger.error(f"Settings file {settings_file_path} not found")
+        return None
+    except json.JSONDecodeError as e:
+        logger.error(f"Error parsing {settings_file_path}: {e}")
+        return None
+
+
 def set_env_variables():
     def set_env_variable(key, value, default=None):
         try:
@@ -34,6 +72,17 @@ def set_env_variables():
                 logger.debug(f"{key} not set because no value or default was provided")
         except Exception as e:
             logger.error(f"Error setting {key}: {e}")
+
+    api_key = os.getenv("BACKEND_API_KEY")
+    if not api_key:
+        logger.debug(
+            "BACKEND_API_KEY not set in environment, attempting to load from settings.json"
+        )
+        api_key = load_api_key_from_file()
+        if api_key:
+            os.environ["BACKEND_API_KEY"] = api_key
+        else:
+            logger.debug("BACKEND_API_KEY not set")
 
     if ZILEAN is not None and ZILEAN.lower() == "true":
         set_env_variable("SCRAPING_ZILEAN_URL", None, "http://localhost:8182")
@@ -50,6 +99,7 @@ def set_env_variables():
         "DIALECT": RFDIALECT,
         "DATABASE_URL": RIVENDATABASEURL,
         "DATABASE_HOST": RIVENDATABASEHOST,
+        "BACKEND_API_KEY": api_key,
     }
 
     default_env_vars = {
@@ -65,14 +115,40 @@ def set_env_variables():
         set_env_variable(key, value, default_env_vars.get(key))
 
 
-def fetch_settings(url, max_retries=10, delay=5):
+def get_api_headers():
+    api_key = os.getenv("BACKEND_API_KEY")
+
+    if not api_key:
+        return {}
+
+    headers = {"X-API-KEY": api_key, "Content-Type": "application/json"}
+    return headers
+
+
+def get_backend_urls():
+    base_url = os.getenv("BACKEND_URL", "http://127.0.0.1:8080")
+    api_key = os.getenv("BACKEND_API_KEY")
+
+    if api_key:
+        settings_url = f"{base_url}/api/v1/settings"
+    else:
+        settings_url = f"{base_url}/settings"
+
+    return {
+        "settings_url": settings_url,
+        "set_url": f"{settings_url}/set",
+        "save_url": f"{settings_url}/save",
+        "get_all": f"{settings_url}/get/all",
+    }
+
+
+def fetch_settings(url, headers, max_retries=10, delay=5):
     for attempt in range(max_retries):
         try:
             logger.info(
                 f"Attempt {attempt + 1}/{max_retries} to fetch settings from {url}"
             )
-            response = requests.get(url)
-
+            response = requests.get(url, headers=headers)
             if response.status_code == 200:
                 try:
                     data = response.json()
@@ -85,6 +161,9 @@ def fetch_settings(url, max_retries=10, delay=5):
                         return None, f"Unexpected JSON format: {data}"
                 except ValueError as e:
                     return None, f"Error parsing JSON: {e}"
+            elif response.status_code == 404:
+                logger.error(f"Endpoint not found: {url}. Response: {response.text}")
+                return None, f"404 Not Found: {response.text}"
             else:
                 logger.error(
                     f"Failed to fetch settings: Status code {response.status_code}, Response: {response.text}"
@@ -176,15 +255,15 @@ def update_settings(current_settings, updated_settings, payload, prefix=""):
 
 
 def load_settings():
+    time.sleep(10)
     logger.info("Loading Riven settings")
     set_env_variables()
-    SETTINGS_URL = os.environ["BACKEND_URL"] + "/settings"
-
+    urls = get_backend_urls()
+    get_all = urls["get_all"]
+    headers = get_api_headers()
     try:
-        get_url = SETTINGS_URL + "/get/all"
-        time.sleep(5)
 
-        response, error = fetch_settings(get_url)
+        response, error = fetch_settings(get_all, headers)
 
         if error:
             logger.error(f"Failed to load settings: {error}")
@@ -206,18 +285,21 @@ def load_settings():
             update_settings(current_settings, updated_settings, payload)
         else:
             logger.error("No current settings data to update")
+
         logger.debug(f"Updated settings payload")
+
         if not payload:
             logger.info("No settings to update.")
             return
-        set_url = SETTINGS_URL + "/set"
-        save_url = SETTINGS_URL + "/save"
+
+        set_url = urls["set_url"]
+        save_url = urls["save_url"]
         max_retries = 10
         for attempt in range(max_retries):
             try:
-                response = requests.post(set_url, json=payload)
+                response = requests.post(set_url, json=payload, headers=headers)
                 if response.status_code == 200:
-                    save_response = requests.post(save_url)
+                    save_response = requests.post(save_url, headers=headers)
                     if save_response.status_code == 200:
                         logger.info("Settings saved successfully.")
                     else:

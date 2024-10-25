@@ -12,52 +12,9 @@ logger = get_logger()
 process_handler = ProcessHandler(logger)
 
 
-def shutdown(signum=None, frame=None, exit_code=0):
-    logger.info("Shutdown signal received. Cleaning up...")
-
-    def stop_process(process_name):
-        try:
-            process_handler.stop_process(process_name)
-        except Exception as e:
-            logger.error(f"Exception occurred while stopping {process_name}: {str(e)}")
-
-    def unmount_all():
-        for mount_point in os.listdir(f"{RCLONEDIR}"):
-            full_path = os.path.join(f"{RCLONEDIR}", mount_point)
-            if os.path.ismount(full_path):
-                logger.info(f"Unmounting {full_path}...")
-                umount = subprocess.run(
-                    ["umount", full_path], capture_output=True, text=True
-                )
-                if umount.returncode == 0:
-                    logger.info(f"Successfully unmounted {full_path}")
-                else:
-                    logger.error(
-                        f"Failed to unmount {full_path}: {umount.stderr.strip()}"
-                    )
-
-    processes = [
-        "riven_frontend",
-        "riven_backend",
-        "Zilean",
-        "PostgreSQL",
-        "Zurg",
-        "rclone",
-        "pgAdmin",
-        "pgAgent",
-    ]
-    for process in processes:
-        stop_process(process)
-
-    unmount_all()
-
-    logger.info("Shutdown complete.")
-    sys.exit(exit_code)
-
-
 def main():
 
-    version = "5.3.2"
+    version = "5.4.0"
 
     ascii_art = f"""
                                                                        
@@ -78,7 +35,6 @@ D:::::::::::::::DD   M::::::M               M::::::MB:::::::::::::::::B
 D::::::::::::DDD     M::::::M               M::::::MB::::::::::::::::B  
 DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-
                               Version: {version}                                    
 """
 
@@ -106,7 +62,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
         user_management.create_system_user()
     except Exception as e:
         logger.error(f"An error occurred while creating system user: {e}")
-        shutdown(exit_code=1)
+        process_handler.shutdown(exit_code=1)
 
     try:
         if ZURG is None or str(ZURG).lower() == "false":
@@ -144,10 +100,10 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                     raise MissingAPIKeyException()
             except Exception as e:
                 logger.error(f"An error occurred in the Zurg setup: {e}")
-                shutdown(exit_code=1)
+                process_handler.shutdown(exit_code=1)
     except Exception as e:
         logger.error(e)
-        shutdown(exit_code=1)
+        process_handler.shutdown(exit_code=1)
 
     try:
         if (RIVENBACKEND is not None and str(RIVENBACKEND).lower() == "true") or (
@@ -157,9 +113,9 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 postgres.postgres_setup(process_handler)
             except Exception as e:
                 logger.error(f"An error occurred in the PostgreSQL setup: {e}")
-                shutdown(exit_code=1)
+                process_handler.shutdown(exit_code=1)
             try:
-                if ZILEAN is not None or str(ZILEAN).lower() == "true":
+                if ZILEAN is not None and str(ZILEAN).lower() == "true":
                     try:
                         zilean.setup.zilean_setup(process_handler, "Zilean")
                     except Exception as e:
@@ -176,7 +132,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                         zilean_updater.auto_update("Zilean", False)
             except Exception as e:
                 logger.error(f"An error occurred in the Zilean setup: {e}")
-                shutdown(exit_code=1)
+                process_handler.shutdown(exit_code=1)
             try:
                 try:
                     r.setup.riven_setup(process_handler, "riven_backend")
@@ -190,10 +146,10 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                     r_updater.auto_update("riven_backend", False)
             except Exception as e:
                 logger.error(f"An error occurred in the Riven backend setup: {e}")
-                shutdown(exit_code=1)
+                process_handler.shutdown(exit_code=1)
     except Exception as e:
         logger.error(e)
-        shutdown(exit_code=1)
+        process_handler.shutdown(exit_code=1)
 
     try:
         if (RIVENFRONTEND is not None and str(RIVENFRONTEND).lower() == "true") or (
@@ -213,7 +169,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 r_updater.auto_update("riven_frontend", False)
     except Exception as e:
         logger.error(f"An error occurred in the Riven frontend setup: {e}")
-        shutdown(exit_code=1)
+        process_handler.shutdown(exit_code=1)
 
     def perpetual_wait():
         stop_event = threading.Event()
@@ -223,6 +179,4 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
 
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGTERM, shutdown)
-    signal.signal(signal.SIGINT, shutdown)
     main()

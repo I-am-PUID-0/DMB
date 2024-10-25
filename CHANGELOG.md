@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.4.0] - 2024-10-25 🚀
+
+### Fixed 🛠️
+
+- [Issue #14](https://github.com/I-am-PUID-0/DMB/issues/14) Add Riven build process to Dockerfile ✨ 
+- [Issue #65](https://github.com/I-am-PUID-0/DMB/issues/65) Zilean Enabled when ZILEAN_ENABLED=false 🐛
+- [Issue #66](https://github.com/I-am-PUID-0/DMB/issues/66) Dockerfile pulls from Riven Frontend main branch vs. latest release 🐛
+- [Issue #67](https://github.com/I-am-PUID-0/DMB/issues/67) Future releases for Riven Frontend and Backend will require an API Key 🐛
+
+### Added ✨
+
+- Riven Backend: Added the Riven backend build process to the Dockerfile 📦
+- Riven Frontend: Added the server-config.json to the be saved in /config and transferred to the Riven Frontend when using the API key 📦
+- Zilean: Added the Zilean build process to the Dockerfile 📦
+
+### Changed 🔄
+
+- Riven Backend: Settings are now loaded with or without the API key depending on the version of Riven used 🔄
+- Refactor: Refactored the utils and version checks 🔄
+- Utils: Added description to reaped processes 🔄
+- Logging: Added thread lock to rollover 🔄
+
+
+### Notes 📝
+
+- Future releases for Riven Frontend and Backend will require an API Key to be set 🚨
+- With these changes, you can now use the latest development versions of Riven Frontend and Backend 🌙
+- Use the RIVEN_BACKEND_BRANCH=release-please--branches--main and RIVEN_FRONTEND_BRANCH=release-please--branches--main environment variables to test the current development versions of Riven 🌙
+
+
 ## Version [5.3.2] - 2024-10-18 🚀
 
 ### Fixed 🛠️

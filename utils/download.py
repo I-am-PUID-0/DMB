@@ -53,7 +53,7 @@ class Downloader:
         return None
 
     def get_latest_release(self, repo_owner, repo_name, nightly=False):
-        self.logger.info(f"Fetching latest {repo_name} release.")
+        self.logger.debug(f"Fetching latest {repo_name} release.")
         headers = self.get_headers()
         if nightly:
             api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases"
@@ -75,13 +75,13 @@ class Downloader:
             else:
                 latest_release = response.json()
                 version_tag = latest_release["tag_name"]
-                self.logger.info(f"{repo_name} latest release: {version_tag}")
+                self.logger.debug(f"{repo_name} latest release: {version_tag}")
                 return version_tag, None
         else:
             return None, "Error: Unable to access the repository API."
 
     def get_branch(self, repo_owner, repo_name, branch, headers):
-        zip_folder_name = f'{repo_name}-{branch.replace("/", "-")}'
+        zip_folder_name = f'{repo_name}-{branch.replace("/", "-").replace("--", "-")}'
         branch_url = f"https://github.com/{repo_owner}/{repo_name}/archive/refs/heads/{branch}.zip"
         self.logger.debug(f"Requesting {repo_name} release from {branch_url}")
         response = self.fetch_with_retries(branch_url, headers)
@@ -95,7 +95,7 @@ class Downloader:
         self, repo_owner, repo_name, release_version, headers
     ):
         api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/tags/{release_version}"
-        self.logger.info(f"Fetching release information from {api_url}")
+        self.logger.debug(f"Fetching release information from {api_url}")
         response = self.fetch_with_retries(api_url, headers)
         if response and response.status_code == 200:
             return response.json(), None
@@ -120,10 +120,10 @@ class Downloader:
         zipball_url = release_info.get("zipball_url")
         tarball_url = release_info.get("tarball_url")
         if zipball_url:
-            self.logger.info("No assets found. Using zipball_url.")
+            self.logger.debug("No assets found. Using zipball_url.")
             return zipball_url, None
         if tarball_url:
-            self.logger.info("No assets found. Using tarball_url.")
+            self.logger.debug("No assets found. Using tarball_url.")
             return tarball_url, None
 
         self.logger.error("No assets or zipball/tarball URL found for the release.")
@@ -133,7 +133,7 @@ class Downloader:
         self, url, target_dir, zip_folder_name=None, headers=None, exclude_dirs=None
     ):
         try:
-            self.logger.info(f"Downloading from {url}")
+            self.logger.debug(f"Downloading from {url}")
             headers = headers or self.get_headers()
             response = self.fetch_with_retries(url, headers)
             if response and response.status_code == 200:
