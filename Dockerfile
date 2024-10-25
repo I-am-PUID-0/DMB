@@ -33,6 +33,8 @@ LABEL name="DMB" \
     description="Debrid Media Bridge" \
     url="https://github.com/I-am-PUID-0/DMB"
 
+ARG TARGETARCH
+
 RUN apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base \
   boost-filesystem boost-thread linux-headers py3-cffi libffi-dev rust cargo jq openssl openssl-dev pkgconfig git npm \
   ffmpeg postgresql-dev postgresql-client postgresql dotnet-sdk-8.0 postgresql-contrib postgresql-client postgresql \
@@ -113,11 +115,11 @@ RUN \
 
 WORKDIR /zilean/src/Zilean.ApiService
 
-RUN dotnet publish -c Release --no-restore -o /zilean/app/
+RUN dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/
 
 WORKDIR /zilean/src/Zilean.DmmScraper
 
-RUN dotnet publish -c Release --no-restore -o /zilean/app/
+RUN dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/
 
 WORKDIR /
 
