@@ -60,7 +60,6 @@ RUN sed -i '/export default defineConfig({/a\    build: {\n        minify: false
 RUN sed -i "s#/riven/version.txt#/riven/frontend/version.txt#g" /riven/frontend/src/routes/settings/about/+page.server.ts
 RUN sed -i "s/export const prerender = true;/export const prerender = false;/g" /riven/frontend/src/routes/settings/about/+page.server.ts
 
-
 WORKDIR /riven/frontend
 
 RUN npm install -g pnpm && pnpm install && pnpm run build && pnpm prune --prod
