@@ -115,11 +115,19 @@ RUN \
 
 WORKDIR /zilean/src/Zilean.ApiService
 
-RUN dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/
+RUN if [ "$TARGETARCH" = "arm64" ]; then \
+      dotnet publish -c Release --no-restore -r linux-arm64 -o /zilean/app/; \
+    else \
+      dotnet publish -c Release --no-restore -r linux-x64 -o /zilean/app/; \
+    fi
 
 WORKDIR /zilean/src/Zilean.DmmScraper
 
-RUN dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/
+RUN if [ "$TARGETARCH" = "arm64" ]; then \
+      dotnet publish -c Release --no-restore -r linux-arm64 -o /zilean/app/; \
+    else \
+      dotnet publish -c Release --no-restore -r linux-x64 -o /zilean/app/; \
+    fi
 
 WORKDIR /
 
