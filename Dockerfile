@@ -62,6 +62,7 @@ COPY --from=systemstats-builder /usr/share/postgresql16/extension/system_stats* 
 COPY --from=systemstats-builder /usr/lib/postgresql16/system_stats.so /usr/lib/postgresql16/
 COPY --from=zilean-builder /zilean/app /zilean/app
 COPY --from=zilean-builder /zilean/version.txt /zilean/version.txt
+COPY --from=zilean-builder /zilean/requirements.txt /zilean/requirements.txt
 
 WORKDIR /
 
