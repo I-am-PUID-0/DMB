@@ -27,13 +27,28 @@ RUN apk add --no-cache --virtual .build-deps \
   cd .. && rm -rf system_stats-master system_stats.zip && \
   apk del .build-deps
 
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine3.19 AS zilean-builder
+ARG TARGETARCH
+
+RUN RELEASE_TAG=$(curl -s https://api.github.com/repos/iPromKnight/zilean/releases/latest | jq -r .tag_name) && \
+    curl -L https://github.com/iPromKnight/zilean/archive/refs/tags/$RELEASE_TAG.zip -o zilean-latest.zip && \
+    unzip zilean-latest.zip && \
+    mv zilean-*/ /zilean && \
+    echo $RELEASE_TAG > /zilean/version.txt
+
+WORKDIR /zilean
+RUN dotnet restore -a $TARGETARCH
+WORKDIR /build/src/Zilean.ApiService
+RUN dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/
+WORKDIR /build/src/Zilean.DmmScraper
+RUN dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/
+
 
 FROM python:3.11-alpine AS final-stage
 LABEL name="DMB" \
     description="Debrid Media Bridge" \
     url="https://github.com/I-am-PUID-0/DMB"
 
-ARG TARGETARCH
 
 RUN apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base \
   boost-filesystem boost-thread linux-headers py3-cffi libffi-dev rust cargo jq openssl openssl-dev pkgconfig git npm \
@@ -45,6 +60,8 @@ COPY --from=pgagent-builder /usr/local/bin/pgagent /usr/local/bin/pgagent
 COPY --from=pgagent-builder /usr/share/postgresql16/extension/pgagent* /usr/share/postgresql16/extension/
 COPY --from=systemstats-builder /usr/share/postgresql16/extension/system_stats* /usr/share/postgresql16/extension/
 COPY --from=systemstats-builder /usr/lib/postgresql16/system_stats.so /usr/lib/postgresql16/
+COPY --from=zilean-builder /zilean/app /zilean/app
+COPY --from=zilean-builder /zilean/version.txt /zilean/version.txt
 
 WORKDIR /
 
@@ -93,41 +110,11 @@ RUN python3 -m venv /riven/backend/venv && \
 
 WORKDIR /
 
-RUN RELEASE_TAG=$(curl -s https://api.github.com/repos/iPromKnight/zilean/releases/latest | jq -r .tag_name) && \
-  curl -L https://github.com/iPromKnight/zilean/archive/refs/tags/$RELEASE_TAG.zip -o /zilean-latest.zip && \
-  echo $RELEASE_TAG > /zilean/version.txt
-
-
-RUN \
-  if [ -f /zilean-latest.zip ]; then echo "File exists"; else echo "File does not exist"; fi && \
-  unzip /zilean-latest.zip && \
-  mv zilean-*/* /zilean/ && \
-  rm -rf zilean-* /zilean-latest.zip
-
-WORKDIR /zilean
-
 RUN \
   python3 -m venv /zilean/venv && \
   source /zilean/venv/bin/activate && \
   pip install --upgrade pip && \
-  pip install -r /zilean/requirements.txt && \
-  dotnet restore
-
-WORKDIR /zilean/src/Zilean.ApiService
-
-RUN if [ "$TARGETARCH" = "arm64" ]; then \
-      dotnet publish -c Release --no-restore -r linux-arm64 -o /zilean/app/; \
-    else \
-      dotnet publish -c Release --no-restore -r linux-x64 -o /zilean/app/; \
-    fi
-
-WORKDIR /zilean/src/Zilean.DmmScraper
-
-RUN if [ "$TARGETARCH" = "arm64" ]; then \
-      dotnet publish -c Release --no-restore -r linux-arm64 -o /zilean/app/; \
-    else \
-      dotnet publish -c Release --no-restore -r linux-x64 -o /zilean/app/; \
-    fi
+  pip install -r /zilean/requirements.txt 
 
 WORKDIR /
 
