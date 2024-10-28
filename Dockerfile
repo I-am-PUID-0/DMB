@@ -4,7 +4,11 @@ RUN apk add --no-cache --virtual .build-deps \
   curl -L https://github.com/pgadmin-org/pgagent/archive/refs/heads/master.zip -o pgagent.zip && \
   unzip pgagent.zip && \
   cd pgagent-master && mkdir build && cd build && \
-  cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make && make install && \
+  cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DBoost_INCLUDE_DIR=/usr/include \
+        -DBoost_LIBRARY_DIRS=/usr/lib \
+        -DCMAKE_POLICY_DEFAULT_CMP0153=NEW .. && \
+  make && make install && \
   mkdir -p /usr/share/postgresql16/extension && \
   cp ../sql/pgagent*.sql /usr/share/postgresql16/extension/ && \
   cp ../pgagent.control.in /usr/share/postgresql16/extension/pgagent.control && \
