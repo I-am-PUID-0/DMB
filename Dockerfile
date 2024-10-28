@@ -1,21 +1,23 @@
 ﻿FROM alpine:3.20 AS pgagent-builder
 RUN apk add --no-cache --virtual .build-deps \
     cmake boost-dev build-base linux-headers postgresql-dev curl unzip && \
-  curl -L https://github.com/pgadmin-org/pgagent/archive/refs/heads/master.zip -o pgagent.zip && \
-  unzip pgagent.zip && \
-  cd pgagent-master && mkdir build && cd build && \
-  cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
-        -DBoost_INCLUDE_DIR=/usr/include \
-        -DBoost_LIBRARY_DIRS=/usr/lib \
-        -DCMAKE_POLICY_DEFAULT_CMP0153=NEW .. && \
-  make && make install && \
-  mkdir -p /usr/share/postgresql16/extension && \
-  cp ../sql/pgagent*.sql /usr/share/postgresql16/extension/ && \
-  cp ../pgagent.control.in /usr/share/postgresql16/extension/pgagent.control && \
-  PGAGENT_VERSION=$(ls /usr/share/postgresql16/extension/pgagent--*.sql | sed -E 's/.*pgagent--([0-9]+\.[0-9]+).*/\1/' | sort -V | tail -n 1) && \
-  sed -i "s/\${MAJOR_VERSION}.\${MINOR_VERSION}/$PGAGENT_VERSION/" /usr/share/postgresql16/extension/pgagent.control && \
-  cd ../.. && rm -rf pgagent-master pgagent.zip && \
-  apk del .build-deps
+    curl -L https://github.com/pgadmin-org/pgagent/archive/refs/heads/master.zip -o pgagent.zip && \
+    unzip pgagent.zip && \
+    sed -i 's/EXEC_PROGRAM/execute_process/g' pgagent-master/cmake/FindPG.cmake && \
+    sed -i 's/cmake_minimum_required(VERSION 3.3)/cmake_minimum_required(VERSION 3.16)/g' pgagent-master/CMakeLists.txt && \
+    cd pgagent-master && mkdir build && cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
+          -DBoost_INCLUDE_DIR=/usr/include \
+          -DBoost_LIBRARY_DIRS=/usr/lib \
+          -DPostgreSQL_CONFIG_EXECUTABLE=$(which pg_config) .. && \
+    make && make install && \
+    mkdir -p /usr/share/postgresql16/extension && \
+    cp ../sql/pgagent*.sql /usr/share/postgresql16/extension/ && \
+    cp ../pgagent.control.in /usr/share/postgresql16/extension/pgagent.control && \
+    PGAGENT_VERSION=$(ls /usr/share/postgresql16/extension/pgagent--*.sql | sed -E 's/.*pgagent--([0-9]+\.[0-9]+).*/\1/' | sort -V | tail -n 1) && \
+    sed -i "s/\${MAJOR_VERSION}.\${MINOR_VERSION}/$PGAGENT_VERSION/" /usr/share/postgresql16/extension/pgagent.control && \
+    cd ../.. && rm -rf pgagent-master pgagent.zip && \
+    apk del .build-deps
 
 
 FROM alpine:3.20 AS systemstats-builder
