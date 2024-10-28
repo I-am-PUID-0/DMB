@@ -1,6 +1,7 @@
 from base import *
 from utils.logger import SubprocessLogger
 import shlex
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 class ProcessHandler:
@@ -154,66 +155,62 @@ class ProcessHandler:
             process_description = (
                 f"{process_name} w/ {key_type}" if key_type else process_name
             )
-            self.logger.info(f"Stopping {process_description}")
+            self.logger.info(f"Initiating shutdown for {process_description}")
 
             process = self.process_names.get(process_name)
-            self.logger.debug(f"Process {process_name} found: {process}")
             if process:
+                self.logger.debug(f"Process {process_name} found: {process}")
                 process.terminate()
-                time.sleep(2)
-                try:
-                    for attempt in range(3):
-                        self.logger.debug(
-                            f"Waiting for {process_description} to terminate (attempt {attempt + 1})..."
-                        )
+                max_attempts = 1 if process_name == "riven_backend" else 3
+                attempt = 0
+                while attempt < max_attempts:
+                    self.logger.debug(
+                        f"Waiting for {process_description} to terminate (attempt {attempt + 1})..."
+                    )
+                    try:
                         process.wait(timeout=10)
-                        self.logger.debug(f"Wating on process: {process}")
                         if process.poll() is None:
                             self.logger.info(
                                 f"{process_description} process terminated gracefully."
                             )
                             break
-                    else:
+                    except subprocess.TimeoutExpired:
                         self.logger.warning(
-                            f"{process_description} process did not terminate gracefully, forcing stop."
+                            f"{process_description} process did not terminate within 10 seconds on attempt {attempt + 1}."
                         )
-                        process.kill()
-                        process.wait()
-                        self.logger.info(
-                            f"{process_description} process killed forcefully."
-                        )
-                except subprocess.TimeoutExpired:
+                    attempt += 1
+                    time.sleep(5)
+                if process.poll() is None:
                     self.logger.warning(
-                        f"{process_description} process did not terminate gracefully, forcing stop."
+                        f"{process_description} process did not terminate, forcing shutdown."
                     )
                     process.kill()
                     process.wait()
                     self.logger.info(
-                        f"{process_description} process killed forcefully."
+                        f"{process_description} process forcefully terminated."
                     )
-
                 if self.subprocess_loggers.get(process_name):
                     self.subprocess_loggers[process_name].stop_logging_stdout()
                     self.subprocess_loggers[process_name].stop_monitoring_stderr()
                     del self.subprocess_loggers[process_name]
-
+                    self.logger.debug(f"Stopped logging for {process_description}")
                 self.process_names.pop(process_name, None)
                 process_info = self.processes.pop(process.pid, None)
                 if process_info:
                     self.logger.debug(
-                        f"Removed process {process_name} with PID {process.pid} from tracking."
+                        f"Removed {process_description} with PID {process.pid} from tracking."
                     )
+                self.logger.info(f"{process_description} shutdown completed.")
             else:
                 self.logger.warning(
-                    f"{process_description} process not found or already stopped."
+                    f"{process_description} was not found or has already been stopped."
                 )
         except Exception as e:
             self.logger.error(
-                f"Error stopping subprocess for {process_description}: {e}"
+                f"Error occurred while stopping {process_description}: {e}"
             )
 
     def shutdown(self, signum=None, frame=None, exit_code=0):
-        """Handle shutdown process by stopping all running processes and cleaning up."""
         self.shutting_down = True
         self.logger.info("Shutdown signal received. Cleaning up...")
         processes_to_stop = [
@@ -226,15 +223,26 @@ class ProcessHandler:
             "pgAdmin",
             "pgAgent",
         ]
-        for process_name in processes_to_stop:
-            self.stop_process(process_name)
+
+        with ThreadPoolExecutor() as executor:
+            futures = {
+                executor.submit(self.stop_process, process_name): process_name
+                for process_name in processes_to_stop
+            }
+
+            for future in as_completed(futures):
+                process_name = futures[future]
+                try:
+                    future.result()
+                    self.logger.info(f"{process_name} has been stopped successfully.")
+                except Exception as e:
+                    self.logger.error(f"Error stopping {process_name}: {e}")
+        time.sleep(5)
         self.unmount_all()
         self.logger.info("Shutdown complete.")
         sys.exit(exit_code)
 
     def unmount_all(self):
-        """Unmount all mount points in a specified directory."""
-        RCLONEDIR = "/path/to/rclone/mounts"
         for mount_point in os.listdir(RCLONEDIR):
             full_path = os.path.join(RCLONEDIR, mount_point)
             if os.path.ismount(full_path):

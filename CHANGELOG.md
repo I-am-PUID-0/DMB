@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.4.1] - 2024-10-28 🚀
+
+### Fixed 🛠️
+
+- [Issue #71](https://github.com/I-am-PUID-0/DMB/issues/71) PostgreSQL Graceful Shutdown 🐛
+
+
 ## Version [5.4.0] - 2024-10-25 🚀
 
 ### Fixed 🛠️
