@@ -18,16 +18,18 @@ RUN apk add --no-cache --virtual .build-deps \
 
 FROM alpine:3.20 AS systemstats-builder
 RUN apk add --no-cache --virtual .build-deps \
-    build-base postgresql-dev curl unzip && \
-  curl -L https://github.com/EnterpriseDB/system_stats/archive/refs/heads/master.zip -o system_stats.zip && \
-  unzip system_stats.zip && \
-  cd system_stats-master && export PATH="/usr/bin:$PATH" && \
-  make USE_PGXS=1 && make install USE_PGXS=1 && \
-  mkdir -p /usr/share/postgresql16/extension && \
-  cp system_stats.control /usr/share/postgresql16/extension/ && \
-  cp system_stats--*.sql /usr/share/postgresql16/extension/ && \
-  cd .. && rm -rf system_stats-master system_stats.zip && \
-  apk del .build-deps
+    build-base postgresql-dev curl unzip jq && \
+    RELEASE_TAG=$(curl -s https://api.github.com/repos/EnterpriseDB/system_stats/releases/latest | jq -r .tag_name) && \
+    curl -L https://github.com/EnterpriseDB/system_stats/archive/refs/tags/$RELEASE_TAG.zip -o system_stats-latest.zip && \
+    unzip system_stats-latest.zip && \
+    mv system_stats-*/ system_stats && \
+    cd system_stats && export PATH="/usr/bin:$PATH" && \
+    make USE_PGXS=1 && make install USE_PGXS=1 && \
+    mkdir -p /usr/share/postgresql16/extension && \
+    cp system_stats.control /usr/share/postgresql16/extension/ && \
+    cp system_stats--*.sql /usr/share/postgresql16/extension/ && \
+    cd .. && rm -rf system_stats system_stats-latest.zip && \
+    apk del .build-deps
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine3.19 AS zilean-builder
 ARG TARGETARCH
