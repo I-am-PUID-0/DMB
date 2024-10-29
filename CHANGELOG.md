@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.4.2] - 2024-10-29 🚀
+
+### Fixed 🛠️
+
+- [Issue #72](https://github.com/I-am-PUID-0/DMB/issues/72) Zilean Permissions Issue 🐛
+
+
 ## Version [5.4.1] - 2024-10-28 🚀
 
 ### Fixed 🛠️

@@ -84,6 +84,7 @@ def create_system_user(username="DMB"):
         log_dir = "/log"
         config_dir = "/config"
         riven_dir = "/riven"
+        zilean_dir = "/zilean"
 
         passwd_write_start = time.time()
         with open("/etc/passwd", "a") as passwd_file:
@@ -102,6 +103,7 @@ def create_system_user(username="DMB"):
         chown_recursive(config_dir, user_id, group_id)
         chown_recursive(riven_dir, user_id, group_id)
         chown_recursive(home_dir, user_id, group_id)
+        chown_recursive(zilean_dir, user_id, group_id)
         chown_end = time.time()
         logger.debug(f"Chown operations took {chown_end - chown_start:.2f} seconds")
         end_time = time.time()

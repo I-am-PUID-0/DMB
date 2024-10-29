@@ -14,7 +14,7 @@ process_handler = ProcessHandler(logger)
 
 def main():
 
-    version = "5.4.1"
+    version = "5.4.2"
 
     ascii_art = f"""
                                                                        
