@@ -1,4 +1,4 @@
-name: Docker Image CI
+﻿name: Docker Image CI
 
 on:
   schedule:
@@ -14,9 +14,43 @@ on:
       - '.gitignore'
 
 jobs:
-  build-and-push:
+  fetch-latest-tags:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    outputs:
+      PGAGENT_TAG: ${{ env.PGAGENT_TAG }}
+      SYS_STATS_TAG: ${{ env.SYS_STATS_TAG }}
+      ZILEAN_TAG: ${{ env.ZILEAN_TAG }}
+      RIVEN_TAG: ${{ env.RIVEN_TAG }}
+      RIVEN_FRONTEND_TAG: ${{ env.RIVEN_FRONTEND_TAG }}
+    steps:
+      - name: Fetch latest pgAgent release tag
+        run: |
+          PGAGENT_TAG=$(curl -s https://api.github.com/repos/pgadmin-org/pgagent/releases/latest | jq -r .tag_name)
+          echo "PGAGENT_TAG=$PGAGENT_TAG" >> $GITHUB_ENV
+
+      - name: Fetch latest system_stats release tag
+        run: |
+          SYS_STATS_TAG=$(curl -s https://api.github.com/repos/EnterpriseDB/system_stats/releases/latest | jq -r .tag_name)
+          echo "SYS_STATS_TAG=$SYS_STATS_TAG" >> $GITHUB_ENV
+
+      - name: Fetch latest zilean release tag
+        run: |
+          ZILEAN_TAG=$(curl -s https://api.github.com/repos/iPromKnight/zilean/releases/latest | jq -r .tag_name)
+          echo "ZILEAN_TAG=$ZILEAN_TAG" >> $GITHUB_ENV
+
+      - name: Fetch latest riven release tag
+        run: |
+          RIVEN_TAG=$(curl -s https://api.github.com/repos/rivenmedia/riven/releases/latest | jq -r .tag_name)
+          echo "RIVEN_TAG=$RIVEN_TAG" >> $GITHUB_ENV
+
+      - name: Fetch latest riven-frontend release tag
+        run: |
+          RIVEN_FRONTEND_TAG=$(curl -s https://api.github.com/repos/rivenmedia/riven-frontend/releases/latest | jq -r .tag_name)
+          echo "RIVEN_FRONTEND_TAG=$RIVEN_FRONTEND_TAG" >> $GITHUB_ENV
+
+  build-and-push:
+    needs: fetch-latest-tags
+    runs-on: self-hosted
     outputs:
       version: ${{ env.VERSION }}
       repo_owner_lower: ${{ env.REPO_OWNER_LOWER }}
@@ -36,14 +70,11 @@ jobs:
       - name: Clean up unused Docker images and containers
         run: docker system prune --all --force --volumes
 
-      - name: Cleanup additional files
+      - name: Pre-Build Disk Space
         run: |
-          sudo apt-get clean
-          sudo rm -rf /var/lib/apt/lists/*
-          sudo du -sh /tmp/* | sort -hr | head -n 10
-          sudo rm -rf /tmp/.buildx-cache
-          sudo rm -rf /tmp/*
-      
+          echo "Disk space before build:"
+          df -h
+          
       - name: Cache Docker layers
         uses: actions/cache@v4
         with:
@@ -83,16 +114,20 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64 #linux/arm/v7
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
-          provenance: true
-          sbom: true         
+          platforms: linux/amd64, linux/arm64 #, linux/arm/v7
+          cache-from: type=gha,scope=build
+          cache-to: type=gha,scope=build,mode=max
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/${{ env.REPO_NAME }}:${{ env.VERSION }}
             ${{ secrets.DOCKER_USERNAME }}/${{ env.REPO_NAME }}:latest
             ghcr.io/${{ env.REPO_OWNER_LOWER }}/${{ env.REPO_NAME }}:${{ env.VERSION }}
             ghcr.io/${{ env.REPO_OWNER_LOWER }}/${{ env.REPO_NAME }}:latest
+          build-args: |
+            PGAGENT_TAG=${{ needs.fetch-latest-tags.outputs.PGAGENT_TAG }}
+            SYS_STATS_TAG=${{ needs.fetch-latest-tags.outputs.SYS_STATS_TAG }}
+            ZILEAN_TAG=${{ needs.fetch-latest-tags.outputs.ZILEAN_TAG }}
+            RIVEN_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_TAG }}
+            RIVEN_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_FRONTEND_TAG }}
           push: true 
 
   release:
@@ -136,7 +171,6 @@ jobs:
               --notes "$RELEASE_NOTES" \
               --draft=false \
               --prerelease=false
-
   announce:
     needs: [release, build-and-push]
     if: needs.release.outputs.release_exists == 'false'

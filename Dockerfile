@@ -1,8 +1,8 @@
-﻿FROM alpine:3.20 AS pgagent-builder
+﻿FROM python:3.11-alpine AS pgagent-builder
+ARG PGAGENT_TAG
 RUN apk add --no-cache --virtual .build-deps \
     cmake boost-dev build-base linux-headers postgresql-dev curl unzip jq && \
-    RELEASE_TAG=$(curl -s https://api.github.com/repos/pgadmin-org/pgagent/releases/latest | jq -r .tag_name) && \
-    curl -L https://github.com/pgadmin-org/pgagent/archive/refs/tags/$RELEASE_TAG.zip -o pgagent-latest.zip && \
+    curl -L https://github.com/pgadmin-org/pgagent/archive/refs/tags/${PGAGENT_TAG}.zip -o pgagent-latest.zip && \
     unzip pgagent-latest.zip && \
     mv pgagent-*/ pgagent && \
     cd pgagent && mkdir build && cd build && \
@@ -12,15 +12,19 @@ RUN apk add --no-cache --virtual .build-deps \
     cp ../pgagent.control.in /usr/share/postgresql16/extension/pgagent.control && \
     PGAGENT_VERSION=$(ls /usr/share/postgresql16/extension/pgagent--*.sql | sed -E 's/.*pgagent--([0-9]+\.[0-9]+).*/\1/' | sort -V | tail -n 1) && \
     sed -i "s/\${MAJOR_VERSION}.\${MINOR_VERSION}/$PGAGENT_VERSION/" /usr/share/postgresql16/extension/pgagent.control && \
+    mkdir /pgadmin && cd /pgadmin && python3 -m venv /pgadmin/venv && \
+    source /pgadmin/venv/bin/activate && \
+    pip install pip==24.0 setuptools==66.0.0 && \
+    pip install pgadmin4 && \
     cd ../.. && rm -rf pgagent pgagent-latest.zip && \
-    apk del .build-deps
+    apk del .build-deps 
 
 
 FROM alpine:3.20 AS systemstats-builder
+ARG SYS_STATS_TAG
 RUN apk add --no-cache --virtual .build-deps \
     build-base postgresql-dev curl unzip jq && \
-    RELEASE_TAG=$(curl -s https://api.github.com/repos/EnterpriseDB/system_stats/releases/latest | jq -r .tag_name) && \
-    curl -L https://github.com/EnterpriseDB/system_stats/archive/refs/tags/$RELEASE_TAG.zip -o system_stats-latest.zip && \
+    curl -L https://github.com/EnterpriseDB/system_stats/archive/refs/tags/${SYS_STATS_TAG}.zip -o system_stats-latest.zip && \
     unzip system_stats-latest.zip && \
     mv system_stats-*/ system_stats && \
     cd system_stats && export PATH="/usr/bin:$PATH" && \
@@ -31,21 +35,68 @@ RUN apk add --no-cache --virtual .build-deps \
     cd .. && rm -rf system_stats system_stats-latest.zip && \
     apk del .build-deps
 
+
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine3.19 AS zilean-builder
 ARG TARGETARCH
-RUN apk add --update --no-cache curl jq
-RUN RELEASE_TAG=$(curl -s https://api.github.com/repos/iPromKnight/zilean/releases/latest | jq -r .tag_name) && \
-    curl -L https://github.com/iPromKnight/zilean/archive/refs/tags/$RELEASE_TAG.zip -o zilean-latest.zip && \
+ARG ZILEAN_TAG
+RUN apk add --update --no-cache curl jq python3 python3-dev py3-pip && \
+    curl -L https://github.com/iPromKnight/zilean/archive/refs/tags/${ZILEAN_TAG}.zip -o zilean-latest.zip && \
     unzip zilean-latest.zip && \
     mv zilean-*/ /zilean && \
-    echo $RELEASE_TAG > /zilean/version.txt
+    echo $ZILEAN_TAG > /zilean/version.txt && \
+    cd /zilean && \
+    dotnet restore -a $TARGETARCH && \
+    cd /zilean/src/Zilean.ApiService && \
+    dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/ && \
+    cd /zilean/src/Zilean.DmmScraper && \
+    dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/ && \
+    cd /zilean && \
+    python3 -m venv /zilean/venv && \
+    source /zilean/venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install -r /zilean/requirements.txt
 
-WORKDIR /zilean
-RUN dotnet restore -a $TARGETARCH
-WORKDIR /zilean/src/Zilean.ApiService
-RUN dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/
-WORKDIR /zilean/src/Zilean.DmmScraper
-RUN dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/
+
+FROM python:3.11-alpine AS riven-frontend-builder
+ARG RIVEN_FRONTEND_TAG
+RUN apk add --no-cache curl npm && \
+    curl -L https://github.com/rivenmedia/riven-frontend/archive/refs/tags/${RIVEN_FRONTEND_TAG}.zip -o riven-frontend.zip && \
+    unzip riven-frontend.zip && \
+    mkdir -p /riven/frontend && \
+    mv riven-frontend-*/* /riven/frontend && rm riven-frontend.zip && \
+    cd /riven/frontend && \
+    sed -i '/export default defineConfig({/a\    build: {\n        minify: false\n    },' /riven/frontend/vite.config.ts && \
+    sed -i "s#/riven/version.txt#/riven/frontend/version.txt#g" /riven/frontend/src/routes/settings/about/+page.server.ts && \
+    sed -i "s/export const prerender = true;/export const prerender = false;/g" /riven/frontend/src/routes/settings/about/+page.server.ts && \
+    npm install -g pnpm && \
+    pnpm install && \
+    pnpm run build && \
+    pnpm prune --prod
+
+
+FROM python:3.11-alpine AS riven-backend-builder
+ARG RIVEN_TAG
+RUN apk add --no-cache curl gcc musl-dev python3-dev gcompat libstdc++ libxml2-utils linux-headers && \
+    curl -L https://github.com/rivenmedia/riven/archive/refs/tags/${RIVEN_TAG}.zip -o riven.zip && \
+    unzip riven.zip && \
+    mkdir -p /riven/backend && \
+    mv riven-*/* /riven/backend && rm riven.zip && \
+    cd /riven/backend && \
+    python3 -m venv /riven/backend/venv && \
+    source /riven/backend/venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install poetry && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-root --without dev
+
+
+FROM python:3.11-alpine AS requirements-builder
+COPY requirements.txt .
+RUN apk add --no-cache curl gcc musl-dev python3-dev gcompat libstdc++ libxml2-utils linux-headers && \
+    python3 -m venv /venv && \
+    source /venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt
 
 
 FROM python:3.11-alpine AS final-stage
@@ -53,90 +104,24 @@ LABEL name="DMB" \
     description="Debrid Media Bridge" \
     url="https://github.com/I-am-PUID-0/DMB"
 
-
 RUN apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base \
-  boost-filesystem boost-thread linux-headers py3-cffi libffi-dev rust cargo jq openssl openssl-dev pkgconfig git npm \
-  ffmpeg postgresql-dev postgresql-client postgresql dotnet-sdk-8.0 postgresql-contrib postgresql-client postgresql \
-  dotnet-sdk-8.0 postgresql-contrib
-
+  linux-headers py3-cffi libffi-dev rust cargo jq openssl pkgconfig npm \
+  ffmpeg postgresql-client postgresql dotnet-sdk-8.0 postgresql-contrib && \
+  npm install -g pnpm
+WORKDIR /
 COPY --from=rclone/rclone:latest /usr/local/bin/rclone /usr/local/bin/rclone
 COPY --from=pgagent-builder /usr/local/bin/pgagent /usr/local/bin/pgagent
 COPY --from=pgagent-builder /usr/share/postgresql16/extension/pgagent* /usr/share/postgresql16/extension/
+COPY --from=pgagent-builder /pgadmin/venv /pgadmin/venv
 COPY --from=systemstats-builder /usr/share/postgresql16/extension/system_stats* /usr/share/postgresql16/extension/
 COPY --from=systemstats-builder /usr/lib/postgresql16/system_stats.so /usr/lib/postgresql16/
-COPY --from=zilean-builder /zilean/app /zilean/app
-COPY --from=zilean-builder /zilean/version.txt /zilean/version.txt
-COPY --from=zilean-builder /zilean/requirements.txt /zilean/requirements.txt
-
-WORKDIR /
-
+COPY --from=zilean-builder /zilean /zilean
+COPY --from=riven-frontend-builder /riven/frontend /riven/frontend
+COPY --from=riven-backend-builder /riven/backend /riven/backend
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/config.yml /zurg/
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/plex_update.sh /zurg/
-
-RUN RELEASE_TAG=$(curl -s https://api.github.com/repos/rivenmedia/riven-frontend/releases/latest | jq -r .tag_name) && \
-  curl -L https://github.com/rivenmedia/riven-frontend/archive/refs/tags/$RELEASE_TAG.zip -o /riven-frontend-latest.zip
-
-RUN \
-  mkdir -p /log /config /riven /riven/frontend /riven/backend /zilean /pgadmin/venv /pgadmin/data && \
-  if [ -f /riven-frontend-latest.zip ]; then echo "File exists"; else echo "File does not exist"; fi && \
-  unzip /riven-frontend-latest.zip -d /riven && \
-  mv /riven/riven-frontend-*/* /riven/frontend && \
-  rm -rf /riven/riven-frontend-* && \
-  rm -rf /riven-frontend-latest.zip
-
-RUN sed -i '/export default defineConfig({/a\    build: {\n        minify: false\n    },' /riven/frontend/vite.config.ts
-RUN sed -i "s#/riven/version.txt#/riven/frontend/version.txt#g" /riven/frontend/src/routes/settings/about/+page.server.ts
-RUN sed -i "s/export const prerender = true;/export const prerender = false;/g" /riven/frontend/src/routes/settings/about/+page.server.ts
-
-WORKDIR /riven/frontend
-
-RUN npm install -g pnpm && pnpm install && pnpm run build && pnpm prune --prod
-
-WORKDIR /
-
-RUN RELEASE_TAG=$(curl -s https://api.github.com/repos/rivenmedia/riven/releases/latest | jq -r .tag_name) && \
-  curl -L https://github.com/rivenmedia/riven/archive/refs/tags/$RELEASE_TAG.zip -o /riven-latest.zip
-
-RUN \
-  if [ -f /riven-latest.zip ]; then echo "File exists"; else echo "File does not exist"; fi && \
-  unzip /riven-latest.zip -d /riven && \
-  mv /riven/riven-*/* /riven/backend && \
-  rm -rf /riven/riven-* && \
-  rm -rf /riven-latest.zip
-
-WORKDIR /riven/backend
-
-RUN python3 -m venv /riven/backend/venv && \
-    source /riven/backend/venv/bin/activate && \
-    pip install --upgrade pip && \
-    pip install poetry && \
-    poetry config virtualenvs.create false && \
-    poetry install --no-root --without dev 
-
-WORKDIR /
-
-RUN \
-  python3 -m venv /zilean/venv && \
-  source /zilean/venv/bin/activate && \
-  pip install --upgrade pip && \
-  pip install -r /zilean/requirements.txt 
-
-WORKDIR /
-
+COPY --from=requirements-builder /venv /venv
 COPY . /./
-
-RUN \
-  python3 -m venv /pgadmin/venv && \
-  source /pgadmin/venv/bin/activate && \
-  pip install pip==24.0 setuptools==66.0.0 && \
-  pip install pgadmin4 && \
-  deactivate
-
-RUN \
-  python3 -m venv /venv && \
-  source /venv/bin/activate && \
-  pip install --upgrade pip && \
-  pip install -r /requirements.txt
 
 ENV \
   XDG_CONFIG_HOME=/config \
