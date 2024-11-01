@@ -105,7 +105,7 @@ LABEL name="DMB" \
     url="https://github.com/I-am-PUID-0/DMB"
 
 RUN apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base \
-  linux-headers py3-cffi libffi-dev rust cargo jq openssl pkgconfig npm \
+  linux-headers py3-cffi libffi-dev rust cargo jq openssl pkgconfig npm boost-filesystem boost-thread \
   ffmpeg postgresql-client postgresql dotnet-sdk-8.0 postgresql-contrib && \
   npm install -g pnpm
 WORKDIR /
