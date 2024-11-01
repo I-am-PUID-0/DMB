@@ -13,6 +13,7 @@ class ProcessHandler:
             cls._instance.init_attributes(*args, **kwargs)
             signal.signal(signal.SIGTERM, cls._instance.shutdown)
             signal.signal(signal.SIGINT, cls._instance.shutdown)
+            signal.signal(signal.SIGCHLD, cls._instance.reap_zombies)
         return cls._instance
 
     def init_attributes(self, logger):

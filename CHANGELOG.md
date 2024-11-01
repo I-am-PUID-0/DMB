@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.4.3] - 2024-11-01 🚀
+
+### Changed 🔄
+
+- Riven Frontend: Updated the name and location of the `server-config.json` file to `server.json`  and to be transferred to the /riven/frontend/config directory on startup 🔄
+- Re-enabled reaping of zombie processes 🔄
+
+
 ## Version [5.4.2] - 2024-10-29 🚀
 
 ### Fixed 🛠️

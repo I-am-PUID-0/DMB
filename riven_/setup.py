@@ -146,26 +146,31 @@ def clear_directory(directory_path, exclude_dirs=None):
 
 
 def copy_server_config_to_frontend():
-    source_config_path = "/config/server-config.json"
-    destination_config_path = "/riven/frontend/server-config.json"
+    source_config_path = "/config/server.json"
+    destination_dir = "/riven/frontend/config"
+    destination_config_path = os.path.join(destination_dir, "server.json")
 
     try:
         if not os.path.exists(source_config_path):
             logger.debug(
-                f"server-config.json not found at {source_config_path}, skipping copy."
+                f"server.json not found at {source_config_path}, skipping copy."
             )
             return
 
+        if not os.path.exists(destination_dir):
+            os.makedirs(destination_dir)
+            logger.debug(f"Created directory {destination_dir} for server.json")
+
         if os.path.exists(destination_config_path):
             logger.debug(
-                f"Overwriting existing server-config.json at {destination_config_path}"
+                f"Overwriting existing server.json at {destination_config_path}"
             )
 
         shutil.copy2(source_config_path, destination_config_path)
-        logger.debug(f"Copied server-config.json to {destination_config_path}")
+        logger.debug(f"Copied server.json to {destination_config_path}")
 
     except Exception as e:
-        logger.error(f"Failed to copy server-config.json: {e}")
+        logger.error(f"Failed to copy server.json: {e}")
 
 
 def riven_setup(

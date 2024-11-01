@@ -25,7 +25,7 @@ def save_server_config(backend_url, api_key, config_dir="/config"):
 
     os.makedirs(config_dir, exist_ok=True)
 
-    config_file_path = os.path.join(config_dir, "server-config.json")
+    config_file_path = os.path.join(config_dir, "server.json")
 
     try:
         with open(config_file_path, "w") as config_file:
