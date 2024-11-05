@@ -9,3 +9,6 @@ ruamel.yaml
 poetry
 colorlog
 psycopg2-binary
+pydantic
+fastapi
+uvicorn

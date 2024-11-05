@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --background-color-light: #f0f2f5;
+            --text-color-light: #333;
+            --container-background-light: #fff;
+            --button-background-light: #007bff;
+            --button-hover-background-light: #0056b3;
+            --background-color-dark: #121212;
+            --text-color-dark: #f0f2f5;
+            --container-background-dark: #1e1e1e;
+            --button-background-dark: #1e90ff;
+            --button-hover-background-dark: #0077c2;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--background-color-light);
+            color: var(--text-color-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            text-align: center;
+            background-color: var(--container-background-light);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+            .header img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 10px;
+            }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .service-card {
+            background-color: var(--container-background-light);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-container {
+            margin-bottom: 15px;
+        }
+
+        select {
+            padding: 8px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: var(--button-background-light);
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            button:hover {
+                background-color: var(--button-hover-background-light);
+            }
+
+        #modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s;
+        }
+
+        #modal-content {
+            background: var(--container-background-light);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            color: var(--text-color-light);
+        }
+
+        #modal.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #modal button {
+            margin-top: 20px;
+            background-color: var(--button-background-light);
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .theme-toggle {
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        .dark-mode {
+            --background-color-light: var(--background-color-dark);
+            --text-color-light: var(--text-color-dark);
+            --container-background-light: var(--container-background-dark);
+            --button-background-light: var(--button-background-dark);
+            --button-hover-background-light: var(--button-hover-background-dark);
+        }
+    </style>
+    <script>
+        let isDarkMode = false;
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.documentElement.classList.toggle('dark-mode', isDarkMode);
+        }
+
+        function showModal(message) {
+            const modal = document.getElementById('modal');
+            document.getElementById('modal-message').innerText = message;
+            modal.classList.add('show');
+        }
+
+        function hideModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('show');
+        }
+
+        async function makeApiCall(url, method, processName = null) {
+            let options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            };
+
+            if (processName) {
+                options.body = JSON.stringify({ process_name: processName });
+            }
+
+            showModal('Processing, please wait...');
+            try {
+                console.log(`Making API call to: ${url} with processName: ${processName}`);
+                const response = await fetch(url, options);
+                const data = await response.json();
+                if (response.ok) {
+                    showModal(`Action completed successfully: ${data.process_name}`);
+                    return data;
+                } else {
+                    showModal(`Error: ${data.detail}`);
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showModal('An error occurred while communicating with the service.');
+                return null;
+            }
+        }
+
+        async function executeAction(processName) {
+            const action = document.getElementById(`${processName}-action`).value;
+            if (!action) {
+                alert('Please select an action before executing.');
+                return;
+            }
+
+            console.log(`Executing action for ${processName}: ${action}`);
+            try {
+                switch (action) {
+                    case "start":
+                        await startService(processName);
+                        break;
+                    case "stop":
+                        await stopService(processName);
+                        break;
+                    case "restart":
+                        await restartService(processName);
+                        break;
+                    default:
+                        alert("Invalid action selected");
+                }
+            } catch (error) {
+                console.error(`Error executing action for ${processName}: ${error}`);
+                showModal('An error occurred while performing the action.');
+            }
+        }
+
+        async function startService(processName) {
+            console.log(`Starting service: ${processName}`);
+            await makeApiCall('/start-service', 'POST', processName);
+            updateServiceStatus(processName);
+        }
+
+        async function stopService(processName) {
+            console.log(`Stopping service: ${processName}`);
+            await makeApiCall('/stop-service', 'POST', processName);
+            updateServiceStatus(processName);
+        }
+
+        async function restartService(processName) {
+            console.log(`Restarting service: ${processName}`);
+            await makeApiCall('/restart-service', 'POST', processName);
+            updateServiceStatus(processName);
+        }
+
+        async function updateServiceStatus(processName) {
+            try {
+                console.log(`Fetching status for: ${processName}`);
+                const response = await fetch(`/service-status/${processName}`);
+                if (!response.ok) {
+                    throw new Error(`Status request failed with status ${response.status}`);
+                }
+                const data = await response.json();
+                document.getElementById(`${processName}-status`).innerText = `Status: ${data.status}`;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById(`${processName}-status`).innerText = `Status: Error retrieving status`;
+            }
+        }
+
+        function pollServiceStatusesOnPageLoad() {
+            const services = ['riven_frontend', 'riven_backend', 'Zilean', 'Zurg'];
+            services.forEach(updateServiceStatus);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            pollServiceStatusesOnPageLoad();
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="/static/DMB.png" alt="Debrid Media Bridge">
+        </div>
+        <h1>Service Manager</h1>
+
+        <div class="service-card">
+            <h2>Riven Frontend</h2>
+            <div id="riven_frontend-status">Status: Unknown</div>
+            <div class="dropdown-container">
+                <select id="riven_frontend-action">
+                    <option value="" disabled selected>Select Action</option>
+                    <option value="start">Start</option>
+                    <option value="stop">Stop</option>
+                    <option value="restart">Restart</option>
+                </select>
+                <button onclick="executeAction('riven_frontend')">Execute</button>
+            </div>
+        </div>
+
+        <div class="service-card">
+            <h2>Riven Backend</h2>
+            <div id="riven_backend-status">Status: Unknown</div>
+            <div class="dropdown-container">
+                <select id="riven_backend-action">
+                    <option value="" disabled selected>Select Action</option>
+                    <option value="start">Start</option>
+                    <option value="stop">Stop</option>
+                    <option value="restart">Restart</option>
+                </select>
+                <button onclick="executeAction('riven_backend')">Execute</button>
+            </div>
+        </div>
+
+        <div class="service-card">
+            <h2>Zilean</h2>
+            <div id="Zilean-status">Status: Unknown</div>
+            <div class="dropdown-container">
+                <select id="Zilean-action">
+                    <option value="" disabled selected>Select Action</option>
+                    <option value="start">Start</option>
+                    <option value="stop">Stop</option>
+                    <option value="restart">Restart</option>
+                </select>
+                <button onclick="executeAction('Zilean')">Execute</button>
+            </div>
+        </div>
+
+        <div class="service-card">
+            <h2>Zurg</h2>
+            <div id="Zurg-status">Status: Unknown</div>
+            <div class="dropdown-container">
+                <select id="Zurg-action">
+                    <option value="" disabled selected>Select Action</option>
+                    <option value="start">Start</option>
+                    <option value="stop">Stop</option>
+                    <option value="restart">Restart</option>
+                </select>
+                <button onclick="executeAction('Zurg')">Execute</button>
+            </div>
+        </div>
+
+        <div id="modal">
+            <div id="modal-content">
+                <p id="modal-message">Processing, please wait...</p>
+                <button onclick="hideModal()">Close</button>
+            </div>
+        </div>
+
+        <div class="theme-toggle">
+            <button onclick="toggleTheme()">Toggle Dark/Light Mode</button>
+        </div>
+    </div>
+</body>
+</html>

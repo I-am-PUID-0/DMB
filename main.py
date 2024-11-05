@@ -1,16 +1,36 @@
-from os import wait
+# from os import wait
 from base import *
 from utils.logger import *
 import riven_ as r
 import zurg as z
 import zilean_ as zilean
 from rclone import rclone
-from utils import duplicate_cleanup, user_management, postgres
+from utils import duplicate_cleanup, user_management, postgres, api_service
 from utils.processes import ProcessHandler
+import uvicorn
 
 logger = get_logger()
 process_handler = ProcessHandler(logger)
 
+
+riven_updater = r.update.RivenUpdate(process_handler)
+zilean_updater = zilean.update.ZileanUpdate(process_handler)
+zurg_updater = z.update.ZurgUpdate(process_handler)
+
+logger.debug(f"Initialized ZurgUpdate: {zurg_updater}")
+logger.debug(f"Initialized ZileanUpdate: {zilean_updater}")
+logger.debug(f"Initialized RivenUpdate: {riven_updater}")
+
+
+app = api_service.create_app(riven_updater, zilean_updater, zurg_updater, logger)
+
+def run_uvicorn():
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        proxy_headers=True,
+    )
 
 def main():
 
@@ -39,6 +59,15 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
 """
 
     logger.info(ascii_art.format(version=version) + "\n" + "\n")
+
+    uvicorn_thread = threading.Thread(target=run_uvicorn, daemon=True)
+    uvicorn_thread.start()
+
+#    process_handler.start_process(
+#        process_name="fastapi_server",
+#        config_dir=".",
+#        command=["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+#    )
 
     def healthcheck():
         time.sleep(60)
@@ -73,17 +102,15 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                     try:
                         z.setup.zurg_setup(process_handler)
                     except Exception as e:
-                        raise e
-                    z_updater = z.update.ZurgUpdate(process_handler)
-                    logger.debug(f"Initialized ZurgUpdate: {z_updater}")
+                        raise e                   
                     if (
                         ZURGUPDATE
                         and ZURGUPDATE.lower() == "true"
                         and (ZURGVERSION is None or ZURGVERSION.lower() == "nightly")
                     ):
-                        z_updater.auto_update("Zurg", True)
+                        zurg_updater.auto_update("Zurg", True)
                     else:
-                        z_updater.auto_update("Zurg", False)
+                        zurg_updater.auto_update("Zurg", False)
                     try:
                         if RCLONEMN:
                             try:
@@ -119,9 +146,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                     try:
                         zilean.setup.zilean_setup(process_handler, "Zilean")
                     except Exception as e:
-                        raise e
-                    zilean_updater = zilean.update.ZileanUpdate(process_handler)
-                    logger.debug(f"Initialized ZileanUpdate: {zilean_updater}")
+                        raise e                  
                     if (
                         ZILEANUPDATE
                         and ZILEANUPDATE.lower() == "true"
@@ -137,13 +162,11 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 try:
                     r.setup.riven_setup(process_handler, "riven_backend")
                 except Exception as e:
-                    raise e
-                r_updater = r.update.RivenUpdate(process_handler)
-                logger.debug(f"Initialized RivenUpdate: {r_updater}")
+                    raise e               
                 if (RBUPDATE or RUPDATE) and not RBVERSION:
-                    r_updater.auto_update("riven_backend", True)
+                    riven_updater.auto_update("riven_backend", True)
                 else:
-                    r_updater.auto_update("riven_backend", False)
+                    riven_updater.auto_update("riven_backend", False)
             except Exception as e:
                 logger.error(f"An error occurred in the Riven backend setup: {e}")
                 process_handler.shutdown(exit_code=1)
@@ -161,15 +184,19 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 )
             except Exception as e:
                 raise e
-            r_updater = r.update.RivenUpdate(process_handler)
-            logger.debug(f"Initialized RivenUpdate: {r_updater}")
             if (RFUPDATE or RUPDATE) and not RFVERSION:
-                r_updater.auto_update("riven_frontend", True)
+                riven_updater.auto_update("riven_frontend", True)
             else:
-                r_updater.auto_update("riven_frontend", False)
+                riven_updater.auto_update("riven_frontend", False)
     except Exception as e:
         logger.error(f"An error occurred in the Riven frontend setup: {e}")
         process_handler.shutdown(exit_code=1)
+
+    try:
+        uvicorn_thread.join()
+    except KeyboardInterrupt:
+        logger.info("Shutdown signal received. Stopping API and services.")
+        process_handler.shutdown(exit_code=0)
 
     def perpetual_wait():
         stop_event = threading.Event()

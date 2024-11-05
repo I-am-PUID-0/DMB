@@ -119,7 +119,7 @@ COPY --from=zilean-builder /zilean /zilean
 COPY --from=riven-frontend-builder /riven/frontend /riven/frontend
 COPY --from=riven-backend-builder /riven/backend /riven/backend
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/config.yml /zurg/
-ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/plex_update.sh /zurg/
+ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/scripts/plex_update.sh /zurg/
 COPY --from=requirements-builder /venv /venv
 COPY . /./
 

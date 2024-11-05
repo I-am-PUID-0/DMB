@@ -367,3 +367,4 @@ FodyWeavers.xsd
 **/log/
 *.env
 /config
+*.pyproj

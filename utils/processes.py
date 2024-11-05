@@ -78,6 +78,7 @@ class ProcessHandler:
                         "dotnet_env_restore",
                         "dotnet_publish_api",
                         "dotnet_publish_scraper",
+                        "fastapi_server",
                     ]
                     else None
                 ),
@@ -223,6 +224,7 @@ class ProcessHandler:
             "rclone",
             "pgAdmin",
             "pgAgent",
+            "fastapi_server",
         ]
 
         with ThreadPoolExecutor() as executor:
