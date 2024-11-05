@@ -7,21 +7,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
-            --background-color-light: #f0f2f5;
+            --background-color-light: rgba(255, 255, 255, 0.8);
             --text-color-light: #333;
-            --container-background-light: #fff;
+            --container-background-light: rgba(255, 255, 255, 0.9);
             --button-background-light: #007bff;
             --button-hover-background-light: #0056b3;
-            --background-color-dark: #121212;
+            --background-color-dark: rgba(0, 0, 0, 0.8);
             --text-color-dark: #f0f2f5;
-            --container-background-dark: #1e1e1e;
+            --container-background-dark: rgba(30, 30, 30, 0.9);
             --button-background-dark: #1e90ff;
             --button-hover-background-dark: #0077c2;
         }
 
         body {
             font-family: Arial, sans-serif;
-            background-color: var(--background-color-light);
+            background: url('/static/DMB.png') no-repeat center center fixed;
+            background-size: cover;
             color: var(--text-color-light);
             display: flex;
             justify-content: center;
@@ -29,6 +30,7 @@
             min-height: 100vh;
             margin: 0;
             transition: background-color 0.3s, color 0.3s;
+            overflow: hidden;
         }
 
         .container {
@@ -38,19 +40,10 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s;
-            max-width: 800px;
+            max-width: 90%;
             width: 100%;
+            overflow-y: auto;
         }
-
-        .header {
-            margin-bottom: 20px;
-        }
-
-            .header img {
-                max-width: 100%;
-                height: auto;
-                border-radius: 10px;
-            }
 
         h1 {
             font-size: 2rem;
@@ -266,9 +259,6 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <img src="/static/DMB.png" alt="Debrid Media Bridge">
-        </div>
         <h1>Service Manager</h1>
 
         <div class="service-card">
