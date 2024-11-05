@@ -1,4 +1,3 @@
-# from os import wait
 from base import *
 from utils.logger import *
 import riven_ as r
@@ -22,7 +21,7 @@ logger.debug(f"Initialized ZileanUpdate: {zilean_updater}")
 logger.debug(f"Initialized RivenUpdate: {riven_updater}")
 
 
-app = api_service.create_app(riven_updater, zilean_updater, zurg_updater, logger)
+app = api_service.create_app(riven_updater, zilean_updater, zurg_updater, process_handler, logger)
 
 def run_uvicorn():
     uvicorn.run(

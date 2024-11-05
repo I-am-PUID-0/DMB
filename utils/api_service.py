@@ -1,4 +1,5 @@
 from base import *
+from utils.logger import *
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -7,10 +8,11 @@ from pydantic import BaseModel
 
 
 class APIState:
-    def __init__(self, riven_update, zilean_update, zurg_update, logger):
+    def __init__(self, riven_update, zilean_update, zurg_update, process_handler, logger):
         self.riven_update = riven_update
         self.zilean_update = zilean_update
         self.zurg_update = zurg_update
+        self.process_handler = process_handler
         self.logger = logger
         self.service_status = {
             "riven_frontend": "stopped",
@@ -25,7 +27,18 @@ class APIState:
             self.service_status[process_name] = status
 
     def get_status(self, process_name):
+        if self.poll_update_status(process_name):
+            self.service_status[process_name] = "running"
+        else:
+            self.service_status[process_name] = "stopped"
         return self.service_status.get(process_name, "unknown")
+
+    def poll_update_status(self, process_name):
+        """Poll to see if the given process is running using the ProcessHandler."""
+        process = self.process_handler.process_names.get(process_name)
+        if process and process.poll() is None:
+            return True
+        return False
 
     def debug_state(self):
         self.logger.info("Current APIState:")
@@ -35,13 +48,19 @@ class APIState:
         self.logger.info(f"  service_status: {self.service_status}")
 
 
-def create_app(riven_updater, zilean_updater, zurg_updater, logger):
-    api_state = APIState(riven_updater, zilean_updater, zurg_updater, logger)
+
+
+def create_app(riven_updater, zilean_updater, zurg_updater, process_handler, logger):
+    api_state = APIState(riven_updater, zilean_updater, zurg_updater, process_handler, logger)
     app = FastAPI()
 
     origin_from_env = os.getenv("ORIGIN")
 
-    origins = [origin_from_env] if origin_from_env else ["http://localhost", "http://localhost:8000"]
+    origins = (
+        [origin_from_env]
+        if origin_from_env
+        else ["http://localhost", "http://localhost:8000"]
+    )
 
     app.add_middleware(
         CORSMiddleware,
@@ -64,7 +83,9 @@ def create_app(riven_updater, zilean_updater, zurg_updater, logger):
         process_name: str
 
     @app.post("/stop-service")
-    async def stop_service(request: ServiceRequest, api_state: APIState = Depends(get_api_state)):
+    async def stop_service(
+        request: ServiceRequest, api_state: APIState = Depends(get_api_state)
+    ):
         api_state.debug_state()
 
         process_name = request.process_name
@@ -87,12 +108,16 @@ def create_app(riven_updater, zilean_updater, zurg_updater, logger):
             api_state.set_status(process_name, "stopped")
         except Exception as e:
             api_state.logger.error(f"Failed to stop {process_name}: {str(e)}")
-            raise HTTPException(status_code=500, detail=f"Failed to stop {process_name}: {str(e)}")
+            raise HTTPException(
+                status_code=500, detail=f"Failed to stop {process_name}: {str(e)}"
+            )
 
         return {"status": "Service stopped successfully", "process_name": process_name}
 
     @app.post("/start-service")
-    async def start_service(request: ServiceRequest, api_state: APIState = Depends(get_api_state)):
+    async def start_service(
+        request: ServiceRequest, api_state: APIState = Depends(get_api_state)
+    ):
         api_state.debug_state()
 
         process_name = request.process_name
@@ -115,44 +140,16 @@ def create_app(riven_updater, zilean_updater, zurg_updater, logger):
             api_state.set_status(process_name, "running")
         except Exception as e:
             api_state.logger.error(f"Failed to start {process_name}: {str(e)}")
-            raise HTTPException(status_code=500, detail=f"Failed to start {process_name}: {str(e)}")
+            raise HTTPException(
+                status_code=500, detail=f"Failed to start {process_name}: {str(e)}"
+            )
 
         return {"status": "Service started successfully", "process_name": process_name}
 
-    @app.post("/restart-service")
-    async def restart_service(request: ServiceRequest, api_state: APIState = Depends(get_api_state)):
-        api_state.debug_state()
-
-        process_name = request.process_name
-        process_map = {
-            "riven_frontend": (api_state.riven_update, "/riven/frontend"),
-            "riven_backend": (api_state.riven_update, "/riven/backend"),
-            "Zilean": (api_state.zilean_update, "/zilean/app"),
-            "Zurg": (api_state.zurg_update, "/zurg/RD"),
-        }
-
-        update_handler, directory = process_map.get(process_name, (None, None))
-
-        if update_handler is None:
-            api_state.logger.error(f"Process not found: {process_name}")
-            raise HTTPException(status_code=404, detail="Process not found")
-
-        try:
-            api_state.logger.info(f"Initiating shutdown for {process_name}")
-            update_handler.stop_process(process_name)
-            api_state.set_status(process_name, "stopped")
-
-            api_state.logger.info(f"Starting {process_name} process")
-            update_handler.start_process(process_name, config_dir=directory)
-            api_state.set_status(process_name, "running")
-        except Exception as e:
-            api_state.logger.error(f"Failed to restart {process_name}: {str(e)}")
-            raise HTTPException(status_code=500, detail=f"Failed to restart {process_name}: {str(e)}")
-
-        return {"status": "Service restarted successfully", "process_name": process_name}
-
     @app.get("/service-status/{process_name}")
-    async def service_status(process_name: str, api_state: APIState = Depends(get_api_state)):
+    async def service_status(
+        process_name: str, api_state: APIState = Depends(get_api_state)
+    ):
         status = api_state.get_status(process_name)
         if status == "unknown":
             api_state.logger.error(f"Service not found: {process_name}")
