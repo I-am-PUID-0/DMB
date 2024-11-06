@@ -53,7 +53,7 @@ def load_api_key_from_file(settings_file_path="/riven/backend/data/settings.json
     except FileNotFoundError:
         logger.error(f"Settings file {settings_file_path} not found")
         return None
-    except json.JSONDecodeError as e:
+    except JSONDecodeError as e:
         logger.error(f"Error parsing {settings_file_path}: {e}")
         return None
 

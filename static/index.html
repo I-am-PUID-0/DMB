@@ -26,55 +26,70 @@
             color: var(--text-color-light);
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
             margin: 0;
             transition: background-color 0.3s, color 0.3s;
-            overflow: hidden;
+            overflow-y: auto;
+            padding: 20px 0;
+            box-sizing: border-box;
         }
 
         .container {
             text-align: center;
             background-color: var(--container-background-light);
-            padding: 30px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s;
-            max-width: 90%;
-            width: 100%;
-            overflow-y: auto;
+            width: 90%;
+            max-width: 500px;
+            box-sizing: border-box;
         }
 
         h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
         }
 
         .service-card {
             background-color: var(--container-background-light);
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 15px;
+            margin-bottom: 15px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s;
         }
 
+            .service-card h2 {
+                font-size: 1.25rem;
+                margin-bottom: 10px;
+            }
+
         .dropdown-container {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        select, button {
+            width: 100%;
+            max-width: 250px;
+            margin: 5px 0;
         }
 
         select {
-            padding: 8px 10px;
+            padding: 8px;
             border-radius: 5px;
             border: 1px solid #ccc;
-            margin-right: 10px;
         }
 
         button {
             background-color: var(--button-background-light);
             color: #fff;
             border: none;
-            padding: 8px 15px;
+            padding: 10px;
             font-size: 1rem;
             border-radius: 5px;
             cursor: pointer;
@@ -102,10 +117,12 @@
 
         #modal-content {
             background: var(--container-background-light);
-            padding: 30px;
+            padding: 20px;
             border-radius: 10px;
             text-align: center;
             color: var(--text-color-light);
+            width: 90%;
+            max-width: 300px;
         }
 
         #modal.show {
@@ -114,13 +131,14 @@
         }
 
         #modal button {
-            margin-top: 20px;
+            margin-top: 15px;
             background-color: var(--button-background-light);
             color: #fff;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 100%;
         }
 
         .theme-toggle {
@@ -135,13 +153,33 @@
             --button-background-light: var(--button-background-dark);
             --button-hover-background-light: var(--button-hover-background-dark);
         }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.25rem;
+            }
+
+            .service-card h2 {
+                font-size: 1rem;
+            }
+
+            button {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+        }
     </style>
     <script>
-        let isDarkMode = false;
+        let isDarkMode = localStorage.getItem('theme') === 'dark';
+
+        function applyTheme() {
+            document.documentElement.classList.toggle('dark-mode', isDarkMode);
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        }
 
         function toggleTheme() {
             isDarkMode = !isDarkMode;
-            document.documentElement.classList.toggle('dark-mode', isDarkMode);
+            applyTheme();
         }
 
         function showModal(message) {
@@ -155,7 +193,24 @@
             modal.classList.remove('show');
         }
 
-        async function makeApiCall(url, method, processName = null) {
+        async function checkHealth() {
+            showModal("Checking health status...");
+            try {
+                const response = await fetch("/health");
+                const data = await response.json();
+
+                if (data.status === "healthy") {
+                    showModal("Service is healthy.");
+                } else {
+                    showModal(`Service is unhealthy. Details: ${data.details}`);
+                }
+            } catch (error) {
+                showModal("Failed to check health status. Please try again.");
+                console.error("Health check error:", error);
+            }
+        }
+
+        async function makeApiCall(url, method, processName = null, retries = 3) {
             let options = {
                 method: method,
                 headers: {
@@ -168,22 +223,23 @@
             }
 
             showModal('Processing, please wait...');
-            try {
-                console.log(`Making API call to: ${url} with processName: ${processName}`);
-                const response = await fetch(url, options);
-                const data = await response.json();
-                if (response.ok) {
-                    showModal(`Action completed successfully: ${data.process_name}`);
-                    return data;
-                } else {
-                    showModal(`Error: ${data.detail}`);
-                    return null;
+            for (let attempt = 1; attempt <= retries; attempt++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) {
+                        const data = await response.json();
+                        showModal(`Action completed successfully: ${data.process_name}`);
+                        return data;
+                    } else {
+                        console.warn(`Attempt ${attempt} failed: ${response.status} ${response.statusText}`);
+                    }
+                } catch (error) {
+                    console.error(`Attempt ${attempt} encountered an error:`, error);
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                showModal('An error occurred while communicating with the service.');
-                return null;
+                await new Promise(resolve => setTimeout(resolve, 500 * attempt));
             }
+            showModal('Failed to complete the action after multiple attempts. Please check your permissions or network connection.');
+            return null;
         }
 
         async function executeAction(processName) {
@@ -193,7 +249,6 @@
                 return;
             }
 
-            console.log(`Executing action for ${processName}: ${action}`);
             try {
                 switch (action) {
                     case "start":
@@ -209,42 +264,41 @@
                         alert("Invalid action selected");
                 }
             } catch (error) {
+                showModal('An error occurred while performing the action. Please try again.');
                 console.error(`Error executing action for ${processName}: ${error}`);
-                showModal('An error occurred while performing the action.');
             }
         }
 
         async function startService(processName) {
-            console.log(`Starting service: ${processName}`);
             await makeApiCall('/start-service', 'POST', processName);
             updateServiceStatus(processName);
         }
 
         async function stopService(processName) {
-            console.log(`Stopping service: ${processName}`);
             await makeApiCall('/stop-service', 'POST', processName);
             updateServiceStatus(processName);
         }
 
         async function restartService(processName) {
-            console.log(`Restarting service: ${processName}`);
             await makeApiCall('/restart-service', 'POST', processName);
             updateServiceStatus(processName);
         }
 
         async function updateServiceStatus(processName) {
-            try {
-                console.log(`Fetching status for: ${processName}`);
-                const response = await fetch(`/service-status/${processName}`);
-                if (!response.ok) {
-                    throw new Error(`Status request failed with status ${response.status}`);
+            for (let attempt = 1; attempt <= 3; attempt++) {
+                try {
+                    const response = await fetch(`/service-status/${processName}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        document.getElementById(`${processName}-status`).innerText = `Status: ${data.status}`;
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Error fetching status:', error);
                 }
-                const data = await response.json();
-                document.getElementById(`${processName}-status`).innerText = `Status: ${data.status}`;
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById(`${processName}-status`).innerText = `Status: Error retrieving status`;
+                await new Promise(resolve => setTimeout(resolve, 500 * attempt));
             }
+            document.getElementById(`${processName}-status`).innerText = `Status: Error retrieving status`;
         }
 
         function pollServiceStatusesOnPageLoad() {
@@ -253,7 +307,8 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            pollServiceStatusesOnPageLoad(); // Poll statuses only once when the page loads
+            pollServiceStatusesOnPageLoad();
+            applyTheme();
         });
     </script>
 </head>
@@ -315,6 +370,11 @@
                 </select>
                 <button onclick="executeAction('Zurg')">Execute</button>
             </div>
+        </div>
+
+        <div class="service-card">
+            <h2>Health Check</h2>
+            <button onclick="checkHealth()">Run Health Check</button>
         </div>
 
         <div id="modal">

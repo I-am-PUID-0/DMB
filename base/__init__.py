@@ -1,4 +1,4 @@
-from json import load, dump
+from json import load, dump, JSONDecodeError
 from token import RBRACE
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime, timedelta

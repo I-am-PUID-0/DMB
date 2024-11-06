@@ -1,14 +1,30 @@
 from base import *
-from utils.logger import *
 
 
-def check_processes(process_info, skip_conditions):
+def load_disabled_health_checks(status_file_path):
+    try:
+        with open(status_file_path, "r") as f:
+            status_data = load(f)
+        disabled_health_checks = {
+            process_name
+            for process_name, status in status_data.items()
+            if status == "stopped"
+        }
+        return disabled_health_checks
+    except FileNotFoundError:
+        return set()
+    except JSONDecodeError as e:
+        return set()
+
+def check_processes(process_info, skip_conditions, disabled_health_checks):
     found_processes = {key: False for key in process_info.keys()}
 
     for proc in psutil.process_iter():
         try:
             cmdline = " ".join(proc.cmdline())
             for process_name, info in process_info.items():
+                if process_name in disabled_health_checks:
+                    continue
                 if info["regex"].search(cmdline):
                     found_processes[process_name] = True
             for condition in skip_conditions:
@@ -19,8 +35,10 @@ def check_processes(process_info, skip_conditions):
 
     return found_processes
 
-
 try:
+    status_file_path = "/healthcheck/health_status.json"
+    disabled_health_checks = load_disabled_health_checks(status_file_path)
+
     error_messages = []
 
     if RDAPIKEY and ADAPIKEY and RCLONEMN:
@@ -99,13 +117,17 @@ try:
         },
     ]
 
-    process_status = check_processes(process_info, skip_conditions)
+    process_status = check_processes(
+        process_info, skip_conditions, disabled_health_checks
+    )
 
     skip_riven_frontend = any(condition["found"] for condition in skip_conditions)
 
     for process_name, info in process_info.items():
         if info["should_run"] and not process_status[process_name]:
             if process_name == "riven_frontend" and skip_riven_frontend:
+                continue
+            if process_name in disabled_health_checks:
                 continue
             error_messages.append(info["error_message"])
 
