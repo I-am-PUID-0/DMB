@@ -352,7 +352,7 @@ For additional details on deployment, see the [DMB Wiki](https://github.com/I-am
 ### Riven Media
 - For questions related to Riven, see the GitHub [discussions](https://github.com/orgs/rivenmedia/discussions) 
 - or create a new [issue](https://github.com/rivenmedia/riven/issues) if you find a bug or have an idea for an improvement.
-- or join the Riven [discord server](https://discord.gg/VtYd42mxgb)  
+- or join the Riven [discord server](https://discord.gg/VtYd42mxgb) 
 
 
 ## 🍻 Buy **[Riven Media](https://github.com/rivenmedia)** a beer/coffee? :)

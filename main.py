@@ -33,7 +33,7 @@ def run_uvicorn():
 
 def main():
 
-    version = "5.4.3"
+    version = "5.4.4"
 
     ascii_art = f"""
                                                                        

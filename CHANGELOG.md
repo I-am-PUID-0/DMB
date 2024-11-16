@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.4.4] - 2024-11-16 🚀
+
+### Changed 🔄
+
+- Zilean: Update to dotnet 9 🔄
+- Zilean: Update to support both Zilean.Scraper & Zilean.DmmScraper for older version of Zilean 🔄
+
+### Notes 📝
+
+- Zilean: Only Zilean v2.1.0 and newer are supported due to dotnet update to version 9 🚨
+
+
 ## Version [5.4.3] - 2024-11-01 🚀
 
 ### Changed 🔄
