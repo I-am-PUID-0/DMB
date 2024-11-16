@@ -36,10 +36,12 @@ RUN apk add --no-cache --virtual .build-deps \
     apk del .build-deps
 
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine3.19 AS zilean-builder
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS zilean-builder
 ARG TARGETARCH
 ARG ZILEAN_TAG
-RUN apk add --update --no-cache curl jq python3 python3-dev py3-pip && \
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.18/main" > /etc/apk/repositories && \
+    echo "https://dl-cdn.alpinelinux.org/alpine/v3.18/community" >> /etc/apk/repositories && \
+    apk add --update --no-cache curl jq python3=~3.11 py3-pip=~23.1 && \
     curl -L https://github.com/iPromKnight/zilean/archive/refs/tags/${ZILEAN_TAG}.zip -o zilean-latest.zip && \
     unzip zilean-latest.zip && \
     mv zilean-*/ /zilean && \
@@ -48,12 +50,11 @@ RUN apk add --update --no-cache curl jq python3 python3-dev py3-pip && \
     dotnet restore -a $TARGETARCH && \
     cd /zilean/src/Zilean.ApiService && \
     dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/ && \
-    cd /zilean/src/Zilean.DmmScraper && \
+    cd /zilean/src/Zilean.Scraper && \
     dotnet publish -c Release --no-restore -a $TARGETARCH -o /zilean/app/ && \
     cd /zilean && \
     python3 -m venv /zilean/venv && \
     source /zilean/venv/bin/activate && \
-    pip install --upgrade pip && \
     pip install -r /zilean/requirements.txt
 
 
@@ -100,14 +101,31 @@ RUN apk add --no-cache curl gcc musl-dev python3-dev gcompat libstdc++ libxml2-u
 
 
 FROM python:3.11-alpine AS final-stage
+ARG TARGETARCH
 LABEL name="DMB" \
     description="Debrid Media Bridge" \
     url="https://github.com/I-am-PUID-0/DMB"
 
 RUN apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base \
-  linux-headers py3-cffi libffi-dev rust cargo jq openssl pkgconfig npm boost-filesystem boost-thread \
-  ffmpeg postgresql-client postgresql dotnet-sdk-8.0 postgresql-contrib && \
-  npm install -g pnpm
+    linux-headers py3-cffi libffi-dev rust cargo jq openssl pkgconfig npm boost-filesystem boost-thread \
+    ffmpeg postgresql-client postgresql postgresql-contrib
+
+RUN npm install -g pnpm
+
+RUN ARCH=$(case "$TARGETARCH" in \
+        "amd64") echo "x64" ;; \
+        "arm64") echo "arm64" ;; \
+        *) echo "$TARGETARCH" ;; \
+    esac) && \
+    curl -L --retry 5 --retry-delay 5 https://dotnetcli.azureedge.net/dotnet/Sdk/9.0.100/dotnet-sdk-9.0.100-linux-musl-${ARCH}.tar.gz -o dotnet-sdk.tar.gz && \
+    ls -lh dotnet-sdk.tar.gz && \
+    file dotnet-sdk.tar.gz && \
+    mkdir -p /usr/share/dotnet && \
+    tar -C /usr/share/dotnet -xzf dotnet-sdk.tar.gz && \
+    ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
+    rm dotnet-sdk.tar.gz && \
+    dotnet --version
+
 WORKDIR /
 COPY --from=rclone/rclone:latest /usr/local/bin/rclone /usr/local/bin/rclone
 COPY --from=pgagent-builder /usr/local/bin/pgagent /usr/local/bin/pgagent

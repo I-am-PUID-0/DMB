@@ -81,13 +81,23 @@ def setup_dotnet_environment(process_handler=None, config_dir="./zilean"):
             )
             return False
 
+        project_path_primary = "/zilean/src/Zilean.Scraper"
+        project_path_secondary = "/zilean/src/Zilean.DmmScraper"
+        if os.path.exists(project_path_primary):
+            scraper_project_path = project_path_primary
+        elif os.path.exists(project_path_secondary):
+            scraper_project_path = project_path_secondary
+        else:
+            raise FileNotFoundError(
+                f"Neither {project_path_primary} nor {project_path_secondary} exists."
+            )
         dotnet_env_process.start_process(
             "dotnet_publish_scraper",
             config_dir,
             [
                 "dotnet",
                 "publish",
-                "/zilean/src/Zilean.DmmScraper",
+                scraper_project_path,
                 "-c",
                 "Release",
                 "--no-restore",
