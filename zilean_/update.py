@@ -104,7 +104,7 @@ class ZileanUpdate(Update):
                 "PYTHONPATH": libpython_path,
                 "PATH": f"{venv_path}/bin:" + os.environ["PATH"],
                 "ZILEAN_PYTHON_PYLIB": "/usr/local/lib/libpython3.11.so.1.0",
-                "Zilean__Database__ConnectionString": f"Host=localhost;Port=5432;Database=zilean;Username={postgres_user};Password={postgres_password}",
+                "Zilean__Database__ConnectionString": f"Host=localhost;Port=5432;Database=zilean;Username={postgres_user};Password={postgres_password};Timeout=300;CommandTimeout=300;",
             }
             process_env = os.environ.copy()
             process_env.update(env_exports)
