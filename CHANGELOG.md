@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [5.4.5] - 2024-11-22 🚀
+
+### Fixed 🛠️
+
+- [PR #88](https://github.com/I-am-PUID-0/DMB/pull/88) Zilean: Add database connection timeouts 🐛 - Thanks @skeet70 🙏
+
+
 ## Version [5.4.4] - 2024-11-16 🚀
 
 ### Changed 🔄
