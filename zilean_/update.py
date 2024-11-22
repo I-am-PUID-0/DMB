@@ -2,7 +2,7 @@ from platform import release
 from sre_constants import SUCCESS
 from venv import logger
 from base import *
-from utils.logger import *
+from utils.global_logger import logger
 from utils.auto_update import Update
 from utils.versions import Versions
 from .setup import zilean_setup, setup_python_environment
@@ -83,12 +83,12 @@ class ZileanUpdate(Update):
             self.logger.error(f"Automatic update failed for {process_name}: {e}")
             return False
 
-    def start_process(self, process_name, app_dir=None, suppress_logging=False):
+    def start_process(self, process_name, config_dir=None, suppress_logging=False):
         if process_name == "Zilean":
             if str(ZILEANLOGS).lower() == "off":
                 suppress_logging = True
                 self.logger.info(f"Suppressing {process_name} logging")
-            app_dir = "./zilean/app"
+            config_dir = "./zilean/app"
             command = ["./zilean-api"]
             venv_path = "/zilean/venv"
             python_lib_path = f"{venv_path}/lib"
@@ -110,7 +110,7 @@ class ZileanUpdate(Update):
             process_env.update(env_exports)
             self.process_handler.start_process(
                 process_name,
-                app_dir,
+                config_dir,
                 command,
                 None,
                 suppress_logging=suppress_logging,

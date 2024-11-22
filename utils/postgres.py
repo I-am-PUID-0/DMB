@@ -1,12 +1,9 @@
 from time import sleep
 from base import *
-from utils.logger import *
+from utils.global_logger import logger
 import psycopg2
 from psycopg2 import sql
 import json
-
-
-logger = get_logger()
 
 
 def initialize_postgres_db(db_host, postgres_user, postgres_password, postgres_db):

@@ -78,7 +78,7 @@ class ProcessHandler:
                         "dotnet_env_restore",
                         "dotnet_publish_api",
                         "dotnet_publish_scraper",
-                        "fastapi_server",
+                        "dmb_frontend",
                     ]
                     else None
                 ),

@@ -1,7 +1,7 @@
 from platform import release
 from venv import logger
 from base import *
-from utils.logger import *
+from utils.global_logger import logger
 from utils.auto_update import Update
 from .setup import riven_setup, setup_poetry_environment, setup_npm_build
 

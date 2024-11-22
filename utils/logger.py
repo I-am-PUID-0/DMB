@@ -1,4 +1,5 @@
 from base import *
+import asyncio
 
 
 class SubprocessLogger:
@@ -126,6 +127,10 @@ class SubprocessLogger:
         )
         self.stderr_thread.daemon = True
         self.stderr_thread.start()
+
+    async def broadcast_log(self, message):
+        if self.manager:
+            await self.manager.broadcast(message)
 
     def log_subprocess_output(self, pipe):
         try:
@@ -418,10 +423,36 @@ def parse_size(size_str):
         return int(size_str)
 
 
-def get_logger(log_name="DMB", log_dir="./log"):
+class WebSocketHandler(logging.Handler):
+    def __init__(self, manager):
+        super().__init__()
+        self.manager = manager
+
+    def emit(self, record):
+        log_message = self.format(record)
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.create_task(self.manager.broadcast(log_message))
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(self.manager.broadcast(log_message))
+            finally:
+                pending_tasks = asyncio.all_tasks(loop)
+                for task in pending_tasks:
+                    task.cancel()
+                loop.run_until_complete(
+                    asyncio.gather(*pending_tasks, return_exceptions=True)
+                )
+                loop.close()
+
+
+def get_logger(log_name="DMB", log_dir="./log", websocket_manager=None):
     current_date = time.strftime("%Y-%m-%d")
     log_filename = f"{log_name}-{current_date}.log"
     logger = logging.getLogger(log_name)
+    logger.debug(f"Existing handlers: {[type(h).__name__ for h in logger.handlers]}")
     backupCount_env = os.getenv("DMB_LOG_COUNT")
     try:
         backupCount = int(backupCount_env)
@@ -497,8 +528,16 @@ def get_logger(log_name="DMB", log_dir="./log"):
         stdout_handler = logging.StreamHandler(sys.stdout)
         stdout_handler.setFormatter(file_formatter)
 
-    for hdlr in logger.handlers[:]:
-        logger.removeHandler(hdlr)
-    logger.addHandler(handler)
-    logger.addHandler(stdout_handler)
+    existing_handler_types = {type(h) for h in logger.handlers}
+    if CustomRotatingFileHandler not in existing_handler_types:
+        logger.addHandler(handler)
+    if logging.StreamHandler not in existing_handler_types:
+        logger.addHandler(stdout_handler)
+    if websocket_manager and not any(
+        isinstance(h, WebSocketHandler) for h in logger.handlers
+    ):
+        ws_handler = WebSocketHandler(websocket_manager)
+        ws_handler.setFormatter(file_formatter)
+        logger.addHandler(ws_handler)
+    logger.debug(f"New handlers: {[type(h).__name__ for h in logger.handlers]}")
     return logger

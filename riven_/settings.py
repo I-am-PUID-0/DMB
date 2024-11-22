@@ -1,9 +1,8 @@
 from base import *
-from utils.logger import *
+from utils.global_logger import logger
 import psycopg2
 from psycopg2 import sql
 
-logger = get_logger()
 
 SENSITIVE_KEY_PATTERN = re.compile(
     r"API|TOKEN|URL|HOST|PASSWORD|KEY|SECRET|USERNAME", re.IGNORECASE

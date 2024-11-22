@@ -1,9 +1,7 @@
 from base import *
-from utils.logger import *
+from utils.global_logger import logger
 from concurrent.futures import ThreadPoolExecutor
 import multiprocessing
-
-logger = get_logger()
 
 
 def chown_single(path, user_id, group_id):

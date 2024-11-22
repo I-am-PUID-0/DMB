@@ -1,11 +1,11 @@
 from base import *
-from utils.logger import *
+from utils.global_logger import logger
 from utils.download import Downloader
 
 
 class Versions:
     def __init__(self):
-        self.logger = get_logger()
+        self.logger = logger
         self.downloader = Downloader()
 
     def version_check(self, process_name=None, version_path=None):
@@ -39,7 +39,6 @@ class Versions:
             )
             return None, str(e)
 
-
     def version_write(self, process_name=None, version_path=None, version=None):
         try:
             if process_name == "riven_frontend":
@@ -70,10 +69,11 @@ class Versions:
             )
             return False, str(e)
 
-
     def compare_versions(self, process_name, repo_owner, repo_name):
         try:
-            latest_release_version, error = self.downloader.get_latest_release(repo_owner, repo_name)
+            latest_release_version, error = self.downloader.get_latest_release(
+                repo_owner, repo_name
+            )
             if not latest_release_version:
                 self.logger.error(
                     f"Failed to get the latest release for {process_name}: {error}"
@@ -88,14 +88,16 @@ class Versions:
             if current_version == latest_release_version:
                 return False, {
                     "message": "No updates available",
-                    "current_version": current_version
-                    }
+                    "current_version": current_version,
+                }
             else:
                 return True, {
                     "message": "Update available",
                     "current_version": current_version,
-                    "latest_version": latest_release_version
+                    "latest_version": latest_release_version,
                 }
         except Exception as e:
-            self.logger.error(f"Exception during version comparison {process_name}: {e}")
+            self.logger.error(
+                f"Exception during version comparison {process_name}: {e}"
+            )
             return False, str(e)

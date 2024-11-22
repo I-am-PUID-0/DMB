@@ -1,5 +1,6 @@
 from base import *
-from utils.logger import *
+from utils.global_logger import logger
+from utils.logger import format_time
 
 
 class Update:

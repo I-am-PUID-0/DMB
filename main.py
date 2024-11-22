@@ -1,35 +1,12 @@
 from base import *
-from utils.logger import *
-import riven_ as r
-import zurg as z
-import zilean_ as zilean
-from rclone import rclone
+from utils.global_logger import logger, websocket_manager
+from riven_.update import RivenUpdate
+from zilean_.update import ZileanUpdate
+from zurg.update import ZurgUpdate
 from utils import duplicate_cleanup, user_management, postgres, api_service
+from utils.logger import MissingAPIKeyException
 from utils.processes import ProcessHandler
-import uvicorn
 
-logger = get_logger()
-process_handler = ProcessHandler(logger)
-
-
-riven_updater = r.update.RivenUpdate(process_handler)
-zilean_updater = zilean.update.ZileanUpdate(process_handler)
-zurg_updater = z.update.ZurgUpdate(process_handler)
-
-logger.debug(f"Initialized ZurgUpdate: {zurg_updater}")
-logger.debug(f"Initialized ZileanUpdate: {zilean_updater}")
-logger.debug(f"Initialized RivenUpdate: {riven_updater}")
-
-
-app = api_service.create_app(riven_updater, zilean_updater, zurg_updater, process_handler, logger)
-
-def run_uvicorn():
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=8000,
-        proxy_headers=True,
-    )
 
 def main():
 
@@ -59,14 +36,41 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
 
     logger.info(ascii_art.format(version=version) + "\n" + "\n")
 
-    uvicorn_thread = threading.Thread(target=run_uvicorn, daemon=True)
-    uvicorn_thread.start()
+    process_handler = ProcessHandler(logger)
+    logger.debug(f"Initialized ProcessHandler: {process_handler}")
 
-#    process_handler.start_process(
-#        process_name="fastapi_server",
-#        config_dir=".",
-#        command=["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-#    )
+    riven_updater = RivenUpdate(process_handler)
+    zilean_updater = ZileanUpdate(process_handler)
+    zurg_updater = ZurgUpdate(process_handler)
+    logger.debug(f"Initialized ZurgUpdate: {zurg_updater}")
+    logger.debug(f"Initialized ZileanUpdate: {zilean_updater}")
+    logger.debug(f"Initialized RivenUpdate: {riven_updater}")
+
+    api_service.start_fastapi_process(
+        process_handler=process_handler,
+        process_name="fastapi_server",
+        config_dir=".",
+        riven_updater=riven_updater,
+        zilean_updater=zilean_updater,
+        zurg_updater=zurg_updater,
+        websocket_manager=websocket_manager,
+        logger=logger,
+    )
+
+    command = "node .output/server/index.mjs"
+    env_vars = {"PORT": "3005"}
+    process = process_handler.start_process(
+        process_name="dmb_frontend",
+        config_dir="/dmb/frontend",
+        command=command,
+        key_type=None,
+        suppress_logging=False,
+        env=env_vars,
+    )
+    if process is not None:
+        logger.info("dmb_frontend process started successfully.")
+    else:
+        logger.error("Failed to start the dmb_frontend process.")
 
     def healthcheck():
         time.sleep(60)
@@ -99,9 +103,11 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
             try:
                 if RDAPIKEY or ADAPIKEY:
                     try:
-                        z.setup.zurg_setup(process_handler)
+                        from zurg.setup import zurg_setup
+
+                        zurg_setup(process_handler)
                     except Exception as e:
-                        raise e                   
+                        raise e
                     if (
                         ZURGUPDATE
                         and ZURGUPDATE.lower() == "true"
@@ -117,6 +123,8 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                                     pass
                                 elif DUPECLEAN:
                                     duplicate_cleanup.setup()
+                                from rclone import rclone
+
                                 rclone.setup(process_handler)
                             except Exception as e:
                                 logger.error(e)
@@ -143,9 +151,11 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
             try:
                 if ZILEAN is not None and str(ZILEAN).lower() == "true":
                     try:
-                        zilean.setup.zilean_setup(process_handler, "Zilean")
+                        from zilean_.setup import zilean_setup
+
+                        zilean_setup(process_handler, "Zilean")
                     except Exception as e:
-                        raise e                  
+                        raise e
                     if (
                         ZILEANUPDATE
                         and ZILEANUPDATE.lower() == "true"
@@ -159,9 +169,11 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 process_handler.shutdown(exit_code=1)
             try:
                 try:
-                    r.setup.riven_setup(process_handler, "riven_backend")
+                    from riven_.setup import riven_setup
+
+                    riven_setup(process_handler, "riven_backend")
                 except Exception as e:
-                    raise e               
+                    raise e
                 if (RBUPDATE or RUPDATE) and not RBVERSION:
                     riven_updater.auto_update("riven_backend", True)
                 else:
@@ -178,9 +190,9 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
             RIVEN is not None and str(RIVEN).lower() == "true"
         ):
             try:
-                r.setup.riven_setup(
-                    process_handler, "riven_frontend", RFBRANCH, RFVERSION
-                )
+                from riven_.setup import riven_setup
+
+                riven_setup(process_handler, "riven_frontend", RFBRANCH, RFVERSION)
             except Exception as e:
                 raise e
             if (RFUPDATE or RUPDATE) and not RFVERSION:
@@ -190,12 +202,6 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
     except Exception as e:
         logger.error(f"An error occurred in the Riven frontend setup: {e}")
         process_handler.shutdown(exit_code=1)
-
-    try:
-        uvicorn_thread.join()
-    except KeyboardInterrupt:
-        logger.info("Shutdown signal received. Stopping API and services.")
-        process_handler.shutdown(exit_code=0)
 
     def perpetual_wait():
         stop_event = threading.Event()

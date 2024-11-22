@@ -1,9 +1,10 @@
 from base import *
-from utils.logger import *
+from utils.global_logger import logger
 
 
 def zurg_setup(process_handler=None):
-    logger = get_logger()
+    if logger is None:
+        raise ValueError("Logger must be provided to zurg_setup.")
     logger.info("Setting up Zurg")
     zurg_app_override = "/config/zurg"
     zurg_app_base = "/zurg/zurg"

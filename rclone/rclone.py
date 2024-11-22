@@ -1,8 +1,5 @@
 from base import *
-from utils.logger import *
-
-
-logger = get_logger()
+from utils.global_logger import logger
 
 
 def get_port_from_config(config_file_path, key_type):

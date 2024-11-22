@@ -9,6 +9,8 @@ from logging.handlers import (
     BaseRotatingHandler,
 )
 from packaging.version import Version, parse as parse_version
+from colorlog import ColoredFormatter
+from ruamel.yaml import YAML
 import time
 import os
 import pwd
@@ -31,8 +33,7 @@ import zipfile
 import platform
 import fnmatch
 import signal
-from colorlog import ColoredFormatter
-from ruamel.yaml import YAML
+
 
 
 load_dotenv(find_dotenv("./config/.env"))

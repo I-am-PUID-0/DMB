@@ -367,5 +367,7 @@ FodyWeavers.xsd
 **/log/
 *.env
 /config
+/zurg/RD
+/zurg/zurg
 *.pyproj
 *.db

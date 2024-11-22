@@ -1,11 +1,8 @@
 from email import message
 from base import *
-from utils.logger import *
+from utils.global_logger import logger
 from utils.versions import Versions
 from utils.user_management import chown_recursive
-
-
-logger = get_logger()
 
 
 def setup_python_environment(process_handler=None, config_dir="/zilean"):
@@ -212,8 +209,8 @@ def zilean_setup(
     zilean_versions = Versions()
     logger.info(f"Configuring {process_name}")
     zilean_dir = "/zilean"
-    app_dir = os.path.join(zilean_dir, "app")
-    data_dir = os.path.join(app_dir, "data")
+    config_dir = os.path.join(zilean_dir, "app")
+    data_dir = os.path.join(config_dir, "data")
     venv_dir = os.path.join(zilean_dir, "venv")
     exclude_dirs = [os.path.abspath(data_dir)]
     try:

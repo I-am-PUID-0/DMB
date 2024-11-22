@@ -1,5 +1,4 @@
 from base import *
-from utils.logger import *
 from utils.auto_update import Update
 from zurg.download import (
     get_latest_release,

@@ -1,8 +1,5 @@
 from base import *
-from utils.logger import *
-
-
-logger = get_logger()
+from utils.global_logger import logger
 
 
 def setup_poetry_environment(process_handler=None, config_dir="/riven/backend"):

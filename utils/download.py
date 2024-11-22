@@ -1,11 +1,11 @@
 from urllib import response
 from base import *
-from utils.logger import *
+from utils.global_logger import logger
 
 
 class Downloader:
     def __init__(self):
-        self.logger = get_logger()
+        self.logger = logger
 
     def get_headers(self):
         headers = {"Accept": "application/vnd.github.v3+json"}

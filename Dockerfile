@@ -90,6 +90,16 @@ RUN apk add --no-cache curl gcc musl-dev python3-dev gcompat libstdc++ libxml2-u
     poetry config virtualenvs.create false && \
     poetry install --no-root --without dev
 
+FROM python:3.11-alpine AS dmb-frontend-builder
+RUN apk add --no-cache curl nodejs npm build-base && \
+    curl -L https://github.com/I-am-PUID-0/dmbdb/archive/refs/heads/develop.zip -o dmb-frontend.zip && \
+    unzip dmb-frontend.zip && \
+    mkdir -p dmb/frontend && \
+    mv dmbdb*/* /dmb/frontend && rm dmb-frontend.zip && \
+    cd dmb/frontend && \
+    npm install -g pnpm && \
+    pnpm install --reporter=verbose && \
+    pnpm run build --log-level verbose 
 
 FROM python:3.11-alpine AS requirements-builder
 COPY requirements.txt .
@@ -136,6 +146,7 @@ COPY --from=systemstats-builder /usr/lib/postgresql16/system_stats.so /usr/lib/p
 COPY --from=zilean-builder /zilean /zilean
 COPY --from=riven-frontend-builder /riven/frontend /riven/frontend
 COPY --from=riven-backend-builder /riven/backend /riven/backend
+COPY --from=dmb-frontend-builder /dmb/frontend /dmb/frontend
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/config.yml /zurg/
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/scripts/plex_update.sh /zurg/
 COPY --from=requirements-builder /venv /venv

@@ -1,10 +1,14 @@
 from base import *
-from utils.logger import *
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+from uvicorn.config import Config
+from uvicorn.server import Server
+from typing import List
 from pydantic import BaseModel
+import asyncio
 
 
 class APIState:
@@ -73,10 +77,80 @@ class APIState:
         self.logger.info(f"  service_status: {self.service_status}")
 
 
-def create_app(riven_updater, zilean_updater, zurg_updater, process_handler, logger):
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+        self.lock = asyncio.Lock()
+
+    def serialize(self):
+        return {}
+
+    @classmethod
+    def deserialize(cls, state):
+        return cls()
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        if websocket not in self.active_connections:
+            self.active_connections.append(websocket)
+
+    #        else:
+    #            logger.warning(f"WebSocket {websocket} is already in active connections.")
+
+    async def disconnect(self, websocket: WebSocket):
+        async with self.lock:
+            if websocket in self.active_connections:
+                self.active_connections.remove(websocket)
+
+    #                logger.info(f"WebSocket {websocket} successfully disconnected.")
+    #            else:
+    #                logger.warning(f"Attempted to disconnect WebSocket {websocket}, but it was not found.")
+
+    async def broadcast(self, message: str):
+        tasks = [
+            asyncio.create_task(connection.send_text(message))
+            for connection in self.active_connections
+        ]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        for connection, result in zip(self.active_connections.copy(), results):
+            if isinstance(result, Exception):
+                #                logger.error(f"Error broadcasting to {connection}: {result}")
+                self.active_connections.remove(connection)
+
+    def create_task(self, coroutine):
+        task = asyncio.create_task(coroutine)
+        self.tasks.add(task)
+        task.add_done_callback(lambda t: self.tasks.discard(t))
+        return task
+
+    async def shutdown(self):
+        for task in self.tasks:
+            task.cancel()
+        await asyncio.gather(*self.tasks, return_exceptions=True)
+        self.tasks.clear()
+
+
+websocket_manager = ConnectionManager()
+
+
+def create_app(
+    riven_updater,
+    zilean_updater,
+    zurg_updater,
+    process_handler,
+    websocket_manager,
+    logger,
+):
+
     api_state = APIState(
-        riven_updater, zilean_updater, zurg_updater, process_handler, logger
+        riven_update=riven_updater,
+        zilean_update=zilean_updater,
+        zurg_update=zurg_updater,
+        process_handler=process_handler,
+        logger=logger,
     )
+
     app = FastAPI()
 
     origin_from_env = os.getenv("ORIGIN")
@@ -91,18 +165,25 @@ def create_app(riven_updater, zilean_updater, zurg_updater, process_handler, log
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=origins,
+        allow_origins=["*"],
+        #        allow_origins=origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+    static_dir = os.path.abspath("static")
+    logger.debug(f"Resolved static directory to: {static_dir}")
+    if not os.path.exists(static_dir):
+        logger.error(f"Static directory not found: {static_dir}")
+    else:
+        logger.info(f"Mounting static files from: {static_dir}")
+        app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
     @app.get("/")
     async def serve_homepage():
-        logger.info("Serving homepage /static/index.html")
-        return FileResponse("static/index.html")
+        logger.info("Redirecting to /static/index.html")
+        return RedirectResponse("/static/index.html")
 
     @app.get("/health")
     async def health_check():
@@ -256,4 +337,62 @@ def create_app(riven_updater, zilean_updater, zurg_updater, process_handler, log
         logger.info(f"Status for {process_name}: {status}")
         return {"process_name": process_name, "status": status}
 
+    @app.websocket("/ws/logs")
+    async def websocket_endpoint(websocket: WebSocket):
+        logger.info("WebSocket route /ws/logs has been registered")
+        await websocket_manager.connect(websocket)
+        logger.debug("WebSocket connected.")
+        try:
+            while True:
+                message = await websocket.receive_text()
+                logger.debug(f"Received WebSocket message: {message}")
+        except WebSocketDisconnect:
+            logger.info("WebSocket client disconnected.")
+            websocket_manager.disconnect(websocket)
+        except Exception as e:
+            logger.error(f"Unexpected WebSocket error: {e}")
+            websocket_manager.disconnect(websocket)
+
+    @app.on_event("shutdown")
+    async def on_shutdown():
+        logger.info("Shutting down WebSocket websocket_manager...")
+        await websocket_manager.shutdown()
+        logger.info("WebSocket websocket_manager shutdown complete.")
+
     return app
+
+
+def start_fastapi_process(
+    process_handler,
+    process_name,
+    config_dir,
+    riven_updater,
+    zilean_updater,
+    zurg_updater,
+    websocket_manager,
+    logger,
+):
+    app = create_app(
+        riven_updater,
+        zilean_updater,
+        zurg_updater,
+        process_handler,
+        websocket_manager,
+        logger,
+    )
+
+    def run_server():
+        config = Config(
+            app=app,
+            host="0.0.0.0",
+            port=8000,
+            log_config=None,
+            log_level="debug",
+        )
+        config.logger = logger
+        server = Server(config)
+        server.run()
+
+    uvicorn_thread = threading.Thread(target=run_server, daemon=True)
+    uvicorn_thread.start()
+    logger.info("Started Uvicorn server in a separate thread.")
