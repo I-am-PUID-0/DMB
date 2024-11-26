@@ -104,7 +104,8 @@ services:
       start_period: 1m00s
     depends_on:                                            ## Used to delay the startup of plex to ensure the rclone mount is available.
       DMB:                                                 ## set to the name of the container running rclone
-        condition: service_healthy 
+        condition: service_healthy
+        restart: true                                      ## Will automatically restart the plex container if the DMB container restarts
 ```
 
 
