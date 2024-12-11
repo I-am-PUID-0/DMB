@@ -1,6 +1,6 @@
 ﻿FROM python:3.11-alpine AS pgagent-builder
 ARG PGAGENT_TAG
-RUN apk add --no-cache --virtual .build-deps \
+RUN apk add --update --no-cache --virtual .build-deps \
     cmake boost-dev build-base linux-headers postgresql16-dev-16.6-r0 curl unzip jq && \
     curl -L https://github.com/pgadmin-org/pgagent/archive/refs/tags/${PGAGENT_TAG}.zip -o pgagent-latest.zip && \
     unzip pgagent-latest.zip && \
@@ -22,7 +22,7 @@ RUN apk add --no-cache --virtual .build-deps \
 
 FROM alpine:3.20 AS systemstats-builder
 ARG SYS_STATS_TAG
-RUN apk add --no-cache --virtual .build-deps \
+RUN apk add --update --no-cache --virtual .build-deps \
     build-base postgresql16-dev-16.6-r0 curl unzip jq && \
     curl -L https://github.com/EnterpriseDB/system_stats/archive/refs/tags/${SYS_STATS_TAG}.zip -o system_stats-latest.zip && \
     unzip system_stats-latest.zip && \
