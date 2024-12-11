@@ -1,7 +1,7 @@
 ﻿FROM python:3.11-alpine AS pgagent-builder
 ARG PGAGENT_TAG
 RUN apk add --no-cache --virtual .build-deps \
-    cmake boost-dev build-base linux-headers postgresql-dev curl unzip jq && \
+    cmake boost-dev build-base linux-headers postgresql16-dev-16.6-r0 curl unzip jq && \
     curl -L https://github.com/pgadmin-org/pgagent/archive/refs/tags/${PGAGENT_TAG}.zip -o pgagent-latest.zip && \
     unzip pgagent-latest.zip && \
     mv pgagent-*/ pgagent && \
@@ -23,7 +23,7 @@ RUN apk add --no-cache --virtual .build-deps \
 FROM alpine:3.20 AS systemstats-builder
 ARG SYS_STATS_TAG
 RUN apk add --no-cache --virtual .build-deps \
-    build-base postgresql-dev curl unzip jq && \
+    build-base postgresql16-dev-16.6-r0 curl unzip jq && \
     curl -L https://github.com/EnterpriseDB/system_stats/archive/refs/tags/${SYS_STATS_TAG}.zip -o system_stats-latest.zip && \
     unzip system_stats-latest.zip && \
     mv system_stats-*/ system_stats && \
@@ -108,7 +108,7 @@ LABEL name="DMB" \
 
 RUN apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base \
     linux-headers py3-cffi libffi-dev rust cargo jq openssl pkgconfig npm boost-filesystem boost-thread \
-    ffmpeg postgresql-client postgresql postgresql-contrib
+    ffmpeg postgresql16-client=16.6-r0 postgresql16=16.6-r0 postgresql16-contrib=16.6-r0
 
 RUN npm install -g pnpm
 
