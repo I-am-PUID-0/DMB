@@ -1,12 +1,19 @@
-﻿FROM python:3.11-alpine AS pgagent-builder
+﻿FROM python:3.11.11-alpine3.20 AS pgagent-builder
 ARG PGAGENT_TAG
-RUN apk add --update --no-cache --virtual .build-deps \
-    cmake boost-dev build-base linux-headers postgresql16-dev-16.6-r0 curl unzip jq && \
+ENV PATH="/usr/libexec/postgresql16:$PATH"
+RUN apk add --update --no-cache \
+    cmake boost-dev build-base linux-headers postgresql16-dev curl unzip jq && \
+    find /usr -name pg_config && \
+    /usr/bin/pg_config --version && \
+    /usr/bin/pg_config --includedir && \
+    /usr/bin/pg_config --libdir && \
+    /usr/bin/pg_config --sharedir && \
     curl -L https://github.com/pgadmin-org/pgagent/archive/refs/tags/${PGAGENT_TAG}.zip -o pgagent-latest.zip && \
     unzip pgagent-latest.zip && \
     mv pgagent-*/ pgagent && \
-    cd pgagent && mkdir build && cd build && \
-    cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make && make install && \
+    cd pgagent && mkdir build && cd build && rm -rf CMakeCache.txt &&\
+    cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && \
+    make && make install && \
     mkdir -p /usr/share/postgresql16/extension && \
     cp ../sql/pgagent*.sql /usr/share/postgresql16/extension/ && \
     cp ../pgagent.control.in /usr/share/postgresql16/extension/pgagent.control && \
@@ -16,14 +23,19 @@ RUN apk add --update --no-cache --virtual .build-deps \
     source /pgadmin/venv/bin/activate && \
     pip install pip==24.0 setuptools==66.0.0 && \
     pip install pgadmin4 && \
-    cd ../.. && rm -rf pgagent pgagent-latest.zip && \
-    apk del .build-deps 
+    cd ../.. && rm -rf pgagent pgagent-latest.zip
 
 
 FROM alpine:3.20 AS systemstats-builder
 ARG SYS_STATS_TAG
-RUN apk add --update --no-cache --virtual .build-deps \
-    build-base postgresql16-dev-16.6-r0 curl unzip jq && \
+ENV PATH="/usr/lib/postgresql16/bin:$PATH"
+RUN rm -rf /var/cache/apk/* && apk update && \
+    apk add --no-cache build-base postgresql16-dev curl unzip jq && \
+    find /usr -name pg_config && \
+    /usr/bin/pg_config --version && \
+    /usr/bin/pg_config --includedir && \
+    /usr/bin/pg_config --libdir && \
+    /usr/bin/pg_config --sharedir && \
     curl -L https://github.com/EnterpriseDB/system_stats/archive/refs/tags/${SYS_STATS_TAG}.zip -o system_stats-latest.zip && \
     unzip system_stats-latest.zip && \
     mv system_stats-*/ system_stats && \
@@ -32,8 +44,7 @@ RUN apk add --update --no-cache --virtual .build-deps \
     mkdir -p /usr/share/postgresql16/extension && \
     cp system_stats.control /usr/share/postgresql16/extension/ && \
     cp system_stats--*.sql /usr/share/postgresql16/extension/ && \
-    cd .. && rm -rf system_stats system_stats-latest.zip && \
-    apk del .build-deps
+    cd .. && rm -rf system_stats system_stats-latest.zip
 
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS zilean-builder
@@ -58,7 +69,7 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.18/main" > /etc/apk/repositor
     pip install -r /zilean/requirements.txt
 
 
-FROM python:3.11-alpine AS riven-frontend-builder
+FROM python:3.11.11-alpine3.20 AS riven-frontend-builder
 ARG RIVEN_FRONTEND_TAG
 RUN apk add --no-cache curl npm && \
     curl -L https://github.com/rivenmedia/riven-frontend/archive/refs/tags/${RIVEN_FRONTEND_TAG}.zip -o riven-frontend.zip && \
@@ -75,7 +86,7 @@ RUN apk add --no-cache curl npm && \
     pnpm prune --prod
 
 
-FROM python:3.11-alpine AS riven-backend-builder
+FROM python:3.11.11-alpine3.20 AS riven-backend-builder
 ARG RIVEN_TAG
 RUN apk add --no-cache curl gcc musl-dev python3-dev gcompat libstdc++ libxml2-utils linux-headers && \
     curl -L https://github.com/rivenmedia/riven/archive/refs/tags/${RIVEN_TAG}.zip -o riven.zip && \
@@ -91,7 +102,7 @@ RUN apk add --no-cache curl gcc musl-dev python3-dev gcompat libstdc++ libxml2-u
     poetry install --no-root --without dev
 
 
-FROM python:3.11-alpine AS requirements-builder
+FROM python:3.11.11-alpine3.20 AS requirements-builder
 COPY requirements.txt .
 RUN apk add --no-cache curl gcc musl-dev python3-dev gcompat libstdc++ libxml2-utils linux-headers && \
     python3 -m venv /venv && \
@@ -100,7 +111,7 @@ RUN apk add --no-cache curl gcc musl-dev python3-dev gcompat libstdc++ libxml2-u
     pip install -r requirements.txt
 
 
-FROM python:3.11-alpine AS final-stage
+FROM python:3.11.11-alpine3.20 AS final-stage
 ARG TARGETARCH
 LABEL name="DMB" \
     description="Debrid Media Bridge" \
@@ -108,7 +119,12 @@ LABEL name="DMB" \
 
 RUN apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base \
     linux-headers py3-cffi libffi-dev rust cargo jq openssl pkgconfig npm boost-filesystem boost-thread \
-    ffmpeg postgresql16-client=16.6-r0 postgresql16=16.6-r0 postgresql16-contrib=16.6-r0
+    ffmpeg postgresql16-client=16.6-r0 postgresql16=16.6-r0 postgresql16-contrib=16.6-r0 && \
+    find /usr -name pg_config && \
+    /usr/bin/pg_config --version && \
+    /usr/bin/pg_config --includedir && \
+    /usr/bin/pg_config --libdir && \
+    /usr/bin/pg_config --sharedir
 
 RUN npm install -g pnpm
 
