@@ -1,6 +1,6 @@
-from urllib import response
 from base import *
 from utils.global_logger import logger
+from utils.config_loader import CONFIG_MANAGER
 
 
 class Downloader:
@@ -8,9 +8,13 @@ class Downloader:
         self.logger = logger
 
     def get_headers(self):
-        headers = {"Accept": "application/vnd.github.v3+json"}
-        if GHTOKEN:
-            headers["Authorization"] = f"token {GHTOKEN}"
+        headers = {}
+        if CONFIG_MANAGER.get("dmb").get("github_token"):
+            headers["Authorization"] = (
+                f"token {CONFIG_MANAGER.get('dmb').get('github_token')}"
+            )
+        else:
+            headers = {"Accept": "application/vnd.github.v3+json"}
         return headers
 
     def handle_rate_limits(self, response):
@@ -42,15 +46,96 @@ class Downloader:
                 if response.status_code == 200:
                     return response
                 if not self.handle_rate_limits(response):
-                    break
+                    logger.info(f"Response status code: {response.status_code}")
                 self.logger.info(
                     f"Retry attempt {attempt + 1} after rate limit handling."
                 )
             except requests.RequestException as e:
                 self.logger.error(f"Request error: {e}")
                 time.sleep(2**attempt)
-        self.logger.error(f"Failed to fetch {url} after {max_retries} attempts.")
+        self.logger.error(f"Failed to fetch {url} after {attempt + 1} attempts.")
         return None
+
+    def download_release_version(
+        self,
+        process_name,
+        key,
+        repo_owner,
+        repo_name,
+        release_version,
+        target_dir,
+        zip_folder_name=None,
+        exclude_dirs=None,
+    ):
+        try:
+            headers = self.get_headers()
+            if release_version.lower() == "latest":
+                release_version, error = self.get_latest_release(
+                    repo_owner, repo_name, nightly=False
+                )
+                if error:
+                    logger.error(error)
+                    return False, error
+
+            if key == "zurg":
+                architecture = self.get_architecture()
+                if CONFIG_MANAGER.get("dmb").get("github_token"):
+                    # repo_name = "zurg"
+                    if release_version == "nightly":
+                        release_version, error = self.get_latest_release(
+                            repo_owner, repo_name, nightly=True
+                        )
+                        if error:
+                            logger.error(error)
+                            return False, error
+
+            else:
+                architecture = None
+
+            release_info, error = self.fetch_github_release_info(
+                repo_owner, repo_name, release_version, headers=None
+            )
+            if error:
+                logger.error(error)
+                return False, error
+
+            if zip_folder_name is None:
+                zip_folder_name = f"{repo_owner}-{repo_name}*"
+
+            download_url, asset_id = self.find_asset_download_url(
+                release_info, architecture
+            )
+            if not download_url:
+                return False, error
+
+            if asset_id:
+                headers = self.get_headers()
+                headers["Accept"] = "application/octet-stream"
+                download_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/assets/{asset_id}"
+
+            logger.debug(
+                f"Requesting {repo_name} release {release_version} from: {download_url}"
+            )
+
+            success, error = self.download_and_extract(
+                download_url,
+                target_dir,
+                zip_folder_name,
+                headers=headers,
+                exclude_dirs=exclude_dirs,
+            )
+            if not success:
+                logger.error(
+                    f"Failed to download the {release_version} for {process_name}: {error}"
+                )
+                return False, error
+            logger.info(
+                f"Successfully downloaded the {release_version} for {process_name}"
+            )
+            return True, None
+        except Exception as e:
+            logger.error(f"Error in download release version: {e}")
+            return False, str(e)
 
     def get_latest_release(self, repo_owner, repo_name, nightly=False):
         self.logger.debug(f"Fetching latest {repo_name} release.")
@@ -72,56 +157,70 @@ class Downloader:
                     latest_nightly = max(nightly_releases, key=lambda x: x["tag_name"])
                     return latest_nightly["tag_name"], None
                 return None, "No nightly releases found."
+
             else:
                 latest_release = response.json()
                 version_tag = latest_release["tag_name"]
                 self.logger.debug(f"{repo_name} latest release: {version_tag}")
                 return version_tag, None
-        else:
-            return None, "Error: Unable to access the repository API."
 
-    def get_branch(self, repo_owner, repo_name, branch, headers):
+        else:
+            return None, f"Error: Unable to access the {repo_name} repository API."
+
+    def get_branch(self, repo_owner, repo_name, branch, headers=None):
+        headers = self.get_headers()
         zip_folder_name = f'{repo_name}-{branch.replace("/", "-").replace("--", "-")}'
         branch_url = f"https://github.com/{repo_owner}/{repo_name}/archive/refs/heads/{branch}.zip"
         self.logger.debug(f"Requesting {repo_name} release from {branch_url}")
         response = self.fetch_with_retries(branch_url, headers)
+
         if response and response.status_code == 200:
             return branch_url, zip_folder_name
+
         else:
-            self.logger.error(f"Failed to get branch {branch} from {repo_name}.")
             return None, f"Failed to get branch {branch} from {repo_name}."
 
     def fetch_github_release_info(
-        self, repo_owner, repo_name, release_version, headers
+        self, repo_owner, repo_name, release_version, headers=None
     ):
+        headers = self.get_headers()
         api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/tags/{release_version}"
         self.logger.debug(f"Fetching release information from {api_url}")
         response = self.fetch_with_retries(api_url, headers)
+
         if response and response.status_code == 200:
             return response.json(), None
+
         else:
-            return None, "Failed to get release assets."
+            return None, f"Failed to get {repo_name} release assets."
 
     def find_asset_download_url(self, release_info, architecture=None):
         assets = release_info.get("assets", [])
         for asset in assets:
             if architecture and architecture in asset["name"]:
-                self.logger.debug(f"Assets found: {assets}")
-                self.logger.debug(f"Download URL: {asset['browser_download_url']}")
+                self.logger.debug(
+                    f"Assets ID found: {asset['id']} for architecture: {architecture}"
+                )
+                self.logger.debug(
+                    f"Browser Download URL: {asset['browser_download_url']}"
+                )
                 return asset["browser_download_url"], asset["id"]
+
         if assets:
             self.logger.warning(
                 "No matching asset found for architecture: %s. Falling back to the first available asset.",
                 architecture,
             )
-            self.logger.debug(f"Assets found: {assets}")
             self.logger.debug(f"Download URL: {asset['browser_download_url']}")
             return assets[0]["browser_download_url"], assets[0]["id"]
+
         zipball_url = release_info.get("zipball_url")
         tarball_url = release_info.get("tarball_url")
+
         if zipball_url:
             self.logger.debug("No assets found. Using zipball_url.")
             return zipball_url, None
+
         if tarball_url:
             self.logger.debug("No assets found. Using tarball_url.")
             return tarball_url, None
@@ -221,21 +320,3 @@ class Downloader:
         except Exception as e:
             self.logger.error(f"Error determining system architecture: {e}")
             return "unknown"
-
-    def parse_repo_info(self, repo_info):
-        if not repo_info:
-            raise ValueError(f"{repo_info} environment variable is not set.")
-
-        parts = repo_info.split(",")
-        if len(parts) < 2:
-            raise ValueError(
-                f"{repo_info} environment variable must contain at least username and repository name."
-            )
-
-        username = parts[0].strip()
-        repository = parts[1].strip()
-        branch = parts[2].strip() if len(parts) > 2 else "main"
-        self.logger.debug(
-            f"Repository: {username}/{repository} branch: {branch}, being used for plex_debrid"
-        )
-        return username, repository, branch

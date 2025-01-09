@@ -1,4 +1,4 @@
-﻿FROM python:3.11.11-alpine3.20 AS pgagent-builder
+FROM python:3.11.11-alpine3.20 AS pgagent-builder
 ARG PGAGENT_TAG
 ENV PATH="/usr/libexec/postgresql16:$PATH"
 RUN apk add --update --no-cache \

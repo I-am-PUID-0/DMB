@@ -1,48 +1,59 @@
 {
-    "name": "DMB Dev Container",
-    "image": "iampuid0/dmb:FastAPI",
-    "workspaceFolder": "/workspace",
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "ms-python.python",
-                "ms-azuretools.vscode-docker",
-                "esbenp.prettier-vscode",
-                "ms-python.black-formatter",
-                "eamodio.gitlens"
-            ],
-            "settings": {
-                "terminal.integrated.defaultProfile.linux": "sh",
-                "python.formatting.provider": "black",
-                "editor.formatOnSave": true
-            }
-        }
-    },
-    "forwardPorts": [
-        3005,
-        8000,
-        3000,
-        9090
-    ],
-    "mounts": [
-        "source=${localWorkspaceFolder},target=/workspace,type=bind",
-        "source=${localWorkspaceFolder}/base,target=/base,type=bind",
-        "source=${localWorkspaceFolder}/config,target=/config,type=bind",
-        "source=${localWorkspaceFolder}/rclone,target=/rclone,type=bind",
-        "source=${localWorkspaceFolder}/riven_,target=/riven_,type=bind",
-        "source=${localWorkspaceFolder}/static,target=/static,type=bind",
-        "source=${localWorkspaceFolder}/utils,target=/utils,type=bind",
-        "source=${localWorkspaceFolder}/zilean_,target=/zilean_,type=bind",
-        "source=${localWorkspaceFolder}/zurg,target=/zurg,type=bind",
-        "source=${localWorkspaceFolder}/log,target=/log,type=bind",
-        "source=${localWorkspaceFolder}/data,target=/data,type=bind",
-        "source=${localWorkspaceFolder}/dmbdb,target=/dmbdb,type=bind"
-    ],
-    "runArgs": [
-        "--device=/dev/fuse:/dev/fuse:rwm",
-        "--cap-add=SYS_ADMIN",
-        "--security-opt=apparmor:unconfined",
-        "--security-opt=no-new-privileges"
-    ],
-    "postCreateCommand": "apk add --no-cache git && pip install black"
+  "name": "DMB Dev Container",
+  "image": "iampuid0/dmb:FastAPI",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-azuretools.vscode-docker",
+        "esbenp.prettier-vscode",
+        "ms-python.black-formatter",
+        "eamodio.gitlens",
+        "github.copilot",
+        "github.vscode-pull-request-github",
+        "streetsidesoftware.code-spell-checker",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "uctakeoff.vscode-counter"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "sh",
+        "python.formatting.provider": "black",
+        "editor.formatOnSave": true,
+        "python.defaultInterpreterPath": "/venv/bin/python"
+      }
+    }
+  },
+  "forwardPorts": [
+    3005,
+    8000,
+    3000,
+    9090,
+    5050
+  ],
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind",
+    "source=${localWorkspaceFolder}/main.py,target=/main.py,type=bind",
+    "source=${localWorkspaceFolder}/base,target=/base,type=bind",
+    "source=${localWorkspaceFolder}/config,target=/config,type=bind",
+    "source=${localWorkspaceFolder}/utils,target=/utils,type=bind",
+    "source=${localWorkspaceFolder}/zurg,target=/zurg,type=bind",
+    "source=${localWorkspaceFolder}/riven/backend/data,target=/riven/backend/data,type=bind",
+    "source=${localWorkspaceFolder}/zilean/app/data,target=/zilean/app/data,type=bind",
+    "source=${localWorkspaceFolder}/log,target=/log,type=bind",
+    "source=${localWorkspaceFolder}/data,target=/data,type=bind",
+    "source=${localWorkspaceFolder}/dmb/frontend,target=/dmb/frontend,type=bind",
+    "source=${localWorkspaceFolder}/postgres_data,target=/postgres_data,type=bind",
+    "source=${localWorkspaceFolder}/pgadmin/data,target=/pgadmin/data,type=bind"
+  ],
+  "runArgs": [
+    "--device=/dev/fuse:/dev/fuse:rwm",
+    "--cap-add=SYS_ADMIN",
+    "--security-opt=apparmor:unconfined",
+    "--security-opt=no-new-privileges",
+    "--shm-size=128m",
+    "--pull=always"
+  ],
+  "postCreateCommand": "apk add --no-cache git && /venv/bin/pip install black && git config --global --add safe.directory /workspace"
 }

@@ -1,6 +1,10 @@
 from base import *
 from utils.global_logger import logger
 from utils.logger import format_time
+from utils.versions import Versions
+from utils.setup import setup_project, setup_release_version
+from utils.config_loader import CONFIG_MANAGER
+import threading
 
 
 class Update:
@@ -18,15 +22,15 @@ class Update:
         else:
             self.scheduler = schedule.default_scheduler
 
-    def update_schedule(self, process_name):
-        interval_minutes = int(self.auto_update_interval() * 60)
+    def update_schedule(self, process_name, config, key, instance_name):
+        interval_minutes = int(self.auto_update_interval(process_name, config) * 60)
         self.logger.debug(
             f"Scheduling automatic update check every {interval_minutes} minutes for {process_name}"
         )
 
         if process_name not in Update._jobs:
             self.scheduler.every(interval_minutes).minutes.do(
-                self.scheduled_update_check, process_name
+                self.scheduled_update_check, process_name, config, key, instance_name
             )
             Update._jobs[process_name] = True
             self.logger.debug(f"Scheduled automatic update check for {process_name}")
@@ -35,32 +39,192 @@ class Update:
             self.scheduler.run_pending()
             time.sleep(1)
 
-    def auto_update_interval(self):
-        if os.getenv("AUTO_UPDATE_INTERVAL") is None:
-            interval = 24
-        else:
-            interval = float(os.getenv("AUTO_UPDATE_INTERVAL"))
+    def auto_update_interval(self, process_name, config):
+        default_interval = 24
+        try:
+            interval = config.get("auto_update_interval", default_interval)
+        except Exception as e:
+            self.logger.error(
+                f"Failed to retrieve auto_update_interval for {process_name}: {e}"
+            )
+            interval = default_interval
+
         return interval
 
     def auto_update(self, process_name, enable_update):
+        key, instance_name = CONFIG_MANAGER.find_key_for_process(process_name)
+        config = CONFIG_MANAGER.get_instance(instance_name, key)
+        if not config:
+            raise ValueError(f"Configuration for {process_name} not found.")
         if enable_update:
             self.logger.info(
-                f"Automatic updates set to {format_time(self.auto_update_interval())} for {process_name}"
+                f"Automatic updates set to {format_time(self.auto_update_interval(process_name, config))} for {process_name}"
             )
             self.schedule_thread = threading.Thread(
-                target=self.update_schedule, args=(process_name,)
+                target=self.update_schedule,
+                args=(process_name, config, key, instance_name),
             )
             self.schedule_thread.start()
-            self.initial_update_check(process_name)
+            self.initial_update_check(process_name, config, key, instance_name)
         else:
             self.logger.info(f"Automatic update disabled for {process_name}")
-            self.start_process(process_name)
+            success, error = setup_project(self.process_handler, process_name)
+            if not success:
+                raise RuntimeError(error)
+            self.start_process(process_name, config, key, instance_name)
 
-    def initial_update_check(self, process_name):
+    def initial_update_check(self, process_name, config, key, instance_name):
         with self.updating:
-            if not self.update_check(process_name):
-                self.start_process(process_name)
+            success, error = self.update_check(process_name, config, key, instance_name)
+            if not success:
+                if "No updates available" in error:
+                    self.logger.info(error)
+                    self.start_process(process_name, config, key, instance_name)
+                else:
+                    raise RuntimeError(error)
 
-    def scheduled_update_check(self, process_name):
+    def scheduled_update_check(self, process_name, config, key, instance_name):
         with self.updating:
-            self.update_check(process_name)
+            success, error = self.update_check(process_name, config, key, instance_name)
+            if not success:
+                if "No updates available" in error:
+                    self.logger.info(error)
+                    self.start_process(process_name, config, key, instance_name)
+                else:
+                    raise RuntimeError(error)
+
+    def update_check(self, process_name, config, key, instance_name):
+        if config.get("release_version").lower() == "nightly":
+            nightly = True
+        else:
+            nightly = False
+        versions = Versions()
+        try:
+            repo_owner = config["repo_owner"]
+            repo_name = config["repo_name"]
+            update_needed, update_info = versions.compare_versions(
+                process_name,
+                repo_owner,
+                repo_name,
+                instance_name,
+                key,
+                nightly=nightly,
+            )
+
+            if not update_needed:
+                return False, f"{update_info.get('message')} for {process_name}."
+
+            self.logger.info(
+                f"Updating {process_name} from {update_info.get('current_version')} to {update_info.get('latest_version')}."
+            )
+            if process_name in self.process_handler.process_names:
+                self.stop_process(process_name)
+            if process_name in self.process_handler.setup_tracker:
+                self.process_handler.setup_tracker.remove(process_name)
+            release_version = f"{update_info.get('latest_version')}"
+            config["release_version"] = release_version
+            success, error = setup_release_version(
+                self.process_handler, config, process_name, key
+            )
+            if not success:
+                return (
+                    False,
+                    f"Failed to update {process_name} to {release_version}: {error}",
+                )
+            success, error = setup_project(self.process_handler, process_name)
+            if not success:
+                return (
+                    False,
+                    f"Failed to update {process_name} to {release_version}: {error}",
+                )
+            self.start_process(process_name, config, key, instance_name)
+            return True, f"Updated {process_name} to {release_version}."
+
+        except Exception as e:
+            return False, f"Update check failed for {process_name}: {e}"
+
+    def stop_process(self, process_name):
+        self.process_handler.stop_process(process_name)
+
+    def start_process(self, process_name, config, key, instance_name):
+        if config.get("wait_for_dir", False):
+            while not os.path.exists(wait_dir := config["wait_for_dir"]):
+                self.logger.info(
+                    f"Waiting for directory {wait_dir} to become available before starting {process_name}"
+                )
+                time.sleep(10)
+
+        if config.get("wait_for_url", False):
+            wait_for_urls = config["wait_for_url"]
+            time.sleep(5)
+            start_time = time.time()
+
+            for wait_entry in wait_for_urls:
+                wait_url = wait_entry["url"]
+                auth = wait_entry.get("auth", None)
+
+                logger.info(
+                    f"Waiting to start {process_name} until {wait_url} is accessible."
+                )
+
+                while time.time() - start_time < 600:
+                    try:
+                        if auth:
+                            response = requests.get(
+                                wait_url, auth=(auth["user"], auth["password"])
+                            )
+                            # logger.debug(
+                            #    f"Authenticating to {wait_url} with {auth['user']}:{auth['password']}"
+                            # )
+                        else:
+                            response = requests.get(wait_url)
+
+                        if 200 <= response.status_code < 300:
+                            logger.info(
+                                f"{wait_url} is accessible with {response.status_code}."
+                            )
+                            break
+                        else:
+                            logger.debug(
+                                f"Received status code {response.status_code} while waiting for {wait_url} to be accessible."
+                            )
+                    except requests.RequestException as e:
+                        logger.debug(f"Waiting for {wait_url}: {e}")
+                    time.sleep(5)
+                else:
+                    raise RuntimeError(
+                        f"Timeout: {wait_url} is not accessible after 600 seconds."
+                    )
+
+        command = config["command"]
+        config_dir = config["config_dir"]
+
+        if config.get("suppress_logging", False):
+            self.logger.info(f"Suppressing {process_name} logging")
+            suppress_logging = True
+        else:
+            suppress_logging = False
+
+        if key == "riven_backend":
+            if not os.path.exists(os.path.join(config_dir, "data", "settings.json")):
+                from utils.riven_settings import set_env_variables
+
+                logger.info("Riven initial setup for first run")
+                threading.Thread(target=set_env_variables).start()
+
+        env = os.environ.copy()
+        env.update(config.get("env", {}))
+
+        self.process_handler.start_process(
+            process_name,
+            config_dir,
+            command,
+            instance_name,
+            suppress_logging=suppress_logging,
+            env=env,
+        )
+        if key == "riven_backend":
+            from utils.riven_settings import load_settings
+
+            time.sleep(10)
+            load_settings()

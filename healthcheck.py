@@ -1,140 +1,42 @@
-from base import *
+import json
+import psutil
+import sys
 
 
-def load_disabled_health_checks(status_file_path):
+def load_running_processes(file_path="/healthcheck/running_processes.json"):
     try:
-        with open(status_file_path, "r") as f:
-            status_data = load(f)
-        disabled_health_checks = {
-            process_name
-            for process_name, status in status_data.items()
-            if status == "stopped"
-        }
-        return disabled_health_checks
+        with open(file_path, "r") as f:
+            return json.load(f)
     except FileNotFoundError:
-        return set()
-    except JSONDecodeError as e:
-        return set()
+        print(f"Error: Running processes file not found: {file_path}", file=sys.stderr)
+        sys.exit(1)
+    except json.JSONDecodeError:
+        print(f"Error: Failed to decode JSON in {file_path}", file=sys.stderr)
+        sys.exit(1)
 
-def check_processes(process_info, skip_conditions, disabled_health_checks):
-    found_processes = {key: False for key in process_info.keys()}
 
-    for proc in psutil.process_iter():
-        try:
-            cmdline = " ".join(proc.cmdline())
-            for process_name, info in process_info.items():
-                if process_name in disabled_health_checks:
-                    continue
-                if info["regex"].search(cmdline):
-                    found_processes[process_name] = True
-            for condition in skip_conditions:
-                if condition["regex"].search(cmdline):
-                    condition["found"] = True
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-            pass
-
-    return found_processes
-
-try:
-    status_file_path = "/healthcheck/health_status.json"
-    disabled_health_checks = load_disabled_health_checks(status_file_path)
-
+def verify_processes(running_processes):
     error_messages = []
+    for process_name, pid in running_processes.items():
+        if not psutil.pid_exists(pid):
+            error_messages.append(
+                f"The process {process_name} (PID: {pid}) is not running."
+            )
+    return error_messages
 
-    if RDAPIKEY and ADAPIKEY and RCLONEMN:
-        RCLONEMN_RD = f"{RCLONEMN}_RD"
-        RCLONEMN_AD = f"{RCLONEMN}_AD"
+
+def main():
+    file_path = "/healthcheck/running_processes.json"
+    running_processes = load_running_processes(file_path)
+    errors = verify_processes(running_processes)
+
+    if errors:
+        print(" | ".join(errors), file=sys.stderr)
+        sys.exit(1)
     else:
-        RCLONEMN_RD = RCLONEMN_AD = RCLONEMN
+        print("All processes are healthy.")
+        sys.exit(0)
 
-    mount_type = (
-        "serve nfs"
-        if not NFSMOUNT is None and str(NFSMOUNT).lower() == "true"
-        else "mount"
-    )
 
-    process_info = {
-        "zurg_rd": {
-            "regex": re.compile(rf"/zurg/RD/zurg.*--preload", re.IGNORECASE),
-            "error_message": "The Zurg RD process is not running.",
-            "should_run": str(ZURG).lower() == "true" and RDAPIKEY,
-        },
-        "zurg_ad": {
-            "regex": re.compile(rf"/zurg/AD/zurg.*--preload", re.IGNORECASE),
-            "error_message": "The Zurg AD process is not running.",
-            "should_run": str(ZURG).lower() == "true" and ADAPIKEY,
-        },
-        "riven_frontend": {
-            "regex": re.compile(r"node build"),
-            "error_message": "The Riven frontend process is not running.",
-            "should_run": str(RIVENFRONTEND).lower() == "true"
-            or str(RIVEN).lower() == "true"
-            and os.path.exists(f"{RCLONEDIR}/{RCLONEMN}/__all__"),
-        },
-        "riven_backend": {
-            "regex": re.compile(r"/riven/backend/venv/bin/python src/main.py"),
-            "error_message": "The Riven backend process is not running.",
-            "should_run": str(RIVENBACKEND).lower() == "true"
-            or str(RIVEN).lower() == "true"
-            and os.path.exists(f"{RCLONEDIR}/{RCLONEMN}/__all__"),
-        },
-        "rclonemn_rd": {
-            "regex": re.compile(rf"rclone {mount_type} {re.escape(RCLONEMN_RD)}:"),
-            "error_message": f"The Rclone RD process for {RCLONEMN_RD} is not running.",
-            "should_run": str(ZURG).lower() == "true"
-            and RDAPIKEY
-            and os.path.exists(f"/healthcheck/{RCLONEMN}"),
-        },
-        "rclonemn_ad": {
-            "regex": re.compile(rf"rclone {mount_type} {re.escape(RCLONEMN_AD)}:"),
-            "error_message": f"The Rclone AD process for {RCLONEMN_AD} is not running.",
-            "should_run": str(ZURG).lower() == "true"
-            and ADAPIKEY
-            and os.path.exists(f"/healthcheck/{RCLONEMN}"),
-        },
-        "PostgreSQL": {
-            "regex": re.compile(r"postgres -D"),
-            "error_message": f"The PostgreSQL process is not running.",
-            "should_run": str(RIVENBACKEND).lower() == "true"
-            or str(RIVEN).lower() == "true"
-            and os.path.exists(f"{RCLONEDIR}/{RCLONEMN}/__all__"),
-        },
-        "Zilean": {
-            "regex": re.compile(r"/zilean-api"),
-            "error_message": f"The Zilean process is not running.",
-            "should_run": str(ZILEAN).lower() == "true"
-            and os.path.exists(f"{RCLONEDIR}/{RCLONEMN}/__all__"),
-        },
-    }
-
-    skip_conditions = [
-        {"regex": re.compile(r"npm install"), "found": False},
-        {
-            "regex": re.compile(
-                r"node --max-old-space-size=2048 ./node_modules/.bin/vite build"
-            ),
-            "found": False,
-        },
-    ]
-
-    process_status = check_processes(
-        process_info, skip_conditions, disabled_health_checks
-    )
-
-    skip_riven_frontend = any(condition["found"] for condition in skip_conditions)
-
-    for process_name, info in process_info.items():
-        if info["should_run"] and not process_status[process_name]:
-            if process_name == "riven_frontend" and skip_riven_frontend:
-                continue
-            if process_name in disabled_health_checks:
-                continue
-            error_messages.append(info["error_message"])
-
-    if error_messages:
-        error_message_combined = " | ".join(error_messages)
-        raise Exception(error_message_combined)
-
-except Exception as e:
-    print(str(e), file=sys.stderr)
-    exit(1)
+if __name__ == "__main__":
+    main()

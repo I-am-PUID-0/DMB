@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## Version [6.0.0] - 2025-01-09 🚀
+
+### Breaking Changes ⚠️
+
+- DO NOT UPDATE UNTIL YOU HAVE REVIEWED THE CHANGES!
+- Changed most, if not all, environment variables - new dmb_config.json - see Notes
+
+### Changed 🔄
+
+- Refactor: EVERYTHING! 
+- Refactor: Improved shutdown process execution time
+- [Issue #80](https://github.com/I-am-PUID-0/DMB/issues/80) FastAPI - Add real time logs view
+- [Issue #83](https://github.com/I-am-PUID-0/DMB/issues/83) FastAPI - Update healthcheck
+
+### Fixed 🛠️
+
+- PostgreSQL: Retry logic during server startup 
+- PostgreSQL: Init all databases on the first run - prevents Zilean and Riven database issues on the first run 
+- PostgreSQL: automatically remove postmaster.pid file retained from an improper shutdown
+
+### Added ✨
+
+- Config: Added dmb_config.json to the `/config` directory for complete control over DMB
+- Riven: Added init function for first run of Riven Backend - mitigates first run startup issues
+- Zurg: Unlimited simultaneous deployments of Zurg - simply add another Zurg "instance" in the dmb_config.json 
+- rclone: Optional deployments of rclone w/ direct connection to debrid service - bypasses using Zurg for the debrid service
+- rclone: Unlimited simultaneous deployments of rclone - simply add another rclone "instance" in the dmb_config.json
+- rclone: More robust stale mount handling 
+- mergerfs: Add mergerfs to combine all rclone mounts into a consolidated directory - e.g., symlinking for Riven using `/data/consolidated/__all__` for all rclone mounts - see Notes
+- PostgreSQL: Any setting within the postgresql.conf can be set from within the dmb_config.json
+
+### Removed 
+
+- rclone: Removed NFS mounts for now
+- Duplicate Cleanup: Removed for now
+
+### Notes 📝
+
+- A dmb_config.json has been added to DMB to allow for more granular control over the processes within and configuration of DMB.
+- DMB will respect and prioritize variables provided though environment variables, a .env file, docker secrets, and the dmb_config.json 
+- environment variables, a .env file, and docker secrets are held at the same level and will override any setting in the dmb_config.json
+- DMB will now come pre-configured to run all processes once at least one debrid service API key is entered through any of the above mentioned methods   
+- Multiple simultaneous debrid services are not currently supported for Riven
+- Zurg currently only supports RealDebrid 
+
+
 ## Version [5.4.5] - 2024-11-22 🚀
 
 ### Fixed 🛠️
@@ -405,7 +451,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed 🔄
 
 - Update process: Refactored update process to apply updates to Zurg and Riven before starting the processes 🔄
-- Zurg: Disabling plex_update.sh in config file has been disbaled, for now. Comment out the line in the config file to disable the Zurg based plex update process if desired 🔄
+- Zurg: Disabling plex_update.sh in config file has been disabled, for now. Comment out the line in the config file to disable the Zurg based plex update process if desired 🔄
 
 ### Added ✨
 
@@ -479,7 +525,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 
 - **Delete all Riven files and directories within the data directory before starting the new version of Riven!**
-- **Automatic updates for Riven backend and frontend are not funtioal yet; will be fixed in a follow-on release.**
+- **Automatic updates for Riven backend and frontend are not functional yet; will be fixed in a follow-on release.**
 - **Other features may also not be functional yet; will be fixed in a follow-on release.**
 - This release resolves [Issue #19](https://github.com/I-am-PUID-0/DMB/issues/19), [Issue #20](https://github.com/I-am-PUID-0/DMB/issues/20), and [Issue #10](https://github.com/I-am-PUID-0/DMB/issues/10)
 

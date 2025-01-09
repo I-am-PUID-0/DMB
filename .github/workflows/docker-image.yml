@@ -136,6 +136,7 @@ jobs:
 
   release:
     needs: build-and-push
+    if: github.ref_name == 'master'
     runs-on: ubuntu-latest
     outputs:
       release_exists: ${{ steps.check_release.outputs.release_exists }}
@@ -177,7 +178,7 @@ jobs:
               --prerelease=false
   announce:
     needs: [release, build-and-push]
-    if: needs.release.outputs.release_exists == 'false'
+    if: needs.release.outputs.release_exists == 'false' && github.ref_name == 'master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

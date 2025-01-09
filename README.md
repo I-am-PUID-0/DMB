@@ -40,6 +40,7 @@ services:
     stop_grace_period: 30s                                           ## Adjust as need to allow for graceful shutdown of the container
     stdin_open: true                                                 ## docker run -i
     tty: true                                                        ## docker run -t    
+    shm_size: 128mb                                                   ## increased shm_size for PostgreSQL
     volumes:   
       - /home/username/docker/DMB/config:/config                     ## Location of configuration files. If a Zurg config.yml and/or Zurg app is placed here, it will be used to override the default configuration and/or app used at startup. 
       - /home/username/docker/DMB/log:/log                           ## Location for logs
@@ -66,6 +67,7 @@ services:
     ports:
       - "3000:3000"                                                 ## Riven frontend
       - "5050:5050"                                                 ## pgAdmin 4
+      - "3005:3005"                                                 ## DMB frontend
     devices:
       - /dev/fuse:/dev/fuse:rwm
     cap_add:

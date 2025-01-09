@@ -1,12 +1,70 @@
 from base import *
 from utils.global_logger import logger
-import psycopg2
-from psycopg2 import sql
+from utils.config_loader import CONFIG_MANAGER
+
+
+dmb_config = CONFIG_MANAGER.config.get("dmb")
+riven_backend_config = CONFIG_MANAGER.config.get("riven_backend")
+riven_frontend_config = CONFIG_MANAGER.config.get("riven_frontend")
+postgres_config = CONFIG_MANAGER.config.get("postgres")
+zilean_config = CONFIG_MANAGER.config.get("zilean")
 
 
 SENSITIVE_KEY_PATTERN = re.compile(
     r"API|TOKEN|URL|HOST|PASSWORD|KEY|SECRET|USERNAME", re.IGNORECASE
 )
+
+
+def parse_config_keys(config):
+    config_keys = {
+        "DOWNLOADERS_REAL_DEBRID_API_KEY": None,
+        "DOWNLOADERS_ALL_DEBRID_API_KEY": None,
+        "DOWNLOADERS_TORBOX_API_KEY": None,
+        "SYMLINK_RCLONE_PATH": None,
+    }
+
+    rclone_instances = config.get("rclone", {}).get("instances", {})
+    zurg_instances = config.get("zurg", {}).get("instances", {})
+
+    key_map = {
+        "RealDebrid": "DOWNLOADERS_REAL_DEBRID_API_KEY",
+        "AllDebrid": "DOWNLOADERS_ALL_DEBRID_API_KEY",
+        "TorBox": "DOWNLOADERS_TORBOX_API_KEY",
+    }
+
+    enabled_rclone_instances = []
+    for instance_name, rclone_instance in rclone_instances.items():
+        if not rclone_instance.get("enabled", False):
+            continue
+
+        enabled_rclone_instances.append(rclone_instance)
+        zurg_instance = zurg_instances.get(instance_name, {})
+        if rclone_instance.get("zurg_enabled", False) and zurg_instance.get(
+            "enabled", False
+        ):
+            api_key = zurg_instance.get("api_key")
+        else:
+            api_key = rclone_instance.get("api_key")
+
+        if instance_name in key_map:
+            config_keys[key_map[instance_name]] = api_key
+
+    if len(enabled_rclone_instances) == 1:
+        rclone_instance = enabled_rclone_instances[0]
+        mount_dir = rclone_instance.get("mount_dir", "")
+        mount_name = rclone_instance.get("mount_name", "")
+        symlink_path = f"{mount_dir}/{mount_name}/__all__"
+        config_keys["SYMLINK_RCLONE_PATH"] = symlink_path
+    elif len(enabled_rclone_instances) > 1:
+        first_instance = enabled_rclone_instances[0]
+        mount_dir = first_instance.get("mount_dir", "")
+        mount_name = first_instance.get("mount_name", "")
+        config_keys["SYMLINK_RCLONE_PATH"] = f"{mount_dir}/{mount_name}/__all__"
+
+    CONFIG_MANAGER.config["riven_backend"]["wait_for_dir"] = config_keys.get(
+        "SYMLINK_RCLONE_PATH"
+    )
+    return config_keys
 
 
 def obfuscate_value(key, value, visible_chars=4):
@@ -34,44 +92,43 @@ def save_server_config(backend_url, api_key, config_dir="/config"):
         logger.error(f"Error saving server config: {e}")
 
 
-def load_api_key_from_file(settings_file_path="/riven/backend/data/settings.json"):
-    try:
-        with open(settings_file_path, "r") as file:
-            settings = load(file)
-            api_key = settings.get("api_key")
-            backend_url = os.getenv("BACKEND_URL", "http://127.0.0.1:8080")
-
-            if api_key:
-                logger.info(f"API key loaded successfully from {settings_file_path}")
-
-                save_server_config(backend_url, api_key)
-
-                return api_key
-            else:
-                return None
-    except FileNotFoundError:
-        logger.error(f"Settings file {settings_file_path} not found")
-        return None
-    except JSONDecodeError as e:
-        logger.error(f"Error parsing {settings_file_path}: {e}")
-        return None
-
-
-def set_env_variables():
-    def set_env_variable(key, value, default=None):
+def load_api_key_from_file(
+    settings_file_path="/riven/backend/data/settings.json", timeout=60
+):
+    start_time = time.time()
+    while True:
         try:
-            if value is not None:
-                os.environ[key] = value
-            elif default is not None and key not in os.environ:
-                os.environ[key] = default
-            if key in os.environ:
-                obfuscated_value = obfuscate_value(key, os.environ[key])
-                logger.debug(f"Successfully set {key} to {obfuscated_value}")
-            else:
-                logger.debug(f"{key} not set because no value or default was provided")
-        except Exception as e:
-            logger.error(f"Error setting {key}: {e}")
+            with open(settings_file_path, "r") as file:
+                settings = load(file)
+                api_key = settings.get("api_key")
+                backend_url = f"http://{riven_backend_config.get('host')}:{riven_backend_config.get('port')}"
 
+                if api_key:
+                    logger.info(
+                        f"API key loaded successfully from {settings_file_path}"
+                    )
+
+                    save_server_config(backend_url, api_key)
+
+                    return api_key
+                else:
+                    logger.warning(
+                        f"API key not found in {settings_file_path}, retrying..."
+                    )
+        except FileNotFoundError:
+            logger.error(f"Settings file {settings_file_path} not found, retrying...")
+        except JSONDecodeError as e:
+            logger.error(f"Error parsing {settings_file_path}: {e}, retrying...")
+
+        if time.time() - start_time > timeout:
+            logger.error(
+                f"Timeout exceeded ({timeout} seconds) while loading API key from {settings_file_path}"
+            )
+            return None
+        time.sleep(5)
+
+
+def backend_api_key():
     api_key = os.getenv("BACKEND_API_KEY")
     if not api_key:
         logger.debug(
@@ -82,36 +139,59 @@ def set_env_variables():
             os.environ["BACKEND_API_KEY"] = api_key
         else:
             logger.debug("BACKEND_API_KEY not set")
+    return api_key
 
-    if ZILEAN is not None and ZILEAN.lower() == "true":
-        set_env_variable("SCRAPING_ZILEAN_URL", None, "http://localhost:8182")
+
+def set_env_variables():
+    keys = parse_config_keys(CONFIG_MANAGER.config)
+    real_debrid_api_key = keys.get("DOWNLOADERS_REAL_DEBRID_API_KEY")
+    all_debrid_api_key = keys.get("DOWNLOADERS_ALL_DEBRID_API_KEY")
+    torbox_api_key = keys.get("DOWNLOADERS_TORBOX_API_KEY")
+    symlink_rclone_path = keys.get("SYMLINK_RCLONE_PATH")
+
+    def set_env(key, value, default=None):
+        try:
+            if value is not None:
+                os.environ[key] = value
+            elif default is not None and key not in os.environ:
+                os.environ[key] = default
+            # if key in os.environ:
+            # obfuscated_value = obfuscate_value(key, os.environ[key])
+            # logger.debug(f"Successfully set {key} to {obfuscated_value}")
+            # else:
+            # logger.debug(f"{key} not set because no value or default was provided")
+        except Exception as e:
+            logger.error(f"Error setting {key}: {e}")
+
+    if zilean_config.get("enabled"):
+        set_env(
+            "RIVEN_SCRAPING_ZILEAN_URL",
+            f"http://{zilean_config.get('host')}:{zilean_config.get('port')}",
+        )
 
     env_vars = {
-        "DOWNLOADERS_REAL_DEBRID_API_KEY": RDAPIKEY,
-        "UPDATERS_PLEX_URL": PLEXADD,
-        "UPDATERS_PLEX_TOKEN": PLEXTOKEN,
-        "CONTENT_OVERSEERR_URL": SEERRADD,
-        "CONTENT_OVERSEERR_API_KEY": SEERRAPIKEY,
-        "SYMLINK_RCLONE_PATH": SYMLINKRCLONEPATH,
-        "SYMLINK_LIBRARY_PATH": SYMLINKLIBRARYPATH,
-        "BACKEND_URL": RIVENBACKENDURL,
-        "DIALECT": RFDIALECT,
-        "DATABASE_URL": RIVENDATABASEURL,
-        "DATABASE_HOST": RIVENDATABASEHOST,
-        "BACKEND_API_KEY": api_key,
+        "RIVEN_DOWNLOADERS_REAL_DEBRID_API_KEY": real_debrid_api_key,
+        "RIVEN_DOWNLOADERS_ALL_DEBRID_API_KEY": all_debrid_api_key,
+        "RIVEN_DOWNLOADERS_TORBOX_API_KEY": torbox_api_key,
+        "RIVEN_UPDATERS_PLEX_URL": (
+            None
+            if not dmb_config.get("plex_address")
+            else dmb_config.get("plex_address")
+        ),
+        "RIVEN_UPDATERS_PLEX_TOKEN": (
+            None if not dmb_config.get("plex_token") else dmb_config.get("plex_token")
+        ),
+        "RIVEN_SYMLINK_RCLONE_PATH": symlink_rclone_path,
+        "RIVEN_SYMLINK_LIBRARY_PATH": riven_backend_config.get("symlink_library_path"),
+        "BACKEND_URL": f"http://{riven_backend_config.get('host')}:{riven_backend_config.get('port')}",
+        "RIVEN_DATABASE_URL": f"postgres://{postgres_config.get('user')}:{postgres_config.get('password')}@{postgres_config.get('host')}/riven",
+        "RIVEN_DATABASE_HOST": f"postgresql+psycopg2://{postgres_config.get('user')}:{postgres_config.get('password')}@{postgres_config.get('host')}/riven",
     }
 
-    default_env_vars = {
-        "SYMLINK_RCLONE_PATH": f"{RCLONEDIR}/{RCLONEMN}/__all__",
-        "SYMLINK_LIBRARY_PATH": "/mnt",
-        "DATABASE_HOST": f"postgresql+psycopg2://{postgres_user}:{postgres_password}@{db_host}/{postgres_db}",
-        "DATABASE_URL": f"postgres://{postgres_user}:{postgres_password}@{db_host}/{postgres_db}",
-        "BACKEND_URL": "http://127.0.0.1:8080",
-        "DIALECT": "postgres",
-    }
+    default_env_vars = {}
 
     for key, value in env_vars.items():
-        set_env_variable(key, value, default_env_vars.get(key))
+        set_env(key, value, default_env_vars.get(key))
 
 
 def get_api_headers():
@@ -125,7 +205,10 @@ def get_api_headers():
 
 
 def get_backend_urls():
-    base_url = os.getenv("BACKEND_URL", "http://127.0.0.1:8080")
+    base_url = os.getenv(
+        "BACKEND_URL",
+        f"http://{riven_backend_config.get('host')}:{riven_backend_config.get('port')}",
+    )
     api_key = os.getenv("BACKEND_API_KEY")
 
     if api_key:
@@ -179,12 +262,12 @@ def fetch_settings(url, headers, max_retries=10, delay=5):
 
 
 def get_env_value(key, default=None):
-    env_key = key.replace(".", "_").upper()
+    env_key = f"RIVEN_{key.replace('.', '_').upper()}"
     value = os.getenv(env_key, default)
     obfuscated_value = obfuscate_value(key, value)
-    logger.debug(
-        f"Checking environment variable for key '{env_key}': '{obfuscated_value}'"
-    )
+    # logger.debug(
+    # f"Checking environment variable for key '{env_key}': '{obfuscated_value}'"
+    # )
     return value
 
 
@@ -196,10 +279,9 @@ def update_settings(current_settings, updated_settings, payload, prefix=""):
         return
     for key, value in current_settings.items():
         full_key = f"{prefix}.{key}" if prefix else key
-        logger.debug(f"Processing key '{full_key}' with value Type: {type(value)}")
+        # logger.debug(f"Processing key '{full_key}' with value Type: {type(value)}")
         if key == "debug":
-            log_level = os.getenv("LOG_LEVEL", "").upper()
-            if log_level == "DEBUG":
+            if riven_backend_config.get("log_level").upper() == "DEBUG":
                 updated_settings["debug"] = True
                 payload.append({"key": full_key, "value": True})
                 logger.info(f"LOG_LEVEL is DEBUG, setting 'debug' to True")
@@ -219,15 +301,15 @@ def update_settings(current_settings, updated_settings, payload, prefix=""):
                     if "enabled" in value:
                         updated_settings[key]["enabled"] = True
                         payload.append({"key": f"{full_key}.enabled", "value": True})
-                        logger.debug(
-                            f"'{full_key}.enabled' set to True due to updates in nested settings"
-                        )
+                        # logger.debug(
+                        # f"'{full_key}.enabled' set to True due to updates in nested settings"
+                        # )
                     elif "enable" in value:
                         updated_settings[key]["enable"] = True
                         payload.append({"key": f"{full_key}.enable", "value": True})
-                        logger.debug(
-                            f"'{full_key}.enable' set to True due to updates in nested settings"
-                        )
+                        # logger.debug(
+                        # f"'{full_key}.enable' set to True due to updates in nested settings"
+                        # )
         elif env_value is not None:
             try:
                 if env_value.lower() in ["true", "false"]:
@@ -241,22 +323,23 @@ def update_settings(current_settings, updated_settings, payload, prefix=""):
                         updated_settings[key] = env_value
                 payload.append({"key": full_key, "value": updated_settings[key]})
                 obfuscated_value = obfuscate_value(full_key, updated_settings[key])
-                logger.debug(
-                    f"Setting '{full_key}' updated to '{obfuscated_value}' from environment variable"
-                )
+                # logger.debug(
+                # f"Setting '{full_key}' updated to '{obfuscated_value}' from environment variable"
+                # )
             except ValueError:
                 logger.error(f"ValueError converting environment variable '{full_key}'")
-        else:
-            logger.debug(
-                f"No environment variable found for '{full_key}', keeping original value."
-            )
-        logger.debug(f"Processed setting for '{key}'")
+        # else:
+        # logger.debug(
+        # f"No environment variable found for '{full_key}', keeping original value."
+        # )
+        # logger.debug(f"Processed setting for '{key}'")
 
 
 def load_settings():
     time.sleep(10)
     logger.info("Loading Riven settings")
     set_env_variables()
+    backend_api_key()
     urls = get_backend_urls()
     get_all = urls["get_all"]
     headers = get_api_headers()
@@ -318,7 +401,3 @@ def load_settings():
     except Exception as e:
         logger.error(f"Error loading Riven settings: {e}")
         raise
-
-
-if __name__ == "__main__":
-    load_settings()
