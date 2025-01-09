@@ -21,6 +21,8 @@ def setup_release_version(process_handler, config, process_name, key):
         success, error = clear_directory(config["config_dir"], exclude_dirs)
         if not success:
             return False, f"Failed to clear directory: {error}"
+    else:
+        exclude_dirs = None
 
     if key == "zurg":
         success, error = downloader.download_release_version(

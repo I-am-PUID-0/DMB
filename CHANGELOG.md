@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Version [6.0.1] - 2025-01-09 🚀
 
+### Fixed 🛠️
+
+- Zurg: Version download
 
 ## Version [6.0.0] - 2025-01-09 🚀
 
@@ -16,29 +20,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed 🔄
 
-- Refactor: EVERYTHING! 
+- Refactor: EVERYTHING!
 - Refactor: Improved shutdown process execution time
 - [Issue #80](https://github.com/I-am-PUID-0/DMB/issues/80) FastAPI - Add real time logs view
 - [Issue #83](https://github.com/I-am-PUID-0/DMB/issues/83) FastAPI - Update healthcheck
 
 ### Fixed 🛠️
 
-- PostgreSQL: Retry logic during server startup 
-- PostgreSQL: Init all databases on the first run - prevents Zilean and Riven database issues on the first run 
+- PostgreSQL: Retry logic during server startup
+- PostgreSQL: Init all databases on the first run - prevents Zilean and Riven database issues on the first run
 - PostgreSQL: automatically remove postmaster.pid file retained from an improper shutdown
 
 ### Added ✨
 
 - Config: Added dmb_config.json to the `/config` directory for complete control over DMB
 - Riven: Added init function for first run of Riven Backend - mitigates first run startup issues
-- Zurg: Unlimited simultaneous deployments of Zurg - simply add another Zurg "instance" in the dmb_config.json 
+- Zurg: Unlimited simultaneous deployments of Zurg - simply add another Zurg "instance" in the dmb_config.json
 - rclone: Optional deployments of rclone w/ direct connection to debrid service - bypasses using Zurg for the debrid service
 - rclone: Unlimited simultaneous deployments of rclone - simply add another rclone "instance" in the dmb_config.json
-- rclone: More robust stale mount handling 
+- rclone: More robust stale mount handling
 - mergerfs: Add mergerfs to combine all rclone mounts into a consolidated directory - e.g., symlinking for Riven using `/data/consolidated/__all__` for all rclone mounts - see Notes
 - PostgreSQL: Any setting within the postgresql.conf can be set from within the dmb_config.json
 
-### Removed 
+### Removed
 
 - rclone: Removed NFS mounts for now
 - Duplicate Cleanup: Removed for now
@@ -46,19 +50,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes 📝
 
 - A dmb_config.json has been added to DMB to allow for more granular control over the processes within and configuration of DMB.
-- DMB will respect and prioritize variables provided though environment variables, a .env file, docker secrets, and the dmb_config.json 
+- DMB will respect and prioritize variables provided though environment variables, a .env file, docker secrets, and the dmb_config.json
 - environment variables, a .env file, and docker secrets are held at the same level and will override any setting in the dmb_config.json
-- DMB will now come pre-configured to run all processes once at least one debrid service API key is entered through any of the above mentioned methods   
+- DMB will now come pre-configured to run all processes once at least one debrid service API key is entered through any of the above mentioned methods
 - Multiple simultaneous debrid services are not currently supported for Riven
-- Zurg currently only supports RealDebrid 
-
+- Zurg currently only supports RealDebrid
 
 ## Version [5.4.5] - 2024-11-22 🚀
 
 ### Fixed 🛠️
 
 - [PR #88](https://github.com/I-am-PUID-0/DMB/pull/88) Zilean: Add database connection timeouts 🐛 - Thanks @skeet70 🙏
-
 
 ## Version [5.4.4] - 2024-11-16 🚀
 
@@ -71,14 +73,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Zilean: Only Zilean v2.1.0 and newer are supported due to dotnet update to version 9 🚨
 
-
 ## Version [5.4.3] - 2024-11-01 🚀
 
 ### Changed 🔄
 
-- Riven Frontend: Updated the name and location of the `server-config.json` file to `server.json`  and to be transferred to the /riven/frontend/config directory on startup 🔄
+- Riven Frontend: Updated the name and location of the `server-config.json` file to `server.json` and to be transferred to the /riven/frontend/config directory on startup 🔄
 - Re-enabled reaping of zombie processes 🔄
-
 
 ## Version [5.4.2] - 2024-10-29 🚀
 
@@ -86,19 +86,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [Issue #72](https://github.com/I-am-PUID-0/DMB/issues/72) Zilean Permissions Issue 🐛
 
-
 ## Version [5.4.1] - 2024-10-28 🚀
 
 ### Fixed 🛠️
 
 - [Issue #71](https://github.com/I-am-PUID-0/DMB/issues/71) PostgreSQL Graceful Shutdown 🐛
 
-
 ## Version [5.4.0] - 2024-10-25 🚀
 
 ### Fixed 🛠️
 
-- [Issue #14](https://github.com/I-am-PUID-0/DMB/issues/14) Add Riven build process to Dockerfile ✨ 
+- [Issue #14](https://github.com/I-am-PUID-0/DMB/issues/14) Add Riven build process to Dockerfile ✨
 - [Issue #65](https://github.com/I-am-PUID-0/DMB/issues/65) Zilean Enabled when ZILEAN_ENABLED=false 🐛
 - [Issue #66](https://github.com/I-am-PUID-0/DMB/issues/66) Dockerfile pulls from Riven Frontend main branch vs. latest release 🐛
 - [Issue #67](https://github.com/I-am-PUID-0/DMB/issues/67) Future releases for Riven Frontend and Backend will require an API Key 🐛
@@ -116,13 +114,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Utils: Added description to reaped processes 🔄
 - Logging: Added thread lock to rollover 🔄
 
-
 ### Notes 📝
 
 - Future releases for Riven Frontend and Backend will require an API Key to be set 🚨
 - With these changes, you can now use the latest development versions of Riven Frontend and Backend 🌙
 - Use the RIVEN_BACKEND_BRANCH=release-please--branches--main and RIVEN_FRONTEND_BRANCH=release-please--branches--main environment variables to test the current development versions of Riven 🌙
-
 
 ## Version [5.3.2] - 2024-10-18 🚀
 
@@ -131,8 +127,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Issue #60](https://github.com/I-am-PUID-0/DMB/issues/60) Does not correctly handle deleted files in new Riven releases 🐛
 - [Issue #61](https://github.com/I-am-PUID-0/DMB/issues/61) Riven Backend v0.16.0 Broke Settings Update 🐛
 - [Issue #62](https://github.com/I-am-PUID-0/DMB/issues/62) Riven Frontend v0.14.0 Broke VersionFilePath 🐛
-- [Issue #63](https://github.com/I-am-PUID-0/DMB/issues/63) Riven Frontend v0.16.0 Broke Frontend Build 🐛 - This may be a temporary fix... 
-
+- [Issue #63](https://github.com/I-am-PUID-0/DMB/issues/63) Riven Frontend v0.16.0 Broke Frontend Build 🐛 - This may be a temporary fix...
 
 ## Version [5.3.1] - 2024-10-15 🚀
 
@@ -140,12 +135,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [Issue #59](https://github.com/I-am-PUID-0/DMB/issues/59) Zombie dotnet Processes Accumulating Over Time 🐛
 
-
 ## Version [5.3.0] - 2024-10-03 🚀
 
 ### Added ✨
 
-- pgAdmin 4: Added system_stats extension to pgAdmin 4 for host system monitoring 📦 
+- pgAdmin 4: Added system_stats extension to pgAdmin 4 for host system monitoring 📦
 - pgAdmin 4: Added pgAgent extension to pgAdmin 4 for job scheduling 📦
 
 ### Fixed 🛠️
@@ -156,7 +150,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - RIVEN_BACKEND_URL: Linked to the Riven backend load_settings function. [PR #57](https://github.com/I-am-PUID-0/DMB/pull/57) Thanks @FunkeCoder23 🙏
 
-
 ## Version [5.2.0] - 2024-10-01 🚀
 
 ### Added ✨
@@ -166,21 +159,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes 📝
 
 - pgAdmin 4 is enabled by setting the `PGADMIN_SETUP_EMAIL` and `PGADMIN_SETUP_PASSWORD` environment variables 🆔🔐
-- The DMB PostgreSQL server is automatically added to pgAdmin4 Servers🗄️ 
+- The DMB PostgreSQL server is automatically added to pgAdmin4 Servers🗄️
 - On the first access of pgAdmin 4, the DMB PostgreSQL server password will need to be set in pgAdmin 4 🗄️ - the default PostgreSQL server password is `postgres` or set with `POSTGRES_PASSWORD` 🔐
 - To access pgAdmin 4, navigate to `http://<DMB_IP>:5050` in your browser 🌐
 - The pgAdmin 4 data is stored in the `/pgadmin/data` directory - though, not required to mounted to the host 📁
 - The pgAdmin 4 config_local.py is stored in the `/pgadmin/data` directory and symlinked at startup 📝 - review the [pgAdmin 4 documentation](https://www.pgadmin.org/docs/pgadmin4/latest/config_py.html) for additional configuration options 📚
 - Backups of the PostgreSQL database can be made using pgAdmin 4 and are stored in the `/pgadmin/storage` directory 🗄️
-- The following message can be ignored on initial startup: `ERROR - PostgreSQL subprocess: relation "version" does not exist at character 75` 
-
+- The following message can be ignored on initial startup: `ERROR - PostgreSQL subprocess: relation "version" does not exist at character 75`
 
 ## Version [5.1.10] - 2024-09-24 🚀
 
 ### Fixed 🛠️
 
 - logger: Fixed obfuscation of sensitive data in logs 🐛
-
 
 ## Version [5.1.9] - 2024-09-23 🚀
 
@@ -190,13 +181,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Riven Frontend: Set the default path for the frontend version.txt in dockerfile 🐛
 - [Issue #54](https://github.com/I-am-PUID-0/DMB/issues/54) An error occurred in the Zilean setup: 'NoneType' object has no attribute 'lower'
 
-
 ## Version [5.1.8] - 2024-09-23 🚀
 
 ### Fixed 🛠️
 
 - Riven Backend: Enabled not set to `true` for applied subordinate dictionary values 🐛
-
 
 ## Version [5.1.7] - 2024-09-23 🚀
 
@@ -218,13 +207,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - To use the .env file for Riven backend settings, create a .env file in the Riven data directory with settings in the format of `KEY=VALUE` as shown in the [env.example](https://github.com/rivenmedia/riven/blob/main/.env.example)📝
 
-
 ## Version [5.1.6] - 2024-09-13 🚀
 
 ### Changed 🔄
 
 - Riven Frontend: Set the default path for the frontend version.txt to /riven/frontend 🔄
-
 
 ## Version [5.1.5] - 2024-09-13 🚀
 
@@ -237,13 +224,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - RIVEN_FRONTEND_OWNER: Environment variable to set the owner of the Riven frontend repository; Default is rivenmedia 🆔
 
-
 ## Version [5.1.4] - 2024-09-12 🚀
 
 ### Fixed 🛠️
 
 - [Issue #51](https://github.com/I-am-PUID-0/DMB/issues/51) Duplicate start_process when update applied during initial startup 🐛
-
 
 ## Version [5.1.3] - 2024-09-12 🚀
 
@@ -255,13 +240,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The Riven frontend automatic update / branch / version should now work again 📦
 
-
 ## Version [5.1.2] - 2024-09-10 🚀
 
 ### Fixed 🛠️
 
 - Healthcheck: Fixed healthcheck for Zilean 🩺
-
 
 ## Version [5.1.1] - 2024-09-10 🚀
 
@@ -272,7 +255,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes 📝
 
 - On first run of Zilean, the PostgreSQL will create the database named zilean, so the message `PostgreSQL subprocess: ... CEST [596] FATAL:  database "zilean" does not exist` can be ignored 🗄️
-
 
 ## Version [5.1.0] - 2024-09-09 🚀
 
@@ -285,13 +267,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ZILEAN_VERSION: Environment variable to set the Zilean version; Default is latest 🔄
 - ZILEAN_LOGS: Environment variable to disable the Zilean logging when value is set to OFF; Default is ON 📝
 
-
 ## Version [5.0.1] - 2024-09-06 🚀
 
 ### Fixed 🛠️
 
 - [Issue #47](https://github.com/I-am-PUID-0/DMB/issues/47) Error when RCLONE_LOG_LEVEL is not enabled 🐛
-
 
 ## Version [5.0.0] - 2024-09-05 🚀
 
@@ -307,7 +287,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed 🛠️
 
-- [Issue #44](https://github.com/I-am-PUID-0/DMB/issues/44) Add graceful shutdown for Riven frontend and backend ✨ 
+- [Issue #44](https://github.com/I-am-PUID-0/DMB/issues/44) Add graceful shutdown for Riven frontend and backend ✨
 - [Issue #45](https://github.com/I-am-PUID-0/DMB/issues/45) Fix permissions for npm_install 🐛
 - [Issue #46](https://github.com/I-am-PUID-0/DMB/issues/46) Zurg config.yml not chown'd to the correct user 🐛
 - PostgreSQL: Fixed permissions for PostgreSQL 🐛 - Thanks @Unlearned6688 🙏
@@ -322,7 +302,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `stop_grace_period: 60s` to your compose file to allow for a 60 second grace period for all of the processes to shutdown before the container is stopped 🛑
 - [Issue #43](https://github.com/I-am-PUID-0/DMB/issues/43) Node issue when setting Riven frontend version 🐛 has not been resolved in this release 🚨, so please ensure to only use Riven frontend version that is built into the image - No automatic update / branch / version 📦
 - There may be an issue with the Riven frontend when trying to access settings; the logs will show `TypeError: Cannot read properties of undefined (reading 'enabled')` when trying to access settings - this is a known issue and you will need to delete the riven settings.json 🚨
-
 
 ## Version [4.1.0] - 2024-08-29 🚀
 
@@ -339,7 +318,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Issue #39](https://github.com/I-am-PUID-0/DMB/issues/39) Make rclone mount base path a variable - /data --> /user-defined ✨
 - [Issue #41](https://github.com/I-am-PUID-0/DMB/issues/41) Add healthcheck for PostgreSQL process ✨
 - [Issue #42](https://github.com/I-am-PUID-0/DMB/issues/42) Add clean shutdown for PostgreSQL server ✨
-
 
 ## Version [4.0.0] - 2024-08-28 🚀
 
@@ -371,21 +349,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - If the Riven backend shows errors related to the database or alembic, then the Riven data directory may need to be deleted before starting the new version of Riven w/ PostgreSQL 🗑️ - backup your settings.json before deleting the data directory 📂
 
-
 ## Version [3.5.0] - 2024-08-08 🚀
 
 ### Added ✨
 
 - Suppress Logs: If the LOG_LEVEL for a process is set to OFF, then logs will be suppressed for the process 🤫
-- Riven Frontend: Added the latest version of the Riven frontend to the Dockerfile for image build 📦 
+- Riven Frontend: Added the latest version of the Riven frontend to the Dockerfile for image build 📦
 
 ### Notes 📝
 
 - The DMB image is built nightly and will include the latest version of the Riven frontend at the time of build 🌙
 
-
 ## Version [3.4.0] - 2024-08-05 🚀
-
 
 ### Fixed 🛠️
 
@@ -402,7 +377,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Riven backend: UPDATERS_PLEX_ADDRESS linked to PLEX_ADDRESS 🔄
 - Riven backend: UPDATERS_PLEX_TOKEN linked to PLEX_TOKEN 🔄
 
-
 ## Version [3.3.2] - 2024-08-03 🚀
 
 ### Fixed 🛠️
@@ -417,13 +391,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - GITHUB_TOKEN: Can be added to the environment variables to allow for repository downloads without rate limits 🔄
 
-
 ## Version [3.3.1] - 2024-08-01 🚀
 
 ### Fixed 🛠️
 
 - healthcheck: Reverted healthcheck, for now 🐛
-
 
 ## Version [3.3.0] - 2024-08-01 🚀
 
@@ -445,7 +417,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - healthcheck: Waits for Riven frontend setup to complete 🩺
 
-
 ## Version [3.2.0] - 2024-07-30 🚀
 
 ### Changed 🔄
@@ -462,13 +433,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Logging: Fixed logging for Zurg to ensure log levels are properly set 📝
 
-
 ## Version [3.1.0] - 2024-07-26 🚀
 
 ### Added ✨
 
 - Shutdown: Added a shutdown function to gracefully stop the DMB container; e.g., unmount the rclone mounts 🛑
-
 
 ## Version [3.0.0] - 2024-07-26 🚀
 
@@ -495,8 +464,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - BACKEND_URL has been changed to RIVEN_BACKEND_URL. The value is automatically set when the variable is not enabled. The default value is http://127.0.0.1:8080 🌐
 - RIVEN_DATABASE_HOST value is automatically set when the variable is not enabled. The default value is sqlite:////riven/backend/data/media.db 🗃️
 
-
-
 ## Version [2.0.0] - 2024-07-25
 
 ### Breaking Changes
@@ -521,7 +488,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - COLOR_LOG_ENABLED: Environment variable to enable color logging; Default is false
 - ffmpeg: Added ffmpeg to the Dockerfile for Zurg use of ffprobe to extract media information from files, enhancing media metadata accuracy.
 
-
 ### Notes
 
 - **Delete all Riven files and directories within the data directory before starting the new version of Riven!**
@@ -529,22 +495,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Other features may also not be functional yet; will be fixed in a follow-on release.**
 - This release resolves [Issue #19](https://github.com/I-am-PUID-0/DMB/issues/19), [Issue #20](https://github.com/I-am-PUID-0/DMB/issues/20), and [Issue #10](https://github.com/I-am-PUID-0/DMB/issues/10)
 
-
-
 ## Version [1.2.0] - 2024-07-19
 
 ### Added
 
 - [Issue #18](https://github.com/I-am-PUID-0/DMB/issues/18): Added DMB_LOG_SIZE environment variable to set the maximum size of the log file; Default is 10MB
 
-
 ## Version [1.1.0] - 2024-07-17
 
 ### Changed
 
 - Rclone: WebDAV URL check for Zurg startup processes accepts any 200 status code as a valid response
-- DMB: Refactored to use common functions under utils 
-
+- DMB: Refactored to use common functions under utils
 
 ## Version [1.0.3] - 2024-07-16
 
@@ -552,13 +514,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Rclone: Fixed WebDAV URL check for Zurg startup processes when Zurg user and password are set in config.yml
 
-
 ## Version [1.0.2] - 2024-07-16
 
 ### Fixed
 
 - Zurg: Fixed the removal of Zurg user and password if previously set in config.yml
-
 
 ## Version [1.0.1] - 2024-07-16
 
@@ -566,7 +526,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - DMB: Introduced a Riven startup check for the symlinked directory to ensure the Zurg startup processes have finished before starting Riven
 - DMB: Introduced a Rclone startup check for the Zurg WebDAV URL to ensure the Zurg startup processes have finished before starting Rclone
-
 
 ## Version [1.0.0] - 2024-06-25
 
@@ -591,7 +550,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Issue #3](https://github.com/I-am-PUID-0/DMB/issues/3): Removed Jellyfin environment variables
 - [Issue #2](https://github.com/I-am-PUID-0/DMB/issues/2): Removed PLEX_REFRESH environment variable
 
-
 ## Version [0.2.0] - 2024-06-22
 
 ### Added
@@ -603,7 +561,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Zurg: PLEX_REFRESH environment variable
 - Zurg: PLEX_MOUNT environment variable
 
-
 ## Version [0.1.0] - 2024-06-22
 
 ### Added
@@ -614,7 +571,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - rclone: Fixed rclone process w/ Riven
 - Healthcheck: Fixed healthcheck process w/ Riven
-
 
 ## Version [0.0.1] - 2024-06-21
 

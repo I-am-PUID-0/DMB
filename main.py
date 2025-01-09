@@ -10,7 +10,7 @@ from utils.dependencies import initialize_dependencies
 
 def main():
 
-    version = "6.0.0"
+    version = "6.0.1"
 
     ascii_art = f"""
                                                                        

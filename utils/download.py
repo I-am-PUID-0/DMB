@@ -68,6 +68,9 @@ class Downloader:
         exclude_dirs=None,
     ):
         try:
+            logger.info(
+                f"Downloading {process_name} release version: {release_version} from {repo_owner}/{repo_name}"
+            )
             headers = self.get_headers()
             if release_version.lower() == "latest":
                 release_version, error = self.get_latest_release(
@@ -80,6 +83,7 @@ class Downloader:
             if key == "zurg":
                 architecture = self.get_architecture()
                 if CONFIG_MANAGER.get("dmb").get("github_token"):
+                    logger.debug("Using GitHub token for downloading zurg.")
                     # repo_name = "zurg"
                     if release_version == "nightly":
                         release_version, error = self.get_latest_release(
