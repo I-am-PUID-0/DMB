@@ -119,7 +119,7 @@ LABEL name="DMB" \
 
 RUN apk add --update --no-cache gcompat libstdc++ libxml2-utils curl tzdata nano ca-certificates wget fuse3 build-base \
     linux-headers py3-cffi libffi-dev rust cargo jq openssl pkgconfig npm boost-filesystem boost-thread \
-    ffmpeg postgresql16-client=16.6-r0 postgresql16=16.6-r0 postgresql16-contrib=16.6-r0 && \
+    ffmpeg postgresql16-client=16.8-r0 postgresql16=16.8-r0 postgresql16-contrib=16.8-r0 && \
     find /usr -name pg_config && \
     /usr/bin/pg_config --version && \
     /usr/bin/pg_config --includedir && \
