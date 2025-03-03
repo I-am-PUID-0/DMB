@@ -29,10 +29,11 @@ class APIState:
         running_processes = self._load_status_from_file()
 
         def normalize(name):
-            return name.replace(" ", "").replace("/ ", "/").strip()
+            return name.replace(" ", "").replace("/ ", "/").strip().lower()
 
         normalized_input = normalize(process_name)
-
+        if normalized_input == "dmbapi":
+            return "running"
         for stored_name in running_processes:
             normalized_stored_name = normalize(stored_name)
             if normalized_input == normalized_stored_name:

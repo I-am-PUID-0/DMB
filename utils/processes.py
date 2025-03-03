@@ -1,8 +1,8 @@
-from base import *
 from utils.logger import SubprocessLogger
 from utils.config_loader import CONFIG_MANAGER
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import shlex
+import shlex, os, time, signal, threading, subprocess, sys, uvicorn
+from json import dump
 
 
 class ProcessHandler:
@@ -112,9 +112,8 @@ class ProcessHandler:
                 command = shlex.split(command)
 
             process_env = os.environ.copy()
-            if env:
+            if env is not None:
                 process_env.update(env)
-
             dmb_frontend = (
                 CONFIG_MANAGER.get("dmb", {}).get("frontend", {}).get("process_name")
             )
@@ -322,8 +321,9 @@ class ProcessHandler:
         self._update_running_processes_file()
         time.sleep(5)
         self.unmount_all()
+        uvicorn.Server.should_exit = True
         self.logger.info("Shutdown complete.")
-        os._exit(exit_code)
+        sys.exit(exit_code)
 
     def unmount_all(self):
         rclone_instances = CONFIG_MANAGER.get("rclone", {}).get("instances", {})

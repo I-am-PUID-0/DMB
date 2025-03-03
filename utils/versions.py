@@ -1,7 +1,7 @@
-from base import *
 from utils.global_logger import logger
 from utils.download import Downloader
 from utils.config_loader import CONFIG_MANAGER
+import subprocess
 
 
 class Versions:
@@ -31,9 +31,9 @@ class Versions:
             if is_file:
                 try:
                     with open(version_path, "r") as f:
-                        if process_name == "riven_frontend":
+                        if key == "riven_frontend":
                             version = f"v{f.read().strip()}"
-                        elif process_name == "riven_backend":
+                        elif key == "riven_backend":
                             for line in f:
                                 if line.startswith("version = "):
                                     version = (
@@ -42,7 +42,7 @@ class Versions:
                                     break
                             else:
                                 version = None
-                        elif process_name == "Zilean":
+                        elif key == "zilean":
                             version = f.read().strip()
                         if version:
                             return version, None
@@ -69,18 +69,18 @@ class Versions:
             )
             return None, str(e)
 
-    def version_write(self, process_name=None, version_path=None, version=None):
+    def version_write(self, process_name, key=None, version_path=None, version=None):
         try:
-            if process_name == "riven_frontend":
+            if key == "riven_frontend":
                 version_path = "/riven/frontend/version.txt"
-            elif process_name == "riven_backend":
+            elif key == "riven_backend":
                 version_path = "/riven/backend/pyproject.toml"
-            elif process_name == "Zilean":
+            elif key == "zilean":
                 version_path = "/zilean/version.txt"
-            if not process_name == "riven_backend":
+            if not key == "riven_backend":
                 with open(version_path, "w") as f:
                     f.write(version)
-            elif process_name == "riven_backend":
+            elif key == "riven_backend":
                 with open(version_path, "r") as file:
                     lines = file.readlines()
                 with open(version_path, "w") as f:

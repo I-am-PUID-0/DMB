@@ -1,11 +1,10 @@
-from base import *
 from utils import postgres
 from utils.config_loader import CONFIG_MANAGER
 from utils.global_logger import logger
 from utils.download import Downloader
 from utils.versions import Versions
 from utils.user_management import chown_recursive
-
+import yaml, os, shutil, random, subprocess
 
 user_id = CONFIG_MANAGER.get("puid")
 group_id = CONFIG_MANAGER.get("pgid")
@@ -63,9 +62,10 @@ def setup_release_version(process_handler, config, process_name, key):
         if not success:
             return False, f"Failed to download release: {error}"
 
-    if process_name == "Zilean":
+    if key == "zilean":
         versions.version_write(
             process_name,
+            key,
             version_path=os.path.join(config["config_dir"], "version.txt"),
             version=config["release_version"],
         )
@@ -88,6 +88,7 @@ def setup_branch_version(process_handler, config, process_name, key):
         if not branch_url:
             return False, f"Failed to fetch branch {config['branch']}"
 
+        exclude_dirs = None
         if config.get("clear_on_update"):
             exclude_dirs = config.get("exclude_dirs", [])
             success, error = clear_directory(config["config_dir"], exclude_dirs)
@@ -103,7 +104,7 @@ def setup_branch_version(process_handler, config, process_name, key):
         if not success:
             return False, f"Failed to download branch: {error}"
 
-        success, error = additional_setup(process_name, config, key)
+        success, error = additional_setup(process_handler, process_name, config, key)
         if not success:
             return False, error
 
@@ -126,10 +127,10 @@ def additional_setup(process_handler, process_name, config, key):
                 f"Failed to set up environment for {process_name}: {error}",
             )
 
-    if user_id and group_id and not config["config_dir"].startswith("/zurg"):
-        success, error = chown_recursive(config["config_dir"], user_id, group_id)
-        if not success:
-            return False, error
+    #    if user_id and group_id and not config["config_dir"].startswith("/zurg"):
+    #        success, error = chown_recursive(config["config_dir"], user_id, group_id)
+    #        if not success:
+    #            return False, error
 
     return True, None
 
@@ -171,11 +172,61 @@ def setup_project(process_handler, process_name):
                 shutil.copy(src, dest)
                 logger.info(f"Copied .env from {src} to {dest}")
 
+        if config.get("env"):
+            for env_key, value in config["env"].items():
+                if isinstance(value, str) and "{" in value and "}" in value:
+                    if "$" in value:
+                        continue
+
+                    if key == "zilean":
+                        postgres_host = CONFIG_MANAGER.get("postgres").get(
+                            "host", "127.0.0.1"
+                        )
+                        postgres_port = CONFIG_MANAGER.get("postgres").get("port", 5432)
+                        postgres_user = CONFIG_MANAGER.get("postgres").get(
+                            "user", "DMB"
+                        )
+                        postgres_password = CONFIG_MANAGER.get("postgres").get(
+                            "password", "postgres"
+                        )
+                        value = (
+                            value.replace("{postgres_host}", postgres_host)
+                            .replace("{postgres_port}", str(postgres_port))
+                            .replace("{postgres_user}", postgres_user)
+                            .replace("{postgres_password}", postgres_password)
+                        )
+
+                    for placeholder in config.keys():
+                        placeholder_pattern = f"{{{placeholder}}}"
+                        if placeholder_pattern in value:
+                            value = value.replace(
+                                placeholder_pattern, str(config[placeholder])
+                            )
+
+                    config["env"][env_key] = value
+
         if key == "riven_frontend":
             copy_server_config(
                 "/config/server.json",
                 os.path.join(config["config_dir"], "config/server.json"),
             )
+
+        if key == "riven_backend":
+            port = str(config.get("port", 8080))
+            riven_backend_command = config.get("command", [])
+            if not isinstance(riven_backend_command, list):
+                raise ValueError(
+                    f"Unexpected type for command: {type(riven_backend_command)}"
+                )
+            for i, arg in enumerate(riven_backend_command):
+                if arg in ("-p", "--port") and i + 1 < len(riven_backend_command):
+                    riven_backend_command[i + 1] = port
+                    break
+            riven_backend_command = [
+                arg.format(port=port) if "{port}" in arg else arg
+                for arg in riven_backend_command
+            ]
+            config["command"] = riven_backend_command
 
         if key == "zurg":
             success, error = zurg_setup()
@@ -235,6 +286,7 @@ def zurg_setup():
                 if not instance_port:
                     instance_port = random.randint(9001, 9999)
                     logger.debug(f"Assigned random port: {instance_port}")
+                    instance["port"] = instance_port
                 instance_zurg_binaries = os.path.join(instance_config_dir, "zurg")
                 instance_config_file = os.path.join(instance_config_dir, "config.yml")
                 instance_plex_update_file = os.path.join(
@@ -565,17 +617,18 @@ def rclone_setup():
                         f.write("\n".join(lines) + "\n")
 
             if not instance.get("zurg_enabled", False):
+                config_data = {}
                 if instance.get("key_type"):
                     key_type = instance["key_type"]
                     if key_type.lower() == "realdebrid":
-                        config_data = {
-                            "type": "webdav",
-                            "url": "https://dav.real-debrid.com/",
-                            "vendor": "other",
-                            "user": instance["webdav_user"],
-                            "pass": instance["webdav_password"],
-                            "bearer_token": instance["api_key"],
-                        }
+                        obscured_password = obscure_password(instance["password"])
+                        config_data[mount_name] = [
+                            "type = webdav",
+                            "url = https://dav.real-debrid.com/",
+                            "vendor = other",
+                            f"user = {instance['username']}",
+                            f"pass = {obscured_password}",
+                        ]
                     elif key_type.lower() == "alldebrid":
                         config_data = {
                             "type": "webdav",
@@ -597,18 +650,11 @@ def rclone_setup():
                             "type": "torbox",
                             "api_key": instance["api_key"],
                         }
-                if os.path.exists(config_file):
-                    with open(config_file, "r") as f:
-                        lines = f.readlines()
-                    for key, value in config_data.items():
-                        for i, line in enumerate(lines):
-                            if line.strip().startswith(f"{key} ="):
-                                lines[i] = f"{key} = {value}\n"
-                                break
-                        else:
-                            lines.append(f"{key} = {value}\n")
-                    with open(config_file, "w") as f:
-                        f.writelines(lines)
+
+                with open(config_file, "w") as f:
+                    for section, lines in config_data.items():
+                        f.write(f"[{section}]\n")
+                        f.write("\n".join(lines) + "\n")
 
             ensure_directory(mount_dir, mount_name)
             chown_recursive(f"{mount_dir}/{mount_name}", user_id, group_id)
@@ -689,6 +735,9 @@ def clear_directory(directory_path, exclude_dirs=None, retries=3, delay=2):
     if exclude_dirs is None:
         exclude_dirs = []
 
+    venv_path = os.path.abspath(os.path.join(directory_path, "venv"))
+    exclude_dirs.append(venv_path)
+
     exclude_dirs = {os.path.abspath(exclude_dir) for exclude_dir in exclude_dirs}
     directory_path = os.path.abspath(directory_path)
     logger.debug(f"Excluding directories: {exclude_dirs}")
@@ -721,6 +770,7 @@ def clear_directory(directory_path, exclude_dirs=None, retries=3, delay=2):
     try:
         logger.debug(f"Clearing directory: {directory_path}")
         clear_contents(directory_path)
+        return True, None
     except OSError as e:
         if e.errno == 39:
             return True, None
@@ -766,16 +816,16 @@ def setup_python_environment(process_handler, key, config_dir):
                 False,
                 f"Error creating Python virtual environment: {process_handler.stderr}",
             )
-
+        logger.debug(f"venv_path: {venv_path} for {key}")
         python_executable = os.path.abspath(f"{venv_path}/bin/python")
         poetry_executable = os.path.abspath(f"{venv_path}/bin/poetry")
         pip_executable = os.path.abspath(f"{venv_path}/bin/pip")
 
         if requirements_file is not None:
             install_cmd = f"{pip_executable} install -r {requirements_file}"
-
+            logger.debug(f"Installing requirements from {requirements_file} for {key}")
             process_handler.start_process(
-                "install_requirements", config_dir, ["/bin/sh", "-c", install_cmd]
+                "install_requirements", config_dir, ["/bin/bash", "-c", install_cmd]
             )
             process_handler.wait("install_requirements")
 
@@ -785,6 +835,7 @@ def setup_python_environment(process_handler, key, config_dir):
             logger.info(f"Installed requirements from {requirements_file}")
 
         if poetry_install is True:
+            logger.debug(f"Installing Poetry for {key}")
             env = os.environ.copy()
             env["PATH"] = f"{venv_path}/bin:" + env["PATH"]
             env["POETRY_VIRTUALENVS_CREATE"] = "false"
@@ -794,7 +845,6 @@ def setup_python_environment(process_handler, key, config_dir):
                 "install_poetry",
                 config_dir,
                 [python_executable, "-m", "pip", "install", "poetry"],
-                None,
                 None,
                 False,
                 env=env,
@@ -808,7 +858,6 @@ def setup_python_environment(process_handler, key, config_dir):
                 "poetry_install",
                 config_dir,
                 [poetry_executable, "install", "--no-root", "--without", "dev"],
-                None,
                 None,
                 False,
                 env=env,
@@ -914,6 +963,10 @@ def vite_modifications(config_dir):
 
 def setup_pnpm_environment(process_handler, config_dir):
     try:
+        # echo "store-dir=./.pnpm-store" > {config_dir}/.npmrc
+        with open(os.path.join(config_dir, ".npmrc"), "w") as file:
+            file.write("store-dir=./.pnpm-store\n")
+
         logger.info(f"Setting up pnpm environment in {config_dir}")
         process_handler.start_process("pnpm_install", config_dir, ["pnpm", "install"])
         process_handler.wait("pnpm_install")
@@ -932,3 +985,88 @@ def setup_pnpm_environment(process_handler, config_dir):
 
     except Exception as e:
         return False, f"Error during pnpm setup: {e}"
+
+
+def setup_traefik(process_handler):
+    """Configures and starts Traefik using ProcessHandler"""
+
+    traefik_config = CONFIG_MANAGER.get("traefik")
+    if not traefik_config or not traefik_config.get("enabled"):
+        logger.info("Traefik is disabled. Skipping setup.")
+        return True, None
+
+    config_dir = traefik_config.get("config_dir", "/config/traefik")
+
+    # Ensure config directory exists
+    os.makedirs(config_dir, exist_ok=True)
+
+    logger.info(f"Setting up Traefik configuration in {config_dir}")
+
+    # Generate traefik.yml (static configuration)
+    static_config = {
+        "entryPoints": traefik_config.get("entrypoints", {}),
+        "api": {"dashboard": True},
+        "providers": {"file": {"directory": config_dir, "watch": True}},
+    }
+
+    static_config_path = os.path.join(config_dir, "traefik.yml")
+    with open(static_config_path, "w") as file:
+        yaml.dump(static_config, file, default_flow_style=False)
+
+    logger.info(f"Generated Traefik static config: {static_config_path}")
+
+    # Generate dynamic configuration for services
+    dynamic_config = {"http": {"routers": {}, "services": {}, "middlewares": {}}}
+
+    # Add middleware definitions
+    if "middlewares" in traefik_config:
+        dynamic_config["http"]["middlewares"] = traefik_config["middlewares"]
+
+    # Add services and routers
+    for service_name, service_info in traefik_config.get("services", {}).items():
+        router_name = f"{service_name}_router"
+        service_url = service_info.get("url")
+        middlewares = service_info.get("middlewares", [])
+
+        if not service_url:
+            logger.warning(f"Skipping {service_name}, no URL defined")
+            continue
+
+        dynamic_config["http"]["services"][service_name] = {
+            "loadBalancer": {"servers": [{"url": service_url}]}
+        }
+
+        dynamic_config["http"]["routers"][router_name] = {
+            "rule": f"PathPrefix(`/{service_name}`)",
+            "service": service_name,
+            "entryPoints": ["web"],
+            "middlewares": middlewares,
+        }
+
+    dynamic_config_path = os.path.join(config_dir, "dynamic_config.yml")
+    with open(dynamic_config_path, "w") as file:
+        yaml.dump(dynamic_config, file, default_flow_style=False)
+
+    logger.info(f"Generated Traefik dynamic config: {dynamic_config_path}")
+
+    return True, None
+
+
+def start_traefik(process_handler, config_dir: str):
+    """Ensures Traefik is running via ProcessHandler"""
+
+    traefik_bin = "/usr/local/bin/traefik"  # Adjust path if needed
+
+    # Check if Traefik is already running
+    if process_handler.is_process_running("traefik"):
+        logger.info("Traefik is already running, restarting it.")
+        process_handler.stop_process("traefik")
+
+    # Start Traefik with config directory
+    process_handler.start_process(
+        process_name="traefik",
+        cmd=[traefik_bin, "--configFile", os.path.join(config_dir, "traefik.yml")],
+        env={},
+    )
+
+    logger.info("Traefik has been started successfully.")

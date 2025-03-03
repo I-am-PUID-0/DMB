@@ -1,10 +1,9 @@
-from base import *
 from utils.global_logger import logger
 from utils.logger import format_time
 from utils.versions import Versions
 from utils.setup import setup_project, setup_release_version
 from utils.config_loader import CONFIG_MANAGER
-import threading
+import threading, time, os, schedule, requests
 
 
 class Update:

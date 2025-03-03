@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from pydantic import BaseModel
 from utils.dependencies import get_process_handler, get_logger, get_api_state
 from utils.config_loader import CONFIG_MANAGER, find_service_config
+from utils.setup import setup_project
 
 
 class ServiceRequest(BaseModel):
@@ -52,33 +53,62 @@ async def start_service(
     if not service_config:
         raise HTTPException(status_code=404, detail="Service not enabled or found")
 
+    if process_name in process_handler.setup_tracker:
+        process_handler.setup_tracker.remove(process_name)
+        success, error = setup_project(process_handler, process_name)
+        if not success:
+            raise HTTPException(
+                status_code=500, detail=f"Failed to setup project: {error}"
+            )
+
     service_config["enabled"] = True
     command = service_config.get("command")
+    if any("{" in c for c in command):
+        success, error = setup_project(process_handler, process_name)
+        if not success:
+            raise HTTPException(
+                status_code=500, detail=f"Failed to setup project: {error}"
+            )
+        command = service_config.get("command")
+
+    env = service_config.get("env")
+    if env is not None:
+        logger.debug(f"Checking for variables in service config. {env}")
+        if any("{" in c for c in env):
+            success, error = setup_project(process_handler, process_name)
+            if not success:
+                raise HTTPException(
+                    status_code=500, detail=f"Failed to setup project: {error}"
+                )
+            env = service_config.get("env")
+
     config_dir = service_config.get("config_dir")
     suppress_logging = service_config.get("suppress_logging", False)
     logger.info(f"Starting {process_name} with command: {command}")
 
     try:
-        process = process_handler.start_process(
+        process, error = process_handler.start_process(
             process_name=process_name,
             config_dir=config_dir,
             command=command,
             instance_name=None,
             suppress_logging=suppress_logging,
-            env=service_config.get("env"),
+            env=env,
         )
-        if process:
+        if not process:
+            raise Exception(f"Error starting {process_name}: {error}")
+        elif process:
             logger.info(f"{process_name} started successfully.")
             return {
                 "status": "Service started successfully",
                 "process_name": process_name,
             }
-        else:
-            raise Exception("Process failed to start.")
     except Exception as e:
-        logger.error(f"Failed to start {process_name}: {str(e)}")
+        detailed_error = f"Service '{process_name}' could not be started due to an internal error: {str(e)}"
+        logger.error(detailed_error)
         raise HTTPException(
-            status_code=500, detail=f"Failed to start {process_name}: {str(e)}"
+            status_code=500,
+            detail=f"Unable to start the service '{process_name}'. Please check the logs for more details.",
         )
 
 

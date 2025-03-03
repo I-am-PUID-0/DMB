@@ -1,6 +1,6 @@
-from base import *
 from utils.global_logger import logger
 from utils.config_loader import CONFIG_MANAGER
+import requests, time, os, zipfile, io, shutil, platform, fnmatch
 
 
 class Downloader:

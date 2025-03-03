@@ -1,9 +1,9 @@
-from base import *
 from utils.global_logger import logger
 from utils.logger import format_time, get_start_time, time_to_complete
 from plexapi.server import PlexServer
 from plexapi import exceptions as plexapi_exceptions
 from requests.exceptions import HTTPError
+import requests, re, schedule, threading, time
 
 
 max_retry_attempts = 5

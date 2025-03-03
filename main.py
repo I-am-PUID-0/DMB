@@ -1,4 +1,3 @@
-from base import *
 from utils.config_loader import CONFIG_MANAGER as config
 from utils.global_logger import logger, websocket_manager
 from utils import duplicate_cleanup, user_management
@@ -6,11 +5,14 @@ from api.api_service import start_fastapi_process
 from utils.processes import ProcessHandler
 from utils.auto_update import Update
 from utils.dependencies import initialize_dependencies
+import subprocess, threading, time
+from time import sleep
 
 
 def main():
 
-    version = "6.0.1"
+    with open("version.txt", "r") as file:
+        version = file.read().strip()
 
     ascii_art = f"""
                                                                        

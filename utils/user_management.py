@@ -1,8 +1,7 @@
-from base import *
 from utils.config_loader import CONFIG_MANAGER as config
 from utils.global_logger import logger
 from concurrent.futures import ThreadPoolExecutor
-import multiprocessing
+import multiprocessing, os, time, grp, pwd, secrets, subprocess
 
 
 user_id = config.get("puid")
@@ -88,6 +87,23 @@ def create_system_user(username="DMB"):
         home_dir = f"/home/{username}"
         if not os.path.exists(home_dir):
             os.makedirs(home_dir)
+
+        passwd_write_start = time.time()
+        with open("/etc/passwd", "a") as passwd_file:
+            passwd_file.write(
+                f"{username}:x:{user_id}:{group_id}::/home/{username}:/bin/bash\n"
+            )
+        passwd_write_end = time.time()
+        logger.debug(
+            f"Writing to /etc/passwd took {passwd_write_end - passwd_write_start:.2f} seconds"
+        )
+
+        user_password = secrets.token_urlsafe(16)
+        subprocess.run(
+            f"echo '{username}:{user_password}' | chpasswd", shell=True, check=True
+        )
+        logger.info(f"Password set for user '{username}'. Stored securely in memory.")
+
         zurg_dir = "/zurg"
         mnt_dir = config.get("riven_backend").get("symlink_library_path")
         log_dir = config.get("dmb").get("log_dir")
@@ -96,16 +112,6 @@ def create_system_user(username="DMB"):
         zilean_dir = "/zilean/app/data"
 
         rclone_instances = config.get("rclone", {}).get("instances", {})
-
-        passwd_write_start = time.time()
-        with open("/etc/passwd", "a") as passwd_file:
-            passwd_file.write(
-                f"{username}:x:{user_id}:{group_id}::/home/{username}:/bin/sh\n"
-            )
-        passwd_write_end = time.time()
-        logger.debug(
-            f"Writing to /etc/passwd took {passwd_write_end - passwd_write_start:.2f} seconds"
-        )
 
         chown_start = time.time()
         # chown_recursive(zurg_dir, user_id, group_id)

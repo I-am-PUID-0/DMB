@@ -4,11 +4,9 @@ from pydantic import BaseModel
 from utils.dependencies import get_logger
 from utils.config_loader import CONFIG_MANAGER, find_service_config
 from jsonschema import validate, ValidationError
-import os
-import json
 from ruamel.yaml import YAML
-import configparser
 from pathlib import Path
+import os, json, configparser
 
 
 class UpdateServiceConfigRequest(BaseModel):
@@ -23,6 +21,38 @@ class ServiceConfigRequest(BaseModel):
 
 
 config_router = APIRouter()
+
+TRAEFIK_CONFIG_DIR = Path("/config/traefik")
+
+
+def ensure_traefik_config():
+    """Ensure the Traefik config directory exists."""
+    TRAEFIK_CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def generate_traefik_config(services):
+    """Generate a Traefik dynamic configuration for detected services."""
+    traefik_config = {"http": {"routers": {}, "services": {}}}
+
+    for service in services:
+        service_name = service["name"].replace(" ", "_").lower()
+        host = service["host"]
+        port = service["port"]
+
+        router_name = f"{service_name}_router"
+        service_entry = f"{service_name}_service"
+
+        traefik_config["http"]["routers"][router_name] = {
+            "entryPoints": ["web"],
+            "rule": f"PathPrefix(`/service/ui/{service_name}`)",
+            "service": service_entry,
+        }
+
+        traefik_config["http"]["services"][service_entry] = {
+            "loadBalancer": {"servers": [{"url": f"http://{host}:{port}"}]}
+        }
+
+    return traefik_config
 
 
 def validate_file_path(file_path):
@@ -51,18 +81,32 @@ def write_to_file(file_path, content):
         )
 
 
-def find_service_config(config, service_name):
+def find_service_config(config, service_name, parent_path=""):
     for key, value in config.items():
+
         if isinstance(value, dict) and value.get("process_name") == service_name:
-            return value
+            return value, (f"{parent_path}.{key}" if parent_path else key)
+
         if isinstance(value, dict) and "instances" in value:
             for instance_name, instance in value["instances"].items():
                 if (
                     isinstance(instance, dict)
                     and instance.get("process_name") == service_name
                 ):
-                    return instance
-    return None
+                    return instance, (
+                        f"{parent_path}.{key}.instances.{instance_name}"
+                        if parent_path
+                        else f"{key}.instances.{instance_name}"
+                    )
+
+        if isinstance(value, dict):
+            found, path = find_service_config(
+                value, service_name, f"{parent_path}.{key}" if parent_path else key
+            )
+            if found:
+                return found, path
+
+    return None, None
 
 
 def load_config_file(config_path):
@@ -139,28 +183,8 @@ def save_config_file(config_path, config_data, config_format, updates=None):
         elif config_format == "yaml":
             yaml.indent(mapping=2, sequence=4, offset=2)
             yaml.preserve_quotes = True
-            write_to_file(config_path, yaml.dump(config_data))
-        elif config_format == "postgresql":
-            write_postgresql_conf(config_path, config_data)
-        elif config_format == "rclone":
-            write_rclone_config(config_path, config_data)
-        elif config_format == "python":
-            write_python_config(config_path, config_data)
-        else:
-            raise HTTPException(
-                status_code=400, detail=f"Unsupported config format: {config_format}"
-            )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to save config file: {e}")
-
-    yaml = YAML(typ="rt")
-    try:
-        if config_format == "json":
-            write_to_file(config_path, json.dumps(config_data, indent=4))
-        elif config_format == "yaml":
-            yaml.indent(mapping=2, sequence=4, offset=2)
-            yaml.preserve_quotes = True
-            write_to_file(config_path, yaml.dump(config_data))
+            with open(config_path, "w") as file:
+                yaml.dump(config_data, file)
         elif config_format == "postgresql":
             write_postgresql_conf(config_path, config_data)
         elif config_format == "rclone":
@@ -298,6 +322,33 @@ def write_python_config(file_path, config_data):
                 file.write(f"{key} = {value}\n")
 
 
+def find_schema(schema, path_parts):
+    schema_section = schema
+
+    for idx, part in enumerate(path_parts):
+
+        if isinstance(schema_section, dict) and part in schema_section:
+            schema_section = schema_section[part]
+            continue
+
+        if "properties" in schema_section and part in schema_section["properties"]:
+            schema_section = schema_section["properties"][part]
+            continue
+
+        if "patternProperties" in schema_section:
+            for pattern, sub_schema in schema_section["patternProperties"].items():
+                if pattern == ".*" or pattern in part:
+                    schema_section = sub_schema
+                    break
+            else:
+                return None
+
+        else:
+            return None
+
+    return schema_section
+
+
 @config_router.post("/update-dmb-config")
 async def update_dmb_config(
     request: UpdateServiceConfigRequest, logger=Depends(get_logger)
@@ -308,37 +359,20 @@ async def update_dmb_config(
 
     logger.info(f"Received update request for {process_name} with persist={persist}")
 
-    service_config = find_service_config(CONFIG_MANAGER.config, process_name)
-    # logger.debug(f"Service config: {service_config}")
+    service_config, service_path = find_service_config(
+        CONFIG_MANAGER.config, process_name
+    )
+
     if not service_config:
         logger.error(f"Service not found: {process_name}")
         raise HTTPException(status_code=404, detail="Service not found.")
 
-    instance_schema = None
-    parent_schema = None
+    path_parts = service_path.split(".")
+    logger.debug(f"Looking up schema for path for {process_name}: {service_path}")
 
-    for parent_key, parent_value in CONFIG_MANAGER.config.items():
-        if isinstance(parent_value, dict) and service_config == parent_value:
-            parent_schema = CONFIG_MANAGER.schema["properties"].get(parent_key)
-            if parent_schema:
-                instance_schema = parent_schema
-            break
-
-    if not instance_schema:
-        for parent_key, parent_value in CONFIG_MANAGER.config.items():
-            if (
-                isinstance(parent_value, dict)
-                and "instances" in parent_value
-                and service_config in parent_value["instances"].values()
-            ):
-                parent_schema = CONFIG_MANAGER.schema["properties"].get(parent_key)
-                if parent_schema and "instances" in parent_schema.get("properties", {}):
-                    instance_schema = (
-                        parent_schema["properties"]["instances"]
-                        .get("patternProperties", {})
-                        .get(".*")
-                    )
-                    break
+    instance_schema = find_schema(
+        CONFIG_MANAGER.schema.get("properties", {}), path_parts
+    )
 
     if not instance_schema:
         logger.error(f"Schema not found for process: {process_name}")
@@ -346,6 +380,8 @@ async def update_dmb_config(
             status_code=400,
             detail=f"Schema not found for process: {process_name}",
         )
+
+    logger.debug(f"Schema found for {process_name}")
 
     try:
         validate(instance=updates, schema=instance_schema)
@@ -403,7 +439,10 @@ async def handle_service_config(
     updates = request.updates
     logger.info(f"Handling config for service: {service_name}")
 
-    service_config = find_service_config(CONFIG_MANAGER.config, service_name)
+    service_config, service_path = find_service_config(
+        CONFIG_MANAGER.config, service_name
+    )
+
     if not service_config:
         logger.error(f"Service not found: {service_name}")
         raise HTTPException(status_code=404, detail="Service not found.")
@@ -428,12 +467,67 @@ async def handle_service_config(
             )
 
         logger.info(f"Config for {service_name} updated successfully.")
-        return {"status": "Config updated successfully", "service": service_name}
+        return {
+            "status": "Config updated successfully",
+            "service": service_name,
+            "service_path": service_path,
+        }
 
     logger.info(f"Config for {service_name} retrieved successfully.")
     return {
         "service": service_name,
+        "service_path": service_path,
         "config_format": config_format,
         "config": config_data,
         "raw": raw_config,
     }
+
+
+@config_router.get("/service-ui")
+async def get_service_ui_links(logger=Depends(get_logger)):
+    """Retrieve service UI links and generate Traefik configs dynamically."""
+    try:
+        services = []
+
+        # Ensure Traefik config directory exists
+        ensure_traefik_config()
+
+        for key, value in CONFIG_MANAGER.config.items():
+            if not isinstance(value, dict):
+                continue
+
+            # Top-level service
+            if value.get("enabled") and "port" in value:
+                services.append(
+                    {
+                        "name": key,
+                        "host": value.get("host", "127.0.0.1"),
+                        "port": value["port"],
+                    }
+                )
+
+            # Instances handling
+            if "instances" in value:
+                for instance_name, instance_config in value["instances"].items():
+                    if instance_config.get("enabled") and "port" in instance_config:
+                        services.append(
+                            {
+                                "name": instance_name,
+                                "host": instance_config.get("host", "127.0.0.1"),
+                                "port": instance_config["port"],
+                            }
+                        )
+
+        # Generate and write Traefik config
+        traefik_config = generate_traefik_config(services)
+        traefik_config_path = TRAEFIK_CONFIG_DIR / "services.yaml"
+
+        with open(traefik_config_path, "w") as file:
+            json.dump(traefik_config, file, indent=4)
+
+        logger.info("Updated Traefik configuration for service UIs.")
+        return {"services": services, "traefik_config": str(traefik_config_path)}
+
+    except Exception as e:
+        logger.error(f"Failed to fetch services: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch services")

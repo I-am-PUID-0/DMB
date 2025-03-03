@@ -1,27 +1,19 @@
 {
   "name": "DMB Dev Container",
-  "image": "iampuid0/dmb:FastAPI",
+  "image": "iampuid0/dmb_private:Ubuntu",
   "workspaceFolder": "/workspace",
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-python.python",
-        "ms-azuretools.vscode-docker",
-        "esbenp.prettier-vscode",
-        "ms-python.black-formatter",
-        "eamodio.gitlens",
-        "github.copilot",
-        "github.vscode-pull-request-github",
-        "streetsidesoftware.code-spell-checker",
-        "ms-python.vscode-pylance",
-        "ms-python.debugpy",
-        "uctakeoff.vscode-counter"
+        "ms-python.black-formatter"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "sh",
         "python.formatting.provider": "black",
         "editor.formatOnSave": true,
-        "python.defaultInterpreterPath": "/venv/bin/python"
+        "python.defaultInterpreterPath": "/venv/bin/python",
+        "git.path": "/usr/bin/git"
       }
     }
   },
@@ -35,19 +27,21 @@
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspace,type=bind",
     "source=${localWorkspaceFolder}/main.py,target=/main.py,type=bind",
-    "source=${localWorkspaceFolder}/base,target=/base,type=bind",
     "source=${localWorkspaceFolder}/config,target=/config,type=bind",
     "source=${localWorkspaceFolder}/utils,target=/utils,type=bind",
-    "source=${localWorkspaceFolder}/zurg,target=/zurg,type=bind",
+    "source=${localWorkspaceFolder}/zurg/RD,target=/zurg/RD,type=bind",
     "source=${localWorkspaceFolder}/riven/backend/data,target=/riven/backend/data,type=bind",
     "source=${localWorkspaceFolder}/zilean/app/data,target=/zilean/app/data,type=bind",
     "source=${localWorkspaceFolder}/log,target=/log,type=bind",
     "source=${localWorkspaceFolder}/data,target=/data,type=bind",
-    "source=${localWorkspaceFolder}/dmb/frontend,target=/dmb/frontend,type=bind",
     "source=${localWorkspaceFolder}/postgres_data,target=/postgres_data,type=bind",
     "source=${localWorkspaceFolder}/pgadmin/data,target=/pgadmin/data,type=bind"
   ],
   "runArgs": [
+    "--name=dmb_dev",
+    "--hostname=dmb_dev",
+    "--dns=8.8.8.8",
+    "--dns=8.8.4.4",
     "--device=/dev/fuse:/dev/fuse:rwm",
     "--cap-add=SYS_ADMIN",
     "--security-opt=apparmor:unconfined",
@@ -55,5 +49,5 @@
     "--shm-size=128m",
     "--pull=always"
   ],
-  "postCreateCommand": "apk add --no-cache git && /venv/bin/pip install black && git config --global --add safe.directory /workspace"
+  "postCreateCommand": "/venv/bin/pip install black && git config --global --add safe.directory /workspace"
 }

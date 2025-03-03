@@ -16,6 +16,7 @@
         "plex_token": { "type": "string" },
         "plex_address": { "type": "string" },
         "github_token": { "type": "string" },
+        "github_username": { "type": "string" },
         "api_service": {
           "type": "object",
           "properties": {
@@ -275,7 +276,7 @@
                 "config_dir": { "type": "string" },
                 "config_file": { "type": "string" },
                 "command": { "type": "string" },
-                "port": { "type": "string" },
+                "port": { "type": "integer" },
                 "user": { "type": "string" },
                 "password": { "type": "string" },
                 "api_key": { "type": "string" }

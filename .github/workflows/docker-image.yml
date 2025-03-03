@@ -1,11 +1,10 @@
 ﻿name: Docker Image CI
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
   workflow_dispatch:
-  push:
-    branches: [ "**" ]
+  pull_request:
+    types:
+      - closed
     paths-ignore:
       - '**/README.md'
       - 'Ubuntu/**'
@@ -22,6 +21,7 @@ jobs:
       ZILEAN_TAG: ${{ env.ZILEAN_TAG }}
       RIVEN_TAG: ${{ env.RIVEN_TAG }}
       RIVEN_FRONTEND_TAG: ${{ env.RIVEN_FRONTEND_TAG }}
+      DMB_FRONTEND_TAG: ${{ env.DMB_FRONTEND_TAG }}
     steps:
       - name: Fetch latest pgAgent release tag
         run: |
@@ -48,7 +48,12 @@ jobs:
           RIVEN_FRONTEND_TAG=$(curl -s https://api.github.com/repos/rivenmedia/riven-frontend/releases/latest | jq -r .tag_name)
           echo "RIVEN_FRONTEND_TAG=$RIVEN_FRONTEND_TAG" >> $GITHUB_ENV
 
-  build-and-push:
+      - name: Fetch latest dmbdb release tag
+        run: |
+          DMB_FRONTEND_TAG=$(curl -s https://api.github.com/repos/nicocapalbo/dmbdb/releases/latest | jq -r .tag_name)
+          echo "DMB_FRONTEND_TAG=$DMB_FRONTEND_TAG" >> $GITHUB_ENV 
+
+  build-and-push:   
     needs: fetch-latest-tags
     runs-on: self-hosted
     outputs:
@@ -62,7 +67,8 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: 'all'
+          platforms: 'linux/amd64,linux/arm64,linux/arm/v7'
+          cache-image: false
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -74,19 +80,11 @@ jobs:
         run: |
           echo "Disk space before build:"
           df -h
-          
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
 
       - name: Extract version and set environment variables
         id: setup_env_vars
         run: |
-          VERSION=$(grep -Po '(?<=version = ")[^"]+' main.py)
+          VERSION=$(cat version.txt | tr -d '[:space:]')
           REPO_OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           REPO_NAME=$(basename "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           BRANCH_NAME=${{ github.ref_name }}
@@ -118,13 +116,16 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push Docker image
+        id: build_push
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_RECORD_UPLOAD: false        
         with:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64, linux/arm64 #, linux/arm/v7
-          cache-from: type=gha,scope=build
-          cache-to: type=gha,scope=build,mode=max
+          cache-from: type=gha,scope=build-${{ github.ref_name }}
+          cache-to: type=gha,scope=build-${{ github.ref_name }},mode=max
           tags: ${{ env.DOCKER_TAGS }}
           build-args: |
             PGAGENT_TAG=${{ needs.fetch-latest-tags.outputs.PGAGENT_TAG }}
@@ -132,7 +133,62 @@ jobs:
             ZILEAN_TAG=${{ needs.fetch-latest-tags.outputs.ZILEAN_TAG }}
             RIVEN_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_TAG }}
             RIVEN_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_FRONTEND_TAG }}
+            DMB_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.DMB_FRONTEND_TAG }}
           push: true
+          load: true
+          
+      - name: Extract Versions from Built Image
+        run: |
+          IMAGE_TAG=$(echo "${{ env.DOCKER_TAGS }}" | cut -d',' -f1)
+          echo "Using IMAGE_TAG: $IMAGE_TAG"
+          if ! docker image inspect $IMAGE_TAG > /dev/null 2>&1; then
+            echo "Error: Image $IMAGE_TAG not found locally."
+            exit 1
+          fi
+          CONTAINER_ID=$(docker run -d --rm --entrypoint /bin/sh $IMAGE_TAG -c "sleep 60")
+          PSQL_VERSION=$(docker exec $CONTAINER_ID psql --version | awk '{print $3}')
+          PGADMIN_VERSION=$(docker exec $CONTAINER_ID /pgadmin/venv/bin/python -c "import importlib.metadata; print(importlib.metadata.version('pgadmin4'))" 2>/dev/null || echo "Not Installed")
+          NODE_VERSION=$(docker exec $CONTAINER_ID node -v 2>/dev/null || echo "Not Installed")
+          PNPM_VERSION=$(docker exec $CONTAINER_ID pnpm -v 2>/dev/null || echo "Not Installed")
+          RCLONE_VERSION=$(docker exec $CONTAINER_ID rclone version | head -n 1 | grep -oP 'v[0-9]+\.[0-9]+\.[0-9]+' 2>/dev/null || echo "Not Installed")
+          echo "PSQL_VERSION=$PSQL_VERSION" >> $GITHUB_ENV
+          echo "PGADMIN_VERSION=$PGADMIN_VERSION" >> $GITHUB_ENV
+          echo "NODE_VERSION=$NODE_VERSION" >> $GITHUB_ENV
+          echo "PNPM_VERSION=$PNPM_VERSION" >> $GITHUB_ENV
+          echo "RCLONE_VERSION=$RCLONE_VERSION" >> $GITHUB_ENV
+          docker stop $CONTAINER_ID
+          echo "Removing all images from DOCKER_TAGS..."
+          for TAG in $(echo "${{ env.DOCKER_TAGS }}" | tr ',' ' '); do
+            echo "Removing image: $TAG"
+            docker rmi -f $TAG || echo "Failed to remove $TAG, possibly in use."
+          done
+          docker image prune -f
+
+      - name: Post-Build Disk Space
+        run: |
+          echo "Disk space after build:"
+          df -h
+
+      - name: Add Job Summary for Build
+        run: |
+          echo "## Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Version:** \`${{ env.VERSION }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Git Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Docker Tags:**" >> $GITHUB_STEP_SUMMARY
+          echo "\`${{ env.DOCKER_TAGS }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Dependency Versions:**" >> $GITHUB_STEP_SUMMARY
+          echo "- DMB Frontend: \`${{ needs.fetch-latest-tags.outputs.DMB_FRONTEND_TAG }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Riven: \`${{ needs.fetch-latest-tags.outputs.RIVEN_TAG }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Riven Frontend: \`${{ needs.fetch-latest-tags.outputs.RIVEN_FRONTEND_TAG }}\`" >> $GITHUB_STEP_SUMMARY 
+          echo "- Zilean: \`${{ needs.fetch-latest-tags.outputs.ZILEAN_TAG }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- PostgreSQL: \`${{ env.PSQL_VERSION }}\`" >> $GITHUB_STEP_SUMMARY                   
+          echo "- pgAgent: \`${{ needs.fetch-latest-tags.outputs.PGAGENT_TAG }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- pgAdmin4: \`${{ env.PGADMIN_VERSION }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- System Stats: \`${{ needs.fetch-latest-tags.outputs.SYS_STATS_TAG }}\`" >> $GITHUB_STEP_SUMMARY          
+          echo "- Node.js: \`${{ env.NODE_VERSION }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- PNPM: \`${{ env.PNPM_VERSION }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- rclone: \`${{ env.RCLONE_VERSION }}\`" >> $GITHUB_STEP_SUMMARY          
+          echo "**Build and Push Status:** ✅ Successful" >> $GITHUB_STEP_SUMMARY
 
   release:
     needs: build-and-push
@@ -176,6 +232,17 @@ jobs:
               --notes "$RELEASE_NOTES" \
               --draft=false \
               --prerelease=false
+              
+      - name: Add Job Summary for Release
+        run: |
+          echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "**Release Version:** \`${{ env.VERSION }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Release Status:** ${{ env.release_exists == 'false' && '✅ Created' || '⚠️ Skipped (Already Exists)' }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ env.release_exists }}" == "false" ]; then
+            echo "**Release Notes:**" >> $GITHUB_STEP_SUMMARY
+            awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md >> $GITHUB_STEP_SUMMARY
+          fi
+
   announce:
     needs: [release, build-and-push]
     if: needs.release.outputs.release_exists == 'false' && github.ref_name == 'master'

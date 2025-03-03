@@ -12,6 +12,7 @@
         "plex_token": "",
         "plex_address": "",
         "github_token": "",
+        "github_username": "",
         "api_service": {
             "enabled": true,
             "process_name": "DMB API",
@@ -22,10 +23,10 @@
         "frontend": {
             "enabled": true,
             "process_name": "DMB Frontend",
-            "repo_owner": "I-am-PUID-0",
+            "repo_owner": "nicocapalbo",
             "repo_name": "dmbdb",
             "release_version_enabled": false,
-            "release_version": "1.1.0",
+            "release_version": "1.2.0",
             "branch_enabled": false,
             "branch": "main",
             "suppress_logging": false,
@@ -190,15 +191,13 @@
         ],
         "command": [
             "/riven/backend/venv/bin/python",
-            "src/main.py"
+            "src/main.py",
+            "-p",
+            "{port}"
         ],
         "config_dir": "/riven/backend",
         "config_file": "/riven/backend/data/settings.json",        
-        "env": {
-            "PATH": "/riven/backend/venv/bin:${PATH}",
-            "POETRY_VIRTUALENVS_PATH": "/riven/backend/.cache/pypoetry/virtualenvs",
-            "POETRY_CACHE_DIR": "/riven/backend/.cache/pypoetry"
-        },
+        "env": {},
         "wait_for_dir": "/data/rclone_RD/__all__"
     },
     "riven_frontend": {
@@ -227,7 +226,9 @@
         ],
         "config_dir": "/riven/frontend",
         "env": {
-            "DIALECT": "postgres"
+            "ORIGIN": "http://0.0.0.0:{port}",
+            "PORT": "{port}",
+            "HOST": "{host}"
         }
     },
     "zilean": {
@@ -268,11 +269,11 @@
             "DOTNET_GCDynamicAdaptationMode": "1",
             "DOTNET_SYSTEM_GLOBALIZATION_INVARIANT": "false",
             "PYTHONUNBUFFERED": "1",
-            "ASPNETCORE_URLS": "http://+:8182",
+            "ASPNETCORE_URLS": "http://+:{port}",
             "PYTHONPATH": "/zilean/venv/lib/python3.11/site-packages",
             "PATH": "/zilean/venv/bin:${PATH}",
             "ZILEAN_PYTHON_PYLIB": "/usr/local/lib/libpython3.11.so.1.0",
-            "Zilean__Database__ConnectionString": "Host=localhost;Port=5432;Database=zilean;Username=DMB;Password=postgres;Timeout=300;CommandTimeout=3600;"
+            "Zilean__Database__ConnectionString": "Host={postgres_host};Port={postgres_port};Database=zilean;Username={postgres_user};Password={postgres_password};Timeout=300;CommandTimeout=3600;"
         }
     },
     "zurg": {
@@ -286,15 +287,16 @@
                 "release_version": "v0.9.3-final",
                 "suppress_logging": false,
                 "log_level": "INFO",
+                "host": "127.0.0.1",
+                "port": "",
                 "auto_update": false,
                 "auto_update_interval": 1,
                 "clear_on_update": false,
-                "exclude_dirs": [],
+                "exclude_dirs": ["/zurg/RD"],
                 "key_type": "RealDebrid",
                 "config_dir": "/zurg/RD",
                 "config_file": "/zurg/RD/config.yml",
                 "command": "/zurg/RD/zurg",
-                "port": "",
                 "user": "",
                 "password": "",
                 "api_key": ""

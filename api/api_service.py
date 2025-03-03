@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute, APIWebSocketRoute
+from contextlib import asynccontextmanager
 from uvicorn.config import Config
 from uvicorn.server import Server
 from utils.dependencies import (
@@ -17,8 +18,18 @@ from utils.config_loader import CONFIG_MANAGER
 import threading
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    websocket_manager = get_websocket_manager()
+    logger = get_logger()
+    logger.info("Shutting down WebSocket manager...")
+    await websocket_manager.shutdown()
+    logger.info("WebSocket manager shutdown complete.")
+
+
 def create_app() -> FastAPI:
-    app = FastAPI()
+    app = FastAPI(lifespan=lifespan)
 
     app.dependency_overrides[get_process_handler] = get_process_handler
     app.dependency_overrides[get_logger] = get_logger
@@ -54,13 +65,6 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-    @app.on_event("shutdown")
-    async def on_shutdown():
-        websocket_manager = get_websocket_manager()
-        logger.info("Shutting down WebSocket manager...")
-        await websocket_manager.shutdown()
-        logger.info("WebSocket manager shutdown complete.")
 
     return app
 

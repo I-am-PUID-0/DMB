@@ -1,47 +1,42 @@
-from base import *
 from utils.global_logger import logger
-import psycopg2
-from psycopg2 import sql
-import json
 from utils.config_loader import CONFIG_MANAGER
+import psycopg2, time, os, subprocess, json, glob
+from psycopg2 import sql
+from time import sleep
 
 
 config = CONFIG_MANAGER
-
-postgres_config = config.get("postgres")
-pgadmin_config = config.get("pgadmin")
 user_id = config.get("puid")
 group_id = config.get("pgid")
-postgres_config_dir = postgres_config.get("config_dir")
-postgres_config_file = postgres_config.get("config_file")
-postgres_process_name = postgres_config.get("process_name")
-postgres_host = postgres_config.get("host")
-postgres_user = postgres_config.get("user")
-postgres_password = postgres_config.get("password")
-postgres_port = postgres_config.get("port")
-postgres_databases = postgres_config.get("databases")
-pgadmin_config_dir = pgadmin_config.get("config_dir")
-pgadmin_config_file = pgadmin_config.get("config_file")
-pgadmin_process_name = pgadmin_config.get("process_name")
-pgadmin_email = pgadmin_config.get("setup_email")
-pgadmin_password = pgadmin_config.get("setup_password")
-pgadmin_port = pgadmin_config.get("port")
-pgadmin_default_server = pgadmin_config.get("default_server")
-pgadmin_email = pgadmin_config.get("setup_email")
-pgadmin_password = pgadmin_config.get("setup_password")
 
 
 def initialize_postgres_databases(
-    postgres_host, postgres_user, postgres_password, postgres_databases
+    postgres_host, postgres_port, postgres_user, postgres_password, postgres_databases
 ):
     try:
-        conn = psycopg2.connect(
-            dbname="postgres",
-            user=postgres_user,
-            password=postgres_password,
-            host=postgres_host,
-            port=postgres_port,
-        )
+        retries = 5
+        while retries > 0:
+            try:
+                conn = psycopg2.connect(
+                    dbname="postgres",
+                    user=postgres_user,
+                    password=postgres_password,
+                    host=postgres_host,
+                    port=postgres_port,
+                )
+                break
+            except psycopg2.OperationalError as e:
+                if "is not yet accepting connections" in str(e).lower():
+                    logger.info(
+                        "Database system is still recovering. Retrying initialization..."
+                    )
+                    time.sleep(5)
+                    retries -= 1
+                else:
+                    raise e
+        else:
+            return False, "Database system did not recover within the retry period."
+
         conn.autocommit = True
         cur = conn.cursor()
 
@@ -68,40 +63,27 @@ def initialize_postgres_databases(
             else:
                 logger.info(f"Database '{db_name}' already exists.")
 
-            if db_name == "postgres":
-                logger.info(
-                    "Checking if pgAgent extension is installed in 'postgres' database..."
-                )
-                cur.execute("SELECT * FROM pg_extension WHERE extname = 'pgagent';")
-                if cur.fetchone() is None:
-                    cur.execute("CREATE EXTENSION pgagent;")
-                    logger.info("pgAgent extension installed successfully.")
-                else:
-                    logger.info("pgAgent extension already exists.")
+            logger.info(f"Enabling system_stats extension on '{db_name}' database...")
+            cur.execute(
+                sql.SQL("SELECT 1 FROM pg_extension WHERE extname = 'system_stats';")
+            )
+            if cur.fetchone() is None:
+                cur.execute(sql.SQL("CREATE EXTENSION system_stats;"))
+                logger.info("system_stats extension enabled successfully.")
+            else:
+                logger.info("system_stats extension is already enabled.")
 
-            if db_name == "pgadmin":
-                logger.info(
-                    "Checking if system_stats extension is installed in 'pgadmin' database..."
-                )
-                conn_db = psycopg2.connect(
-                    dbname=db_name,
-                    user=postgres_user,
-                    password=postgres_password,
-                    host=postgres_host,
-                    port=postgres_port,
-                )
-                conn_db.autocommit = True
-                cur_db = conn_db.cursor()
-                cur_db.execute(
-                    "SELECT * FROM pg_extension WHERE extname = 'system_stats';"
-                )
-                if cur_db.fetchone() is None:
-                    cur_db.execute("CREATE EXTENSION system_stats;")
-                    logger.info("system_stats extension created successfully.")
-                else:
-                    logger.info("system_stats extension already exists.")
-                cur_db.close()
-                conn_db.close()
+            logger.info(
+                f"Checking if pgAgent extension is enabled on '{db_name}' database..."
+            )
+            cur.execute(
+                sql.SQL("SELECT 1 FROM pg_extension WHERE extname = 'pgagent';")
+            )
+            if cur.fetchone() is None:
+                cur.execute(sql.SQL("CREATE EXTENSION pgagent;"))
+                logger.info("pgAgent extension enabled successfully.")
+            else:
+                logger.info("pgAgent extension is already enabled.")
 
         cur.close()
         conn.close()
@@ -110,7 +92,7 @@ def initialize_postgres_databases(
         return False, f"Error initializing PostgreSQL databases: {e}"
 
 
-def create_default_postgresql_conf(postgres_config_dir):
+def create_default_postgresql_conf(postgres_config_dir, postgres_config_file):
     try:
         with open(postgres_config_file, "w") as config_file:
             config_file.write("# PostgreSQL configuration file\n")
@@ -141,7 +123,7 @@ def ensure_run_directory():
 
 
 def initialize_postgres_config_dir_directory(
-    process_handler, postgres_config_dir, postgres_user
+    process_handler, postgres_config_dir, postgres_user, postgres_password
 ):
     try:
         postmaster_opts = os.path.join(postgres_config_dir, "postmaster.opts")
@@ -158,7 +140,7 @@ def initialize_postgres_config_dir_directory(
             init = process_handler.start_process(
                 "PostgreSQL_init",
                 postgres_config_dir,
-                ["su", postgres_user, "-s", "/bin/sh", "-c", initialize_command],
+                ["su", postgres_user, "-s", "/bin/bash", "-c", initialize_command],
             )
             process_handler.wait("PostgreSQL_init")
             logger.info(
@@ -169,7 +151,9 @@ def initialize_postgres_config_dir_directory(
         return False, f"Error initializing PostgreSQL data directory: {e}"
 
 
-def check_postgresql_started(postgres_user, postgres_databases, timeout=60):
+def check_postgresql_started(
+    postgres_host, postgres_port, postgres_user, postgres_databases, timeout=60
+):
     enabled_databases = [
         db["name"] for db in postgres_databases if db.get("enabled", True)
     ]
@@ -179,17 +163,31 @@ def check_postgresql_started(postgres_user, postgres_databases, timeout=60):
         return True, None
 
     logger.info("Checking if PostgreSQL server has started...")
+    logger.debug(f"Postgres Port: {postgres_port}")
     start_time = time.time()
 
     while time.time() - start_time < timeout:
         all_ready = True
         for db in enabled_databases:
             result = subprocess.run(
-                ["pg_isready", "-U", postgres_user, "-d", db],
+                [
+                    "pg_isready",
+                    "-U",
+                    postgres_user,
+                    "-d",
+                    db,
+                    "-h",
+                    postgres_host,
+                    "-p",
+                    str(postgres_port),
+                ],
                 capture_output=True,
                 text=True,
             )
-            if result.returncode != 0:
+            if "recovery" in result.stderr.lower():
+                logger.info(f"Database '{db}' is still in recovery mode. Retrying...")
+                all_ready = False
+            elif result.returncode != 0:
                 logger.debug(
                     f"PostgreSQL database '{db}' not ready: {result.stdout.strip()} {result.stderr.strip()}"
                 )
@@ -207,7 +205,12 @@ def check_postgresql_started(postgres_user, postgres_databases, timeout=60):
 
 
 def check_postgresql_ready(
-    postgres_host, postgres_user, postgres_password, postgres_databases, timeout=60
+    postgres_host,
+    postgres_port,
+    postgres_user,
+    postgres_password,
+    postgres_databases,
+    timeout=60,
 ):
     enabled_databases = [
         db["name"] for db in postgres_databases if db.get("enabled", True)
@@ -279,7 +282,13 @@ def initialize_pgadmin_config_directory(pgadmin_config_dir):
         return False, f"Error creating pgAdmin data directory: {e}"
 
 
-def create_pgadmin_config(pgadmin_config_dir, db_uri):
+def create_pgadmin_config(
+    pgadmin_config_dir,
+    pgadmin_db_uri,
+    pgadmin_config_file,
+    pgadmin_default_server,
+    pgadmin_port,
+):
     pgadmin_install_dirs = glob.glob(
         "/pgadmin/venv/lib/python*/site-packages/pgadmin4/"
     )
@@ -297,7 +306,7 @@ def create_pgadmin_config(pgadmin_config_dir, db_uri):
             config_file.write(f"DEFAULT_SERVER = '{pgadmin_default_server}'\n")
             config_file.write(f"DEFAULT_SERVER_PORT = {int(pgadmin_port)}\n")
             config_file.write(f"LOG_FILE = '{pgadmin_config_dir}/pgadmin4.log'\n")
-            config_file.write(f"CONFIG_DATABASE_URI = '{db_uri}'\n")
+            config_file.write(f"CONFIG_DATABASE_URI = '{pgadmin_db_uri}'\n")
             config_file.write(f"SESSION_DB_PATH = '{pgadmin_config_dir}/sessions'\n")
             config_file.write(f"STORAGE_DIR = '{pgadmin_config_dir}/storage'\n")
             config_file.write("DEFAULT_BINARY_PATHS = {\n")
@@ -330,13 +339,29 @@ def create_pgadmin_config(pgadmin_config_dir, db_uri):
     return pgadmin_config_file
 
 
-def start_pgadmin(process_handler, pgadmin_config_dir, db_uri):
+def start_pgadmin(
+    process_handler,
+    pgadmin_config_dir,
+    pgadmin_config_file,
+    pgadmin_db_uri,
+    pgadmin_email,
+    pgadmin_password,
+    pgadmin_process_name,
+    pgadmin_port,
+    pgadmin_default_server,
+):
     logger.info("Starting pgAdmin process with PostgreSQL database...")
     pgadmin_venv = "/pgadmin/venv"
 
     try:
-        pgadmin_config_file = create_pgadmin_config(pgadmin_config_dir, db_uri)
-        if not pgadmin_config_file:
+        config_file = create_pgadmin_config(
+            pgadmin_config_dir,
+            pgadmin_db_uri,
+            pgadmin_config_file,
+            pgadmin_default_server,
+            pgadmin_port,
+        )
+        if not config_file:
             return False
         os.environ["PGADMIN_SETUP_EMAIL"] = pgadmin_email
         os.environ["PGADMIN_SETUP_PASSWORD"] = pgadmin_password
@@ -351,7 +376,7 @@ def start_pgadmin(process_handler, pgadmin_config_dir, db_uri):
         process_handler.start_process(
             pgadmin_process_name,
             pgadmin_config_dir,
-            ["sh", "-c", pgadmin_command],
+            ["sh", "-c", f"exec {pgadmin_command}"],
             env=env,
         )
 
@@ -362,7 +387,7 @@ def start_pgadmin(process_handler, pgadmin_config_dir, db_uri):
 
 
 def postgres_role_exists(
-    postgres_user, postgres_password, postgres_databases, postgres_host
+    postgres_user, postgres_password, postgres_databases, postgres_host, postgres_port
 ):
     logger.info(f"Checking if role '{postgres_user}' exists...")
     try:
@@ -384,7 +409,7 @@ def postgres_role_exists(
         return False, f"Error checking if role '{postgres_user}' exists: {e}"
 
 
-def list_database_sizes(postgres_host, postgres_user, postgres_password):
+def list_database_sizes(postgres_host, postgres_port, postgres_user, postgres_password):
     logger.info("Listing PostgreSQL database sizes...")
     try:
         conn = psycopg2.connect(
@@ -408,13 +433,13 @@ def list_database_sizes(postgres_host, postgres_user, postgres_password):
         return False, f"Error listing database sizes: {e}"
 
 
-def start_pgagent(process_handler, postgres_user):
+def start_pgagent(process_handler, postgres_user, postgres_host, postgres_port):
     try:
-        pgagent_command = (
-            f"pgagent host=/var/run/postgresql -f dbname=postgres user={postgres_user}"
-        )
+        pgagent_command = f"pgagent host={postgres_host} port={postgres_port} -f dbname=postgres user={postgres_user}"
         process_handler.start_process(
-            "pgAgent", "/var/run/postgresql", ["sh", "-c", pgagent_command]
+            "pgAgent",
+            f"{postgres_host}:{postgres_port}",
+            ["/bin/bash", "-c", pgagent_command],
         )
         return True, None
     except Exception as e:
@@ -550,6 +575,22 @@ def update_postgresql_conf(config_file, postgres_config):
 
 
 def pgadmin_setup(process_handler):
+    pgadmin_config = config.get("pgadmin")
+    postgres_config = config.get("postgres")
+    postgres_process_name = postgres_config.get("process_name")
+    postgres_host = postgres_config.get("host")
+    postgres_user = postgres_config.get("user")
+    postgres_password = postgres_config.get("password")
+    postgres_port = postgres_config.get("port")
+    pgadmin_config_dir = pgadmin_config.get("config_dir")
+    pgadmin_config_file = pgadmin_config.get("config_file")
+    pgadmin_process_name = pgadmin_config.get("process_name")
+    pgadmin_email = pgadmin_config.get("setup_email")
+    pgadmin_password = pgadmin_config.get("setup_password")
+    pgadmin_port = pgadmin_config.get("port")
+    pgadmin_default_server = pgadmin_config.get("default_server")
+    pgadmin_email = pgadmin_config.get("setup_email")
+    pgadmin_password = pgadmin_config.get("setup_password")
     try:
         setup_email = pgadmin_config.get("setup_email", "").strip()
         setup_password = pgadmin_config.get("setup_password", "").strip()
@@ -570,12 +611,20 @@ def pgadmin_setup(process_handler):
         if not success:
             return False, error
 
-        db_uri = (
-            f"postgresql://{postgres_user}:{postgres_password}@{postgres_host}/pgadmin"
-        )
+        pgadmin_db_uri = f"postgresql://{postgres_user}:{postgres_password}@{postgres_host}:{postgres_port}/pgadmin"
 
         process_handler.setup_tracker.add(pgadmin_process_name)
-        success, error = start_pgadmin(process_handler, pgadmin_config_dir, db_uri)
+        success, error = start_pgadmin(
+            process_handler,
+            pgadmin_config_dir,
+            pgadmin_config_file,
+            pgadmin_db_uri,
+            pgadmin_email,
+            pgadmin_password,
+            pgadmin_process_name,
+            pgadmin_port,
+            pgadmin_default_server,
+        )
         if not success:
             process_handler.setup_tracker.remove(pgadmin_process_name)
             return False, error
@@ -588,16 +637,15 @@ def pgadmin_setup(process_handler):
             "username": postgres_user,
             "connection_parameters": {"connect_timeout": 10},
         }
-        pgadmin_db_uri = (
-            f"postgresql://{postgres_user}:{postgres_password}@{postgres_host}/pgadmin"
-        )
 
         success, error = add_pgadmin_server_to_db(pgadmin_db_uri, server_details)
         if not success:
             process_handler.setup_tracker.remove(pgadmin_process_name)
             return False, error
 
-        success, error = start_pgagent(process_handler, postgres_user)
+        success, error = start_pgagent(
+            process_handler, postgres_user, postgres_host, postgres_port
+        )
         if not success:
             return False, error
 
@@ -611,6 +659,15 @@ def pgadmin_setup(process_handler):
 
 
 def postgres_setup(process_handler=None):
+    postgres_config = config.get("postgres")
+    postgres_config_dir = postgres_config.get("config_dir")
+    postgres_config_file = postgres_config.get("config_file")
+    postgres_process_name = postgres_config.get("process_name")
+    postgres_host = postgres_config.get("host")
+    postgres_user = postgres_config.get("user")
+    postgres_password = postgres_config.get("password")
+    postgres_port = postgres_config.get("port")
+    postgres_databases = postgres_config.get("databases")
     try:
         if postgres_config_dir:
             if not os.path.exists(postgres_config_dir):
@@ -642,7 +699,7 @@ def postgres_setup(process_handler=None):
             os.remove(os.path.join(postgres_config_dir, "postmaster.pid"))
 
         success, error = initialize_postgres_config_dir_directory(
-            process_handler, postgres_config_dir, postgres_user
+            process_handler, postgres_config_dir, postgres_user, postgres_password
         )
         if not success:
             return False, error
@@ -655,7 +712,9 @@ def postgres_setup(process_handler=None):
             logger.warning(
                 "PostgreSQL configuration file not found. Creating default configuration."
             )
-            success, error = create_default_postgresql_conf(postgres_config_dir)
+            success, error = create_default_postgresql_conf(
+                postgres_config_dir, postgres_config_file
+            )
             if not success:
                 return False, error
         else:
@@ -681,7 +740,10 @@ def postgres_setup(process_handler=None):
             return False, "Failed to start PostgreSQL process."
 
         success, error = check_postgresql_started(
-            postgres_user, postgres_databases=[{"name": "postgres", "enabled": True}]
+            postgres_host,
+            postgres_port,
+            postgres_user,
+            postgres_databases=[{"name": "postgres", "enabled": True}],
         )
         if not success:
             return False, error
@@ -689,19 +751,27 @@ def postgres_setup(process_handler=None):
         sleep(10)
 
         success, error = initialize_postgres_databases(
-            postgres_host, postgres_user, postgres_password, postgres_databases
+            postgres_host,
+            postgres_port,
+            postgres_user,
+            postgres_password,
+            postgres_databases,
         )
         if not success:
             return False, error
 
         success, error = check_postgresql_ready(
-            postgres_host, postgres_user, postgres_password, postgres_databases
+            postgres_host,
+            postgres_port,
+            postgres_user,
+            postgres_password,
+            postgres_databases,
         )
         if not success:
             return False, error
 
         success, error = list_database_sizes(
-            postgres_host, postgres_user, postgres_password
+            postgres_host, postgres_port, postgres_user, postgres_password
         )
         if not success:
             logger.warning(error)

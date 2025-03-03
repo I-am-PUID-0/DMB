@@ -1,9 +1,55 @@
-﻿# Changelog
+# Changelog
 
-All notable changes to this project will be documented in this file.
+## Version [6.1.0] - 2025-03-03 🚀
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### ✨ Features
+
+- feat(riven_backend): add port assignment
+- feat(riven_frontend): add port assignment
+- feat(zilean): add port assignment
+
+### 🐛 Bug Fixes
+
+- fix(dockerfile): set pnpm store local to each project w/ `store-dir=./.pnpm-store in .npmrc`
+- fix(versions): version_check & version_write use key vs. process_name
+- fix(qemu): Set `cache-image: false`
+- fix(postgres): re-add pgAgent
+- fix(postgres): system_stats, paths, permissions
+- fix(postgres): `locales && locale-gen en_US.UTF-8` added to dockerfile
+- fix(dockerfile): pgadmin-builder venv path
+- fix(healthcheck): update `/healthcheck/running_processes.json`
+- fix(setup): resolved missing argument for setup of branch_enabled
+- fix(postgres): `check_postgresql_started` updated port used when not default
+- fix(user_management): add auto-generated user password to support use of su by default user
+- fix(clear_directory): always exclude venv directory if present
+- fix(find_service_config): recursive search
+- fix(find_schema): recursive search
+- fix(save_config_file): yaml.dump
+- fix(api_state): api status update
+
+### 🚀 CI/CD Pipeline
+
+- ci(github): update push event configuration in Docker image workflow
+- ci(github): add release-please, fetch-latest-tags, conventional-commits
+- ci(devcontainer): add dns configuration and git path
+- ci(docker-image): add job summary for build
+
+### 🛠️ Refactors
+
+- refactor(dockerfile): change base image to Ubuntu 24.04
+- refactor(dmb_config): dynamic update of the `ConnectionString` for zilean
+- refactor(dmb_config): add `ORIGIN` to riven_frontend
+- refactor(dockerfile): pull dmb_frontend from @nicocapalbo repo
+- refactor(base): removed base module, add imports to modules
+- refactor(dmb_config): removed riven_backend default envs
+- refactor(dockerfile): pin pnpm version 10.x `npm install -g pnpm@latest-10`
+- refactor(dockerfile): pin node version 23.x `curl -fsSL https://deb.nodesource.com/setup_23.x | bash -`
+- refactor(main): add version.txt file
+- refactor(api_service): on_event moved to lifespan
+
+### 🤡 Other Changes
+
+- chore(deps): bump actions/checkout from 3 to 4
 
 ## Version [6.0.1] - 2025-01-09 🚀
 
@@ -36,10 +82,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Config: Added dmb_config.json to the `/config` directory for complete control over DMB
 - Riven: Added init function for first run of Riven Backend - mitigates first run startup issues
 - Zurg: Unlimited simultaneous deployments of Zurg - simply add another Zurg "instance" in the dmb_config.json
-- rclone: Optional deployments of rclone w/ direct connection to debrid service - bypasses using Zurg for the debrid service
 - rclone: Unlimited simultaneous deployments of rclone - simply add another rclone "instance" in the dmb_config.json
 - rclone: More robust stale mount handling
-- mergerfs: Add mergerfs to combine all rclone mounts into a consolidated directory - e.g., symlinking for Riven using `/data/consolidated/__all__` for all rclone mounts - see Notes
 - PostgreSQL: Any setting within the postgresql.conf can be set from within the dmb_config.json
 
 ### Removed
