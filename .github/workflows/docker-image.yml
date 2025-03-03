@@ -135,16 +135,31 @@ jobs:
             RIVEN_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_FRONTEND_TAG }}
             DMB_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.DMB_FRONTEND_TAG }}
           push: true
-          load: true
-          
+
+      - name: Build and Load Single-Platform Image for Version Extraction
+        id: build_load_single
+        uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_RECORD_UPLOAD: false        
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          cache-from: type=gha,scope=build-${{ github.ref_name }}
+          tags: temp-local-image
+          build-args: |
+            PGAGENT_TAG=${{ needs.fetch-latest-tags.outputs.PGAGENT_TAG }}
+            SYS_STATS_TAG=${{ needs.fetch-latest-tags.outputs.SYS_STATS_TAG }}
+            ZILEAN_TAG=${{ needs.fetch-latest-tags.outputs.ZILEAN_TAG }}
+            RIVEN_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_TAG }}
+            RIVEN_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_FRONTEND_TAG }}
+            DMB_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.DMB_FRONTEND_TAG }}
+          load: true 
+
       - name: Extract Versions from Built Image
         run: |
-          IMAGE_TAG=$(echo "${{ env.DOCKER_TAGS }}" | cut -d',' -f1)
+          IMAGE_TAG="temp-local-image"
           echo "Using IMAGE_TAG: $IMAGE_TAG"
-          if ! docker image inspect $IMAGE_TAG > /dev/null 2>&1; then
-            echo "Error: Image $IMAGE_TAG not found locally."
-            exit 1
-          fi
           CONTAINER_ID=$(docker run -d --rm --entrypoint /bin/sh $IMAGE_TAG -c "sleep 60")
           PSQL_VERSION=$(docker exec $CONTAINER_ID psql --version | awk '{print $3}')
           PGADMIN_VERSION=$(docker exec $CONTAINER_ID /pgadmin/venv/bin/python -c "import importlib.metadata; print(importlib.metadata.version('pgadmin4'))" 2>/dev/null || echo "Not Installed")
@@ -157,11 +172,7 @@ jobs:
           echo "PNPM_VERSION=$PNPM_VERSION" >> $GITHUB_ENV
           echo "RCLONE_VERSION=$RCLONE_VERSION" >> $GITHUB_ENV
           docker stop $CONTAINER_ID
-          echo "Removing all images from DOCKER_TAGS..."
-          for TAG in $(echo "${{ env.DOCKER_TAGS }}" | tr ',' ' '); do
-            echo "Removing image: $TAG"
-            docker rmi -f $TAG || echo "Failed to remove $TAG, possibly in use."
-          done
+          docker rmi -f temp-local-image
           docker image prune -f
 
       - name: Post-Build Disk Space
