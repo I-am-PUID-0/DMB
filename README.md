@@ -61,7 +61,7 @@ services:
       - PGID=
       - DMB_LOG_LEVEL=INFO
       - ZURG_INSTANCES_REALDEBRID_API_KEY=
-      - ORIGIN=http://0.0.0.0:3000                                  ## See Riven documentation for more details
+      - RIVEN_FRONTEND_ORIGIN=http://0.0.0.0:3000                                  ## See Riven documentation for more details
     # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address
     ports:
       - "3005:3005"                                                 ## DMB Frontend
