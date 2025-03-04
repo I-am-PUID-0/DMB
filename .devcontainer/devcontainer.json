@@ -1,6 +1,6 @@
 {
   "name": "DMB Dev Container",
-  "image": "iampuid0/dmb_private:Ubuntu",
+  "image": "iampuid0/dmb:FastAPI",
   "workspaceFolder": "/workspace",
   "customizations": {
     "vscode": {
