@@ -140,7 +140,7 @@ def initialize_postgres_config_dir_directory(
             init = process_handler.start_process(
                 "PostgreSQL_init",
                 postgres_config_dir,
-                ["su", postgres_user, "-s", "/bin/bash", "-c", initialize_command],
+                ["su", "-", postgres_user, "-s", "/bin/bash", "-c", initialize_command],
             )
             process_handler.wait("PostgreSQL_init")
             logger.info(
