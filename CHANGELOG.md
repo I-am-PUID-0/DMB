@@ -1,5 +1,20 @@
 # Changelog
 
+## [6.1.4](https://github.com/I-am-PUID-0/DMB/compare/6.1.3...6.1.4) (2025-03-07)
+
+
+### 📖 Documentation
+
+* **readme:** RIVEN_FRONTEND_ENV_ORIGIN ([65f10d2](https://github.com/I-am-PUID-0/DMB/commit/65f10d2ca5a26baec333394fac2292146f8a8bce))
+
+
+### 🛠️ Refactors
+
+* **dockerfile:** update dmb-frontend-builder to use repo tag ([b747bf8](https://github.com/I-am-PUID-0/DMB/commit/b747bf84a085eafda7bf1ac7b7e223147ce6e7c9))
+* **fetch-latest-tags:** change cron job to run every 3 hours ([6068fc0](https://github.com/I-am-PUID-0/DMB/commit/6068fc0d57f80589016372f47d2327ab49e973d9))
+
+## Changelog
+
 ## Version [6.1.0] - 2025-03-03 🚀
 
 ### ✨ Features
