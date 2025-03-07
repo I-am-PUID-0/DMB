@@ -2,20 +2,16 @@
 
 ## [6.1.4](https://github.com/I-am-PUID-0/DMB/compare/6.1.3...6.1.4) (2025-03-07)
 
-
 ### 📖 Documentation
 
-* **readme:** RIVEN_FRONTEND_ENV_ORIGIN ([65f10d2](https://github.com/I-am-PUID-0/DMB/commit/65f10d2ca5a26baec333394fac2292146f8a8bce))
-
+- **readme:** RIVEN_FRONTEND_ENV_ORIGIN ([65f10d2](https://github.com/I-am-PUID-0/DMB/commit/65f10d2ca5a26baec333394fac2292146f8a8bce))
 
 ### 🛠️ Refactors
 
-* **dockerfile:** update dmb-frontend-builder to use repo tag ([b747bf8](https://github.com/I-am-PUID-0/DMB/commit/b747bf84a085eafda7bf1ac7b7e223147ce6e7c9))
-* **fetch-latest-tags:** change cron job to run every 3 hours ([6068fc0](https://github.com/I-am-PUID-0/DMB/commit/6068fc0d57f80589016372f47d2327ab49e973d9))
+- **dockerfile:** update dmb-frontend-builder to use repo tag ([b747bf8](https://github.com/I-am-PUID-0/DMB/commit/b747bf84a085eafda7bf1ac7b7e223147ce6e7c9))
+- **fetch-latest-tags:** change cron job to run every 3 hours ([6068fc0](https://github.com/I-am-PUID-0/DMB/commit/6068fc0d57f80589016372f47d2327ab49e973d9))
 
-## Changelog
-
-## Version [6.1.0] - 2025-03-03 🚀
+## [6.1.0] - 2025-03-03 🚀
 
 ### ✨ Features
 
@@ -66,13 +62,13 @@
 
 - chore(deps): bump actions/checkout from 3 to 4
 
-## Version [6.0.1] - 2025-01-09 🚀
+## [6.0.1] - 2025-01-09 🚀
 
 ### Fixed 🛠️
 
-- Zurg: Version download
+- Zurg: download
 
-## Version [6.0.0] - 2025-01-09 🚀
+## [6.0.0] - 2025-01-09 🚀
 
 ### Breaking Changes ⚠️
 
@@ -115,13 +111,13 @@
 - Multiple simultaneous debrid services are not currently supported for Riven
 - Zurg currently only supports RealDebrid
 
-## Version [5.4.5] - 2024-11-22 🚀
+## [5.4.5] - 2024-11-22 🚀
 
 ### Fixed 🛠️
 
 - [PR #88](https://github.com/I-am-PUID-0/DMB/pull/88) Zilean: Add database connection timeouts 🐛 - Thanks @skeet70 🙏
 
-## Version [5.4.4] - 2024-11-16 🚀
+## [5.4.4] - 2024-11-16 🚀
 
 ### Changed 🔄
 
@@ -132,26 +128,26 @@
 
 - Zilean: Only Zilean v2.1.0 and newer are supported due to dotnet update to version 9 🚨
 
-## Version [5.4.3] - 2024-11-01 🚀
+## [5.4.3] - 2024-11-01 🚀
 
 ### Changed 🔄
 
 - Riven Frontend: Updated the name and location of the `server-config.json` file to `server.json` and to be transferred to the /riven/frontend/config directory on startup 🔄
 - Re-enabled reaping of zombie processes 🔄
 
-## Version [5.4.2] - 2024-10-29 🚀
+## [5.4.2] - 2024-10-29 🚀
 
 ### Fixed 🛠️
 
 - [Issue #72](https://github.com/I-am-PUID-0/DMB/issues/72) Zilean Permissions Issue 🐛
 
-## Version [5.4.1] - 2024-10-28 🚀
+## [5.4.1] - 2024-10-28 🚀
 
 ### Fixed 🛠️
 
 - [Issue #71](https://github.com/I-am-PUID-0/DMB/issues/71) PostgreSQL Graceful Shutdown 🐛
 
-## Version [5.4.0] - 2024-10-25 🚀
+## [5.4.0] - 2024-10-25 🚀
 
 ### Fixed 🛠️
 
@@ -179,7 +175,7 @@
 - With these changes, you can now use the latest development versions of Riven Frontend and Backend 🌙
 - Use the RIVEN_BACKEND_BRANCH=release-please--branches--main and RIVEN_FRONTEND_BRANCH=release-please--branches--main environment variables to test the current development versions of Riven 🌙
 
-## Version [5.3.2] - 2024-10-18 🚀
+## [5.3.2] - 2024-10-18 🚀
 
 ### Fixed 🛠️
 
@@ -188,13 +184,13 @@
 - [Issue #62](https://github.com/I-am-PUID-0/DMB/issues/62) Riven Frontend v0.14.0 Broke VersionFilePath 🐛
 - [Issue #63](https://github.com/I-am-PUID-0/DMB/issues/63) Riven Frontend v0.16.0 Broke Frontend Build 🐛 - This may be a temporary fix...
 
-## Version [5.3.1] - 2024-10-15 🚀
+## [5.3.1] - 2024-10-15 🚀
 
 ### Fixed 🛠️
 
 - [Issue #59](https://github.com/I-am-PUID-0/DMB/issues/59) Zombie dotnet Processes Accumulating Over Time 🐛
 
-## Version [5.3.0] - 2024-10-03 🚀
+## [5.3.0] - 2024-10-03 🚀
 
 ### Added ✨
 
@@ -209,7 +205,7 @@
 
 - RIVEN_BACKEND_URL: Linked to the Riven backend load_settings function. [PR #57](https://github.com/I-am-PUID-0/DMB/pull/57) Thanks @FunkeCoder23 🙏
 
-## Version [5.2.0] - 2024-10-01 🚀
+## [5.2.0] - 2024-10-01 🚀
 
 ### Added ✨
 
@@ -226,13 +222,13 @@
 - Backups of the PostgreSQL database can be made using pgAdmin 4 and are stored in the `/pgadmin/storage` directory 🗄️
 - The following message can be ignored on initial startup: `ERROR - PostgreSQL subprocess: relation "version" does not exist at character 75`
 
-## Version [5.1.10] - 2024-09-24 🚀
+## [5.1.10] - 2024-09-24 🚀
 
 ### Fixed 🛠️
 
 - logger: Fixed obfuscation of sensitive data in logs 🐛
 
-## Version [5.1.9] - 2024-09-23 🚀
+## [5.1.9] - 2024-09-23 🚀
 
 ### Fixed 🛠️
 
@@ -240,13 +236,13 @@
 - Riven Frontend: Set the default path for the frontend version.txt in dockerfile 🐛
 - [Issue #54](https://github.com/I-am-PUID-0/DMB/issues/54) An error occurred in the Zilean setup: 'NoneType' object has no attribute 'lower'
 
-## Version [5.1.8] - 2024-09-23 🚀
+## [5.1.8] - 2024-09-23 🚀
 
 ### Fixed 🛠️
 
 - Riven Backend: Enabled not set to `true` for applied subordinate dictionary values 🐛
 
-## Version [5.1.7] - 2024-09-23 🚀
+## [5.1.7] - 2024-09-23 🚀
 
 ### Fixed 🛠️
 
@@ -266,13 +262,13 @@
 
 - To use the .env file for Riven backend settings, create a .env file in the Riven data directory with settings in the format of `KEY=VALUE` as shown in the [env.example](https://github.com/rivenmedia/riven/blob/main/.env.example)📝
 
-## Version [5.1.6] - 2024-09-13 🚀
+## [5.1.6] - 2024-09-13 🚀
 
 ### Changed 🔄
 
 - Riven Frontend: Set the default path for the frontend version.txt to /riven/frontend 🔄
 
-## Version [5.1.5] - 2024-09-13 🚀
+## [5.1.5] - 2024-09-13 🚀
 
 ### Fixed 🛠️
 
@@ -283,13 +279,13 @@
 
 - RIVEN_FRONTEND_OWNER: Environment variable to set the owner of the Riven frontend repository; Default is rivenmedia 🆔
 
-## Version [5.1.4] - 2024-09-12 🚀
+## [5.1.4] - 2024-09-12 🚀
 
 ### Fixed 🛠️
 
 - [Issue #51](https://github.com/I-am-PUID-0/DMB/issues/51) Duplicate start_process when update applied during initial startup 🐛
 
-## Version [5.1.3] - 2024-09-12 🚀
+## [5.1.3] - 2024-09-12 🚀
 
 ### Fixed 🛠️
 
@@ -299,13 +295,13 @@
 
 - The Riven frontend automatic update / branch / version should now work again 📦
 
-## Version [5.1.2] - 2024-09-10 🚀
+## [5.1.2] - 2024-09-10 🚀
 
 ### Fixed 🛠️
 
 - Healthcheck: Fixed healthcheck for Zilean 🩺
 
-## Version [5.1.1] - 2024-09-10 🚀
+## [5.1.1] - 2024-09-10 🚀
 
 ### Fixed 🛠️
 
@@ -315,7 +311,7 @@
 
 - On first run of Zilean, the PostgreSQL will create the database named zilean, so the message `PostgreSQL subprocess: ... CEST [596] FATAL:  database "zilean" does not exist` can be ignored 🗄️
 
-## Version [5.1.0] - 2024-09-09 🚀
+## [5.1.0] - 2024-09-09 🚀
 
 ### Added ✨
 
@@ -326,13 +322,13 @@
 - ZILEAN_VERSION: Environment variable to set the Zilean version; Default is latest 🔄
 - ZILEAN_LOGS: Environment variable to disable the Zilean logging when value is set to OFF; Default is ON 📝
 
-## Version [5.0.1] - 2024-09-06 🚀
+## [5.0.1] - 2024-09-06 🚀
 
 ### Fixed 🛠️
 
 - [Issue #47](https://github.com/I-am-PUID-0/DMB/issues/47) Error when RCLONE_LOG_LEVEL is not enabled 🐛
 
-## Version [5.0.0] - 2024-09-05 🚀
+## [5.0.0] - 2024-09-05 🚀
 
 ### Breaking Changes ⚠️
 
@@ -362,7 +358,7 @@
 - [Issue #43](https://github.com/I-am-PUID-0/DMB/issues/43) Node issue when setting Riven frontend version 🐛 has not been resolved in this release 🚨, so please ensure to only use Riven frontend version that is built into the image - No automatic update / branch / version 📦
 - There may be an issue with the Riven frontend when trying to access settings; the logs will show `TypeError: Cannot read properties of undefined (reading 'enabled')` when trying to access settings - this is a known issue and you will need to delete the riven settings.json 🚨
 
-## Version [4.1.0] - 2024-08-29 🚀
+## [4.1.0] - 2024-08-29 🚀
 
 ### Added ✨
 
@@ -378,7 +374,7 @@
 - [Issue #41](https://github.com/I-am-PUID-0/DMB/issues/41) Add healthcheck for PostgreSQL process ✨
 - [Issue #42](https://github.com/I-am-PUID-0/DMB/issues/42) Add clean shutdown for PostgreSQL server ✨
 
-## Version [4.0.0] - 2024-08-28 🚀
+## [4.0.0] - 2024-08-28 🚀
 
 ### Breaking Changes ⚠️
 
@@ -408,7 +404,7 @@
 
 - If the Riven backend shows errors related to the database or alembic, then the Riven data directory may need to be deleted before starting the new version of Riven w/ PostgreSQL 🗑️ - backup your settings.json before deleting the data directory 📂
 
-## Version [3.5.0] - 2024-08-08 🚀
+## [3.5.0] - 2024-08-08 🚀
 
 ### Added ✨
 
@@ -419,7 +415,7 @@
 
 - The DMB image is built nightly and will include the latest version of the Riven frontend at the time of build 🌙
 
-## Version [3.4.0] - 2024-08-05 🚀
+## [3.4.0] - 2024-08-05 🚀
 
 ### Fixed 🛠️
 
@@ -436,7 +432,7 @@
 - Riven backend: UPDATERS_PLEX_ADDRESS linked to PLEX_ADDRESS 🔄
 - Riven backend: UPDATERS_PLEX_TOKEN linked to PLEX_TOKEN 🔄
 
-## Version [3.3.2] - 2024-08-03 🚀
+## [3.3.2] - 2024-08-03 🚀
 
 ### Fixed 🛠️
 
@@ -450,13 +446,13 @@
 
 - GITHUB_TOKEN: Can be added to the environment variables to allow for repository downloads without rate limits 🔄
 
-## Version [3.3.1] - 2024-08-01 🚀
+## [3.3.1] - 2024-08-01 🚀
 
 ### Fixed 🛠️
 
 - healthcheck: Reverted healthcheck, for now 🐛
 
-## Version [3.3.0] - 2024-08-01 🚀
+## [3.3.0] - 2024-08-01 🚀
 
 ### Fixed 🛠️
 
@@ -476,7 +472,7 @@
 
 - healthcheck: Waits for Riven frontend setup to complete 🩺
 
-## Version [3.2.0] - 2024-07-30 🚀
+## [3.2.0] - 2024-07-30 🚀
 
 ### Changed 🔄
 
@@ -492,13 +488,13 @@
 
 - Logging: Fixed logging for Zurg to ensure log levels are properly set 📝
 
-## Version [3.1.0] - 2024-07-26 🚀
+## [3.1.0] - 2024-07-26 🚀
 
 ### Added ✨
 
 - Shutdown: Added a shutdown function to gracefully stop the DMB container; e.g., unmount the rclone mounts 🛑
 
-## Version [3.0.0] - 2024-07-26 🚀
+## [3.0.0] - 2024-07-26 🚀
 
 ### Breaking Changes ⚠️
 
@@ -523,7 +519,7 @@
 - BACKEND_URL has been changed to RIVEN_BACKEND_URL. The value is automatically set when the variable is not enabled. The default value is http://127.0.0.1:8080 🌐
 - RIVEN_DATABASE_HOST value is automatically set when the variable is not enabled. The default value is sqlite:////riven/backend/data/media.db 🗃️
 
-## Version [2.0.0] - 2024-07-25
+## [2.0.0] - 2024-07-25
 
 ### Breaking Changes
 
@@ -554,39 +550,39 @@
 - **Other features may also not be functional yet; will be fixed in a follow-on release.**
 - This release resolves [Issue #19](https://github.com/I-am-PUID-0/DMB/issues/19), [Issue #20](https://github.com/I-am-PUID-0/DMB/issues/20), and [Issue #10](https://github.com/I-am-PUID-0/DMB/issues/10)
 
-## Version [1.2.0] - 2024-07-19
+## [1.2.0] - 2024-07-19
 
 ### Added
 
 - [Issue #18](https://github.com/I-am-PUID-0/DMB/issues/18): Added DMB_LOG_SIZE environment variable to set the maximum size of the log file; Default is 10MB
 
-## Version [1.1.0] - 2024-07-17
+## [1.1.0] - 2024-07-17
 
 ### Changed
 
 - Rclone: WebDAV URL check for Zurg startup processes accepts any 200 status code as a valid response
 - DMB: Refactored to use common functions under utils
 
-## Version [1.0.3] - 2024-07-16
+## [1.0.3] - 2024-07-16
 
 ### Fixed
 
 - Rclone: Fixed WebDAV URL check for Zurg startup processes when Zurg user and password are set in config.yml
 
-## Version [1.0.2] - 2024-07-16
+## [1.0.2] - 2024-07-16
 
 ### Fixed
 
 - Zurg: Fixed the removal of Zurg user and password if previously set in config.yml
 
-## Version [1.0.1] - 2024-07-16
+## [1.0.1] - 2024-07-16
 
 ### Fixed
 
 - DMB: Introduced a Riven startup check for the symlinked directory to ensure the Zurg startup processes have finished before starting Riven
 - DMB: Introduced a Rclone startup check for the Zurg WebDAV URL to ensure the Zurg startup processes have finished before starting Rclone
 
-## Version [1.0.0] - 2024-06-25
+## [1.0.0] - 2024-06-25
 
 ### Breaking Changes
 
@@ -609,7 +605,7 @@
 - [Issue #3](https://github.com/I-am-PUID-0/DMB/issues/3): Removed Jellyfin environment variables
 - [Issue #2](https://github.com/I-am-PUID-0/DMB/issues/2): Removed PLEX_REFRESH environment variable
 
-## Version [0.2.0] - 2024-06-22
+## [0.2.0] - 2024-06-22
 
 ### Added
 
@@ -620,7 +616,7 @@
 - Zurg: PLEX_REFRESH environment variable
 - Zurg: PLEX_MOUNT environment variable
 
-## Version [0.1.0] - 2024-06-22
+## [0.1.0] - 2024-06-22
 
 ### Added
 
@@ -631,7 +627,7 @@
 - rclone: Fixed rclone process w/ Riven
 - Healthcheck: Fixed healthcheck process w/ Riven
 
-## Version [0.0.1] - 2024-06-21
+## [0.0.1] - 2024-06-21
 
 ### Added
 
