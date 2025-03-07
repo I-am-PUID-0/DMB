@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.1.6](https://github.com/I-am-PUID-0/DMB/compare/6.1.5...6.1.6) (2025-03-07)
+
+
+### 📖 Documentation
+
+* **docker-compose:** update ([5418722](https://github.com/I-am-PUID-0/DMB/commit/5418722140f6644ab654df9ccb7bf77e75236893))
+
+
+### 🛠️ Refactors
+
+* **devcontainer:** update to pull latest image ([02ba0d2](https://github.com/I-am-PUID-0/DMB/commit/02ba0d2eda584a4807a6327d1892a1a09fd829a6))
+* **dmb_config:** remove additional rclone instances not yet supported ([a2edd21](https://github.com/I-am-PUID-0/DMB/commit/a2edd217c139982dd550dd1f4617407bd09ee099))
+
 ## [6.1.5](https://github.com/I-am-PUID-0/DMB/compare/6.1.4...6.1.5) (2025-03-07)
 
 
