@@ -1,4 +1,7 @@
-from base import *
+from utils.config_loader import CONFIG_MANAGER
+import asyncio, os, re, sys, threading, time, logging
+from logging.handlers import BaseRotatingHandler
+from colorlog import ColoredFormatter
 
 
 class SubprocessLogger:
@@ -127,6 +130,10 @@ class SubprocessLogger:
         self.stderr_thread.daemon = True
         self.stderr_thread.start()
 
+    async def broadcast_log(self, message):
+        if self.manager:
+            await self.manager.broadcast(message)
+
     def log_subprocess_output(self, pipe):
         try:
             for line in iter(pipe.readline, ""):
@@ -161,22 +168,6 @@ class SubprocessLogger:
         if self.stderr_thread:
             self.stop_event.set()
             self.stderr_thread.join()
-
-
-class MissingAPIKeyException(Exception):
-    def __init__(self):
-        self.message = "Please set the debrid API Key: environment variable is missing from the docker-compose file"
-        super().__init__(self.message)
-
-
-class MissingEnvironmentVariable(Exception):
-    def __init__(self, variable_name):
-        self.variable_name = variable_name
-        message = f"Environment variable '{variable_name}' is missing."
-        super().__init__(message)
-
-    def log_exception(self, logger):
-        logger.error(f"Missing environment variable: {self.variable_name}")
 
 
 class ConfigurationError(Exception):
@@ -235,6 +226,7 @@ class CustomRotatingFileHandler(BaseRotatingHandler):
         utc=False,
         atTime=None,
     ):
+        self.lock = threading.Lock()
         self.when = when
         self.backupCount = backupCount
         self.maxBytes = maxBytes
@@ -252,6 +244,14 @@ class CustomRotatingFileHandler(BaseRotatingHandler):
         if not self.logger.hasHandlers():
             self.logger.addHandler(stream_handler)
         super().__init__(filename, "a", encoding, delay)
+
+    def _open(self):
+        stream = super()._open()
+        try:
+            os.chmod(self.baseFilename, 0o666)
+        except Exception as e:
+            self.logger.debug(f"Failed to set permissions on {self.baseFilename}: {e}")
+        return stream
 
     def computeInterval(self, when, interval):
         if when == "S":
@@ -287,81 +287,92 @@ class CustomRotatingFileHandler(BaseRotatingHandler):
         return rollover_time
 
     def shouldRollover(self, record):
-        if self.stream is None:
-            self.stream = self._open()
-        if self.maxBytes > 0:
-            self.stream.seek(0, 2)
-            if self.stream.tell() + len(self.format(record)) >= self.maxBytes:
-                return 1
-        t = int(time.time())
-        if t >= self.rolloverAt:
-            return 1
-        return 0
+        with self.lock:
+            if self.maxBytes > 0:
+                try:
+                    current_size = os.path.getsize(self.baseFilename)
+                    if current_size + len(self.format(record)) >= self.maxBytes:
+                        return True
+                except FileNotFoundError:
+                    return False
+            t = int(time.time())
+            if t >= self.rolloverAt:
+                return True
+            return False
 
     def doRollover(self):
-        self.logger.debug("Performing rollover")
-        if self.stream:
-            self.stream.close()
-        current_time = int(time.time())
-        base_filename_with_path, ext = os.path.splitext(self.baseFilename)
-        base_filename = os.path.basename(base_filename_with_path)
-        dir_name = os.path.dirname(base_filename_with_path)
-        match = re.search(r"(\d{4}-\d{2}-\d{2})", base_filename)
-        if match:
-            base_date = match.group(1)
-        else:
-            base_date = None
-        current_date = time.strftime("%Y-%m-%d", time.localtime(current_time))
-        if base_date:
-            base_filename_without_date = base_filename.replace(f"-{base_date}", "")
-        else:
-            base_filename_without_date = base_filename
-        for i in range(self.backupCount - 1, 0, -1):
-            sfn = os.path.join(
-                dir_name,
-                (
-                    f"{base_filename_without_date}-{base_date}_{i}.log"
-                    if base_date
-                    else f"{base_filename_without_date}_{i}.log"
-                ),
-            )
+        with self.lock:
+            self.logger.debug("Performing rollover")
+            if self.stream:
+                self.stream.close()
+            current_time = int(time.time())
+            base_filename_with_path, ext = os.path.splitext(self.baseFilename)
+            base_filename = os.path.basename(base_filename_with_path)
+            dir_name = os.path.dirname(base_filename_with_path)
+
+            match = re.search(r"(\d{4}-\d{2}-\d{2})", base_filename)
+            if match:
+                base_date = match.group(1)
+            else:
+                base_date = None
+
+            current_date = time.strftime("%Y-%m-%d", time.localtime(current_time))
+            if base_date:
+                base_filename_without_date = base_filename.replace(f"-{base_date}", "")
+            else:
+                base_filename_without_date = base_filename
+
+            for i in range(self.backupCount - 1, 0, -1):
+                sfn = os.path.join(
+                    dir_name,
+                    (
+                        f"{base_filename_without_date}-{base_date}_{i}.log"
+                        if base_date
+                        else f"{base_filename_without_date}_{i}.log"
+                    ),
+                )
+                dfn = os.path.join(
+                    dir_name,
+                    (
+                        f"{base_filename_without_date}-{base_date}_{i + 1}.log"
+                        if base_date
+                        else f"{base_filename_without_date}_{i + 1}.log"
+                    ),
+                )
+                if os.path.exists(sfn):
+                    self.logger.debug(f"Renaming {sfn} to {dfn}")
+                    if os.path.exists(dfn):
+                        os.remove(dfn)
+                    os.rename(sfn, dfn)
+
             dfn = os.path.join(
                 dir_name,
                 (
-                    f"{base_filename_without_date}-{base_date}_{i + 1}.log"
+                    f"{base_filename_without_date}-{base_date}_1.log"
                     if base_date
-                    else f"{base_filename_without_date}_{i + 1}.log"
+                    else f"{base_filename_without_date}_1.log"
                 ),
             )
-            if os.path.exists(sfn):
-                self.logger.debug(f"Renaming {sfn} to {dfn}")
-                if os.path.exists(dfn):
-                    os.remove(dfn)
-                os.rename(sfn, dfn)
-        dfn = os.path.join(
-            dir_name,
-            (
-                f"{base_filename_without_date}-{base_date}_1.log"
-                if base_date
-                else f"{base_filename_without_date}_1.log"
-            ),
-        )
-        self.logger.debug(f"Renaming {self.baseFilename} to {dfn}")
-        if os.path.exists(dfn):
-            os.remove(dfn)
-        os.rename(self.baseFilename, dfn)
-        if self.backupCount > 0:
-            files_to_delete = self.getFilesToDelete(base_filename_without_date)
-            for s in files_to_delete:
-                self.logger.debug(f"Deleting old log file {s}")
-                os.remove(s)
-        new_log_filename = os.path.join(
-            dir_name, f"{base_filename_without_date}-{current_date}.log"
-        )
-        self.baseFilename = new_log_filename
-        if not self.delay:
-            self.stream = self._open()
-        self.rolloverAt = self.computeRollover(current_time)
+            self.logger.debug(f"Renaming {self.baseFilename} to {dfn}")
+            if os.path.exists(dfn):
+                os.remove(dfn)
+            os.rename(self.baseFilename, dfn)
+
+            if self.backupCount > 0:
+                files_to_delete = self.getFilesToDelete(base_filename_without_date)
+                for s in files_to_delete:
+                    self.logger.debug(f"Deleting old log file {s}")
+                    os.remove(s)
+
+            new_log_filename = os.path.join(
+                dir_name, f"{base_filename_without_date}-{current_date}.log"
+            )
+            self.baseFilename = new_log_filename
+            if not self.delay:
+                self.stream = self._open()
+
+            os.chmod(self.baseFilename, 0o666)
+            self.rolloverAt = self.computeRollover(current_time)
 
     def getFilesToDelete(self, base_filename):
         dir_name = os.path.dirname(self.baseFilename)
@@ -418,16 +429,48 @@ def parse_size(size_str):
         return int(size_str)
 
 
-def get_logger(log_name="DMB", log_dir="./log"):
+class WebSocketHandler(logging.Handler):
+    def __init__(self, manager):
+        super().__init__()
+        self.manager = manager
+
+    def emit(self, record):
+        log_message = self.format(record)
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.create_task(self.manager.broadcast(log_message))
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(self.manager.broadcast(log_message))
+            finally:
+                pending_tasks = asyncio.all_tasks(loop)
+                for task in pending_tasks:
+                    task.cancel()
+                loop.run_until_complete(
+                    asyncio.gather(*pending_tasks, return_exceptions=True)
+                )
+                loop.close()
+
+
+def get_logger(log_name=None, log_dir=None, websocket_manager=None):
+    log_name = log_name or CONFIG_MANAGER.get("dmb").get("log_name", "DMB")
+    log_dir = log_dir or CONFIG_MANAGER.get("dmb").get("log_dir", "/log")
+
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir, exist_ok=True)
+
     current_date = time.strftime("%Y-%m-%d")
     log_filename = f"{log_name}-{current_date}.log"
     logger = logging.getLogger(log_name)
-    backupCount_env = os.getenv("DMB_LOG_COUNT")
+    logger.debug(f"Existing handlers: {[type(h).__name__ for h in logger.handlers]}")
+    backupCount_env = CONFIG_MANAGER.get("dmb").get("log_count", 2)
     try:
         backupCount = int(backupCount_env)
     except (ValueError, TypeError):
         backupCount = 2
-    log_level_env = os.getenv("DMB_LOG_LEVEL")
+    log_level_env = CONFIG_MANAGER.get("dmb").get("log_level", "INFO")
     if log_level_env:
         log_level = log_level_env.upper()
         os.environ["LOG_LEVEL"] = log_level
@@ -437,7 +480,7 @@ def get_logger(log_name="DMB", log_dir="./log"):
         log_level = "INFO"
     numeric_level = getattr(logging, log_level, logging.INFO)
     logger.setLevel(numeric_level)
-    max_log_size_env = os.getenv("DMB_LOG_SIZE")
+    max_log_size_env = CONFIG_MANAGER.get("dmb").get("log_size", "10M")
     try:
         max_log_size = (
             parse_size(max_log_size_env) if max_log_size_env else 10 * 1024 * 1024
@@ -460,7 +503,7 @@ def get_logger(log_name="DMB", log_dir="./log"):
     )
     handler.setFormatter(file_formatter)
 
-    enable_color_log = os.getenv("COLOR_LOG_ENABLED", "false").lower() == "true"
+    enable_color_log = CONFIG_MANAGER.get("dmb").get("color_log", False)
     if enable_color_log:
         color_formatter = ColoredFormatter(
             "%(log_color)s%(asctime)s - %(levelname)s - %(message)s",
@@ -497,8 +540,16 @@ def get_logger(log_name="DMB", log_dir="./log"):
         stdout_handler = logging.StreamHandler(sys.stdout)
         stdout_handler.setFormatter(file_formatter)
 
-    for hdlr in logger.handlers[:]:
-        logger.removeHandler(hdlr)
-    logger.addHandler(handler)
-    logger.addHandler(stdout_handler)
+    existing_handler_types = {type(h) for h in logger.handlers}
+    if CustomRotatingFileHandler not in existing_handler_types:
+        logger.addHandler(handler)
+    if logging.StreamHandler not in existing_handler_types:
+        logger.addHandler(stdout_handler)
+    if websocket_manager and not any(
+        isinstance(h, WebSocketHandler) for h in logger.handlers
+    ):
+        ws_handler = WebSocketHandler(websocket_manager)
+        ws_handler.setFormatter(file_formatter)
+        logger.addHandler(ws_handler)
+    # logger.debug(f"New handlers: {[type(h).__name__ for h in logger.handlers]}")
     return logger

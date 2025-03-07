@@ -1,0 +1,53 @@
+{
+  "name": "DMB Dev Container",
+  "image": "iampuid0/dmb:FastAPI",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.black-formatter"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "sh",
+        "python.formatting.provider": "black",
+        "editor.formatOnSave": true,
+        "python.defaultInterpreterPath": "/venv/bin/python",
+        "git.path": "/usr/bin/git"
+      }
+    }
+  },
+  "forwardPorts": [
+    3005,
+    8000,
+    3000,
+    9090,
+    5050
+  ],
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind",
+    "source=${localWorkspaceFolder}/main.py,target=/main.py,type=bind",
+    "source=${localWorkspaceFolder}/config,target=/config,type=bind",
+    "source=${localWorkspaceFolder}/utils,target=/utils,type=bind",
+    "source=${localWorkspaceFolder}/zurg/RD,target=/zurg/RD,type=bind",
+    "source=${localWorkspaceFolder}/riven/backend/data,target=/riven/backend/data,type=bind",
+    "source=${localWorkspaceFolder}/zilean/app/data,target=/zilean/app/data,type=bind",
+    "source=${localWorkspaceFolder}/log,target=/log,type=bind",
+    "source=${localWorkspaceFolder}/data,target=/data,type=bind",
+    "source=${localWorkspaceFolder}/postgres_data,target=/postgres_data,type=bind",
+    "source=${localWorkspaceFolder}/pgadmin/data,target=/pgadmin/data,type=bind"
+  ],
+  "runArgs": [
+    "--name=dmb_dev",
+    "--hostname=dmb_dev",
+    "--dns=8.8.8.8",
+    "--dns=8.8.4.4",
+    "--device=/dev/fuse:/dev/fuse:rwm",
+    "--cap-add=SYS_ADMIN",
+    "--security-opt=apparmor:unconfined",
+    "--security-opt=no-new-privileges",
+    "--shm-size=128m",
+    "--pull=always"
+  ],
+  "postCreateCommand": "/venv/bin/pip install black && git config --global --add safe.directory /workspace"
+}

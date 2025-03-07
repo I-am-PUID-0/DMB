@@ -1,0 +1,306 @@
+{
+    "puid": 1000,
+    "pgid": 1000,
+    "tz": "",
+    "dmb": {
+        "log_level": "INFO",
+        "log_name": "DMB",
+        "log_dir": "/log",
+        "log_count": 2,
+        "log_size": "10M",
+        "color_log": true,
+        "plex_token": "",
+        "plex_address": "",
+        "github_token": "",
+        "github_username": "",
+        "api_service": {
+            "enabled": true,
+            "process_name": "DMB API",
+            "log_level": "INFO",
+            "host": "127.0.0.1",
+            "port": 8000
+        },
+        "frontend": {
+            "enabled": true,
+            "process_name": "DMB Frontend",
+            "repo_owner": "nicocapalbo",
+            "repo_name": "dmbdb",
+            "release_version_enabled": false,
+            "release_version": "1.2.0",
+            "branch_enabled": false,
+            "branch": "main",
+            "suppress_logging": false,
+            "log_level": "INFO",            
+            "origins": [
+                "http://0.0.0.0:3005"
+            ],
+            "host": "0.0.0.0",
+            "port": 3005,            
+            "auto_update": false,
+            "auto_update_interval": 24,
+            "clear_on_update": true,
+            "exclude_dirs": [],
+            "platforms": ["pnpm"],
+            "command": ["node",".output/server/index.mjs"],
+            "config_dir": "/dmb/frontend",
+            "env": {}            
+        }
+    },
+    "postgres": {
+        "enabled": true,
+        "process_name": "PostgreSQL",
+        "suppress_logging": false,
+        "log_level": "INFO",
+        "host": "127.0.0.1",
+        "port": 5432,
+        "databases": [
+            {
+                "name": "postgres",
+                "enabled": true
+            },
+            {
+                "name": "pgadmin",
+                "enabled": true
+            },
+            {
+                "name": "zilean",
+                "enabled": true
+            },
+            {
+                "name": "riven",
+                "enabled": true
+            }
+        ],
+        "config_dir": "/postgres_data",
+        "config_file": "/postgres_data/postgresql.conf",
+        "initdb_args": "--data-checksums",
+        "user": "DMB",
+        "password": "postgres",
+        "shared_buffers": "128MB",
+        "max_connections": 100,
+        "run_directory": "/run/postgresql",
+        "command": "postgres -D {postgres_config_dir} -c config_file={postgres_config_file}",
+        "env": {}
+    },
+    "pgadmin": {
+        "enabled": true,
+        "process_name": "pgAdmin4",
+        "config_dir": "/pgadmin/data",
+        "config_file": "/pgadmin/data/config_local.py",
+        "log_file": "/pgadmin/data/pgadmin4.log",
+        "port": 5050,
+        "default_server": "0.0.0.0",
+        "setup_email": "DMB@DMB.DMB",
+        "setup_password": "postgres",
+        "command": []
+    },
+    "rclone": {
+        "instances": {
+            "RealDebrid": {
+                "enabled": true,
+                "process_name": "rclone w/ RealDebrid",
+                "suppress_logging": false,
+                "log_level": "INFO",
+                "key_type": "RealDebrid",
+                "zurg_enabled": true,
+                "mount_dir": "/data",
+                "mount_name": "rclone_RD",
+                "cache_dir": "/cache",
+                "config_dir": "/config",
+                "config_file": "/config/rclone.config",
+                "zurg_config_file": "/zurg/RD/config.yml",
+                "command": [],
+                "api_key": ""
+            },
+            "AllDebrid": {
+                "enabled": false,
+                "process_name": "rclone w/ AllDebrid",
+                "suppress_logging": false,
+                "log_level": "INFO",
+                "key_type": "AllDebrid",
+                "zurg_enabled": false,
+                "mount_dir": "/data",
+                "mount_name": "rclone_AD",
+                "cache_dir": "/cache",
+                "config_dir": "/config",
+                "config_file": "/config/rclone.config",
+                "zurg_config_file": "/zurg/AD/config.yml",
+                "command": [],
+                "api_key": ""
+            },
+            "TorBox": {
+                "enabled": false,
+                "process_name": "rclone w/ TorBox",
+                "suppress_logging": false,
+                "log_level": "INFO",
+                "key_type": "TorBox",
+                "zurg_enabled": false,
+                "mount_dir": "/data",
+                "mount_name": "rclone_TB",
+                "cache_dir": "/cache",
+                "config_dir": "/config",
+                "config_file": "/config/rclone.config",
+                "zurg_config_file": "/zurg/TB/config.yml",
+                "command": [],
+                "api_key": ""
+            },
+            "Premiumize": {
+                "enabled": false,
+                "process_name": "rclone w/ Premiumize",
+                "suppress_logging": false,
+                "log_level": "INFO",
+                "key_type": "Premiumize",
+                "zurg_enabled": false,
+                "mount_dir": "/data",
+                "mount_name": "rclone_PM",
+                "cache_dir": "/cache",
+                "config_dir": "/config",
+                "config_file": "/config/rclone.config",
+                "zurg_config_file": "/zurg/PM/config.yml",
+                "command": [],
+                "api_key": ""
+            }            
+        }
+    },
+    "riven_backend": {
+        "enabled": true,
+        "process_name": "Riven Backend",
+        "repo_owner": "rivenmedia",
+        "repo_name": "riven",
+        "release_version_enabled": false,
+        "release_version": "v0.20.1",
+        "branch_enabled": false,
+        "branch": "release-please--branches--main",
+        "suppress_logging": false,
+        "log_level": "INFO",
+        "host": "127.0.0.1",
+        "port": 8080,
+        "auto_update": false,
+        "auto_update_interval": 24,
+        "symlink_library_path": "/mnt",
+        "clear_on_update": true,
+        "exclude_dirs": [
+            "/riven/backend/data"
+        ],
+        "env_copy": {
+            "source": "/riven/backend/data/.env",
+            "destination": "/riven/backend/src/.env"
+        },
+        "platforms": [
+            "python"
+        ],
+        "command": [
+            "/riven/backend/venv/bin/python",
+            "src/main.py",
+            "-p",
+            "{port}"
+        ],
+        "config_dir": "/riven/backend",
+        "config_file": "/riven/backend/data/settings.json",        
+        "env": {},
+        "wait_for_dir": "/data/rclone_RD/__all__"
+    },
+    "riven_frontend": {
+        "enabled": true,
+        "process_name": "Riven Frontend",
+        "repo_owner": "rivenmedia",
+        "repo_name": "riven-frontend",
+        "release_version_enabled": false,
+        "release_version": "v0.17.0",
+        "branch_enabled": false,
+        "branch": "release-please--branches--main",
+        "suppress_logging": false,
+        "log_level": "INFO",
+        "host": "0.0.0.0",
+        "port": 3000,
+        "auto_update": false,
+        "auto_update_interval": 24,
+        "clear_on_update": true,
+        "exclude_dirs": [],
+        "platforms": [
+            "pnpm"
+        ],
+        "command": [
+            "node",
+            "build"
+        ],
+        "config_dir": "/riven/frontend",
+        "env": {
+            "ORIGIN": "http://0.0.0.0:{port}",
+            "PORT": "{port}",
+            "HOST": "{host}"
+        }
+    },
+    "zilean": {
+        "enabled": true,
+        "process_name": "Zilean",
+        "repo_owner": "iPromKnight",
+        "repo_name": "zilean",
+        "release_version_enabled": false,
+        "release_version": "v3.3.0",
+        "branch_enabled": false,
+        "branch": "main",
+        "suppress_logging": false,
+        "log_level": "INFO",
+        "host": "127.0.0.1",
+        "port": 8182,
+        "auto_update": false,
+        "auto_update_interval": 24,
+        "clear_on_update": true,
+        "exclude_dirs": [
+            "/zilean/app/data"
+        ],
+        "env_copy": {
+            "source": "/zilean/app/data/.env",
+            "destination": "/zilean/app/src/.env"
+        },
+        "platforms": [
+            "python",
+            "dotnet"
+        ],
+        "command": [
+            "/zilean/app/zilean-api"
+        ],
+        "config_dir": "/zilean",
+        "config_file": "/zilean/app/data/settings.json",
+        "env": {
+            "DOTNET_RUNNING_IN_CONTAINER": "true",
+            "DOTNET_gcServer": "1",
+            "DOTNET_GCDynamicAdaptationMode": "1",
+            "DOTNET_SYSTEM_GLOBALIZATION_INVARIANT": "false",
+            "PYTHONUNBUFFERED": "1",
+            "ASPNETCORE_URLS": "http://+:{port}",
+            "PYTHONPATH": "/zilean/venv/lib/python3.11/site-packages",
+            "PATH": "/zilean/venv/bin:${PATH}",
+            "ZILEAN_PYTHON_PYLIB": "/usr/local/lib/libpython3.11.so.1.0",
+            "Zilean__Database__ConnectionString": "Host={postgres_host};Port={postgres_port};Database=zilean;Username={postgres_user};Password={postgres_password};Timeout=300;CommandTimeout=3600;"
+        }
+    },
+    "zurg": {
+        "instances": {
+            "RealDebrid": {
+                "enabled": true,
+                "process_name": "Zurg w/ RealDebrid",
+                "repo_owner": "debridmediamanager",
+                "repo_name": "zurg-testing",
+                "release_version_enabled": false,
+                "release_version": "v0.9.3-final",
+                "suppress_logging": false,
+                "log_level": "INFO",
+                "host": "127.0.0.1",
+                "port": 9090,
+                "auto_update": false,
+                "auto_update_interval": 1,
+                "clear_on_update": false,
+                "exclude_dirs": ["/zurg/RD"],
+                "key_type": "RealDebrid",
+                "config_dir": "/zurg/RD",
+                "config_file": "/zurg/RD/config.yml",
+                "command": "/zurg/RD/zurg",
+                "user": "",
+                "password": "",
+                "api_key": ""
+            }
+        }
+    }
+}

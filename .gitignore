@@ -366,6 +366,13 @@ FodyWeavers.xsd
 **/data/
 **/log/
 *.env
-/config
-*.pyproj
-*.db
+**/config
+**/zurg
+/postgres_data*
+*.pyproj*
+*.db*
+*Zone*
+/dmb
+*.VS*
+*.vs*
+*.pnpm-store*
