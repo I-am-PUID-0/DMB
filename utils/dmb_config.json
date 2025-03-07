@@ -111,55 +111,7 @@
                 "zurg_config_file": "/zurg/RD/config.yml",
                 "command": [],
                 "api_key": ""
-            },
-            "AllDebrid": {
-                "enabled": false,
-                "process_name": "rclone w/ AllDebrid",
-                "suppress_logging": false,
-                "log_level": "INFO",
-                "key_type": "AllDebrid",
-                "zurg_enabled": false,
-                "mount_dir": "/data",
-                "mount_name": "rclone_AD",
-                "cache_dir": "/cache",
-                "config_dir": "/config",
-                "config_file": "/config/rclone.config",
-                "zurg_config_file": "/zurg/AD/config.yml",
-                "command": [],
-                "api_key": ""
-            },
-            "TorBox": {
-                "enabled": false,
-                "process_name": "rclone w/ TorBox",
-                "suppress_logging": false,
-                "log_level": "INFO",
-                "key_type": "TorBox",
-                "zurg_enabled": false,
-                "mount_dir": "/data",
-                "mount_name": "rclone_TB",
-                "cache_dir": "/cache",
-                "config_dir": "/config",
-                "config_file": "/config/rclone.config",
-                "zurg_config_file": "/zurg/TB/config.yml",
-                "command": [],
-                "api_key": ""
-            },
-            "Premiumize": {
-                "enabled": false,
-                "process_name": "rclone w/ Premiumize",
-                "suppress_logging": false,
-                "log_level": "INFO",
-                "key_type": "Premiumize",
-                "zurg_enabled": false,
-                "mount_dir": "/data",
-                "mount_name": "rclone_PM",
-                "cache_dir": "/cache",
-                "config_dir": "/config",
-                "config_file": "/config/rclone.config",
-                "zurg_config_file": "/zurg/PM/config.yml",
-                "command": [],
-                "api_key": ""
-            }            
+            }
         }
     },
     "riven_backend": {
