@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.1.5](https://github.com/I-am-PUID-0/DMB/compare/6.1.4...6.1.5) (2025-03-07)
+
+
+### 📖 Documentation
+
+* **changelog:** update changelog ([f4891ee](https://github.com/I-am-PUID-0/DMB/commit/f4891ee7a9c8f72ae299489e51037db935c556a8))
+* **readme:** update image tag ([1a0413b](https://github.com/I-am-PUID-0/DMB/commit/1a0413b7702e7b03964245a4244dad35f8bdd1ab))
+
 ## [6.1.4](https://github.com/I-am-PUID-0/DMB/compare/6.1.3...6.1.4) (2025-03-07)
 
 ### 📖 Documentation
