@@ -40,7 +40,7 @@ A prebuilt image is hosted on [GitHub Container Registry](https://github.com/I-a
 services:
   DMB:
     container_name: DMB
-    image: iampuid0/dmb:FastAPI                                      ## Optionally, specify a specific version of DMB w/ image: iampuid0/dmb:2.0.0
+    image: iampuid0/dmb:latest                                      ## Optionally, specify a specific version of DMB w/ image: iampuid0/dmb:2.0.0
     stop_grace_period: 30s                                           ## Adjust as need to allow for graceful shutdown of the container
     shm_size: 128mb                                                  ## Increased for PostgreSQL
     stdin_open: true                                                 ## docker run -i
@@ -61,7 +61,7 @@ services:
       - PGID=
       - DMB_LOG_LEVEL=INFO
       - ZURG_INSTANCES_REALDEBRID_API_KEY=
-      - RIVEN_FRONTEND_ENV_ORIGIN=http://0.0.0.0:3000                                  ## See Riven documentation for more details
+      - RIVEN_FRONTEND_ENV_ORIGIN=http://0.0.0.0:3000               ## See Riven documentation for more details
     # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address
     ports:
       - "3005:3005"                                                 ## DMB Frontend
