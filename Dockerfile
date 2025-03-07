@@ -120,6 +120,7 @@ RUN curl -L https://github.com/rivenmedia/riven/archive/refs/tags/${RIVEN_TAG}.z
 # Stage 6: dmb-frontend-builder (Ubuntu 24.04 with Node.js)
 ####################################################################################################################################################
 FROM ubuntu:24.04 AS dmb-frontend-builder
+ARG DMB_FRONTEND_TAG
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y curl unzip build-essential gnupg2 lsb-release && \
     curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
@@ -127,7 +128,7 @@ RUN apt-get update && apt-get install -y curl unzip build-essential gnupg2 lsb-r
     node -v && npm install -g npm@10 && npm -v && \
     npm install -g pnpm@latest-10 && pnpm -v && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -L https://github.com/nicocapalbo/dmbdb/archive/refs/heads/main.zip -o dmb-frontend.zip && \
+RUN curl -L https://github.com/nicocapalbo/dmbdb/archive/refs/tags/${DMB_FRONTEND_TAG}.zip -o dmb-frontend.zip && \
     unzip dmb-frontend.zip && \
     mkdir -p dmb/frontend && \
     mv dmbdb*/* /dmb/frontend && rm dmb-frontend.zip && \
