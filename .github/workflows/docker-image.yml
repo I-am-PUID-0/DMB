@@ -7,7 +7,6 @@ on:
       - closed
     paths-ignore:
       - '**/README.md'
-      - 'Ubuntu/**'
       - '.github/**'
       - '.gitattributes'
       - '.gitignore'
@@ -123,7 +122,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64, linux/arm64 #, linux/arm/v7
+          platforms: linux/amd64,linux/arm64 #,linux/arm/v7
           cache-from: type=gha,scope=build-${{ github.ref_name }}
           cache-to: type=gha,scope=build-${{ github.ref_name }},mode=max
           tags: ${{ env.DOCKER_TAGS }}
@@ -135,7 +134,7 @@ jobs:
             RIVEN_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_FRONTEND_TAG }}
             DMB_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.DMB_FRONTEND_TAG }}
           push: true
-
+          
       - name: Build and Load Single-Platform Image for Version Extraction
         id: build_load_single
         uses: docker/build-push-action@v6
@@ -236,14 +235,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-            RELEASE_NOTES=$(awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md)
+            RELEASE_NOTES=$(sed -n '/^## \[[0-9]\+\.[0-9]\+\.[0-9]\+\](/,$p' CHANGELOG.md | sed -n '1!{/^## \[/q;p}')
             gh release create ${{ env.VERSION }} \
               --repo ${{ github.repository }} \
               --title "Release ${{ env.VERSION }}" \
               --notes "$RELEASE_NOTES" \
               --draft=false \
               --prerelease=false
-              
+
       - name: Add Job Summary for Release
         run: |
           echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
@@ -251,7 +250,7 @@ jobs:
           echo "**Release Status:** ${{ env.release_exists == 'false' && '✅ Created' || '⚠️ Skipped (Already Exists)' }}" >> $GITHUB_STEP_SUMMARY
           if [ "${{ env.release_exists }}" == "false" ]; then
             echo "**Release Notes:**" >> $GITHUB_STEP_SUMMARY
-            awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md >> $GITHUB_STEP_SUMMARY
+            sed -n '/^## \[[0-9]\+\.[0-9]\+\.[0-9]\+\](/,$p' CHANGELOG.md | sed -n '1!{/^## \[/q;p}' >> $GITHUB_STEP_SUMMARY
           fi
 
   announce:
@@ -266,9 +265,30 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           VERSION: ${{ needs.build-and-push.outputs.version }}
         run: |
-          RELEASE_NOTES=$(awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md)
+          RELEASE_NOTES=$(sed -n '/^## \[[0-9]\+\.[0-9]\+\.[0-9]\+\](/,$p' CHANGELOG.md | sed -n '1!{/^## \[/q;p}')
           ANNOUNCEMENT_BODY="🚀 **New Release: Version [${{ env.VERSION }}]**${RELEASE_NOTES}"
           ESCAPED_BODY=$(echo "$ANNOUNCEMENT_BODY" | jq -Rsa .)
           curl -H "Content-Type: application/json" \
                -d "{\"content\": $ESCAPED_BODY, \"flags\": 4}" \
                $DISCORD_WEBHOOK_URL
+          
+  update-pr-label:
+    needs: release
+    if: needs.release.outputs.release_exists == 'false' && github.ref_name == 'master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: "Remove 'autorelease: pending' label"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=$(gh pr list --state merged --base master --json number --jq '.[0].number')
+          if [[ -n "$PR_NUMBER" ]]; then
+            gh pr edit $PR_NUMBER --remove-label "autorelease: pending"
+            gh pr edit $PR_NUMBER --add-label "autorelease: tagged"
+            echo "Updated PR #$PR_NUMBER with 'autorelease: tagged'"
+          else
+            echo "No merged PR found for master branch."
+          fi

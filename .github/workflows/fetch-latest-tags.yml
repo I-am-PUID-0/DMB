@@ -20,7 +20,6 @@ jobs:
         with:
           path: latest-tags.txt
           key: latest-tags-${{ github.ref_name }}
-          restore-keys: latest-tags-${{ github.ref_name }}
 
       - name: Fetch latest release tags
         run: |
@@ -28,7 +27,7 @@ jobs:
           ZILEAN_TAG=$(curl -s https://api.github.com/repos/iPromKnight/zilean/releases/latest | jq -r .tag_name)
           RIVEN_TAG=$(curl -s https://api.github.com/repos/rivenmedia/riven/releases/latest | jq -r .tag_name)
           RIVEN_FRONTEND_TAG=$(curl -s https://api.github.com/repos/rivenmedia/riven-frontend/releases/latest | jq -r .tag_name)
-          DMB_FRONTED_TAG=$(curl -s https://api.github.com/repos/nicocapalbo/dmbdb/releases/latest | jq -r .tag_name)
+          DMB_FRONTEND_TAG=$(curl -s https://api.github.com/repos/nicocapalbo/dmbdb/releases/latest | jq -r .tag_name)
 
           echo "ZILEAN_TAG=$ZILEAN_TAG" >> $GITHUB_ENV
           echo "RIVEN_TAG=$RIVEN_TAG" >> $GITHUB_ENV
@@ -55,6 +54,7 @@ jobs:
             if [ -n "$DIFF" ]; then
               echo "New versions found!"
               echo "update_found=true" >> $GITHUB_ENV
+              echo "update_found=true" >> $GITHUB_OUTPUT
             else
               echo "No updates found."
               echo "update_found=false" >> $GITHUB_ENV
@@ -62,26 +62,19 @@ jobs:
           else
             echo "First run - proceeding with build."
             echo "update_found=true" >> $GITHUB_ENV
+            echo "update_found=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Store latest tags in cache
         run: echo -e "$ZILEAN_TAG\n$RIVEN_TAG\n$RIVEN_FRONTEND_TAG\n$DMB_FRONTEND_TAG" > latest-tags.txt
 
-      - name: Delete previous cache (Ensures fresh cache per branch)
-        run: |
-          gh cache delete latest-tags-${{ github.ref_name }} || true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Save latest tags to cache (Branch-specific)
-        uses: actions/cache@v4
-        with:
-          path: latest-tags.txt
-          key: latest-tags-${{ github.ref_name }}
-          restore-keys: latest-tags-${{ github.ref_name }}
-
+        
+  trigger-docker-ci:
+    needs: check-latest-tags
+    runs-on: ubuntu-latest
+    if: ${{ needs.check-latest-tags.outputs.update_found == 'true' }}
+    steps:      
       - name: Trigger Docker CI if new versions found
-        if: env.update_found == 'true'
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Docker Image CI
