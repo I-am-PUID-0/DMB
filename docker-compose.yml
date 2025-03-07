@@ -1,14 +1,15 @@
 services:
   DMB:
     container_name: DMB
-    image: iampuid0/dmb:latest                                       ## Optionally, specify a specific version of DMB w/ image: iampuid0/dmb:2.0.0 
+    image: iampuid0/dmb:latest                                      ## Optionally, specify a specific version of DMB w/ image: iampuid0/dmb:2.0.0
     stop_grace_period: 30s                                           ## Adjust as need to allow for graceful shutdown of the container
+    shm_size: 128mb                                                  ## Increased for PostgreSQL
     stdin_open: true                                                 ## docker run -i
-    tty: true                                                        ## docker run -t    
-    volumes:   
-      - /home/username/docker/DMB/config:/config                     ## Location of configuration files. If a Zurg config.yml and/or Zurg app is placed here, it will be used to override the default configuration and/or app used at startup. 
+    tty: true                                                        ## docker run -t
+    volumes:
+      - /home/username/docker/DMB/config:/config                     ## Location of configuration files. If a Zurg config.yml and/or Zurg app is placed here, it will be used to override the default configuration and/or app used at startup.
       - /home/username/docker/DMB/log:/log                           ## Location for logs
-      - /home/username/docker/DMB/Zurg/RD:/zurg/RD                   ## Location for Zurg RealDebrid active configuration  
+      - /home/username/docker/DMB/Zurg/RD:/zurg/RD                   ## Location for Zurg RealDebrid active configuration
       - /home/username/docker/DMB/Zurg/mnt:/data:shared              ## Location for rclone mount to host
       - /home/username/docker/DMB/Riven/data:/riven/backend/data     ## Location for Riven backend data
       - /home/username/docker/DMB/Riven/mnt:/mnt                     ## Location for Riven symlinks
@@ -19,22 +20,18 @@ services:
       - TZ=
       - PUID=
       - PGID=
-      - ZURG_ENABLED=true      
-      - RD_API_KEY=
-      - RCLONE_MOUNT_NAME=DMB
-      - ZILEAN_ENABLED=true
-      - RIVEN_ENABLED=true
-      - ORIGIN=http://0.0.0.0:3000                                  ## See Riven documentation for more details
-      - PGADMIN_SETUP_EMAIL=                                        ## Set if using pgAdmin 4 - Ex. PGADMIN_SETUP_EMAIL=DMB@DMB.DMB
-      - PGADMIN_SETUP_PASSWORD=                                     ## Set if using pgAdmin 4
-    # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address 
+      - DMB_LOG_LEVEL=INFO
+      - ZURG_INSTANCES_REALDEBRID_API_KEY=
+      - RIVEN_FRONTEND_ENV_ORIGIN=http://0.0.0.0:3000               ## See Riven documentation for more details
+    # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address
     ports:
-      - "3000:3000"                                                 ## Riven frontend
-      - "5050:5050"   									            ## pgAdmin 4
+      - "3005:3005"                                                 ## DMB Frontend
+      - "3000:3000"                                                 ## Riven Frontend
+      - "5050:5050"                                                 ## pgAdmin 4
     devices:
       - /dev/fuse:/dev/fuse:rwm
     cap_add:
-      - SYS_ADMIN     
+      - SYS_ADMIN
     security_opt:
-      - apparmor:unconfined    
+      - apparmor:unconfined
       - no-new-privileges
