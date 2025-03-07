@@ -61,7 +61,7 @@ services:
       - PGID=
       - DMB_LOG_LEVEL=INFO
       - ZURG_INSTANCES_REALDEBRID_API_KEY=
-      - RIVEN_FRONTEND_ORIGIN=http://0.0.0.0:3000                                  ## See Riven documentation for more details
+      - RIVEN_FRONTEND_ENV_ORIGIN=http://0.0.0.0:3000                                  ## See Riven documentation for more details
     # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address
     ports:
       - "3005:3005"                                                 ## DMB Frontend
@@ -108,7 +108,7 @@ services:
       start_period: 1m00s
     depends_on:                                            ## Used to delay the startup of plex to ensure the rclone mount is available.
       DMB:                                                 ## set to the name of the container running rclone
-        condition: service_healthy 
+        condition: service_healthy
         restart: true                                       ## Will automatically restart the plex container if the DMB container restarts
 ```
 
