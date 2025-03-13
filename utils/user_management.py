@@ -103,10 +103,13 @@ def create_system_user(username="DMB"):
             .decode()
             .strip()
         )
+        hashed_password = (
+            subprocess.check_output(f"openssl passwd -6 {user_password}", shell=True)
+            .decode()
+            .strip()
+        )
         subprocess.run(
-            f"LD_PRELOAD=/dev/urandom echo '{username}:{user_password}' | chpasswd",
-            shell=True,
-            check=True,
+            f"usermod -p '{hashed_password}' {username}", shell=True, check=True
         )
         logger.info(f"Password set for user '{username}'. Stored securely in memory.")
 
