@@ -245,13 +245,20 @@ class CustomRotatingFileHandler(BaseRotatingHandler):
             self.logger.addHandler(stream_handler)
         super().__init__(filename, "a", encoding, delay)
 
+    def emit(self, record):
+        with self.lock:
+            super().emit(record)
+
     def _open(self):
-        stream = super()._open()
-        try:
-            os.chmod(self.baseFilename, 0o666)
-        except Exception as e:
-            self.logger.debug(f"Failed to set permissions on {self.baseFilename}: {e}")
-        return stream
+        with self.lock:
+            stream = super()._open()
+            try:
+                os.chmod(self.baseFilename, 0o666)
+            except Exception as e:
+                self.logger.debug(
+                    f"Failed to set permissions on {self.baseFilename}: {e}"
+                )
+            return stream
 
     def computeInterval(self, when, interval):
         if when == "S":
