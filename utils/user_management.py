@@ -104,7 +104,9 @@ def create_system_user(username="DMB"):
             .strip()
         )
         subprocess.run(
-            f"echo '{username}:{user_password}' | chpasswd", shell=True, check=True
+            f"LD_PRELOAD=/dev/urandom echo '{username}:{user_password}' | chpasswd",
+            shell=True,
+            check=True,
         )
         logger.info(f"Password set for user '{username}'. Stored securely in memory.")
 
