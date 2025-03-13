@@ -13,6 +13,10 @@ on:
 
 jobs:
   fetch-latest-tags:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.title, 'chore(master): release '))
     runs-on: ubuntu-latest
     outputs:
       PGAGENT_TAG: ${{ env.PGAGENT_TAG }}
