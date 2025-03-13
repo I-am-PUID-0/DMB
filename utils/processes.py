@@ -204,27 +204,35 @@ class ProcessHandler:
         if self.shutting_down:
             self.logger.debug(f"Skipping wait for {process_name} due to shutdown mode.")
             return
+
         process = self.process_names.get(process_name)
-        if process:
-            try:
-                process.wait()
-                self.returncode = process.returncode
-                if process.stdout:
-                    self.stdout = process.stdout.read().strip()
-                if process.stderr:
-                    self.stderr = process.stderr.read().strip()
-            except Exception as e:
-                self.logger.error(
-                    f"Error while waiting for process {process_name}: {e}"
-                )
-            finally:
-                if self.subprocess_loggers.get(process_name):
-                    self.subprocess_loggers[process_name].stop_logging_stdout()
-                    self.subprocess_loggers[process_name].stop_monitoring_stderr()
-                del self.process_names[process_name]
+
+        if not process:
+            self.logger.warning(
+                f"Process {process_name} is not running or has already exited."
+            )
+            return
+
+        try:
+            process.wait()
+            self.returncode = process.returncode
+            if process.stdout:
+                self.stdout = process.stdout.read().strip()
+            if process.stderr:
+                self.stderr = process.stderr.read().strip()
+        except Exception as e:
+            self.logger.error(f"Error while waiting for process {process_name}: {e}")
+        finally:
+            if process_name in self.subprocess_loggers:
+                self.subprocess_loggers[process_name].stop_logging_stdout()
+                self.subprocess_loggers[process_name].stop_monitoring_stderr()
+                del self.subprocess_loggers[process_name]
+
+            if process.pid in self.processes:
                 del self.processes[process.pid]
-        else:
-            self.logger.error(f"No process found with the name {process_name}.")
+
+            if process_name in self.process_names:
+                del self.process_names[process_name]
 
     def stop_process(self, process_name):
         try:
