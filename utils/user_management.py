@@ -1,7 +1,7 @@
 from utils.config_loader import CONFIG_MANAGER as config
 from utils.global_logger import logger
 from concurrent.futures import ThreadPoolExecutor
-import multiprocessing, os, time, grp, pwd, secrets, subprocess
+import multiprocessing, os, time, grp, pwd, subprocess
 
 
 user_id = config.get("puid")
@@ -98,7 +98,11 @@ def create_system_user(username="DMB"):
             f"Writing to /etc/passwd took {passwd_write_end - passwd_write_start:.2f} seconds"
         )
 
-        user_password = secrets.token_urlsafe(16)
+        user_password = (
+            subprocess.check_output("openssl rand -base64 12", shell=True)
+            .decode()
+            .strip()
+        )
         subprocess.run(
             f"echo '{username}:{user_password}' | chpasswd", shell=True, check=True
         )
