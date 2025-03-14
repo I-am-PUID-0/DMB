@@ -1,5 +1,16 @@
 # Changelog
 
+## [6.1.7](https://github.com/I-am-PUID-0/DMB/compare/6.1.6...6.1.7) (2025-03-14)
+
+
+### 🐛 Bug Fixes
+
+* **Dockerfile:** comment out on_library_update in config.yml to disable automatic script execution ([25b897c](https://github.com/I-am-PUID-0/DMB/commit/25b897ca1a79d2964d9721a6adb8971dec46411b))
+* **fetch-latest-tags:** use restore-keys ([eb2a6b2](https://github.com/I-am-PUID-0/DMB/commit/eb2a6b2da18629a1198bc8261bd04457fd96e46b))
+* **logger:** file handling in CustomRotatingFileHandler to prevent reentrant call ([6f91ab8](https://github.com/I-am-PUID-0/DMB/commit/6f91ab8fb3bdab1e79e7b8d0c69f4e155f35e8f3)), closes [#104](https://github.com/I-am-PUID-0/DMB/issues/104)
+* **process-handler:** improve process wait handling and logging for non-existent processes ([7dd5352](https://github.com/I-am-PUID-0/DMB/commit/7dd5352f46224514d0f606e8aab1922074e0fc5c))
+* **workflow:** add conditional for fetch-latest-tags job based on workflow dispatch and merged PR title ([cc257f0](https://github.com/I-am-PUID-0/DMB/commit/cc257f093bfb2dc5461a75db4c0c1a2b618d7ccf))
+
 ## [6.1.6](https://github.com/I-am-PUID-0/DMB/compare/6.1.5...6.1.6) (2025-03-07)
 
 
