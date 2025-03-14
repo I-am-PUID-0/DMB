@@ -206,6 +206,7 @@ COPY --from=dmb-frontend-builder /dmb/frontend /dmb/frontend
 COPY --from=rclone/rclone:latest /usr/local/bin/rclone /usr/local/bin/rclone
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/config.yml /zurg/
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/scripts/plex_update.sh /zurg/
+RUN sed -i 's/^on_library_update: sh plex_update.sh.*$/# &/' /zurg/config.yml
 
 COPY . /./
 
