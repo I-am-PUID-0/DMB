@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.1.8](https://github.com/I-am-PUID-0/DMB/compare/6.1.7...6.1.8) (2025-03-15)
+
+
+### 🐛 Bug Fixes
+
+* **workflow:** enable provenance for Docker image builds ([8c71c8f](https://github.com/I-am-PUID-0/DMB/commit/8c71c8f92018bc3600f5d8c77c2a3467798ad263))
+* **workflow:** enable sbom for Docker image builds ([3453b9e](https://github.com/I-am-PUID-0/DMB/commit/3453b9e6287895e1944797fcccaf09c773c8aef5))
+
+
+### 🤡 Other Changes
+
+* **CODEOWNERS:** add user as code owner for repository ([ebc6936](https://github.com/I-am-PUID-0/DMB/commit/ebc6936a29ff2cc6c0468a7ae036bce1bda900af))
+
 ## [6.1.7](https://github.com/I-am-PUID-0/DMB/compare/6.1.6...6.1.7) (2025-03-14)
 
 
