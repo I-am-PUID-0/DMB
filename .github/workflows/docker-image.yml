@@ -137,7 +137,8 @@ jobs:
             RIVEN_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_TAG }}
             RIVEN_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_FRONTEND_TAG }}
             DMB_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.DMB_FRONTEND_TAG }}
-          provenance: true  
+          provenance: true
+          sbom: true
           push: true
           
       - name: Build and Load Single-Platform Image for Version Extraction
