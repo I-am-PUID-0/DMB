@@ -1,5 +1,21 @@
 # Changelog
 
+## [6.1.8](https://github.com/I-am-PUID-0/DMB/compare/6.1.7...6.1.8) (2025-03-16)
+
+
+### 🐛 Bug Fixes
+
+* **user_management:** enhance password setting by using LD_PRELOAD for better entropy ([802af70](https://github.com/I-am-PUID-0/DMB/commit/802af70d4b507c7dc4d5e89e92a50e978e409f6f))
+* **user_management:** entropy for arc4random when using python secrets on synology host ([820b4ae](https://github.com/I-am-PUID-0/DMB/commit/820b4ae1f3a6407a48c1c36efbb4d1bf6cc99a4d)), closes [#106](https://github.com/I-am-PUID-0/DMB/issues/106)
+* **user_management:** securely hash user passwords using OpenSSL ([1949460](https://github.com/I-am-PUID-0/DMB/commit/19494606109b0ca1f13d55189bbc2228af5e5e77))
+* **workflow:** enable provenance for Docker image builds ([8c71c8f](https://github.com/I-am-PUID-0/DMB/commit/8c71c8f92018bc3600f5d8c77c2a3467798ad263))
+* **workflow:** enable sbom for Docker image builds ([3453b9e](https://github.com/I-am-PUID-0/DMB/commit/3453b9e6287895e1944797fcccaf09c773c8aef5))
+
+
+### 🤡 Other Changes
+
+* **CODEOWNERS:** add user as code owner for repository ([ebc6936](https://github.com/I-am-PUID-0/DMB/commit/ebc6936a29ff2cc6c0468a7ae036bce1bda900af))
+
 ## [6.1.7](https://github.com/I-am-PUID-0/DMB/compare/6.1.6...6.1.7) (2025-03-14)
 
 
