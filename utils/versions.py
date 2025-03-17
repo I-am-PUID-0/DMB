@@ -1,7 +1,7 @@
 from utils.global_logger import logger
 from utils.download import Downloader
 from utils.config_loader import CONFIG_MANAGER
-import subprocess
+import subprocess, json
 
 
 class Versions:
@@ -13,7 +13,10 @@ class Versions:
         self, process_name=None, instance_name=None, key=None, version_path=None
     ):
         try:
-            if key == "riven_frontend":
+            if key == "dmb_frontend":
+                version_path = "/dmb/frontend/package.json"
+                is_file = True
+            elif key == "riven_frontend":
                 version_path = "/riven/frontend/version.txt"
                 is_file = True
             elif key == "riven_backend":
@@ -31,7 +34,13 @@ class Versions:
             if is_file:
                 try:
                     with open(version_path, "r") as f:
-                        if key == "riven_frontend":
+                        if key == "dmb_frontend":
+                            try:
+                                data = json.load(f)
+                                version = f'v{data["version"]}'
+                            except (json.JSONDecodeError, KeyError) as e:
+                                version = None
+                        elif key == "riven_frontend":
                             version = f"v{f.read().strip()}"
                         elif key == "riven_backend":
                             for line in f:
@@ -71,13 +80,27 @@ class Versions:
 
     def version_write(self, process_name, key=None, version_path=None, version=None):
         try:
-            if key == "riven_frontend":
+            if key == "dmb_frontend":
+                version_path = "/dmb/frontend/package.json"
+            elif key == "riven_frontend":
                 version_path = "/riven/frontend/version.txt"
             elif key == "riven_backend":
                 version_path = "/riven/backend/pyproject.toml"
             elif key == "zilean":
                 version_path = "/zilean/version.txt"
-            if not key == "riven_backend":
+            if key == "dmb_frontend":
+                try:
+                    with open(version_path, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+
+                    data["version"] = version.lstrip("v")
+
+                    with open(version_path, "w", encoding="utf-8") as f:
+                        json.dump(data, f, indent=2)
+                        f.write("\n")
+                except (json.JSONDecodeError, KeyError) as e:
+                    return False, str(e)
+            elif not key == "riven_backend":
                 with open(version_path, "w") as f:
                     f.write(version)
             elif key == "riven_backend":

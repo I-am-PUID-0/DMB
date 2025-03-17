@@ -58,7 +58,7 @@ class ProcessHandler:
                 f"{process_name} does not require setup. Skipping setup..."
             )
         else:
-            key = CONFIG_MANAGER.find_key_for_process(process_name)
+            key, instance_name = CONFIG_MANAGER.find_key_for_process(process_name)
             if not key:
                 self.logger.debug(
                     f"Failed to locate key for {process_name}. Assuming no setup required."
@@ -111,12 +111,14 @@ class ProcessHandler:
             if isinstance(command, str):
                 command = shlex.split(command)
 
+            if key or instance_name:
+                config = CONFIG_MANAGER.get_instance(instance_name, key)
+                env = config.get("env", None)
+
             process_env = os.environ.copy()
             if env is not None:
                 process_env.update(env)
-            dmb_frontend = (
-                CONFIG_MANAGER.get("dmb", {}).get("frontend", {}).get("process_name")
-            )
+
             rclone_instances = CONFIG_MANAGER.get("rclone", {}).get("instances", {})
             enabled_rclone_processes = [
                 config.get("process_name")
@@ -137,9 +139,6 @@ class ProcessHandler:
                 "dotnet_env_restore",
                 "dotnet_publish",
             ]
-
-            if dmb_frontend:
-                process_static_list.append(dmb_frontend)
 
             if enabled_rclone_processes:
                 process_static_list.extend(enabled_rclone_processes)

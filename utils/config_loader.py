@@ -212,6 +212,9 @@ class ConfigManager:
     def get_instance(self, instance_name=None, key=None):
         if instance_name:
             config = self.get(key).get("instances").get(instance_name)
+        elif key and key == "dmb_frontend" or key == "dmb_api_service":
+            section, key = key.split("_")
+            config = self.get(key, section)
         else:
             config = self.get(key)
         return config
@@ -243,9 +246,9 @@ class ConfigManager:
                         isinstance(subvalue, dict)
                         and subvalue.get("process_name") == process_name
                     ):
-                        return None
+                        return key + "_" + subkey, None
 
-        return None
+        return None, None
 
 
 def find_service_config(config, process_name):

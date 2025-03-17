@@ -51,51 +51,25 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
         start_fastapi_process()
 
     try:
+        user_management.create_system_user()
+    except Exception as e:
+        logger.error(f"An error occurred while creating system user: {e}")
+        process_handler.shutdown(exit_code=1)
+
+    try:
         dmb_config = config.get("dmb", {})
         frontend_config = dmb_config.get("frontend", {})
         process_name = frontend_config.get("process_name")
         api_config = dmb_config.get("api_service", {})
         if frontend_config.get("enabled") and api_config.get("enabled"):
-            frontend_host = frontend_config.get("host", "127.0.0.1")
-            frontend_port = str(frontend_config.get("port"))
-            api_host = api_config.get("host", "127.0.0.1")
-            api_port = str(api_config.get("port", 8000))
-            dmb_api_url = f"http://{api_host}:{api_port}"
-            env_vars = {
-                "HOST": frontend_host,
-                "PORT": frontend_port,
-                "DMB_API_URL": dmb_api_url,
-                **frontend_config.get("env", {}),
-            }
-
-            command = frontend_config.get(
-                "command", ["node", ".output/server/index.mjs"]
-            )
-            process = process_handler.start_process(
-                process_name=process_name,
-                config_dir=frontend_config.get("config_dir"),
-                command=command,
-                suppress_logging=frontend_config.get("suppress_logging", False),
-                env=env_vars,
-            )
-
-            if process is not None:
-                logger.info(
-                    f"{process_name} process started successfully on port {frontend_port}."
-                )
+            if frontend_config.get("auto_update", False):
+                updater.auto_update(process_name, True)
             else:
-                logger.error(f"Failed to start the {process_name} process.")
+                updater.auto_update(process_name, False)
         else:
             logger.info(f"{process_name} is disabled. Skipping process start.")
     except Exception as e:
-        logger.error(
-            f"An error occurred while starting the {process_name} process: {e}"
-        )
-
-    try:
-        user_management.create_system_user()
-    except Exception as e:
-        logger.error(f"An error occurred while creating system user: {e}")
+        logger.error(f"An error occurred in the DMB Frontend setup: {e}")
         process_handler.shutdown(exit_code=1)
 
     try:
