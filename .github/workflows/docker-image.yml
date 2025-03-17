@@ -286,15 +286,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: "Remove 'autorelease: pending' label"
+      - name: "Remove 'autorelease: pending' label from all merged PRs"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_NUMBER=$(gh pr list --state merged --base master --json number --jq '.[0].number')
-          if [[ -n "$PR_NUMBER" ]]; then
-            gh pr edit $PR_NUMBER --remove-label "autorelease: pending"
-            gh pr edit $PR_NUMBER --add-label "autorelease: tagged"
-            echo "Updated PR #$PR_NUMBER with 'autorelease: tagged'"
+          PR_NUMBERS=$(gh pr list --state merged --base master --json number,labels --jq '[.[] | select(.labels[].name == "autorelease: pending") | .number] | @sh')
+          
+          if [[ -n "$PR_NUMBERS" ]]; then
+            for PR_NUMBER in $PR_NUMBERS; do
+              PR_NUMBER=$(echo $PR_NUMBER | tr -d "'") # Remove quotes from jq output
+              echo "Updating PR #$PR_NUMBER..."
+              gh pr edit $PR_NUMBER --remove-label "autorelease: pending"
+              gh pr edit $PR_NUMBER --add-label "autorelease: tagged"
+              echo "Updated PR #$PR_NUMBER with 'autorelease: tagged'"
+            done
           else
-            echo "No merged PR found for master branch."
+            echo "No merged PRs found with 'autorelease: pending' label."
           fi
