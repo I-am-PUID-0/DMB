@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.2.0](https://github.com/I-am-PUID-0/DMB/compare/6.1.8...6.2.0) (2025-03-17)
+
+
+### ✨ Features
+
+* **dmb_frontend:** add release/branch/autoupdate functions for DMB Frontend ([c18de38](https://github.com/I-am-PUID-0/DMB/commit/c18de3833af956622dce3b63cde87b319ca73005))
+
+
+### 🐛 Bug Fixes
+
+* **auto_update:** prevent infinite loop during shutdown in automatic update process ([c13c075](https://github.com/I-am-PUID-0/DMB/commit/c13c0756dc31630793720fbd5b593052424a0c04))
+* **workflow:** update merged PRs to remove 'autorelease: pending' label and add 'autorelease: tagged' for all PRs ([7a131f5](https://github.com/I-am-PUID-0/DMB/commit/7a131f521ab17deb22e8df92b6d081d545560450))
+
 ## [6.1.8](https://github.com/I-am-PUID-0/DMB/compare/6.1.7...6.1.8) (2025-03-16)
 
 
