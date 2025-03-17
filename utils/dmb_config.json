@@ -26,7 +26,7 @@
             "repo_owner": "nicocapalbo",
             "repo_name": "dmbdb",
             "release_version_enabled": false,
-            "release_version": "1.2.0",
+            "release_version": "v1.2.0",
             "branch_enabled": false,
             "branch": "main",
             "suppress_logging": false,

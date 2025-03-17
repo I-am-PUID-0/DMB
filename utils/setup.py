@@ -205,6 +205,11 @@ def setup_project(process_handler, process_name):
 
                     config["env"][env_key] = value
 
+        if key == "dmb_frontend":
+            success, error = dmb_frontend_setup()
+            if not success:
+                return False, error
+
         if key == "riven_frontend":
             copy_server_config(
                 "/config/server.json",
@@ -255,6 +260,29 @@ def setup_project(process_handler, process_name):
 
     except Exception as e:
         return False, f"Error during setup of {process_name}: {e}"
+
+
+def dmb_frontend_setup():
+    dmb_config = CONFIG_MANAGER.get("dmb")
+    config = dmb_config.get("frontend")
+    if not config:
+        return False, "Configuration for DMB Frontend not found."
+    api_config = dmb_config.get("api_service", {})
+    if not api_config:
+        return False, "Configuration for API Service not found."
+    frontend_host = config.get("host", "127.0.0.1")
+    frontend_port = str(config.get("port", 3005))
+    api_host = api_config.get("host", "127.0.0.1")
+    api_port = str(api_config.get("port", 8000))
+    api_url = f"http://{api_host}:{api_port}"
+    env_vars = {
+        "HOST": frontend_host,
+        "PORT": frontend_port,
+        "DMB_API_URL": api_url,
+        **config.get("env", {}),
+    }
+    config["env"] = env_vars
+    return True, None
 
 
 def zurg_setup():
