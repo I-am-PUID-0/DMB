@@ -326,6 +326,7 @@ class ProcessHandler:
                 except Exception as e:
                     self.logger.error(f"Error stopping {process_name}: {e}")
         self._update_running_processes_file()
+        self.shutdown_threads()
         time.sleep(5)
         self.unmount_all()
         uvicorn.Server.should_exit = True

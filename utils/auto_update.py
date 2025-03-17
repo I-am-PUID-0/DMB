@@ -34,7 +34,7 @@ class Update:
             Update._jobs[process_name] = True
             self.logger.debug(f"Scheduled automatic update check for {process_name}")
 
-        while True:
+        while not self.process_handler.shutting_down:
             self.scheduler.run_pending()
             time.sleep(1)
 
