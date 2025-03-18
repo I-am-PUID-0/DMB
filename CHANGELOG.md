@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.3.0](https://github.com/I-am-PUID-0/DMB/compare/6.2.0...6.3.0) (2025-03-18)
+
+
+### ✨ Features
+
+* **api:** add logging router and functionality to retrieve and filter service log files ([90f5766](https://github.com/I-am-PUID-0/DMB/commit/90f576660fc9a159eec4510b51eb7dd1796b5936))
+
 ## [6.2.0](https://github.com/I-am-PUID-0/DMB/compare/6.1.8...6.2.0) (2025-03-17)
 
 
