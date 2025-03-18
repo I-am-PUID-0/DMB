@@ -13,6 +13,7 @@ from utils.dependencies import (
 from api.routers.process import process_router
 from api.routers.config import config_router
 from api.routers.health import health_router
+from api.routers.logs import logs_router
 from api.routers.websocket_logs import websocket_router
 from utils.config_loader import CONFIG_MANAGER
 import threading
@@ -39,6 +40,7 @@ def create_app() -> FastAPI:
     app.include_router(process_router, prefix="/process", tags=["Process Management"])
     app.include_router(config_router, prefix="/config", tags=["Configuration"])
     app.include_router(health_router, prefix="/health", tags=["Health"])
+    app.include_router(logs_router, prefix="/logs", tags=["Logs"])
     app.include_router(websocket_router, prefix="/ws", tags=["WebSocket Logs"])
 
     logger = get_logger()
