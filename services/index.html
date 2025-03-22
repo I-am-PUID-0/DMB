@@ -1623,56 +1623,72 @@
 <p>Below is a summary of the available services:</p>
 <hr />
 <h2 id="-pgadmin-4">📊 pgAdmin 4<a class="headerlink" href="#-pgadmin-4" title="Permanent link">#</a></h2>
-<p>A web-based UI for managing PostgreSQL databases. Automatically configured to connect to the PostgreSQL instance used by DMB.
-- Default Port: <code>5050</code>
-- Data Directory: <code>/pgadmin/data</code>
-- Credentials: <code>setup_email</code> / <code>setup_password</code></p>
+<p>A web-based UI for managing PostgreSQL databases. Automatically configured to connect to the PostgreSQL instance used by DMB.</p>
+<ul>
+<li>Default Port: <code>5050</code></li>
+<li>Data Directory: <code>/pgadmin/data</code></li>
+<li>Credentials: <code>setup_email</code> / <code>setup_password</code></li>
+</ul>
 <hr />
 <h2 id="-postgresql">🗃️ PostgreSQL<a class="headerlink" href="#-postgresql" title="Permanent link">#</a></h2>
-<p>The core database for DMB services, including Riven, Zilean, and pgAdmin.
-- Default Port: <code>5432</code>
-- User: <code>DMB</code>
-- Preloaded Databases: <code>postgres</code>, <code>pgadmin</code>, <code>zilean</code>, <code>riven</code></p>
+<p>The core database for DMB services, including Riven, Zilean, and pgAdmin.</p>
+<ul>
+<li>Default Port: <code>5432</code></li>
+<li>User: <code>DMB</code></li>
+<li>Preloaded Databases: <code>postgres</code>, <code>pgadmin</code>, <code>zilean</code>, <code>riven</code></li>
+</ul>
 <hr />
 <h2 id="-rclone">☁️ rclone<a class="headerlink" href="#-rclone" title="Permanent link">#</a></h2>
-<p>Used to mount remote cloud storage (such as Real-Debrid WebDAV) into the container.
-- Works with <code>Zurg</code> for fetching content
-- Mount Directory: <code>/data</code>
-- Config Directory: <code>/config</code></p>
+<p>Used to mount remote cloud storage (such as Real-Debrid WebDAV) into the container.</p>
+<ul>
+<li>Works with <code>Zurg</code> for fetching content</li>
+<li>Mount Directory: <code>/data</code></li>
+<li>Config Directory: <code>/config</code></li>
+</ul>
 <hr />
 <h2 id="-riven-backend">🧠 Riven Backend<a class="headerlink" href="#-riven-backend" title="Permanent link">#</a></h2>
-<p>Handles media tracking, search, download orchestration, and integration with Plex, Trakt, and Overseerr.
-- Default Port: <code>8080</code>
-- Config File: <code>/riven/backend/data/settings.json</code>
-- Environment: <code>/riven/backend/src/.env</code></p>
+<p>Handles media tracking, search, download orchestration, and integration with Plex, Trakt, and Overseerr.</p>
+<ul>
+<li>Default Port: <code>8080</code></li>
+<li>Config File: <code>/riven/backend/data/settings.json</code></li>
+<li>Environment: <code>/riven/backend/src/.env</code></li>
+</ul>
 <hr />
 <h2 id="-riven-frontend">🎨 Riven Frontend<a class="headerlink" href="#-riven-frontend" title="Permanent link">#</a></h2>
-<p>Web interface for controlling and monitoring the Riven backend.
-- Default Port: <code>3000</code>
-- Version: configurable via release or branch
-- Config Directory: <code>/riven/frontend</code></p>
+<p>Web interface for controlling and monitoring the Riven backend.</p>
+<ul>
+<li>Default Port: <code>3000</code></li>
+<li>Version: configurable via release or branch</li>
+<li>Config Directory: <code>/riven/frontend</code></li>
+</ul>
 <hr />
 <h2 id="-zilean">🧠 Zilean<a class="headerlink" href="#-zilean" title="Permanent link">#</a></h2>
-<p>Caches metadata and hash lookups to reduce repeat requests for the same content. Written in .NET and Python.
-- Default Port: <code>8182</code>
-- Config File: <code>/zilean/app/data/settings.json</code>
-- Environment variables are automatically injected for performance and compatibility.</p>
+<p>Caches metadata and hash lookups to reduce repeat requests for the same content. Written in .NET and Python.</p>
+<ul>
+<li>Default Port: <code>8182</code></li>
+<li>Config File: <code>/zilean/app/data/settings.json</code></li>
+<li>Environment variables are automatically injected for performance and compatibility.</li>
+</ul>
 <hr />
 <h2 id="-zurg">⚡ Zurg<a class="headerlink" href="#-zurg" title="Permanent link">#</a></h2>
-<p>A content fetching engine that connects to debrid services (currently Real-Debrid only) and feeds downloads to Rclone.
-- Default Port: <code>9090</code>
-- Config Directory: <code>/zurg/RD</code>
-- Config File: <code>/zurg/RD/config.yml</code></p>
+<p>A content fetching engine that connects to debrid services (currently Real-Debrid only) and feeds downloads to Rclone.</p>
+<ul>
+<li>Default Port: <code>9090</code></li>
+<li>Config Directory: <code>/zurg/RD</code></li>
+<li>Config File: <code>/zurg/RD/config.yml</code></li>
+</ul>
 <hr />
 <h2 id="-next-steps">📎 Next Steps<a class="headerlink" href="#-next-steps" title="Permanent link">#</a></h2>
-<p>Click on any of the service names in the sidebar or below to explore how to configure and use them:
-- <a href="pgadmin/">pgAdmin 4</a>
-- <a href="postgres/">PostgreSQL</a>
-- <a href="rclone/">rclone</a>
-- <a href="riven-backend/">Riven Backend</a>
-- <a href="riven-frontend/">Riven Frontend</a>
-- <a href="zilean/">Zilean</a>
-- <a href="zurg/">Zurg</a></p>
+<p>Click on any of the service names in the sidebar or below to explore how to configure and use them:</p>
+<ul>
+<li><a href="pgadmin/">pgAdmin 4</a></li>
+<li><a href="postgres/">PostgreSQL</a></li>
+<li><a href="rclone/">rclone</a></li>
+<li><a href="riven-backend/">Riven Backend</a></li>
+<li><a href="riven-frontend/">Riven Frontend</a></li>
+<li><a href="zilean/">Zilean</a></li>
+<li><a href="zurg/">Zurg</a></li>
+</ul>
 
 
 
