@@ -26,7 +26,7 @@
     
     
       
-        <title>Unraid - DMB</title>
+        <title>unRAID Deployment - DMB</title>
       
     
     
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#deploying-dmb-on-unraid" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -108,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Unraid
+              unRAID Deployment
             
           </span>
         </div>
@@ -1032,6 +1037,20 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Unraid
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -1043,6 +1062,178 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Quick Start
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-install-the-dmb-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Install the DMB Template
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-path-and-variable-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Path and Variable Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-fix-permissions-first-time-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Fix Permissions (First-Time Only)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Fix Permissions (First-Time Only)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#terminal-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terminal Method:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webui-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      WebUI Method:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-start-the-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Start the Container
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-matching-paths-in-plex-jellyfin-emby" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔁 Matching Paths in Plex, Jellyfin, Emby
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-example-screenshots" class="md-nav__link">
+    <span class="md-ellipsis">
+      📷 Example Screenshots
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-additional-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ Additional Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛠️ Additional Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-plex-token-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      📺 Plex Token Setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-advanced-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 Advanced Tools
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-jellyfin-and-emby-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧪 Jellyfin and Emby Notes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧰 Troubleshooting
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1452,6 +1643,169 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Quick Start
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-install-the-dmb-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Install the DMB Template
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-path-and-variable-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Path and Variable Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-fix-permissions-first-time-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Fix Permissions (First-Time Only)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Fix Permissions (First-Time Only)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#terminal-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terminal Method:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webui-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      WebUI Method:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-start-the-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Start the Container
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-matching-paths-in-plex-jellyfin-emby" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔁 Matching Paths in Plex, Jellyfin, Emby
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-example-screenshots" class="md-nav__link">
+    <span class="md-ellipsis">
+      📷 Example Screenshots
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-additional-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ Additional Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛠️ Additional Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-plex-token-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      📺 Plex Token Setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-advanced-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 Advanced Tools
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-jellyfin-and-emby-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧪 Jellyfin and Emby Notes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧰 Troubleshooting
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1470,7 +1824,120 @@
   
 
 
-  <h1>Unraid</h1>
+<h1 id="deploying-dmb-on-unraid">Deploying DMB on unRAID<a class="headerlink" href="#deploying-dmb-on-unraid" title="Permanent link">#</a></h1>
+<p>This guide will walk you through deploying <strong>Debrid Media Bridge (DMB)</strong> on <strong>unRAID</strong> using the Community Applications plugin and Docker.</p>
+<hr />
+<h2 id="-prerequisites">✅ Prerequisites<a class="headerlink" href="#-prerequisites" title="Permanent link">#</a></h2>
+<p>Before proceeding, ensure you have the following:</p>
+<ul>
+<li>A running <strong>unRAID server</strong> with Docker enabled.</li>
+<li>The <strong>Community Applications</strong> plugin installed.</li>
+<li>At least one unRAID <strong>share</strong> for persistent storage (e.g., <code>/mnt/user/appdata/DMB</code>).</li>
+<li>An understanding of basic Docker container and volume mapping in unRAID.</li>
+</ul>
+<p>Optional but recommended:</p>
+<ul>
+<li>Installed media server such as <strong>Plex</strong>, <strong>Jellyfin</strong>, or <strong>Emby</strong>.</li>
+<li>A valid <strong>Plex Token</strong> (if using Plex integration).</li>
+</ul>
+<hr />
+<h2 id="-quick-start">🚀 Quick Start<a class="headerlink" href="#-quick-start" title="Permanent link">#</a></h2>
+<h3 id="1-install-the-dmb-template">1. <strong>Install the DMB Template</strong><a class="headerlink" href="#1-install-the-dmb-template" title="Permanent link">#</a></h3>
+<ul>
+<li>Navigate to the <strong>Apps</strong> tab in unRAID.</li>
+<li>Search for <code>DMB</code> and select the <strong>Debrid Media Bridge</strong> template.</li>
+<li>Click <strong>Install</strong>.</li>
+</ul>
+<h3 id="2-path-and-variable-configuration">2. <strong>Path and Variable Configuration</strong><a class="headerlink" href="#2-path-and-variable-configuration" title="Permanent link">#</a></h3>
+<p>Ensure your <strong>paths and environment variables</strong> are set correctly:
+- Mount all relevant paths (e.g., <code>/mnt</code>, <code>/config</code>, <code>/cache</code>) to valid unRAID shares.
+- Set your <code>PUID</code> to <code>99</code> and <code>PGID</code> to <code>100</code> (used for <code>nobody:users</code> on unRAID).
+- Set your timezone (<code>TZ</code>) appropriately (e.g., <code>America/New_York</code>).</p>
+<h3 id="3-fix-permissions-first-time-only">3. <strong>Fix Permissions (First-Time Only)</strong><a class="headerlink" href="#3-fix-permissions-first-time-only" title="Permanent link">#</a></h3>
+<blockquote>
+<p>Docker on unRAID may create directories as <code>root</code>, causing permission issues. Fix this using the following method:</p>
+</blockquote>
+<h4 id="terminal-method">Terminal Method:<a class="headerlink" href="#terminal-method" title="Permanent link">#</a></h4>
+<div class="highlight"><pre><span></span><code>chown<span class="w"> </span>-R<span class="w"> </span><span class="m">99</span>:100<span class="w"> </span>/mnt/user/appdata/DMB
+</code></pre></div>
+<h4 id="webui-method">WebUI Method:<a class="headerlink" href="#webui-method" title="Permanent link">#</a></h4>
+<ol>
+<li>Go to <strong>Shares</strong> &gt; locate your DMB share.</li>
+<li>Click the <code>+</code> to expand.</li>
+<li>Under <strong>Owner</strong>, set to <code>nobody</code> (user ID 99).</li>
+</ol>
+<h3 id="4-start-the-container">4. <strong>Start the Container</strong><a class="headerlink" href="#4-start-the-container" title="Permanent link">#</a></h3>
+<ul>
+<li>Click <strong>Start</strong> in the Docker tab.</li>
+<li>Open the <strong>Logs</strong> tab to confirm successful startup.</li>
+<li>Look for a confirmation message that <code>riven frontend</code> has started.</li>
+</ul>
+<hr />
+<h2 id="-matching-paths-in-plex-jellyfin-emby">🔁 Matching Paths in Plex, Jellyfin, Emby<a class="headerlink" href="#-matching-paths-in-plex-jellyfin-emby" title="Permanent link">#</a></h2>
+<p>Your <strong>Media Server (Plex, Jellyfin, or Emby)</strong> must have the same paths as DMB:</p>
+<ul>
+<li>DMB mounts:</li>
+<li><code>/mnt</code> (contains both Riven and Zurg content)</li>
+<li>In your media server:</li>
+<li>Mount <code>/mnt</code> to <code>/mnt</code> as well.</li>
+<li>Only add the <strong>Riven path</strong> (e.g., <code>/mnt/movies</code>, <code>/mnt/shows</code>) as libraries.</li>
+</ul>
+<blockquote>
+<p>⚠️ Do <strong>NOT</strong> add <code>/data</code> or Zurg’s full rclone mount as libraries. Use only the <strong>Riven symlinked</strong> content.</p>
+</blockquote>
+<hr />
+<h2 id="-example-screenshots">📷 Example Screenshots<a class="headerlink" href="#-example-screenshots" title="Permanent link">#</a></h2>
+<ul>
+<li>DMB Docker setup:</li>
+</ul>
+<p><img alt="unraid-dmb-setup-1" src="https://github.com/user-attachments/assets/c11f95fa-710f-4b1d-af07-be0a81dbface" />
+<img alt="unraid-dmb-setup-2" src="https://github.com/user-attachments/assets/cb0a02b9-c986-4de8-9751-f615d48c2716" /></p>
+<ul>
+<li>Plex Docker container setup:</li>
+</ul>
+<p><img alt="plex-dmb-paths" src="https://github.com/user-attachments/assets/0f3a9286-f81d-4d24-ab9a-5cf9a5bcee25" /></p>
+<ul>
+<li>Plex UI Library paths:</li>
+</ul>
+<p><img alt="plex-paths1" src="https://github.com/user-attachments/assets/d5a450fe-33e5-465f-bce8-aca1587723d3" />
+<img alt="plex-paths2" src="https://github.com/user-attachments/assets/0af17df8-a0e0-4514-8cb2-090a1e628138" /></p>
+<hr />
+<h2 id="-additional-configuration">🛠️ Additional Configuration<a class="headerlink" href="#-additional-configuration" title="Permanent link">#</a></h2>
+<h3 id="-plex-token-setup">📺 Plex Token Setup<a class="headerlink" href="#-plex-token-setup" title="Permanent link">#</a></h3>
+<p>To enable features like watchlist syncing, you may need your Plex token:</p>
+<ol>
+<li>Visit <code>https://plex.tv</code>, login.</li>
+<li>Open any item &gt; click the 3 dots &gt; <strong>View XML</strong>.</li>
+<li>At the end of the URL, copy the value after <code>Plex-Token=</code>.</li>
+</ol>
+<hr />
+<h3 id="-advanced-tools">🧠 Advanced Tools<a class="headerlink" href="#-advanced-tools" title="Permanent link">#</a></h3>
+<p>To troubleshoot permissions or inspect mounts:
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-w<span class="w"> </span>/mnt/movies<span class="w"> </span>dmb<span class="w"> </span>ls<span class="w"> </span>-Rl
+</code></pre></div>
+To enter the container interactively:
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>dmb<span class="w"> </span>sh
+</code></pre></div>
+Install Midnight Commander (optional):
+<div class="highlight"><pre><span></span><code>apk<span class="w"> </span>add<span class="w"> </span>mc<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mc
+</code></pre></div></p>
+<hr />
+<h2 id="-jellyfin-and-emby-notes">🧪 Jellyfin and Emby Notes<a class="headerlink" href="#-jellyfin-and-emby-notes" title="Permanent link">#</a></h2>
+<p>Both <strong>Jellyfin</strong> and <strong>Emby</strong> can work with DMB:</p>
+<ul>
+<li>Map <code>/mnt</code> into the containers.</li>
+<li>Add <strong>only the Riven subpaths</strong> (<code>/mnt/movies</code>, <code>/mnt/shows</code>) as libraries.</li>
+</ul>
+<hr />
+<h2 id="-troubleshooting">🧰 Troubleshooting<a class="headerlink" href="#-troubleshooting" title="Permanent link">#</a></h2>
+<ul>
+<li>Check logs via <strong>Docker tab</strong> &gt; select DMB &gt; <strong>Logs</strong>.</li>
+<li>Use <code>docker exec</code> or Midnight Commander to inspect file/folder structure.</li>
+<li>Common issues:</li>
+<li>Wrong <code>PUID/PGID</code></li>
+<li>Paths not matching between DMB and your media server</li>
+<li>Invalid Plex token</li>
+</ul>
 
 
 
@@ -1478,7 +1945,8 @@
 
 
 
-
+  
+  
 
 
 
