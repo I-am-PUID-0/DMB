@@ -16,11 +16,11 @@
 >
 > ![image](https://github.com/I-am-PUID-0/DMB/assets/36779668/aff06342-1099-4554-a5a4-72a7c82cb16e)
 >
-> See the wiki for [alternative solutions](https://github.com/I-am-PUID-0/DMB/wiki/Setup-Guides) to run DMB on Windows through WSL2.
+> See the DMB Docs for [alternative deployment options](https://i-am-puid-0.github.io/DMB/deployment/wsl) to run DMB on Windows through WSL2.
 
 ## 🌟 Features
 
-See the DMB [Wiki](https://github.com/I-am-PUID-0/DMB/wiki) for a full list of features and settings.
+See the DMB [Docs](https://i-am-puid-0.github.io/DMB/features) for a full list of features and settings.
 
 ## 🐳 Docker Hub
 
@@ -34,13 +34,12 @@ A prebuilt image is hosted on [GitHub Container Registry](https://github.com/I-a
 
 > [!NOTE]
 > The below examples are not exhaustive and are intended to provide a starting point for deployment.
-> Additionally, the host directories used in the examples are based on [Define the directory structure](https://github.com/I-am-PUID-0/DMB/wiki/Setup-Guides#define-the-directory-structure) and provided for illustrative purposes and can be changed to suit your needs.
 
 ```YAML
 services:
   DMB:
     container_name: DMB
-    image: iampuid0/dmb:latest                                      ## Optionally, specify a specific version of DMB w/ image: iampuid0/dmb:2.0.0
+    image: iampuid0/dmb:latest                                       ## Optionally, specify a specific version of DMB w/ image: iampuid0/dmb:2.0.0
     stop_grace_period: 30s                                           ## Adjust as need to allow for graceful shutdown of the container
     shm_size: 128mb                                                  ## Increased for PostgreSQL
     stdin_open: true                                                 ## docker run -i
@@ -114,7 +113,18 @@ services:
 
 ## 🌐 Environment Variables
 
-See the [.env.example](https://github.com/I-am-PUID-0/DMB/blob/FastAPI/.env.example)
+The following table lists the required environment variables used by the container. The environment variables are set via the `-e` parameter or via the docker-compose file within the `environment:` section or with a .env file saved to the config directory. Value of this parameter is listed as `<VARIABLE_NAME>=<Value>`
+
+Variables required by DMB:
+| Variable       | Default  | Description                                                       | Required for DMB |
+| -------------- | -------- | ------------------------------------------------------------------|----------------- |
+| `PUID`         | `1000`   | Your User ID | :heavy_check_mark: |
+| `PGID`         | `1000`   | Your Group ID |:heavy_check_mark: |
+| `TZ`           | `(null)` | Your time zone listed as `Area/Location` | :heavy_check_mark: |
+| `ZURG_INSTANCES_REALDEBRID_API_KEY` | `(null)` | Enter your Real-Debrid API Token | :heavy_check_mark: |
+| `RIVEN_FRONTEND_ENV_ORIGIN` | `http://0.0.0.0:3000` | The IP address used to access the DMB frontend.  Change this to the IP address of your DMB container. | :heavy_check_mark: |
+
+See the [.env.example](https://github.com/I-am-PUID-0/DMB/blob/master/.env.example)
 
 ## 🌐 Ports Used
 
@@ -170,7 +180,7 @@ See the [DMB roadmap](https://github.com/users/I-am-PUID-0/projects/6) for a lis
 
 DMB allows for the simultaneous or individual deployment of any of the services
 
-For additional details on deployment, see the [DMB Wiki](https://github.com/I-am-PUID-0/DMB/wiki/Setup-Guides#deployment-options)
+For additional details on deployment, see the [DMB Docs](https://i-am-puid-0.github.io/DMB/services/)
 
 ## 🌍 Community
 
