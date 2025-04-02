@@ -629,39 +629,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-interacting-with-services" class="md-nav__link">
-    <span class="md-ellipsis">
-      🧪 Interacting with Services
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="🧪 Interacting with Services">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#-healthcheck" class="md-nav__link">
-    <span class="md-ellipsis">
-      ✅ Healthcheck
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-logs-api-added-in-v630" class="md-nav__link">
-    <span class="md-ellipsis">
-      📊 Logs API (Added in v6.3.0)
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#-managing-updates" class="md-nav__link">
     <span class="md-ellipsis">
       🔃 Managing Updates
@@ -1395,6 +1362,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../../faq/plex/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Plex
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../faq/postgres/" class="md-nav__link">
         
   
@@ -1619,39 +1608,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-interacting-with-services" class="md-nav__link">
-    <span class="md-ellipsis">
-      🧪 Interacting with Services
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="🧪 Interacting with Services">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#-healthcheck" class="md-nav__link">
-    <span class="md-ellipsis">
-      ✅ Healthcheck
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#-logs-api-added-in-v630" class="md-nav__link">
-    <span class="md-ellipsis">
-      📊 Logs API (Added in v6.3.0)
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#-managing-updates" class="md-nav__link">
     <span class="md-ellipsis">
       🔃 Managing Updates
@@ -1732,60 +1688,50 @@
 
 <h1 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">#</a></h1>
 <h2 id="-running-dmb">🚀 Running DMB<a class="headerlink" href="#-running-dmb" title="Permanent link">#</a></h2>
-<p>Once installed and configured, DMB automatically starts the services defined in <code>dmb_config.json</code>. Each service can also be managed independently using the DMB API or by directly modifying the configuration.</p>
+<p>DMB automatically starts the services defined in <code>dmb_config.json</code> in the proper order. Each service can also be managed independently using the <a href="../../services/dmb-frontend/">DMB Frontend</a> or by directly modifying the configuration.</p>
 <div class="admonition important">
 <p class="admonition-title">Important: Configure API Key Before Startup</p>
 <p>DMB is preset to start all services on the first startup.<br />
 As such, please ensure <code>ZURG_INSTANCES_REALDEBRID_API_KEY</code> is configured with your RealDebrid API Key in the compose <strong>before starting the container</strong>.</p>
 </div>
 <h3 id="-automatic-service-start">🔄 Automatic Service Start<a class="headerlink" href="#-automatic-service-start" title="Permanent link">#</a></h3>
-<p>All services with <code>"enabled": true</code> in the config will be started on container launch. These typically include:
-- DMB API
-- DMB Frontend
-- PostgreSQL
-- pgAdmin 4
-- rclone
-- Riven Backend &amp; Frontend
-- Zilean
-- Zurg</p>
+<p>All services with <code>"enabled": true</code> in the config will be started on container launch. These typically include:</p>
+<ul>
+<li>DMB API</li>
+<li>DMB Frontend</li>
+<li>PostgreSQL</li>
+<li>pgAdmin 4</li>
+<li>rclone</li>
+<li>Riven Backend &amp; Frontend</li>
+<li>Zilean</li>
+<li>Zurg</li>
+</ul>
 <p>If a service fails to start, check its log file in the <code>/log</code> directory (or wherever <code>log_dir</code> is set).</p>
-<hr />
-<h2 id="-interacting-with-services">🧪 Interacting with Services<a class="headerlink" href="#-interacting-with-services" title="Permanent link">#</a></h2>
-<h3 id="-healthcheck">✅ Healthcheck<a class="headerlink" href="#-healthcheck" title="Permanent link">#</a></h3>
-<p>A full list of currently running services is available at:
-<div class="highlight"><pre><span></span><code>GET http://&lt;host&gt;:8000/healthcheck/running_processes.json
-</code></pre></div>
-This is useful for checking container health in orchestrators like Docker Compose.</p>
-<h3 id="-logs-api-added-in-v630">📊 Logs API (Added in v6.3.0)<a class="headerlink" href="#-logs-api-added-in-v630" title="Permanent link">#</a></h3>
-<p>You can retrieve logs for each service using:
-<div class="highlight"><pre><span></span><code>GET /logs/{service_name}
-</code></pre></div>
-Optional query parameters:
-- <code>level</code> – Filter by log level (e.g., <code>INFO</code>, <code>ERROR</code>)
-- <code>lines</code> – Limit the number of lines returned
-- <code>search</code> – Search for a string in the logs</p>
-<p>Example:
-<div class="highlight"><pre><span></span><code>GET /logs/riven_backend?level=ERROR&amp;lines=100
-</code></pre></div></p>
 <hr />
 <h2 id="-managing-updates">🔃 Managing Updates<a class="headerlink" href="#-managing-updates" title="Permanent link">#</a></h2>
 <h3 id="-manual-updates">🛠️ Manual Updates<a class="headerlink" href="#-manual-updates" title="Permanent link">#</a></h3>
-<p>Each service can be updated by modifying the configuration file or using the DMB API. Updates include:
-- Branch switching
-- Version pinning
-- Auto-update toggling</p>
+<p>Each service can be updated by modifying the configuration file or using the DMB API. Updates include:</p>
+<ul>
+<li>Branch switching</li>
+<li>Version pinning</li>
+<li>Auto-update toggling</li>
+</ul>
 <h3 id="-auto-update">⚙️ Auto-Update<a class="headerlink" href="#-auto-update" title="Permanent link">#</a></h3>
 <p>Some services support automatic updates. Enable by setting:
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;auto_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="nt">&quot;auto_update_interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span>
-</code></pre></div>
-- <code>auto_update_interval</code> is measured in hours.</p>
-<p>Services supporting auto-updates:
-- DMB Frontend
-- Riven Backend
-- Riven Frontend
-- Zilean
-- Zurg</p>
+</code></pre></div></p>
+<div class="admonition note">
+<p class="admonition-title"><code>auto_update_interval</code> is measured in hours.</p>
+</div>
+<p>Services supporting auto-updates:</p>
+<ul>
+<li>DMB Frontend</li>
+<li>Riven Backend</li>
+<li>Riven Frontend</li>
+<li>Zilean</li>
+<li>Zurg</li>
+</ul>
 <hr />
 <h2 id="-shutdown-handling">⚡ Shutdown Handling<a class="headerlink" href="#-shutdown-handling" title="Permanent link">#</a></h2>
 <p>DMB handles graceful shutdown of all services. This includes:
@@ -1801,7 +1747,7 @@ Optional query parameters:
 <ul>
 <li>Always monitor <code>/log/*.log</code> files for troubleshooting.</li>
 <li>Ensure PostgreSQL is running before launching services that depend on it.</li>
-<li>If using Real-Debrid, ensure <code>api_key</code> is provided in rclone and Zurg instances.</li>
+<li>If using Real-Debrid, ensure <code>api_key</code> is provided in rclone or Zurg instances.</li>
 <li>Logs can be colored if <code>color_log</code> is enabled in the config.</li>
 </ul>
 <hr />
