@@ -26,7 +26,7 @@
     
     
       
-        <title>DMB - DMB</title>
+        <title>DMB FAQ - DMB</title>
       
     
     
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#dmb-faq" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -108,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              DMB
+              DMB FAQ
             
           </span>
         </div>
@@ -1194,6 +1199,20 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    DMB
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -1205,6 +1224,58 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-frequently-asked-questions-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Frequently Asked Questions (FAQ)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="❓ Frequently Asked Questions (FAQ)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#does-the-dmb-image-have-the-latest-version-of-x" class="md-nav__link">
+    <span class="md-ellipsis">
+      Does the DMB image have the latest version of x
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-versions-are-in-the-latest-dmb-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      What versions are in the latest DMB image
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1452,6 +1523,49 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-frequently-asked-questions-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Frequently Asked Questions (FAQ)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="❓ Frequently Asked Questions (FAQ)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#does-the-dmb-image-have-the-latest-version-of-x" class="md-nav__link">
+    <span class="md-ellipsis">
+      Does the DMB image have the latest version of x
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-versions-are-in-the-latest-dmb-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      What versions are in the latest DMB image
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1470,7 +1584,18 @@
   
 
 
-  <h1>DMB</h1>
+<h1 id="dmb-faq">DMB FAQ<a class="headerlink" href="#dmb-faq" title="Permanent link">#</a></h1>
+<p>Below are some common questions and solutions related to <strong>DMB</strong>.</p>
+<hr />
+<h2 id="-frequently-asked-questions-faq">❓ Frequently Asked Questions (FAQ)<a class="headerlink" href="#-frequently-asked-questions-faq" title="Permanent link">#</a></h2>
+<h3 id="does-the-dmb-image-have-the-latest-version-of-x">Does the <strong>DMB</strong> image have the latest version of <code>x</code><a class="headerlink" href="#does-the-dmb-image-have-the-latest-version-of-x" title="Permanent link">#</a></h3>
+<p>The GitHub repo for <strong>DMB</strong> use many continuous integration and continuous deployment (CI/CD) workflows to ensure proper building, reporting, and updating of the images.</p>
+<p>For example, the <a href="https://github.com/I-am-PUID-0/DMB/actions/workflows/fetch-latest-tags.yml">Check for New Release Tags</a> workflow is automated to run every three hours and check for updates to the various services/projects utilized in DMB. If an update is found, the <a href="https://github.com/I-am-PUID-0/DMB/actions/workflows/docker-image.yml">Docker Image CI</a> workflow is called to build a new image with the latest services. </p>
+<h3 id="what-versions-are-in-the-latest-dmb-image">What versions are in the latest <strong>DMB</strong> image<a class="headerlink" href="#what-versions-are-in-the-latest-dmb-image" title="Permanent link">#</a></h3>
+<p>Similar to the above question, and the answer is usually the latest; however, if there has been a recent release and the <a href="https://github.com/I-am-PUID-0/DMB/actions/workflows/fetch-latest-tags.yml">Check for New Release Tags</a> workflow has not run yet, then there my be disparity. </p>
+<p>To check, click on one of the <a href="https://github.com/I-am-PUID-0/DMB/actions/workflows/docker-image.yml">Docker Image CI</a> jobs to see the <code>Build Summary</code>
+Example <code>Build Summary</code> below:
+<img alt="Build Summary" src="../../assets/images/build_summary.PNG" /></p>
 
 
 
@@ -1478,7 +1603,8 @@
 
 
 
-
+  
+  
 
 
 
