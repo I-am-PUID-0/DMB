@@ -741,6 +741,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DMB API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../dmb-frontend/" class="md-nav__link">
         
   
@@ -855,13 +877,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-configuration-summary" class="md-nav__link">
+  <a href="#-configuration-settings-in-dmb_configjson" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚙️ Configuration Summary
+      ⚙️ Configuration Settings in dmb_config.json
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="⚙️ Configuration Summary">
+    <nav class="md-nav" aria-label="⚙️ Configuration Settings in dmb_config.json">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1576,13 +1598,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-configuration-summary" class="md-nav__link">
+  <a href="#-configuration-settings-in-dmb_configjson" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚙️ Configuration Summary
+      ⚙️ Configuration Settings in dmb_config.json
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="⚙️ Configuration Summary">
+    <nav class="md-nav" aria-label="⚙️ Configuration Settings in dmb_config.json">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1717,7 +1739,7 @@
 <h1 id="rclone">rclone<a class="headerlink" href="#rclone" title="Permanent link">#</a></h1>
 <p>rclone is a command-line tool used in DMB to mount cloud storage—specifically Debrid services like Real-Debrid—into the container as a local file system. It works in tandem with Zurg and is configured automatically during container startup.</p>
 <hr />
-<h2 id="-configuration-summary">⚙️ Configuration Summary<a class="headerlink" href="#-configuration-summary" title="Permanent link">#</a></h2>
+<h2 id="-configuration-settings-in-dmb_configjson">⚙️ Configuration Settings in <code>dmb_config.json</code><a class="headerlink" href="#-configuration-settings-in-dmb_configjson" title="Permanent link">#</a></h2>
 <p>Each <code>rclone</code> instance is defined under the <code>rclone.instances</code> section in <code>dmb_config.json</code>. Example:
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;rclone&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;instances&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -1738,7 +1760,7 @@
 <span class="w">      </span><span class="nt">&quot;api_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
+<span class="p">},</span>
 </code></pre></div></p>
 <h3 id="-configuration-key-descriptions">🔍 Configuration Key Descriptions<a class="headerlink" href="#-configuration-key-descriptions" title="Permanent link">#</a></h3>
 <ul>

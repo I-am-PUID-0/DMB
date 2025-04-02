@@ -741,6 +741,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DMB API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../dmb-frontend/" class="md-nav__link">
         
   
@@ -809,6 +831,30 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-configuration-settings-in-dmb_configjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚙️ Configuration Settings in dmb_config.json
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚙️ Configuration Settings in dmb_config.json">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-configuration-key-descriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Configuration Key Descriptions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#-accessing-pgadmin" class="md-nav__link">
@@ -1534,6 +1580,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#-configuration-settings-in-dmb_configjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚙️ Configuration Settings in dmb_config.json
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚙️ Configuration Settings in dmb_config.json">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-configuration-key-descriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Configuration Key Descriptions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#-accessing-pgadmin" class="md-nav__link">
     <span class="md-ellipsis">
       🚪 Accessing pgAdmin
@@ -1633,12 +1703,54 @@
 <h1 id="pgadmin-4">pgAdmin 4<a class="headerlink" href="#pgadmin-4" title="Permanent link">#</a></h1>
 <p>pgAdmin 4 is a web-based administration tool for managing PostgreSQL databases. DMB includes pgAdmin pre-installed and configured to work out of the box, allowing you to inspect, query, and back up your databases directly from a browser.</p>
 <hr />
+<h2 id="-configuration-settings-in-dmb_configjson">⚙️ Configuration Settings in <code>dmb_config.json</code><a class="headerlink" href="#-configuration-settings-in-dmb_configjson" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;pgadmin&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pgAdmin4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;config_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/pgadmin/data&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;config_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/pgadmin/data/config_local.py&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;log_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/pgadmin/data/pgadmin4.log&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5050</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;default_server&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;setup_email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DMB@DMB.DMB&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;setup_password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="p">},</span>
+</code></pre></div>
+<h3 id="-configuration-key-descriptions">🔍 Configuration Key Descriptions<a class="headerlink" href="#-configuration-key-descriptions" title="Permanent link">#</a></h3>
+<ul>
+<li><strong><code>enabled</code></strong>: Whether to start the pgAdmin service.</li>
+<li><strong><code>process_name</code></strong>: The label used in logs and process tracking.</li>
+<li><strong><code>config_dir</code></strong> – Directory where pgAdmin configuration files are stored.</li>
+<li><strong><code>config_file</code></strong> – Path to the primary pgAdmin configuration file.</li>
+<li><strong><code>port</code></strong>: Port exposed for the pgAdmin.</li>
+<li>
+<p><strong><code>default_server</code></strong>: IP address pgAdmin should bind to. </p>
+<div class="admonition note">
+<p class="admonition-title"><code>0.0.0.0</code> allows access to pgAdmin from all addresses</p>
+</div>
+</li>
+<li>
+<p><strong><code>setup_email</code></strong>: The email address to be used with pgAdmin.</p>
+</li>
+<li><strong><code>setup_password</code></strong>: The password to be used with pgAdmin. </li>
+<li><strong><code>command</code></strong> – The command used to start pgAdmin.</li>
+</ul>
 <h2 id="-accessing-pgadmin">🚪 Accessing pgAdmin<a class="headerlink" href="#-accessing-pgadmin" title="Permanent link">#</a></h2>
 <ul>
-<li>Navigate to: <code>http://&lt;host&gt;:5050</code></li>
+<li>Navigate to: <code>http://&lt;host&gt;:&lt;port&gt;</code> <ul>
+<li>default port <code>5055</code></li>
+</ul>
+</li>
 <li>Login using the credentials set via environment variables:</li>
-<li><code>PGADMIN_SETUP_EMAIL</code> (default: <code>DMB@DMB.DMB</code>)</li>
-<li><code>PGADMIN_SETUP_PASSWORD</code> (default: <code>postgres</code>)</li>
+<li><code>PGADMIN_SETUP_EMAIL</code> <ul>
+<li>default: <code>DMB@DMB.DMB</code></li>
+</ul>
+</li>
+<li><code>PGADMIN_SETUP_PASSWORD</code> <ul>
+<li>default: <code>postgres</code></li>
+</ul>
+</li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">The email is used as the username. It does not need to be a real email address.</p>

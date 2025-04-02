@@ -741,6 +741,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DMB API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../dmb-frontend/" class="md-nav__link">
         
   
@@ -899,15 +921,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-access" class="md-nav__link">
-    <span class="md-ellipsis">
-      🌐 Access
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#-configuration-settings-in-dmb_configjson" class="md-nav__link">
     <span class="md-ellipsis">
       ⚙️ Configuration Settings in dmb_config.json
@@ -944,6 +957,15 @@
   <a href="#-branch--version-targeting" class="md-nav__link">
     <span class="md-ellipsis">
       ⚙️ Branch / Version Targeting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌐 Access
     </span>
   </a>
   
@@ -1525,15 +1547,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-access" class="md-nav__link">
-    <span class="md-ellipsis">
-      🌐 Access
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#-configuration-settings-in-dmb_configjson" class="md-nav__link">
     <span class="md-ellipsis">
       ⚙️ Configuration Settings in dmb_config.json
@@ -1570,6 +1583,15 @@
   <a href="#-branch--version-targeting" class="md-nav__link">
     <span class="md-ellipsis">
       ⚙️ Branch / Version Targeting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌐 Access
     </span>
   </a>
   
@@ -1616,15 +1638,6 @@
 <p>The <strong>Riven Frontend</strong> is the web-based interface for interacting with the Riven Backend. It allows users to manage settings, content, and integrations from a clean and modern UI.</p>
 <p>DMB handles automatic installation and updates of the frontend, including versioning and branch targeting. It is served by a lightweight web server and preconfigured to communicate with the backend at startup.</p>
 <hr />
-<h2 id="-access">🌐 Access<a class="headerlink" href="#-access" title="Permanent link">#</a></h2>
-<ul>
-<li><strong>Default Port:</strong> <code>3001</code></li>
-<li>Navigate to: <code>http://&lt;host&gt;:3001</code></li>
-</ul>
-<blockquote>
-<p>🔐 If using a reverse proxy, ensure the <code>ORIGIN</code> environment variable matches the external URL.</p>
-</blockquote>
-<hr />
 <h2 id="-configuration-settings-in-dmb_configjson">⚙️ Configuration Settings in <code>dmb_config.json</code><a class="headerlink" href="#-configuration-settings-in-dmb_configjson" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;riven_frontend&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
@@ -1651,7 +1664,7 @@
 <span class="w">    </span><span class="nt">&quot;PORT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{port}&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;HOST&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{host}&quot;</span>
 <span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
+<span class="p">},</span>
 </code></pre></div>
 <h3 id="-configuration-key-descriptions">🔍 Configuration Key Descriptions<a class="headerlink" href="#-configuration-key-descriptions" title="Permanent link">#</a></h3>
 <ul>
@@ -1684,9 +1697,20 @@
 <li>or <code>release_version_enabled: true</code> and specifying a <code>release_version</code></li>
 </ul>
 <hr />
+<h2 id="-access">🌐 Access<a class="headerlink" href="#-access" title="Permanent link">#</a></h2>
+<ul>
+<li>Navigate to: <code>http://&lt;host&gt;:&lt;port&gt;</code> <ul>
+<li>default port <code>3001</code></li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">🔐 If using a reverse proxy, ensure the <code>ORIGIN</code> environment variable matches the external URL.</p>
+</div>
+<hr />
 <h2 id="-tips">🧠 Tips<a class="headerlink" href="#-tips" title="Permanent link">#</a></h2>
 <ul>
-<li>The frontend depends on the backend being reachable at <code>http://&lt;host&gt;:8080</code></li>
+<li>The frontend depends on the backend being reachable at <code>http://&lt;host&gt;:&lt;port&gt;</code> defined in the <code>dmb_config.json</code> for the <a href="../riven-backend/">Riven Backend</a></li>
 <li>Use Docker port mappings if needed to expose the frontend</li>
 <li>Check <code>PORT</code> and <code>ORIGIN</code> values if the UI fails to load</li>
 </ul>

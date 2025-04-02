@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/services/dmb-frontend/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../api/">
       
       
         <link rel="next" href="../pgadmin/">
@@ -738,6 +738,28 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DMB API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -812,6 +834,15 @@
   <a href="#-branch--version-targeting" class="md-nav__link">
     <span class="md-ellipsis">
       ⚙️ Branch / Version Targeting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-accessing-the-dmb-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚪 Accessing the DMB Frontend
     </span>
   </a>
   
@@ -1609,6 +1640,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#-accessing-the-dmb-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚪 Accessing the DMB Frontend
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#-user-interface-overview" class="md-nav__link">
     <span class="md-ellipsis">
       📸 User Interface Overview
@@ -1725,33 +1765,30 @@
 <p>The <strong>DMB Frontend</strong> is a web-based user interface designed to enhance the management and monitoring of the Debrid Media Bridge (DMB) ecosystem. It offers features such as real-time service logs, filtering options, and service control functionalities, providing users with an intuitive platform to interact with DMB services.</p>
 <hr />
 <h2 id="-configuration-settings-in-dmb_configjson">⚙️ Configuration Settings in <code>dmb_config.json</code><a class="headerlink" href="#-configuration-settings-in-dmb_configjson" title="Permanent link">#</a></h2>
-<p>To integrate the DMB Frontend into your setup, you can add the following configuration to your <code>dmb_config.json</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;frontend&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DMB Frontend&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;repo_owner&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nicocapalbo&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;repo_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dmbdb&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;release_version_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;release_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v1.2.0&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;branch_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;branch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;suppress_logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="w">            </span>
-<span class="w">        </span><span class="nt">&quot;origins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">            </span><span class="s2">&quot;http://0.0.0.0:3005&quot;</span>
-<span class="w">        </span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3005</span><span class="p">,</span><span class="w">            </span>
-<span class="w">        </span><span class="nt">&quot;auto_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;auto_update_interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;clear_on_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;exclude_dirs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<span class="w">        </span><span class="nt">&quot;platforms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pnpm&quot;</span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">,</span><span class="s2">&quot;.output/server/index.mjs&quot;</span><span class="p">],</span>
-<span class="w">        </span><span class="nt">&quot;config_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/dmb/frontend&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">            </span>
-<span class="w">    </span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;frontend&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DMB Frontend&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;repo_owner&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nicocapalbo&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;repo_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dmbdb&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;release_version_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;release_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v1.2.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;branch_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;branch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;suppress_logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="w">            </span>
+<span class="w">    </span><span class="nt">&quot;origins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;http://0.0.0.0:3005&quot;</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3005</span><span class="p">,</span><span class="w">            </span>
+<span class="w">    </span><span class="nt">&quot;auto_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;auto_update_interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;clear_on_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;exclude_dirs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">    </span><span class="nt">&quot;platforms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pnpm&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">,</span><span class="s2">&quot;.output/server/index.mjs&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;config_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/dmb/frontend&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">            </span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="-configuration-key-descriptions">🔍 Configuration Key Descriptions<a class="headerlink" href="#-configuration-key-descriptions" title="Permanent link">#</a></h3>
@@ -1769,7 +1806,7 @@
 <li><strong><code>auto_update_interval</code></strong>: How often (in hours) to check for updates.</li>
 <li><strong><code>clear_on_update</code></strong>: Clears build artifacts or cache during updates.</li>
 <li><strong><code>exclude_dirs</code></strong>: Prevents specific directories from being affected by updates when using <code>clear_on_update</code></li>
-<li><strong><code>platforms</code></strong>: Specifies the runtime environment required (<code>nodejs</code>).</li>
+<li><strong><code>platforms</code></strong>: Specifies the runtime environment required (<code>pnpm</code>).</li>
 <li><strong><code>command</code></strong>: Command to start the frontend service.</li>
 <li><strong><code>config_dir</code></strong>: Directory where configuration files are stored.</li>
 <li><strong><code>env</code></strong>: Environment variables for the frontend.</li>
@@ -1782,6 +1819,13 @@
 <li>or <code>release_version_enabled: true</code> and specifying a <code>release_version</code></li>
 </ul>
 <hr />
+<h2 id="-accessing-the-dmb-frontend">🚪 Accessing the DMB Frontend<a class="headerlink" href="#-accessing-the-dmb-frontend" title="Permanent link">#</a></h2>
+<ul>
+<li>Navigate to: <code>http://&lt;host&gt;:&lt;port&gt;</code><ul>
+<li>default port <code>3005</code></li>
+</ul>
+</li>
+</ul>
 <h2 id="-user-interface-overview">📸 User Interface Overview<a class="headerlink" href="#-user-interface-overview" title="Permanent link">#</a></h2>
 <h3 id="service-dashboard">Service Dashboard<a class="headerlink" href="#service-dashboard" title="Permanent link">#</a></h3>
 <p><img alt="Service Dashboard" src="../../assets/images/dmb_frontend/service_dashboard.PNG" /></p>

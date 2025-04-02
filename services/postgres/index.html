@@ -741,6 +741,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DMB API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../dmb-frontend/" class="md-nav__link">
         
   
@@ -833,6 +855,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#-configuration-settings-in-dmb_configjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚙️ Configuration Settings in dmb_config.json
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚙️ Configuration Settings in dmb_config.json">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-configuration-key-descriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Configuration Key Descriptions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#-access--credentials" class="md-nav__link">
     <span class="md-ellipsis">
       🚪 Access &amp; Credentials
@@ -882,30 +928,6 @@
   <a href="#-drop-the-riven-database" class="md-nav__link">
     <span class="md-ellipsis">
       🗑️ Drop the Riven Database
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-configurable-settings-in-dmb_configjson" class="md-nav__link">
-    <span class="md-ellipsis">
-      ⚙️ Configurable Settings in dmb_config.json
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="⚙️ Configurable Settings in dmb_config.json">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#-configuration-key-descriptions" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔍 Configuration Key Descriptions
     </span>
   </a>
   
@@ -1558,6 +1580,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#-configuration-settings-in-dmb_configjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚙️ Configuration Settings in dmb_config.json
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚙️ Configuration Settings in dmb_config.json">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-configuration-key-descriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Configuration Key Descriptions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#-access--credentials" class="md-nav__link">
     <span class="md-ellipsis">
       🚪 Access &amp; Credentials
@@ -1618,30 +1664,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-configurable-settings-in-dmb_configjson" class="md-nav__link">
-    <span class="md-ellipsis">
-      ⚙️ Configurable Settings in dmb_config.json
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="⚙️ Configurable Settings in dmb_config.json">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#-configuration-key-descriptions" class="md-nav__link">
-    <span class="md-ellipsis">
-      🔍 Configuration Key Descriptions
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#-tips" class="md-nav__link">
     <span class="md-ellipsis">
       🧠 Tips
@@ -1681,20 +1703,74 @@
 <h1 id="postgresql">PostgreSQL<a class="headerlink" href="#postgresql" title="Permanent link">#</a></h1>
 <p>PostgreSQL is the core database system used by DMB to store metadata and internal configuration for services like Riven, Zilean, and pgAdmin. It is pre-installed and automatically initialized during container startup.</p>
 <hr />
+<h2 id="-configuration-settings-in-dmb_configjson">⚙️ Configuration Settings in <code>dmb_config.json</code><a class="headerlink" href="#-configuration-settings-in-dmb_configjson" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;postgres&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PostgreSQL&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;suppress_logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5432</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;shared_buffers&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;128MB&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;max_connections&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;databases&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pgadmin&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;zilean&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;riven&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;config_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/postgres_data&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;config_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/postgres_data/postgresql.conf&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;initdb_args&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;--data-checksums&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DMB&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;shared_buffers&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;128MB&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;max_connections&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;run_directory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/run/postgresql&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres -D {postgres_config_dir} -c config_file={postgres_config_file}&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="p">},</span>
+</code></pre></div>
+<h3 id="-configuration-key-descriptions">🔍 Configuration Key Descriptions<a class="headerlink" href="#-configuration-key-descriptions" title="Permanent link">#</a></h3>
+<ul>
+<li><strong><code>enabled</code></strong>: Whether to start the PostgreSQL service.</li>
+<li><strong><code>process_name</code></strong>: The label used in logs and process tracking.</li>
+<li><strong><code>suppress_logging</code></strong>: If <code>true</code>, disables log output for this service.</li>
+<li><strong><code>log_level</code></strong>: Logging verbosity level (e.g., <code>DEBUG</code>, <code>INFO</code>).</li>
+<li><strong><code>host</code></strong>: IP address for PostgreSQL to listen on.</li>
+<li><strong><code>port</code></strong>: Port exposed for the PostgreSQL server.</li>
+<li><strong><code>shared_buffers</code></strong> – Amount of memory allocated to PostgreSQL.</li>
+<li><strong><code>max_connections</code></strong> – Maximum simultaneous database connections.</li>
+<li><strong><code>databases</code></strong> – List of databases to initialize, with each entry containing:<ul>
+<li><strong><code>name</code></strong> – Name of the database.</li>
+<li><strong><code>enabled</code></strong> – Whether this database should be created.</li>
+</ul>
+</li>
+<li><strong><code>config_dir</code></strong> – Directory where PostgreSQL configuration files are stored.</li>
+<li><strong><code>config_file</code></strong> – Path to the primary PostgreSQL configuration file.</li>
+<li><strong><code>initdb_args</code></strong> – Additional arguments passed to initdb during database initialization.</li>
+<li><strong><code>user/password</code></strong> – Default database credentials.</li>
+<li><strong><code>run_directory</code></strong> – Directory where PostgreSQL runtime files (like sockets) are stored.</li>
+<li><strong><code>command</code></strong> – The command used to start PostgreSQL.</li>
+<li><strong><code>env</code></strong> – Dictionary of environment variables passed to the process.</li>
+</ul>
+<hr />
 <h2 id="-access--credentials">🚪 Access &amp; Credentials<a class="headerlink" href="#-access--credentials" title="Permanent link">#</a></h2>
 <ul>
 <li>Default Port: <code>5432</code></li>
 <li>Default User: <code>DMB</code></li>
 <li>Default Password: <code>postgres</code></li>
-<li>Default Databases:</li>
+<li>Default Databases:<ul>
 <li><code>postgres</code></li>
 <li><code>pgadmin</code></li>
 <li><code>zilean</code></li>
 <li><code>riven</code></li>
 </ul>
-<blockquote>
-<p>🔐 Override any of the above using <code>POSTGRES_USER</code>, <code>POSTGRES_PASSWORD</code>, or <code>POSTGRES_DB</code> environment variables.</p>
-</blockquote>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">🔐 Override any of the above using <code>POSTGRES_USER</code>, <code>POSTGRES_PASSWORD</code>, or <code>POSTGRES_DB</code> environment variables.</p>
+</div>
 <hr />
 <h2 id="-data--config-paths">📁 Data &amp; Config Paths<a class="headerlink" href="#-data--config-paths" title="Permanent link">#</a></h2>
 <table>
@@ -1740,58 +1816,6 @@ psql<span class="w"> </span>-U<span class="w"> </span>DMB<span class="w"> </span
 psql<span class="w"> </span>-U<span class="w"> </span>DMB
 DROP<span class="w"> </span>DATABASE<span class="w"> </span>riven<span class="p">;</span>
 </code></pre></div></p>
-<hr />
-<h2 id="-configurable-settings-in-dmb_configjson">⚙️ Configurable Settings in <code>dmb_config.json</code><a class="headerlink" href="#-configurable-settings-in-dmb_configjson" title="Permanent link">#</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;postgres&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PostgreSQL&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;suppress_logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DMB&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5432</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;shared_buffers&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;128MB&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;max_connections&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;databases&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pgadmin&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;zilean&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;riven&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span>
-<span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;config_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/postgres_data&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;config_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/postgres_data/postgresql.conf&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;initdb_args&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;--data-checksums&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DMB&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;shared_buffers&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;128MB&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;max_connections&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;run_directory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/run/postgresql&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres -D {postgres_config_dir} -c config_file={postgres_config_file}&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">  </span>
-<span class="p">}</span>
-</code></pre></div>
-<h3 id="-configuration-key-descriptions">🔍 Configuration Key Descriptions<a class="headerlink" href="#-configuration-key-descriptions" title="Permanent link">#</a></h3>
-<ul>
-<li><strong><code>enabled</code></strong>: Whether to start the PostgreSQL service.</li>
-<li><strong><code>process_name</code></strong>: The label used in logs and process tracking.</li>
-<li><strong><code>suppress_logging</code></strong>: If <code>true</code>, disables log output for this service.</li>
-<li><strong><code>log_level</code></strong>: Logging verbosity level (e.g., <code>DEBUG</code>, <code>INFO</code>).</li>
-<li><strong>user/password</strong> – Default database credentials.</li>
-<li><strong>shared_buffers</strong> – Amount of memory allocated to PostgreSQL.</li>
-<li><strong>max_connections</strong> – Maximum simultaneous database connections.</li>
-<li><strong>databases</strong> – List of databases to initialize, with each entry containing:<ul>
-<li><strong>name</strong> – Name of the database.</li>
-<li><strong>enabled</strong> – Whether this database should be created.</li>
-</ul>
-</li>
-<li><strong>config_dir</strong> – Directory where PostgreSQL configuration files are stored.</li>
-<li><strong>config_file</strong> – Path to the primary PostgreSQL configuration file.</li>
-<li><strong>initdb_args</strong> – Additional arguments passed to initdb during database initialization.</li>
-<li><strong>run_directory</strong> – Directory where PostgreSQL runtime files (like sockets) are stored.</li>
-<li><strong>command</strong> – The command used to start PostgreSQL.</li>
-<li><strong>env</strong> – Dictionary of environment variables passed to the process.</li>
-</ul>
 <hr />
 <h2 id="-tips">🧠 Tips<a class="headerlink" href="#-tips" title="Permanent link">#</a></h2>
 <ul>

@@ -12,13 +12,13 @@
         <meta name="author" content="DMB Team">
       
       
-        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/api/endpoints/">
+        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/services/api/">
       
       
-        <link rel="prev" href="../../deployment/wsl/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../../faq/dmb/">
+        <link rel="next" href="../dmb-frontend/">
       
       
       <link rel="icon" href="../../assets/images/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Endpoints - DMB</title>
+        <title>DMB API - DMB</title>
       
     
     
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#dmb-api" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -108,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Endpoints
+              DMB API
             
           </span>
         </div>
@@ -268,11 +273,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../services/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   Services
@@ -304,13 +311,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../api/endpoints/" class="md-tabs__link">
           
   
   API Reference
@@ -665,25 +670,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -695,7 +705,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Services
@@ -709,7 +719,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -728,10 +738,31 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../services/api/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    DMB API
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -741,6 +772,50 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-configuration-settings-in-dmb_configjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚙️ Configuration Settings in dmb_config.json
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚙️ Configuration Settings in dmb_config.json">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-configuration-key-descriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Configuration Key Descriptions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -753,7 +828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/dmb-frontend/" class="md-nav__link">
+      <a href="../dmb-frontend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -775,7 +850,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/pgadmin/" class="md-nav__link">
+      <a href="../pgadmin/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -797,7 +872,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/postgres/" class="md-nav__link">
+      <a href="../postgres/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -819,7 +894,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/rclone/" class="md-nav__link">
+      <a href="../rclone/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -841,7 +916,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/riven-backend/" class="md-nav__link">
+      <a href="../riven-backend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -863,7 +938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/riven-frontend/" class="md-nav__link">
+      <a href="../riven-frontend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -885,7 +960,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/zilean/" class="md-nav__link">
+      <a href="../zilean/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -907,7 +982,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/zurg/" class="md-nav__link">
+      <a href="../zurg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1069,30 +1144,25 @@
       
   
   
-    
   
   
-  
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1104,7 +1174,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             API Reference
@@ -1115,17 +1185,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../api/endpoints/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1135,7 +1198,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1430,6 +1492,40 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-configuration-settings-in-dmb_configjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚙️ Configuration Settings in dmb_config.json
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚙️ Configuration Settings in dmb_config.json">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-configuration-key-descriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Configuration Key Descriptions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1448,7 +1544,33 @@
   
 
 
-  <h1>Endpoints</h1>
+<h1 id="dmb-api">DMB API<a class="headerlink" href="#dmb-api" title="Permanent link">#</a></h1>
+<p>The <strong>DMB API</strong> is the central communication layer between the DMB Frontend and the backend service. It handles requests for logs, service management (start/stop), configuration updates, and health checks.</p>
+<hr />
+<h2 id="-configuration-settings-in-dmb_configjson">⚙️ Configuration Settings in <code>dmb_config.json</code><a class="headerlink" href="#-configuration-settings-in-dmb_configjson" title="Permanent link">#</a></h2>
+<p>Located in <code>dmb.api_service</code>:
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DMB API&quot;</span><span class="p">,</span>
+<span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+<span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+<span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8000</span>
+</code></pre></div></p>
+<h3 id="-configuration-key-descriptions">🔍 Configuration Key Descriptions<a class="headerlink" href="#-configuration-key-descriptions" title="Permanent link">#</a></h3>
+<ul>
+<li><strong><code>enabled</code></strong> – Whether the API service should run.</li>
+<li><strong><code>process_name</code></strong> – Used in process management and logs.</li>
+<li><strong><code>log_level</code></strong> – Logging verbosity for the API.</li>
+<li>
+<p><strong><code>host</code></strong>: IP address for API to listen on.</p>
+<div class="admonition note">
+<p class="admonition-title"><code>0.0.0.0</code> allows access to the API from all addresses</p>
+</div>
+</li>
+<li>
+<p><strong><code>port</code></strong>: Port exposed for the API.</p>
+</li>
+</ul>
+<hr />
 
 
 
@@ -1456,7 +1578,8 @@
 
 
 
-
+  
+  
 
 
 
