@@ -1327,6 +1327,30 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#-plex-buffers-a-lot-when-playing-content-mounted-via-rclone" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ Plex buffers a lot when playing content mounted via rclone
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚠️ Plex buffers a lot when playing content mounted via rclone">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-recommended-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Recommended Solution
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1599,6 +1623,30 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#-plex-buffers-a-lot-when-playing-content-mounted-via-rclone" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ Plex buffers a lot when playing content mounted via rclone
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚠️ Plex buffers a lot when playing content mounted via rclone">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-recommended-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Recommended Solution
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1652,11 +1700,26 @@
 </ul>
 <p>These settings reduce the number of filesystem scans Plex performs, which can otherwise generate a high number of requests to mounted Real-Debrid content.</p>
 <hr />
+<h3 id="-plex-buffers-a-lot-when-playing-content-mounted-via-rclone">⚠️ Plex buffers a lot when playing content mounted via rclone<a class="headerlink" href="#-plex-buffers-a-lot-when-playing-content-mounted-via-rclone" title="Permanent link">#</a></h3>
+<p>This is often caused by the lack of caching when streaming large files from cloud-mounted storage.</p>
+<h4 id="-recommended-solution">✅ Recommended Solution<a class="headerlink" href="#-recommended-solution" title="Permanent link">#</a></h4>
+<p>Enable <strong>VFS (Virtual File System) cache</strong> in your <code>rclone</code> configuration.</p>
+<p>When using DMB, set the following environment variables:
+<div class="highlight"><pre><span></span><code><span class="nv">RCLONE_VFS_CACHE_MODE</span><span class="o">=</span>full
+<span class="nv">RCLONE_VFS_CACHE_MAX_SIZE</span><span class="o">=</span>100G
+<span class="nv">RCLONE_VFS_CACHE_MAX_AGE</span><span class="o">=</span>6h
+</code></pre></div></p>
+<p>These flags ensure that:
+- The full file is cached locally before playback.
+- Plex can smoothly read data without constant remote fetches.</p>
+<blockquote>
+<p>See <a href="https://rclone.org/docs/#environment-variables">rclone docs</a><br />
+or refer to <a href="../../services/rclone/#-rclone-flags-via-environment-variables">rclone Flags via Environment Variables</a> for examples and formatting guidance.</p>
+</blockquote>
 <h2 id="-related-pages">📎 Related Pages<a class="headerlink" href="#-related-pages" title="Permanent link">#</a></h2>
 <ul>
 <li><a href="../zurg/">Zurg FAQ</a></li>
 <li><a href="../../services/rclone/">Rclone Configuration</a></li>
-<li><a href="../../services/riven-backend/#symlink-directory">Riven Symlink Strategy</a></li>
 </ul>
 
 
