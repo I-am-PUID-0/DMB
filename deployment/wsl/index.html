@@ -1103,6 +1103,48 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Windows Setup Guide (Docker/WSL)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wsl-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      WSL Install
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      Docker Install
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accessing-the-mount-on-windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      Accessing the mount on Windows
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extra-credit" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extra credit
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1509,6 +1551,48 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Windows Setup Guide (Docker/WSL)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wsl-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      WSL Install
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      Docker Install
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accessing-the-mount-on-windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      Accessing the mount on Windows
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extra-credit" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extra credit
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1533,37 +1617,82 @@
   <h1>WSL</h1>
 
 <h2 id="windows-setup-guide-dockerwsl">Windows Setup Guide (Docker/WSL)<a class="headerlink" href="#windows-setup-guide-dockerwsl" title="Permanent link">#</a></h2>
-<blockquote>
-<p>[!NOTE]
-Ensure that Docker Desktop is not installed; if so, uninstall and reboot before proceeding.</p>
-</blockquote>
-<p>From the Microsoft store, install Windows Subsystem for Linux (WSL) \</p>
-<p>From the Microsoft store, install Ubuntu 22.04 LTS \</p>
-<p>Follow the setup to create your Ubuntu username and password.</p>
+<div class="admonition warning">
+<p class="admonition-title">Docker Desktop</p>
+<p>Ensure that Docker Desktop is not installed; if so, uninstall and reboot before proceeding.</p>
+</div>
+<hr />
+<h3 id="wsl-install">WSL Install<a class="headerlink" href="#wsl-install" title="Permanent link">#</a></h3>
+<ol>
+<li>
+<p>From the Microsoft store, install Windows Subsystem for Linux (WSL)</p>
+</li>
+<li>
+<p>From the Microsoft store, install Ubuntu 22.04 LTS</p>
+</li>
+<li>
+<p>Follow the setup to create your Ubuntu username and password</p>
+</li>
+<li>
 <p>From a Windows command prompt, paste the following:</p>
-<p><code>cd C:\WINDOWS\system32</code></p>
-<p>Then paste:</p>
-<p><code>wsl --setdefault Ubuntu-22.04</code></p>
-<p>From Windows apps, start Ubuntu 22.04, and paste the following inside the terminal:</p>
-<div class="highlight"><pre><span></span><code>sudo apt update
-sudo apt upgrade -y
-sudo mount --make-rshared /
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>C:<span class="se">\W</span>INDOWS<span class="se">\s</span>ystem32
 </code></pre></div>
-<blockquote>
-<p>[!NOTE]
-<code>sudo mount --make-rshared</code> does not persist reboots, so it will need to be run each time WSL2 or Windows is restarted. Alternatively, see the <a href="https://github.com/I-am-PUID-0/DMB/wiki/FAQ#ubuntu-systemd-service">Ubuntu systemd service</a> guide for automatically executing the command on startup for Ubuntu.</p>
-</blockquote>
+</li>
+<li>
+<p>Then paste:</p>
+<div class="highlight"><pre><span></span><code>wsl<span class="w"> </span>--setdefault<span class="w"> </span>Ubuntu-22.04
+</code></pre></div>
+</li>
+<li>
+<p>From Windows apps, start Ubuntu 22.04, and paste the following inside the terminal:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>upgrade<span class="w"> </span>-y
+sudo<span class="w"> </span>mount<span class="w"> </span>--make-rshared<span class="w"> </span>/
+</code></pre></div>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>sudo mount --make-rshared</code> does not persist reboots, so it will need to be run each time WSL2 or Windows is restarted. Alternatively, see the <a href="../../faq/rclone/#ubuntu-systemd-service">Ubuntu systemd service</a> guide for automatically executing the command on startup for Ubuntu.</p>
+</div>
+<hr />
+<h3 id="docker-install">Docker Install<a class="headerlink" href="#docker-install" title="Permanent link">#</a></h3>
+<ol>
+<li>
 <p>Follow the <strong><a href="https://docs.docker.com/engine/install/ubuntu/">Docker</a></strong> install guide.</p>
-<p>Follow the standard docker process for creating the container or follow the <a href="https://github.com/I-am-PUID-0/DMB/wiki/Setup-Guides#define-the-directory-structure">Define the directory structure</a> and the remainder of the <a href="https://github.com/I-am-PUID-0/DMB/wiki/Setup-Guides#complete-beginners-guide">Complete Beginners Guide</a></p>
-<p>To access the mount on Windows:
-From the Ubuntu terminal, paste the following, including the punctuation:</p>
-<p><code>explorer.exe .</code></p>
+</li>
+<li>
+<p>Follow the standard docker process for creating the container or follow the <a href="../docker/">Docker Deployment</a> or <a href="../portainer/">Portainer Deployment</a> guides</p>
+</li>
+</ol>
+<hr />
+<h3 id="accessing-the-mount-on-windows">Accessing the mount on Windows<a class="headerlink" href="#accessing-the-mount-on-windows" title="Permanent link">#</a></h3>
+<ol>
+<li>
+<p>From the Ubuntu terminal, paste the following, including the punctuation:</p>
+<div class="highlight"><pre><span></span><code>explorer.exe<span class="w"> </span>.<span class="w"> </span>
+</code></pre></div>
+</li>
+<li>
 <p>A new file explorer window will appear; you’re now inside the Ubuntu directory structure</p>
+</li>
+<li>
 <p>Navigate to the mount location and copy the full path from the explore window</p>
+</li>
+<li>
 <p>From another file explorer window, click "This PC," then right-click in the space below the listed drives and select add a network location</p>
+</li>
+<li>
 <p>In the pop-up, click next twice and past the mount location.</p>
+</li>
+<li>
 <p>Follow the remaining prompted steps</p>
-<p>Extra credit: install <strong><a href="https://docs.portainer.io/start/install-ce/server/docker/linux">Portainer</a></strong>.</p>
+</li>
+</ol>
+<h3 id="extra-credit">Extra credit<a class="headerlink" href="#extra-credit" title="Permanent link">#</a></h3>
+<ol>
+<li>install <strong><a href="https://docs.portainer.io/start/install-ce/server/docker/linux">Portainer</a></strong></li>
+</ol>
 
 
 
