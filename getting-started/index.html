@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#-getting-started-with-dmb" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -628,6 +633,20 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -639,6 +658,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-what-is-dmb" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 What Is DMB?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-is-this-for-you" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧩 Is This for You?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-architecture-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      🖼️ Architecture at a Glance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-system-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ System Requirements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-what-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⏭️ What Next?
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1452,6 +1535,61 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-what-is-dmb" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 What Is DMB?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-is-this-for-you" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧩 Is This for You?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-architecture-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      🖼️ Architecture at a Glance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-system-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ System Requirements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-what-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⏭️ What Next?
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1470,7 +1608,50 @@
   
 
 
-  <h1>Introduction</h1>
+<h1 id="-getting-started-with-dmb">🚀 Getting Started with DMB<a class="headerlink" href="#-getting-started-with-dmb" title="Permanent link">#</a></h1>
+<p>Welcome to <strong>DMB – Debrid Media Bridge</strong>: a unified media management and automation tool designed for users who want to streamline their content discovery, acquisition, and playback using services like <strong>Plex</strong>, <strong>Real-Debrid</strong>, <strong>Trakt</strong>, <strong>Overseerr</strong>, and more.</p>
+<hr />
+<h2 id="-what-is-dmb">🔍 What Is DMB?<a class="headerlink" href="#-what-is-dmb" title="Permanent link">#</a></h2>
+<p>DMB combines multiple backend services into a single containerized system to provide:</p>
+<ul>
+<li>🔎 <strong>Search and discovery</strong> using Trakt, Plex Watchlists, Overseerr, etc.</li>
+<li>⚡ <strong>Real-Debrid integration</strong> for content fetching via Zurg</li>
+<li>☁️ <strong>Remote mounting</strong> of Debrid storage using rclone</li>
+<li>🧠 <strong>Metadata caching</strong> with Zilean</li>
+<li>📦 <strong>Automated download orchestration</strong> with Riven</li>
+<li>📊 <strong>Web-based dashboards</strong> for control and monitoring</li>
+</ul>
+<hr />
+<h2 id="-is-this-for-you">🧩 Is This for You?<a class="headerlink" href="#-is-this-for-you" title="Permanent link">#</a></h2>
+<p>DMB is ideal if you:</p>
+<ul>
+<li>Have a Plex, Jellyfin, or Emby or server and want to auto-fill your library from your Overseerr/Jellyseerr, Trakt, Plex Watchlists, Mdblist, or Listrr</li>
+<li>Want a plug-and-play solution that works with Debrid services</li>
+<li>Prefer a containerized, modular deployment</li>
+<li>Want real-time log viewing, auto-updates, and one-click service control</li>
+<li>Don't want or know how to manually configure and deploy all the incorporated <a href="../services/">Services</a></li>
+</ul>
+<hr />
+<h2 id="-architecture-at-a-glance">🖼️ Architecture at a Glance<a class="headerlink" href="#-architecture-at-a-glance" title="Permanent link">#</a></h2>
+<p><img alt="DMB Flow Diagram" src="../assets/images/flow-diagram.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">For details on each service, visit the <a href="../services/">Services Overview</a>.</p>
+</div>
+<hr />
+<h2 id="-system-requirements">🛠️ System Requirements<a class="headerlink" href="#-system-requirements" title="Permanent link">#</a></h2>
+<ul>
+<li>🐳 Docker or a compatible runtime</li>
+<li>⚙️ Linux (recommended) or Windows (WSL)</li>
+<li>🔒 Real-Debrid</li>
+<li>🎞️ A running Plex, Jellyfin, or Emby Server (if used for integration)</li>
+</ul>
+<hr />
+<h2 id="-what-next">⏭️ What Next?<a class="headerlink" href="#-what-next" title="Permanent link">#</a></h2>
+<ol>
+<li>Head to <a href="installation/">Installation</a> to get ready.</li>
+<li>Choose your platform in <a href="../deployment/index.md">Deployment</a></li>
+<li>Learn about <a href="../features/">Features</a>, <a href="../services/">Services</a>, and <a href="../features/configuration/">Configuration</a></li>
+</ol>
 
 
 
@@ -1478,7 +1659,8 @@
 
 
 
-
+  
+  
 
 
 

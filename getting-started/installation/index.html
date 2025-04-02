@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#-installation--prerequisites" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -650,6 +655,20 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -661,6 +680,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-system-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ System Requirements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-required-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔐 Required Credentials
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-required-directories" class="md-nav__link">
+    <span class="md-ellipsis">
+      📂 Required Directories
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-preparation-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧰 Preparation Checklist
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⏭️ Next Steps
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1452,6 +1535,61 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-system-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ System Requirements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-required-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔐 Required Credentials
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-required-directories" class="md-nav__link">
+    <span class="md-ellipsis">
+      📂 Required Directories
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-preparation-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧰 Preparation Checklist
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⏭️ Next Steps
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1470,7 +1608,125 @@
   
 
 
-  <h1>Installation</h1>
+<h1 id="-installation--prerequisites">🛠️ Installation &amp; Prerequisites<a class="headerlink" href="#-installation--prerequisites" title="Permanent link">#</a></h1>
+<p>Before you deploy DMB, make sure your environment and accounts are ready.</p>
+<hr />
+<h2 id="-system-requirements">✅ System Requirements<a class="headerlink" href="#-system-requirements" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>Docker or Docker-compatible environment</strong></li>
+<li>Linux system (WSL on Windows)</li>
+<li>Minimum 2 vCPU, 2GB RAM, SSD recommended</li>
+<li>External media server such as <strong>Plex, Jellyfin, or Emby</strong> (optional but recommended)</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Docker Desktop</p>
+<p>Docker Desktop <strong>CANNOT</strong> be used to run DMB. </p>
+<p>Docker Desktop does not support the <a href="https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation">mount propagation</a> required for rclone mounts.</p>
+<p><img alt="image" src="https://github.com/I-am-PUID-0/DMB/assets/36779668/aff06342-1099-4554-a5a4-72a7c82cb16e" /></p>
+<p>See the <a href="https://i-am-puid-0.github.io/DMB/deployment/wsl">deployment options</a> to run DMB on Windows through WSL2.</p>
+</div>
+<hr />
+<h2 id="-required-credentials">🔐 Required Credentials<a class="headerlink" href="#-required-credentials" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Required Info</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Debrid</td>
+<td>API Key (Real-Debrid)</td>
+</tr>
+<tr>
+<td>GitHub</td>
+<td>Token <em>(if using the sponsored Zurg repo)</em></td>
+</tr>
+</tbody>
+</table>
+<p>📌 See <a href="../../features/configuration/#-integration-tokens--credentials">Configuration → Integration Tokens</a></p>
+<hr />
+<h2 id="-required-directories">📂 Required Directories<a class="headerlink" href="#-required-directories" title="Permanent link">#</a></h2>
+<p>You’ll need to bind mount the following volumes when running the container:</p>
+<table>
+<thead>
+<tr>
+<th>Container Mount Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/config</code></td>
+<td>Location for configuration files</td>
+</tr>
+<tr>
+<td><code>/log</code></td>
+<td>Location for logs</td>
+</tr>
+<tr>
+<td><code>/zurg/RD</code></td>
+<td>Location for Zurg RealDebrid active configuration</td>
+</tr>
+<tr>
+<td><code>/data:shared</code></td>
+<td>Location for rclone mount to host</td>
+</tr>
+<tr>
+<td><code>/riven/backend/data</code></td>
+<td>Location for Riven Backend data</td>
+</tr>
+<tr>
+<td><code>/mnt</code></td>
+<td>Location for Riven symlinks</td>
+</tr>
+<tr>
+<td><code>/postgres_data</code></td>
+<td>Location for PostgreSQL databases</td>
+</tr>
+<tr>
+<td><code>/pgadmin/data</code></td>
+<td>Location for pgAdmin 4 data</td>
+</tr>
+<tr>
+<td><code>/zilean/app/data</code></td>
+<td>Location for Zilean data</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">/config</p>
+<p>If a Zurg config.yml and/or Zurg app is placed here, it will be used to override the default configuration and/or app used at startup</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">/data:shared</p>
+<p>The <code>:shared</code> must be included in order to support <a href="https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation">mount propagation</a> for rclone to the host</p>
+</div>
+<hr />
+<h2 id="-preparation-checklist">🧰 Preparation Checklist<a class="headerlink" href="#-preparation-checklist" title="Permanent link">#</a></h2>
+<ul>
+<li>
+<p>Choose your deployment method:</p>
+<ul>
+<li><a href="../../deployment/docker/">Docker</a></li>
+<li><a href="../../deployment/portainer/">Portainer</a></li>
+<li><a href="../../deployment/unraid/">Unraid</a></li>
+<li><a href="../../deployment/wsl/">WSL</a></li>
+</ul>
+</li>
+<li>
+<p>Run the container and access the web UI at the configured port</p>
+</li>
+<li>View real-time or service logs to verify service health</li>
+</ul>
+<hr />
+<h2 id="-next-steps">⏭️ Next Steps<a class="headerlink" href="#-next-steps" title="Permanent link">#</a></h2>
+<ul>
+<li>➕ <a href="../../features/">Explore Features</a></li>
+<li>⚙️ <a href="../../features/configuration/">Tune Your Configuration</a></li>
+<li>🔍 <a href="../../services/">Inspect the Services</a></li>
+</ul>
 
 
 
@@ -1478,7 +1734,8 @@
 
 
 
-
+  
+  
 
 
 
