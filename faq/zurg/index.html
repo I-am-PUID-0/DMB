@@ -26,7 +26,7 @@
     
     
       
-        <title>Zurg - DMB</title>
+        <title>Zurg FAQ - DMB</title>
       
     
     
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#zurg-faq" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -108,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Zurg
+              Zurg FAQ
             
           </span>
         </div>
@@ -1348,6 +1353,20 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Zurg
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -1359,6 +1378,67 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-frequently-asked-questions-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Frequently Asked Questions (FAQ)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="❓ Frequently Asked Questions (FAQ)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-error---rclone-w-realdebrid-subprocess--io-error-file-is-temporarily-unavailable-423-locked" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ ERROR - rclone w/ RealDebrid subprocess: : IO error: File is temporarily unavailable: 423 Locked
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-recommended-plex-library-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Recommended Plex Library Settings
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-related-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      📎 Related Pages
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1452,6 +1532,58 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-frequently-asked-questions-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Frequently Asked Questions (FAQ)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="❓ Frequently Asked Questions (FAQ)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-error---rclone-w-realdebrid-subprocess--io-error-file-is-temporarily-unavailable-423-locked" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ ERROR - rclone w/ RealDebrid subprocess: : IO error: File is temporarily unavailable: 423 Locked
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-recommended-plex-library-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Recommended Plex Library Settings
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-related-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      📎 Related Pages
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1470,7 +1602,33 @@
   
 
 
-  <h1>Zurg</h1>
+<h1 id="zurg-faq">Zurg FAQ<a class="headerlink" href="#zurg-faq" title="Permanent link">#</a></h1>
+<p>Below are some common questions and solutions related to Zurg when used with DMB.</p>
+<hr />
+<h2 id="-frequently-asked-questions-faq">❓ Frequently Asked Questions (FAQ)<a class="headerlink" href="#-frequently-asked-questions-faq" title="Permanent link">#</a></h2>
+<h3 id="-error---rclone-w-realdebrid-subprocess--io-error-file-is-temporarily-unavailable-423-locked">⚠️ <code>ERROR - rclone w/ RealDebrid subprocess: : IO error: File is temporarily unavailable: 423 Locked</code><a class="headerlink" href="#-error---rclone-w-realdebrid-subprocess--io-error-file-is-temporarily-unavailable-423-locked" title="Permanent link">#</a></h3>
+<p>This error generally indicates that a <strong>rate limit is being enforced by Real-Debrid</strong>. It often occurs during media server scans that hit the API too frequently.</p>
+<p>To mitigate this:
+- If you're using <strong>Plex</strong>, this is commonly caused by automatic scans that trigger repeatedly.</p>
+<h3 id="-recommended-plex-library-settings">🔧 Recommended Plex Library Settings<a class="headerlink" href="#-recommended-plex-library-settings" title="Permanent link">#</a></h3>
+<p>To reduce API hits and avoid triggering rate limits:</p>
+<p>In each Plex Library, disable the following:</p>
+<ul>
+<li><code>Video Preview Thumbnails</code></li>
+<li><code>Credits Detection</code></li>
+<li><code>Voice Detection</code></li>
+</ul>
+<p>Then go to <strong>Settings &gt; Library</strong> and disable:</p>
+<ul>
+<li><code>Scan my library automatically</code></li>
+<li><code>Run a partial scan when changes are detected</code></li>
+</ul>
+<p>See the <a href="../plex/">Plex FAQ</a> for more Plex-specific recommendations and details.</p>
+<hr />
+<h2 id="-related-pages">📎 Related Pages<a class="headerlink" href="#-related-pages" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="../../services/zurg/">Zurg Configuration</a></li>
+</ul>
 
 
 
@@ -1478,7 +1636,8 @@
 
 
 
-
+  
+  
 
 
 
