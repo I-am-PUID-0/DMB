@@ -297,7 +297,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../deployment/docker/" class="md-tabs__link">
+        <a href="../../deployment/" class="md-tabs__link">
           
   
   Deployment
@@ -1130,6 +1130,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../../deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../deployment/docker/" class="md-nav__link">
         
   
@@ -1733,6 +1755,12 @@
 <li><strong><code>dmb_config.json</code></strong> (lowest priority)</li>
 </ol>
 <h2 id="-configuration-file-structure">🛠️ Configuration File Structure<a class="headerlink" href="#-configuration-file-structure" title="Permanent link">#</a></h2>
+<div class="admonition caution">
+<p class="admonition-title">Be Careful When Modifying <code>dmb_config.json</code></p>
+<p>While DMB is highly configurable via <code>dmb_config.json</code>,<br />
+some changes can cause failures during startup.<br />
+As such, it is <strong>not recommended</strong> to make modifications unless you fully understand their impact.</p>
+</div>
 <p>Below is the <strong>general structure</strong> of <code>dmb_config.json</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;puid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
@@ -1748,13 +1776,8 @@
 <span class="w">    </span><span class="nt">&quot;zurg&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>Each section configures a specific service. Below is a detailed breakdown of the most important sections:</p>
-<div class="admonition caution">
-<p class="admonition-title">Be Careful When Modifying <code>dmb_config.json</code></p>
-<p>While DMB is highly configurable via <code>dmb_config.json</code>,<br />
-some changes can cause failures during startup.<br />
-As such, it is <strong>not recommended</strong> to make modifications unless you fully understand their impact.</p>
-</div>
+<p>Each section configures a specific service.</p>
+<p>Below is a breakdown of some of the sections:</p>
 <hr />
 <h2 id="-general-settings">🔧 General Settings<a class="headerlink" href="#-general-settings" title="Permanent link">#</a></h2>
 <h3 id="user--timezone"><strong>User &amp; Timezone</strong><a class="headerlink" href="#user--timezone" title="Permanent link">#</a></h3>

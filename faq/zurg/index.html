@@ -295,7 +295,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../deployment/docker/" class="md-tabs__link">
+        <a href="../../deployment/" class="md-tabs__link">
           
   
   Deployment
@@ -982,6 +982,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../../deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../deployment/docker/" class="md-nav__link">
         
   
@@ -1591,8 +1613,10 @@
 <h3 id="-error---rclone-w-realdebrid-subprocess--io-error-file-is-temporarily-unavailable-423-locked">⚠️ <code>ERROR - rclone w/ RealDebrid subprocess: : IO error: File is temporarily unavailable: 423 Locked</code><a class="headerlink" href="#-error---rclone-w-realdebrid-subprocess--io-error-file-is-temporarily-unavailable-423-locked" title="Permanent link">#</a></h3>
 <p>This error generally indicates that a <strong>rate limit is being enforced by Real-Debrid</strong>. It often occurs during media server scans that hit the API too frequently.</p>
 <p>To mitigate this:
-- If you're using <strong>Plex</strong>, this is commonly caused by automatic scans that trigger repeatedly.</p>
-<p>See the <a href="../plex/#️-recommended-library-settings">Plex FAQ</a> for more Plex-specific recommendations and details.</p>
+- If you're using <strong>Plex</strong>, this is commonly caused by automatic scans that trigger repeatedly.
+- Alternatively, you may also need to impose a transactions (requests) per second limit with rclone.</p>
+<p>See the <a href="../plex/#-recommended-library-settings">Plex FAQ</a> for more Plex-specific recommendations and details.
+See the <a href="../rclone/#i-think-i-might-be-rate-limited-by-the-debrid-service---seeing-423-errors">rclone FAQ</a> for more rclone-specific recommendations and details.</p>
 <hr />
 <h2 id="-related-pages">📎 Related Pages<a class="headerlink" href="#-related-pages" title="Permanent link">#</a></h2>
 <ul>

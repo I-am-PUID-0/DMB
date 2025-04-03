@@ -297,7 +297,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../deployment/docker/" class="md-tabs__link">
+        <a href="../../deployment/" class="md-tabs__link">
           
   
   Deployment
@@ -1112,6 +1112,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../../deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../deployment/docker/" class="md-nav__link">
         
   
@@ -1710,14 +1732,16 @@ As such, please ensure <code>ZURG_INSTANCES_REALDEBRID_API_KEY</code> is configu
 <hr />
 <h2 id="-managing-updates">🔃 Managing Updates<a class="headerlink" href="#-managing-updates" title="Permanent link">#</a></h2>
 <h3 id="-manual-updates">🛠️ Manual Updates<a class="headerlink" href="#-manual-updates" title="Permanent link">#</a></h3>
-<p>Each service can be updated by modifying the configuration file or using the DMB API. Updates include:</p>
+<p>Each service can be updated by modifying the configuration file or using the <a href="../../services/dmb-frontend/">DMB Frontend</a>. </p>
+<p>Updates include:</p>
 <ul>
 <li>Branch switching</li>
 <li>Version pinning</li>
 <li>Auto-update toggling</li>
 </ul>
 <h3 id="-auto-update">⚙️ Auto-Update<a class="headerlink" href="#-auto-update" title="Permanent link">#</a></h3>
-<p>Some services support automatic updates. Enable by setting:
+<p>Some services support automatic updates. </p>
+<p>Enable by setting:
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;auto_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="nt">&quot;auto_update_interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span>
 </code></pre></div></p>
@@ -1734,10 +1758,13 @@ As such, please ensure <code>ZURG_INSTANCES_REALDEBRID_API_KEY</code> is configu
 </ul>
 <hr />
 <h2 id="-shutdown-handling">⚡ Shutdown Handling<a class="headerlink" href="#-shutdown-handling" title="Permanent link">#</a></h2>
-<p>DMB handles graceful shutdown of all services. This includes:
-- Stopping running processes
-- Unmounting rclone mounts
-- Syncing configuration states</p>
+<p>DMB handles graceful shutdown of all services. </p>
+<p>This includes:</p>
+<ul>
+<li>Stopping running processes</li>
+<li>Unmounting rclone mounts</li>
+<li>Syncing configuration states</li>
+</ul>
 <p>To allow time for clean shutdowns, use:
 <div class="highlight"><pre><span></span><code><span class="nt">docker-compose</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">stop_grace_period</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60s</span>

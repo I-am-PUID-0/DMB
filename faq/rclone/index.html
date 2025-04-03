@@ -295,7 +295,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../deployment/docker/" class="md-tabs__link">
+        <a href="../../deployment/" class="md-tabs__link">
           
   
   Deployment
@@ -982,6 +982,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../../deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../deployment/docker/" class="md-nav__link">
         
   
@@ -1337,6 +1359,15 @@
   
     <nav class="md-nav" aria-label="❓ Frequently Asked Questions (FAQ)">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#i-think-i-might-be-rate-limited-by-the-debrid-service---seeing-423-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      I think I might be rate limited by the debrid service - seeing 423 errors.
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#how-do-i-enable-rclone-filtering-to-include-only-specific-resolutions" class="md-nav__link">
@@ -1696,6 +1727,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#i-think-i-might-be-rate-limited-by-the-debrid-service---seeing-423-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      I think I might be rate limited by the debrid service - seeing 423 errors.
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#how-do-i-enable-rclone-filtering-to-include-only-specific-resolutions" class="md-nav__link">
     <span class="md-ellipsis">
       How do I enable rclone filtering to include only specific resolutions?
@@ -1894,6 +1934,9 @@
 <p>Below are some common questions and solutions related to using <strong>rclone</strong> with <strong>DMB</strong>.</p>
 <hr />
 <h2 id="-frequently-asked-questions-faq">❓ Frequently Asked Questions (FAQ)<a class="headerlink" href="#-frequently-asked-questions-faq" title="Permanent link">#</a></h2>
+<h3 id="i-think-i-might-be-rate-limited-by-the-debrid-service---seeing-423-errors">I think I might be rate limited by the debrid service - seeing <code>423</code> errors.<a class="headerlink" href="#i-think-i-might-be-rate-limited-by-the-debrid-service---seeing-423-errors" title="Permanent link">#</a></h3>
+<p>Add <code>- RCLONE_TSP_LIMIT=10</code> to the environment variable section of the compose.</p>
+<hr />
 <h3 id="how-do-i-enable-rclone-filtering-to-include-only-specific-resolutions">How do I enable rclone filtering to include only specific resolutions?<a class="headerlink" href="#how-do-i-enable-rclone-filtering-to-include-only-specific-resolutions" title="Permanent link">#</a></h3>
 <h4 id="using-rclone---exclude-pattern-matching">Using rclone <a href="https://rclone.org/filtering/#exclude-exclude-files-matching-pattern">--exclude</a> pattern matching:<a class="headerlink" href="#using-rclone---exclude-pattern-matching" title="Permanent link">#</a></h4>
 <h5 id="example-docker-compose-to-include-only-4k2160uhd-content">Example docker-compose to include only 4k|2160|UHD content.<a class="headerlink" href="#example-docker-compose-to-include-only-4k2160uhd-content" title="Permanent link">#</a></h5>
@@ -1913,6 +1956,7 @@
 <div class="highlight"><pre><span></span><code>-<span class="w"> </span>**/**<span class="o">{{(</span>?i<span class="o">)(</span>4k<span class="p">|</span>uhd<span class="p">|</span><span class="m">2160</span><span class="o">)}}</span>**
 +<span class="w"> </span>*
 </code></pre></div>
+<hr />
 <h3 id="error-response-from-daemon-path-yourhostpathmnt-is-mounted-on--but-it-is-not-a-shared-mount">Error response from daemon: path <code>/your/host/path/mnt</code> is mounted on <code>/</code> but it is not a shared mount.<a class="headerlink" href="#error-response-from-daemon-path-yourhostpathmnt-is-mounted-on--but-it-is-not-a-shared-mount" title="Permanent link">#</a></h3>
 <p>From the host OS, enter <code>sudo mount --make-rshared /</code> </p>
 <p>Or if using a NAS device <code>sudo mount --make-rshared /volume1/</code> </p>
