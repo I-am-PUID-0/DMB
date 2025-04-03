@@ -932,11 +932,68 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-setting-up-riven-backend" class="md-nav__link">
+  <a href="#-initial-setup-riven-backend" class="md-nav__link">
     <span class="md-ellipsis">
-      🛠️ Setting Up Riven Backend
+      ⚙️ Initial Setup: Riven Backend
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="⚙️ Initial Setup: Riven Backend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-required-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Required Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-recommended-setup-areas" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧩 Recommended Setup Areas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-symlink-mounts--media-server-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧵 Symlink Mounts &amp; Media Server Integration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🧵 Symlink Mounts &amp; Media Server Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-example-correct-volume-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Example: Correct Volume Mapping
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-why-this-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔁 Why This Matters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1703,11 +1760,68 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-setting-up-riven-backend" class="md-nav__link">
+  <a href="#-initial-setup-riven-backend" class="md-nav__link">
     <span class="md-ellipsis">
-      🛠️ Setting Up Riven Backend
+      ⚙️ Initial Setup: Riven Backend
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="⚙️ Initial Setup: Riven Backend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-required-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Required Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-recommended-setup-areas" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧩 Recommended Setup Areas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-symlink-mounts--media-server-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧵 Symlink Mounts &amp; Media Server Integration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🧵 Symlink Mounts &amp; Media Server Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-example-correct-volume-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Example: Correct Volume Mapping
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-why-this-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔁 Why This Matters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1823,9 +1937,53 @@
 <li>or <code>release_version_enabled: true</code> and specifying a <code>release_version</code></li>
 </ul>
 <hr />
-<h2 id="-setting-up-riven-backend">🛠️ Setting Up Riven Backend<a class="headerlink" href="#-setting-up-riven-backend" title="Permanent link">#</a></h2>
-<p>Riven Backend is the only service which will require additional setup before use.</p>
-<p>Item </p>
+<h2 id="-initial-setup-riven-backend">⚙️ Initial Setup: Riven Backend<a class="headerlink" href="#-initial-setup-riven-backend" title="Permanent link">#</a></h2>
+<p>Before Riven Backend can be used, <strong>initial configuration is required</strong>.</p>
+<p>After starting DMB, navigate to the <strong>Riven Frontend</strong> and open the <code>Settings</code> page. The following sections should be reviewed and updated:</p>
+<h3 id="-required-configuration">🔧 Required Configuration<a class="headerlink" href="#-required-configuration" title="Permanent link">#</a></h3>
+<p>At a minimum, <strong>enable at least one Content source</strong> under the <code>Content</code> section. Without this, Riven cannot function.</p>
+<h3 id="-recommended-setup-areas">🧩 Recommended Setup Areas<a class="headerlink" href="#-recommended-setup-areas" title="Permanent link">#</a></h3>
+<ul>
+<li><strong>General</strong> – Adjust base settings like min/max files size, etc.</li>
+<li><strong>Media Server</strong> – Add your Plex, Jellyfin, or Emby server details for library syncing.</li>
+<li><strong>Content</strong> – Configure sources such as Trakt, Overseerr, or the Plex Watchlist, MDB List, Listrr.</li>
+<li><strong>Scrapers</strong> – Enable one or more scrapers (e.g., Zilean, Torrentio, Knightcrawler, Orionoid, Jackett, Mediafusion, Prowlarr, Comet).</li>
+<li><strong>Ranking</strong> – Customize how results are scored and filtered.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">📝 Once complete, Riven will begin processing requests based on the selected sources and configurations.</p>
+</div>
+<hr />
+<h2 id="-symlink-mounts--media-server-integration">🧵 Symlink Mounts &amp; Media Server Integration<a class="headerlink" href="#-symlink-mounts--media-server-integration" title="Permanent link">#</a></h2>
+<p>One of the most common issues when setting up DMB with your <strong>Media Server (Plex, Jellyfin, or Emby)</strong> is improper <strong>path mapping</strong> between containers. Since <strong>Riven creates symlinks</strong> to Zurg-mounted content, the following paths must be shared <strong>identically across containers</strong>.</p>
+<p>In your Docker or Compose setup for both DMB and your Media Server container, ensure the following:</p>
+<h3 id="-example-correct-volume-mapping">✅ Example: Correct Volume Mapping<a class="headerlink" href="#-example-correct-volume-mapping" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># rclone/Zurg mount from DMB container</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/home/username/docker/DMB/Zurg/mnt:/data</span>
+
+<span class="c1"># Riven symlink mount from DMB container</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/home/username/docker/DMB/Riven/mnt:/mnt</span>
+</code></pre></div>
+<p>In this case:</p>
+<ul>
+<li><code>/data</code> is the mount point used by <code>rclone</code> and <code>Zurg</code> <strong>inside</strong> the DMB container.</li>
+<li><code>/mnt</code> is where Riven places cleaned-up symlinks to that content.</li>
+<li>These <strong>container-side paths (<code>:/data</code>, <code>:/mnt</code>) must be the same</strong> in your media server container.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">📌 <em>The host path (<code>/home/username/docker/...</code>) can differ—it’s the container paths that must match.</em></p>
+</div>
+<hr />
+<h3 id="-why-this-matters">🔁 Why This Matters<a class="headerlink" href="#-why-this-matters" title="Permanent link">#</a></h3>
+<ul>
+<li>Riven creates symlinks in <code>/mnt</code> that <strong>point to files inside <code>/data</code></strong> (or your configured <code>mount_dir</code>).</li>
+<li>If the Media Server doesn’t share these exact mount paths, the symlinks will <strong>break or point to invalid locations</strong>.</li>
+<li>Avoid adding <code>/data</code> to your media library — instead, add <code>/mnt</code> to ensure only cleaned and processed content is indexed.</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">✅ <strong>Best Practice:</strong></p>
+<p>Use the same mount paths across DMB and Media Server containers — even if the host paths differ.</p>
+</div>
 <hr />
 <h2 id="rivens-environment-variables-in-the-envexample">Riven's Environment Variables in the <code>.env.example</code><a class="headerlink" href="#rivens-environment-variables-in-the-envexample" title="Permanent link">#</a></h2>
 <p>The <code>.env.example</code> file includes:</p>
