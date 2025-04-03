@@ -12,28 +12,28 @@
         <meta name="author" content="DMB Team">
       
       
-        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/faq/postgres/">
+        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/api/">
       
       
-        <link rel="prev" href="../plex/">
+        <link rel="prev" href="../deployment/dockge/">
       
       
-        <link rel="next" href="../rclone/">
+        <link rel="next" href="health/">
       
       
-      <link rel="icon" href="../../assets/images/favicon.ico">
+      <link rel="icon" href="../assets/images/favicon.ico">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.9">
     
     
       
-        <title>Postgres - DMB</title>
+        <title>DMB API Overview - DMB</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.4af4bdda.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -52,9 +52,9 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/css/main.css">
+      <link rel="stylesheet" href="../assets/css/main.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#-dmb-api" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -89,9 +94,9 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="DMB" class="md-header__button md-logo" aria-label="DMB" data-md-component="logo">
+    <a href=".." title="DMB" class="md-header__button md-logo" aria-label="DMB" data-md-component="logo">
       
-  <img src="../../assets/images/DMB.png" alt="logo">
+  <img src="../assets/images/DMB.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -108,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Postgres
+              DMB API Overview
             
           </span>
         </div>
@@ -217,7 +222,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href=".." class="md-tabs__link">
         
   
     
@@ -236,7 +241,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../features/" class="md-tabs__link">
+        <a href="../features/" class="md-tabs__link">
           
   
   Features
@@ -254,7 +259,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../getting-started/" class="md-tabs__link">
+        <a href="../getting-started/" class="md-tabs__link">
           
   
   Getting Started
@@ -272,7 +277,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../services/" class="md-tabs__link">
+        <a href="../services/" class="md-tabs__link">
           
   
   Services
@@ -290,28 +295,10 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../deployment/" class="md-tabs__link">
+        <a href="../deployment/" class="md-tabs__link">
           
   
   Deployment
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../api/" class="md-tabs__link">
-          
-  
-  API
 
         </a>
       </li>
@@ -328,7 +315,25 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../dmb/" class="md-tabs__link">
+        <a href="./" class="md-tabs__link">
+          
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../faq/dmb/" class="md-tabs__link">
           
   
   FAQ
@@ -344,7 +349,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../changelog/" class="md-tabs__link">
+      <a href="../changelog/" class="md-tabs__link">
         
   
     
@@ -361,7 +366,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../contributing/" class="md-tabs__link">
+      <a href="../contributing/" class="md-tabs__link">
         
   
     
@@ -378,7 +383,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../about/" class="md-tabs__link">
+      <a href="../about/" class="md-tabs__link">
         
   
     
@@ -412,9 +417,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="DMB" class="md-nav__button md-logo" aria-label="DMB" data-md-component="logo">
+    <a href=".." title="DMB" class="md-nav__button md-logo" aria-label="DMB" data-md-component="logo">
       
-  <img src="../../assets/images/DMB.png" alt="logo">
+  <img src="../assets/images/DMB.png" alt="logo">
 
     </a>
     DMB
@@ -441,7 +446,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -503,7 +508,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/" class="md-nav__link">
+      <a href="../features/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -525,7 +530,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/configuration/" class="md-nav__link">
+      <a href="../features/configuration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -547,7 +552,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../features/usage/" class="md-nav__link">
+      <a href="../features/usage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -617,7 +622,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
+      <a href="../getting-started/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -639,7 +644,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/installation/" class="md-nav__link">
+      <a href="../getting-started/installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -709,7 +714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/" class="md-nav__link">
+      <a href="../services/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -731,7 +736,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/api/" class="md-nav__link">
+      <a href="../services/api/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -753,7 +758,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/dmb-frontend/" class="md-nav__link">
+      <a href="../services/dmb-frontend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -775,7 +780,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/pgadmin/" class="md-nav__link">
+      <a href="../services/pgadmin/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -797,7 +802,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/postgres/" class="md-nav__link">
+      <a href="../services/postgres/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -819,7 +824,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/rclone/" class="md-nav__link">
+      <a href="../services/rclone/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -841,7 +846,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/riven-backend/" class="md-nav__link">
+      <a href="../services/riven-backend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -863,7 +868,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/riven-frontend/" class="md-nav__link">
+      <a href="../services/riven-frontend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -885,7 +890,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/zilean/" class="md-nav__link">
+      <a href="../services/zilean/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -907,7 +912,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/zurg/" class="md-nav__link">
+      <a href="../services/zurg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -977,7 +982,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/" class="md-nav__link">
+      <a href="../deployment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -999,7 +1004,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/docker/" class="md-nav__link">
+      <a href="../deployment/docker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1021,7 +1026,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/portainer/" class="md-nav__link">
+      <a href="../deployment/portainer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1043,7 +1048,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/unraid/" class="md-nav__link">
+      <a href="../deployment/unraid/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1065,7 +1070,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/wsl/" class="md-nav__link">
+      <a href="../deployment/wsl/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1087,7 +1092,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/synology/" class="md-nav__link">
+      <a href="../deployment/synology/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1109,7 +1114,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/qnap/" class="md-nav__link">
+      <a href="../deployment/qnap/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1131,7 +1136,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/truenas/" class="md-nav__link">
+      <a href="../deployment/truenas/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1153,191 +1158,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/dockge/" class="md-nav__link">
+      <a href="../deployment/dockge/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Dockge
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    API
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
-            <span class="md-nav__icon md-icon"></span>
-            API
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Overview
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/health/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Health
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/process/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Process Management
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/config/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Configuration
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/logs/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Logs
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/websocket_logs/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Real-Time WebSocket Logs
     
   </span>
   
@@ -1379,10 +1204,267 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    API
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✨ Features
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-common-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔁 Common Endpoints
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      🗂️ Directory Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      📚 Next Steps
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="health/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Health
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="process/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Process Management
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="config/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="logs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Logs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="websocket_logs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Real-Time WebSocket Logs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1394,7 +1476,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             FAQ
@@ -1408,7 +1490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../dmb/" class="md-nav__link">
+      <a href="../faq/dmb/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1430,7 +1512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../pgadmin/" class="md-nav__link">
+      <a href="../faq/pgadmin/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1452,7 +1534,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../plex/" class="md-nav__link">
+      <a href="../faq/plex/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1471,17 +1553,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../faq/postgres/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1491,7 +1566,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1504,7 +1578,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../rclone/" class="md-nav__link">
+      <a href="../faq/rclone/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1526,7 +1600,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../riven/" class="md-nav__link">
+      <a href="../faq/riven/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1548,7 +1622,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../zilean/" class="md-nav__link">
+      <a href="../faq/zilean/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1570,7 +1644,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../zurg/" class="md-nav__link">
+      <a href="../faq/zurg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1599,7 +1673,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../changelog/" class="md-nav__link">
+      <a href="../changelog/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1620,7 +1694,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../contributing/" class="md-nav__link">
+      <a href="../contributing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1641,7 +1715,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../about/" class="md-nav__link">
+      <a href="../about/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1672,6 +1746,52 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✨ Features
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-common-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔁 Common Endpoints
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      🗂️ Directory Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      📚 Next Steps
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1690,7 +1810,124 @@
   
 
 
-  <h1>Postgres</h1>
+<h1 id="-dmb-api">⚙️ DMB API<a class="headerlink" href="#-dmb-api" title="Permanent link">#</a></h1>
+<p>DMB includes a built-in REST API and WebSocket server to allow programmatic control of services, logging, and system state.</p>
+<p>The API is enabled and configured using the <code>dmb_config.json</code> under the <code>dmb.api_service</code> section. For example:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;api_service&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DMB API&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8000</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="-features">✨ Features<a class="headerlink" href="#-features" title="Permanent link">#</a></h2>
+<ul>
+<li>Health checks</li>
+<li>Process management (start, stop, restart services)</li>
+<li>Real-time log streaming via WebSocket</li>
+<li>Configuration viewing and updates (in-memory and persistent)</li>
+<li>Environment state inspection</li>
+</ul>
+<hr />
+<h2 id="-common-endpoints">🔁 Common Endpoints<a class="headerlink" href="#-common-endpoints" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/processes</code></td>
+<td>List all services in <code>dmb_config.json</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/start-service</code></td>
+<td>Start a specific service</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/stop-service</code></td>
+<td>Stop a specific service</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/restart-service</code></td>
+<td>Restart a specific service</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/service-status</code></td>
+<td>Get the current status of a service</td>
+</tr>
+<tr>
+<td>WS</td>
+<td><code>/logs</code></td>
+<td>Real-time log streaming</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="-directory-structure">🗂️ Directory Structure<a class="headerlink" href="#-directory-structure" title="Permanent link">#</a></h2>
+<p>The DMB API is split into the following modules:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api_service.py</code></td>
+<td>Initializes and launches the FastAPI app</td>
+</tr>
+<tr>
+<td><code>api_state.py</code></td>
+<td>Tracks and updates service runtime state</td>
+</tr>
+<tr>
+<td><code>connection_manager.py</code></td>
+<td>Manages WebSocket client connections</td>
+</tr>
+<tr>
+<td><code>config.py</code></td>
+<td>Endpoints for working with <code>dmb_config.json</code> and service configs</td>
+</tr>
+<tr>
+<td><code>health.py</code></td>
+<td>Health check endpoint for validating API status</td>
+</tr>
+<tr>
+<td><code>logs.py</code></td>
+<td>REST endpoint for reading historical logs</td>
+</tr>
+<tr>
+<td><code>websocket_logs.py</code></td>
+<td>WebSocket server for streaming real-time logs to frontend</td>
+</tr>
+<tr>
+<td><code>process.py</code></td>
+<td>Service control for backend processes (start, stop, restart)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="-next-steps">📚 Next Steps<a class="headerlink" href="#-next-steps" title="Permanent link">#</a></h2>
+<p>Click on any of the modules in the sidebar to explore endpoint structure, usage examples, and development guidelines for extending the DMB API:</p>
+<ul>
+<li><a href="health/">Health Check</a></li>
+<li><a href="logs/">Logs</a></li>
+<li><a href="process/">Process Management</a></li>
+<li><a href="config/">Configuration</a></li>
+<li><a href="websocket_logs/">WebSocket Logs</a></li>
+</ul>
 
 
 
@@ -1698,7 +1935,8 @@
 
 
 
-
+  
+  
 
 
 
@@ -1734,10 +1972,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.instant", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.instant", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
       
     
   </body>

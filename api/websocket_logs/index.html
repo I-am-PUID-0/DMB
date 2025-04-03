@@ -12,13 +12,13 @@
         <meta name="author" content="DMB Team">
       
       
-        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/faq/postgres/">
+        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/api/websocket_logs/">
       
       
-        <link rel="prev" href="../plex/">
+        <link rel="prev" href="../logs/">
       
       
-        <link rel="next" href="../rclone/">
+        <link rel="next" href="../../faq/dmb/">
       
       
       <link rel="icon" href="../../assets/images/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Postgres - DMB</title>
+        <title>WebSocket Logs API - DMB</title>
       
     
     
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#websocket-logs-api" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -108,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Postgres
+              WebSocket Logs API
             
           </span>
         </div>
@@ -304,11 +309,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../api/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   API
@@ -322,13 +329,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../dmb/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../faq/dmb/" class="md-tabs__link">
           
   
   FAQ
@@ -1179,25 +1184,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1209,7 +1219,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             API
@@ -1223,7 +1233,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1245,7 +1255,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/health/" class="md-nav__link">
+      <a href="../health/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1267,7 +1277,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/process/" class="md-nav__link">
+      <a href="../process/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1289,7 +1299,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/config/" class="md-nav__link">
+      <a href="../config/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1311,152 +1321,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/logs/" class="md-nav__link">
+      <a href="../logs/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Logs
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/websocket_logs/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Real-Time WebSocket Logs
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    
-    
-    
-      
-        
-        
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
-            
-  
-  <span class="md-ellipsis">
-    FAQ
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_7">
-            <span class="md-nav__icon md-icon"></span>
-            FAQ
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../dmb/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    DMB
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../pgadmin/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    pgAdmin
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../plex/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Plex
     
   </span>
   
@@ -1480,18 +1349,190 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Real-Time WebSocket Logs
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    Postgres
+    Real-Time WebSocket Logs
     
   </span>
   
 
       </a>
       
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-websocket-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      📡 WebSocket Endpoint
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-message-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔁 Message Format
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔁 Message Format">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fields:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-filtering-logs-client-side" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Filtering Logs (Client-side)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-connection-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛑 Connection Behavior
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-example-python-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧪 Example (Python Client)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-related-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      📎 Related Modules
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    FAQ
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            FAQ
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/dmb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DMB
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1504,7 +1545,73 @@
   
   
     <li class="md-nav__item">
-      <a href="../rclone/" class="md-nav__link">
+      <a href="../../faq/pgadmin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pgAdmin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/plex/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Plex
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/postgres/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Postgres
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/rclone/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1526,7 +1633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../riven/" class="md-nav__link">
+      <a href="../../faq/riven/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1548,7 +1655,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../zilean/" class="md-nav__link">
+      <a href="../../faq/zilean/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1570,7 +1677,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../zurg/" class="md-nav__link">
+      <a href="../../faq/zurg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1672,6 +1779,85 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-websocket-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      📡 WebSocket Endpoint
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-message-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔁 Message Format
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔁 Message Format">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fields:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-filtering-logs-client-side" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Filtering Logs (Client-side)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-connection-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛑 Connection Behavior
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-example-python-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧪 Example (Python Client)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-related-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      📎 Related Modules
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1690,7 +1876,68 @@
   
 
 
-  <h1>Postgres</h1>
+<h1 id="websocket-logs-api">WebSocket Logs API<a class="headerlink" href="#websocket-logs-api" title="Permanent link">#</a></h1>
+<p>The WebSocket Logs API provides a real-time streaming interface for receiving logs from all DMB-managed subprocesses. It is primarily used by the DMB Frontend to power the live log viewer.</p>
+<hr />
+<h2 id="-websocket-endpoint">📡 WebSocket Endpoint<a class="headerlink" href="#-websocket-endpoint" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code>/ws/logs
+</code></pre></div>
+<p>Connect to this endpoint using a WebSocket client (e.g., browser or Python client) to receive structured log entries in JSON format.</p>
+<hr />
+<h2 id="-message-format">🔁 Message Format<a class="headerlink" href="#-message-format" title="Permanent link">#</a></h2>
+<p>Each log entry sent through the WebSocket has the following structure:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[INFO] riven_backend: Startup complete&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;riven_backend&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-04-01T12:34:56.789Z&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="fields">Fields:<a class="headerlink" href="#fields" title="Permanent link">#</a></h3>
+<ul>
+<li><strong>message</strong>: Raw log message as a string</li>
+<li><strong>level</strong>: Log level (<code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, etc.)</li>
+<li><strong>process_name</strong>: Name of the subprocess that generated the log</li>
+<li><strong>timestamp</strong>: ISO 8601 formatted UTC timestamp</li>
+</ul>
+<hr />
+<h2 id="-filtering-logs-client-side">🔍 Filtering Logs (Client-side)<a class="headerlink" href="#-filtering-logs-client-side" title="Permanent link">#</a></h2>
+<p>The server pushes all logs to connected clients. It is up to the client to filter based on:</p>
+<ul>
+<li><strong>Process Name</strong></li>
+<li><strong>Log Level</strong></li>
+<li><strong>Search Term</strong></li>
+</ul>
+<p>The DMB Frontend implements dropdowns and search bars for this purpose.</p>
+<hr />
+<h2 id="-connection-behavior">🛑 Connection Behavior<a class="headerlink" href="#-connection-behavior" title="Permanent link">#</a></h2>
+<ul>
+<li>The server <strong>broadcasts logs</strong> to all connected WebSocket clients.</li>
+<li>If the connection is dropped, reconnect using <code>/ws/logs</code>.</li>
+<li>Log history is <strong>not buffered</strong>, so missed logs are not resent on reconnect.</li>
+</ul>
+<hr />
+<h2 id="-example-python-client">🧪 Example (Python Client)<a class="headerlink" href="#-example-python-client" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">websockets</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">consume_logs</span><span class="p">():</span>
+    <span class="n">uri</span> <span class="o">=</span> <span class="s2">&quot;ws://localhost:8000/ws/logs&quot;</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">websockets</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span> <span class="k">as</span> <span class="n">websocket</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">websocket</span><span class="p">:</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">log</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">log</span><span class="p">[</span><span class="s1">&#39;process_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">log</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">consume_logs</span><span class="p">())</span>
+</code></pre></div>
+<hr />
+<h2 id="-related-modules">📎 Related Modules<a class="headerlink" href="#-related-modules" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="https://github.com/I-am-PUID-0/DMB/blob/master/api/routers/websocket_logs.py"><code>websocket_logs.py</code></a></li>
+<li><a href="../logs/">Logs API</a> for historical log file access</li>
+<li><a href="../../services/dmb-frontend/#real-time-logs">Frontend Log Viewer</a></li>
+</ul>
 
 
 
@@ -1698,7 +1945,8 @@
 
 
 
-
+  
+  
 
 
 

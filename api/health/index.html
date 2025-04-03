@@ -12,13 +12,13 @@
         <meta name="author" content="DMB Team">
       
       
-        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/api/endpoints/">
+        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/api/health/">
       
       
-        <link rel="prev" href="../../deployment/dockge/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../../faq/dmb/">
+        <link rel="next" href="../process/">
       
       
       <link rel="icon" href="../../assets/images/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Endpoints - DMB</title>
+        <title>Health Check API - DMB</title>
       
     
     
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#-health-check-api" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -108,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Endpoints
+              Health Check API
             
           </span>
         </div>
@@ -310,10 +315,10 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+        <a href="../" class="md-tabs__link">
           
   
-  API Reference
+  API
 
         </a>
       </li>
@@ -1206,7 +1211,7 @@
             
   
   <span class="md-ellipsis">
-    API Reference
+    API
     
   </span>
   
@@ -1217,9 +1222,31 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
-            API Reference
+            API
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1234,18 +1261,205 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Health
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    Endpoints
+    Health
     
   </span>
   
 
       </a>
       
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Endpoint
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔍 Endpoint">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-health" class="md-nav__link">
+    <span class="md-ellipsis">
+      GET /health
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GET /health">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#response" class="md-nav__link">
+    <span class="md-ellipsis">
+      Response
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-use-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Use Case
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✨ Implementation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-related" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔗 Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../process/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Process Management
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Logs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../websocket_logs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Real-Time WebSocket Logs
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1562,6 +1776,82 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Endpoint
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔍 Endpoint">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-health" class="md-nav__link">
+    <span class="md-ellipsis">
+      GET /health
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GET /health">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#response" class="md-nav__link">
+    <span class="md-ellipsis">
+      Response
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-use-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Use Case
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✨ Implementation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-related" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔗 Related
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1580,7 +1870,36 @@
   
 
 
-  <h1>Endpoints</h1>
+<h1 id="-health-check-api">🌊 Health Check API<a class="headerlink" href="#-health-check-api" title="Permanent link">#</a></h1>
+<p>The <strong>Health Check API</strong> provides a simple mechanism to verify that the DMB container and core services are operational.</p>
+<hr />
+<h2 id="-endpoint">🔍 Endpoint<a class="headerlink" href="#-endpoint" title="Permanent link">#</a></h2>
+<h3 id="get-health"><code>GET /health</code><a class="headerlink" href="#get-health" title="Permanent link">#</a></h3>
+<p>Returns a JSON response indicating whether the container is healthy.</p>
+<h4 id="response">Response<a class="headerlink" href="#response" title="Permanent link">#</a></h4>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;healthy&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>If the check fails, the status will be <code>"unhealthy"</code> and include diagnostic output.</p>
+<hr />
+<h2 id="-use-case">📊 Use Case<a class="headerlink" href="#-use-case" title="Permanent link">#</a></h2>
+<ul>
+<li>Used by orchestrators or monitoring tools to confirm container availability.</li>
+<li>Can be used to gate traffic in load balancers or uptime monitoring dashboards.</li>
+</ul>
+<hr />
+<h2 id="-implementation">✨ Implementation<a class="headerlink" href="#-implementation" title="Permanent link">#</a></h2>
+<p>This route executes a background health check script in the container:
+<div class="highlight"><pre><span></span><code>/healthcheck.py
+</code></pre></div>
+It runs within the same virtual environment as DMB and ensures all critical files, paths, and subprocesses are functional.</p>
+<hr />
+<h2 id="-related">🔗 Related<a class="headerlink" href="#-related" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="../">API Overview</a></li>
+<li><a href="../process/">Process Management</a></li>
+</ul>
 
 
 
@@ -1588,7 +1907,8 @@
 
 
 
-
+  
+  
 
 
 

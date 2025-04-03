@@ -17,7 +17,27 @@
          <lastmod>2025-04-03</lastmod>
     </url>
     <url>
-         <loc>https://I-am-PUID-0.github.io/docs/api/endpoints/</loc>
+         <loc>https://I-am-PUID-0.github.io/docs/api/</loc>
+         <lastmod>2025-04-03</lastmod>
+    </url>
+    <url>
+         <loc>https://I-am-PUID-0.github.io/docs/api/config/</loc>
+         <lastmod>2025-04-03</lastmod>
+    </url>
+    <url>
+         <loc>https://I-am-PUID-0.github.io/docs/api/health/</loc>
+         <lastmod>2025-04-03</lastmod>
+    </url>
+    <url>
+         <loc>https://I-am-PUID-0.github.io/docs/api/logs/</loc>
+         <lastmod>2025-04-03</lastmod>
+    </url>
+    <url>
+         <loc>https://I-am-PUID-0.github.io/docs/api/process/</loc>
+         <lastmod>2025-04-03</lastmod>
+    </url>
+    <url>
+         <loc>https://I-am-PUID-0.github.io/docs/api/websocket_logs/</loc>
          <lastmod>2025-04-03</lastmod>
     </url>
     <url>
