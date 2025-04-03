@@ -130,6 +130,34 @@ h2 {
 }
 
 
+img[data-zoomable] {
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.lightbox {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999 !important;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lightbox--open {
+  display: flex !important;
+}
+
+.lightbox__image {
+  max-width: 90%;
+  max-height: 90%;
+  transition: transform 0.3s ease-in-out;
+}
+
 /* Remove the default border around all admonitions */
 .md-typeset .admonition.important,
 .md-typeset details.important {
