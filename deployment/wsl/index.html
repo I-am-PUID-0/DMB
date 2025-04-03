@@ -1134,6 +1134,48 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#-mirrored-mode-networking" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌐 Mirrored Mode Networking
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌐 Mirrored Mode Networking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-benefits-of-mirrored-networking" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Benefits of Mirrored Networking
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-enabling-mirrored-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Enabling Mirrored Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-additional-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      📌 Additional Notes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#-extra-credit" class="md-nav__link">
     <span class="md-ellipsis">
       🌟 Extra Credit
@@ -1582,6 +1624,48 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#-mirrored-mode-networking" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌐 Mirrored Mode Networking
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌐 Mirrored Mode Networking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-benefits-of-mirrored-networking" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Benefits of Mirrored Networking
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-enabling-mirrored-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Enabling Mirrored Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-additional-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      📌 Additional Notes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#-extra-credit" class="md-nav__link">
     <span class="md-ellipsis">
       🌟 Extra Credit
@@ -1689,6 +1773,43 @@ sudo<span class="w"> </span>mount<span class="w"> </span>--make-rshared<span cla
 <p>Follow the remaining prompted steps</p>
 </li>
 </ol>
+<h3 id="-mirrored-mode-networking">🌐 Mirrored Mode Networking<a class="headerlink" href="#-mirrored-mode-networking" title="Permanent link">#</a></h3>
+<p>Starting with <strong>Windows 11 22H2</strong>, WSL2 supports a new networking mode called <strong>mirrored networking</strong>, which improves compatibility and unlocks several new features by mirroring Windows' network interfaces into Linux.</p>
+<h4 id="-benefits-of-mirrored-networking">✅ Benefits of Mirrored Networking<a class="headerlink" href="#-benefits-of-mirrored-networking" title="Permanent link">#</a></h4>
+<ul>
+<li>🧭 Full <strong>IPv6</strong> support  </li>
+<li>🔁 Access <strong>Windows services</strong> from WSL using <code>127.0.0.1</code>  </li>
+<li>🔒 Improved VPN support (VPNs work in both Windows and WSL)  </li>
+<li>📡 Multicast compatibility  </li>
+<li>🧷 Reach WSL directly from your <strong>local LAN</strong></li>
+</ul>
+<hr />
+<h4 id="-enabling-mirrored-mode">🔧 Enabling Mirrored Mode<a class="headerlink" href="#-enabling-mirrored-mode" title="Permanent link">#</a></h4>
+<ol>
+<li>Open (or create) the <code>.wslconfig</code> file in your Windows home directory:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="n">notepad</span> <span class="nv">$env:USERPROFILE</span><span class="p">\.</span><span class="n">wslconfig</span>
+</code></pre></div>
+<ol>
+<li>Add the following section:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="k">[wsl2]</span>
+<span class="na">networkingMode</span><span class="o">=</span><span class="s">mirrored</span>
+</code></pre></div>
+<ol>
+<li>Restart WSL for the changes to take effect:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>wsl<span class="w"> </span>--shutdown
+</code></pre></div>
+<p>Then restart your distro from the Windows menu or run:</p>
+<div class="highlight"><pre><span></span><code>wsl
+</code></pre></div>
+<hr />
+<h4 id="-additional-notes">📌 Additional Notes<a class="headerlink" href="#-additional-notes" title="Permanent link">#</a></h4>
+<ul>
+<li>You can combine this with <a href="https://learn.microsoft.com/en-us/windows/wsl/wsl-config#configuration-settings-for-wslconfig"><code>autoProxy=true</code></a> if you're using a proxy.</li>
+<li>This setting applies globally across all WSL2 instances.</li>
+</ul>
 <h3 id="-extra-credit">🌟 Extra Credit<a class="headerlink" href="#-extra-credit" title="Permanent link">#</a></h3>
 <ol>
 <li>install <strong><a href="https://docs.portainer.io/start/install-ce/server/docker/linux">Portainer</a></strong></li>
