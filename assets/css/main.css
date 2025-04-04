@@ -76,7 +76,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .container {
     width: 90%;
-    max-width: 1100px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -86,11 +86,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .note {
-    background-color: #1c1f2a;
     padding: 15px;
     border-radius: 8px;
-    border-left: 5px solid #42A5F5;
-    color: #ffffff;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .flex-container {
@@ -104,9 +102,31 @@ h1, h2, h3, h4, h5, h6 {
     flex: 1;
     min-width: 350px;
     max-width: 500px;
-    background: #252839;
     padding: 20px;
     border-radius: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;    
+}
+
+/* 🔆 Light Theme */
+body[data-md-color-scheme="default"] .note {
+    background-color: #f0f0f0;
+    color: #111;
+}
+
+body[data-md-color-scheme="default"] .column {
+    background-color: #f0f0f0;
+    color: #111;
+}
+
+/* 🌙 Dark Theme */
+body[data-md-color-scheme="slate"] .note {
+    background-color: #252839;
+    color: #ffffff;
+}
+
+body[data-md-color-scheme="slate"] .column {
+    background-color: #252839;
+    color: #ffffff;
 }
 
 .project-list li, .features li {
