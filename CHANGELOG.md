@@ -1,5 +1,22 @@
 # Changelog
 
+## [6.4.0](https://github.com/I-am-PUID-0/DMB/compare/6.3.0...6.4.0) (2025-04-04)
+
+
+### ✨ Features
+
+* **api/processes:** 🚀 Adds process version info ([200c08c](https://github.com/I-am-PUID-0/DMB/commit/200c08c9c3fd680377731722bcc2b1929f29188e))
+
+
+### 🐛 Bug Fixes
+
+* **api/processes:** update config assignment in fetch_processes function ([fe85e25](https://github.com/I-am-PUID-0/DMB/commit/fe85e25fef5724271da5a4acfa658ba7dbc0169d))
+
+
+### 📖 Documentation
+
+* update README with new documentation links and environment variable details ([9a87604](https://github.com/I-am-PUID-0/DMB/commit/9a87604728561253f0f316378de475c6628e25c5))
+
 ## [6.3.0](https://github.com/I-am-PUID-0/DMB/compare/6.2.0...6.3.0) (2025-03-18)
 
 
