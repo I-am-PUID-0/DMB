@@ -26,7 +26,7 @@
     
     
       
-        <title>Zilean - DMB</title>
+        <title>Zilean FAQ - DMB</title>
       
     
     
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#zilean-faq" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -108,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Zilean
+              Zilean FAQ
             
           </span>
         </div>
@@ -1546,6 +1551,20 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Zilean
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -1557,6 +1576,49 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-frequently-asked-questions-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Frequently Asked Questions (FAQ)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="❓ Frequently Asked Questions (FAQ)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-is-zilean-spamming-my-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why is Zilean spamming my logs!?!
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1672,6 +1734,40 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-frequently-asked-questions-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❓ Frequently Asked Questions (FAQ)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="❓ Frequently Asked Questions (FAQ)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-is-zilean-spamming-my-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why is Zilean spamming my logs!?!
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1690,7 +1786,17 @@
   
 
 
-  <h1>Zilean</h1>
+<h1 id="zilean-faq">Zilean FAQ<a class="headerlink" href="#zilean-faq" title="Permanent link">#</a></h1>
+<p>Below are some common questions and solutions related to Zilean when used with <strong>DMB</strong>.</p>
+<hr />
+<h2 id="-frequently-asked-questions-faq">❓ Frequently Asked Questions (FAQ)<a class="headerlink" href="#-frequently-asked-questions-faq" title="Permanent link">#</a></h2>
+<h3 id="why-is-zilean-spamming-my-logs">Why is Zilean spamming my logs!?!<a class="headerlink" href="#why-is-zilean-spamming-my-logs" title="Permanent link">#</a></h3>
+<p>This is normal for a first-time run of Zilean. </p>
+<p>Zilean parses all the DMM hash lists and saves them into the PostgreSQL database. </p>
+<p>Then, it will run a scheduled update to add/remove any new hash content. </p>
+<div class="admonition note">
+<p class="admonition-title">Depending on the system, the first-time run can take hours to days.</p>
+</div>
 
 
 
@@ -1698,7 +1804,8 @@
 
 
 
-
+  
+  
 
 
 
