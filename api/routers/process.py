@@ -42,7 +42,7 @@ async def fetch_processes():
                                 "name": display_name,
                                 "process_name": process_name,
                                 "enabled": enabled,
-                                "config": config,
+                                "config": value,
                                 "version": version,
                                 "key": key,
                                 "config_key": config_key,
