@@ -13,6 +13,9 @@ class Versions:
         self, process_name=None, instance_name=None, key=None, version_path=None
     ):
         try:
+            if key == "dmb_api_service":
+                version_path = "/version.txt"
+                is_file = True
             if key == "dmb_frontend":
                 version_path = "/dmb/frontend/package.json"
                 is_file = True
@@ -31,6 +34,56 @@ class Versions:
                     raise ValueError(f"Configuration for {process_name} not found.")
                 version_path = config.get("config_dir") + "/zurg"
                 is_file = False
+            elif key == "postgres":
+                try:
+                    result = subprocess.run(
+                        ["psql", "--version"], capture_output=True, text=True
+                    )
+                    if result.returncode == 0:
+                        version = result.stdout.strip().split()[-1]
+                        return version, None
+                    return None, "psql not found or failed"
+                except FileNotFoundError:
+                    return None, "psql binary not found"
+            elif key == "pgadmin":
+                try:
+                    import glob
+
+                    version_files = glob.glob(
+                        "/pgadmin/venv/lib/python*/site-packages/pgadmin4/version.py"
+                    )
+                    if version_files:
+                        version_globals = {}
+                        with open(version_files[0], "r") as f:
+                            code = f.read()
+                            exec(code, version_globals)
+                        release = version_globals.get("APP_RELEASE")
+                        revision = version_globals.get("APP_REVISION")
+                        suffix = version_globals.get("APP_SUFFIX", "")
+                        if release is not None and revision is not None:
+                            version = f"{release}.{revision}"
+                            if suffix:
+                                version += f"-{suffix}"
+                            return version, None
+                    return None, "pgAdmin version info not found"
+                except Exception as e:
+                    return None, f"Error extracting pgAdmin version: {e}"
+            elif key == "rclone":
+                try:
+                    result = subprocess.run(
+                        ["rclone", "--version"], capture_output=True, text=True
+                    )
+                    if result.returncode == 0:
+                        version_line = result.stdout.strip().splitlines()[0]
+                        version = version_line.split()[1]
+                        return version, None
+                    else:
+                        return None, "rclone --version failed"
+                except FileNotFoundError:
+                    return None, "rclone binary not found"
+                except Exception as e:
+                    return None, f"Error reading rclone version: {e}"
+
             if is_file:
                 try:
                     with open(version_path, "r") as f:
@@ -51,7 +104,7 @@ class Versions:
                                     break
                             else:
                                 version = None
-                        elif key == "zilean":
+                        elif key == "zilean" or key == "dmb_api_service":
                             version = f.read().strip()
                         if version:
                             return version, None

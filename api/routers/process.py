@@ -1,8 +1,10 @@
+from sys import version
 from fastapi import APIRouter, HTTPException, Depends, Query
 from pydantic import BaseModel
 from utils.dependencies import get_process_handler, get_logger, get_api_state
 from utils.config_loader import CONFIG_MANAGER, find_service_config
 from utils.setup import setup_project
+from utils.versions import Versions
 
 
 class ServiceRequest(BaseModel):
@@ -10,6 +12,7 @@ class ServiceRequest(BaseModel):
 
 
 process_router = APIRouter()
+versions = Versions()
 
 
 @process_router.get("/processes")
@@ -23,12 +26,26 @@ async def fetch_processes():
             if isinstance(data, dict):
                 for key, value in data.items():
                     if isinstance(value, dict) and "process_name" in value:
+                        process_name = value.get("process_name")
+                        enabled = value.get("enabled", False)
+                        display_name = f"{parent_key} {key}".strip()
+                        config_key, instance_name = CONFIG_MANAGER.find_key_for_process(
+                            process_name
+                        )
+                        version, _ = versions.version_check(
+                            process_name=value.get("process_name"),
+                            instance_name=instance_name,
+                            key=config_key,
+                        )
                         processes.append(
                             {
-                                "name": f"{parent_key} {key}".strip(),
-                                "process_name": value.get("process_name"),
-                                "enabled": value.get("enabled", False),
-                                "config": value,
+                                "name": display_name,
+                                "process_name": process_name,
+                                "enabled": enabled,
+                                "config": config,
+                                "version": version,
+                                "key": key,
+                                "config_key": config_key,
                             }
                         )
                     elif isinstance(value, dict):
