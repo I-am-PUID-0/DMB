@@ -908,15 +908,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-example-scheduled-backups-with-pgagent" class="md-nav__link">
-    <span class="md-ellipsis">
-      💾 Example: Scheduled Backups with pgAgent
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#-more-info" class="md-nav__link">
     <span class="md-ellipsis">
       📚 More Info
@@ -954,7 +945,7 @@
         
   
   <span class="md-ellipsis">
-    Postgres
+    PostgreSQL
     
   </span>
   
@@ -1648,7 +1639,7 @@
         
   
   <span class="md-ellipsis">
-    Postgres
+    PostgreSQL
     
   </span>
   
@@ -1919,15 +1910,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-example-scheduled-backups-with-pgagent" class="md-nav__link">
-    <span class="md-ellipsis">
-      💾 Example: Scheduled Backups with pgAgent
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#-more-info" class="md-nav__link">
     <span class="md-ellipsis">
       📚 More Info
@@ -1965,7 +1947,8 @@
 
 
 <h1 id="pgadmin-4">pgAdmin 4<a class="headerlink" href="#pgadmin-4" title="Permanent link">#</a></h1>
-<p>pgAdmin 4 is a web-based administration tool for managing PostgreSQL databases. DMB includes pgAdmin pre-installed and configured to work out of the box, allowing you to inspect, query, and back up your databases directly from a browser.</p>
+<p>pgAdmin 4 is a web-based administration tool for managing PostgreSQL databases. </p>
+<p>DMB includes pgAdmin pre-installed and configured to work out of the box, allowing you to inspect, query, and back up your databases directly from a browser.</p>
 <hr />
 <h2 id="-configuration-settings-in-dmb_configjson">⚙️ Configuration Settings in <code>dmb_config.json</code><a class="headerlink" href="#-configuration-settings-in-dmb_configjson" title="Permanent link">#</a></h2>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;pgadmin&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -2024,83 +2007,41 @@
 <h2 id="-server-configuration">🔐 Server Configuration<a class="headerlink" href="#-server-configuration" title="Permanent link">#</a></h2>
 <ul>
 <li>pgAdmin is preconfigured with a server connection named <strong>DMB</strong>.</li>
-<li>On first login, you must enter the password for the PostgreSQL server connection.</li>
+<li>On first login, you must enter the password for the PostgreSQL server connection.<ul>
 <li>Default password: <code>postgres</code></li>
 <li>Or, use the value of <code>POSTGRES_PASSWORD</code> if set in your environment.</li>
+</ul>
+</li>
 </ul>
 <p><img alt="Server View" src="../../assets/images/pgadmin/pgadmin-server-view.png" /></p>
 <hr />
 <h2 id="-extensions">⚙️ Extensions<a class="headerlink" href="#-extensions" title="Permanent link">#</a></h2>
 <p>The following PostgreSQL extensions are included in the DMB image:</p>
 <h3 id="-system_stats">📈 <code>system_stats</code><a class="headerlink" href="#-system_stats" title="Permanent link">#</a></h3>
-<p>Provides system performance statistics inside PostgreSQL.
-- Find it in the pgAdmin dashboard under the connected database (e.g., <code>pgadmin</code> or <code>riven</code>).</p>
+<p>Provides system performance statistics inside PostgreSQL.</p>
+<ul>
+<li>Find it in the pgAdmin dashboard under the connected database (e.g., <code>pgadmin</code> or <code>riven</code>).</li>
+</ul>
 <p><img alt="System Stats" src="../../assets/images/pgadmin/pgadmin-system-stats.png" /></p>
 <h3 id="-pgagent">📅 <code>pgAgent</code><a class="headerlink" href="#-pgagent" title="Permanent link">#</a></h3>
-<p>A job scheduler for PostgreSQL. Useful for:
-- Scheduling backups
-- Routine maintenance</p>
+<p>A job scheduler for PostgreSQL. Useful for:</p>
+<ul>
+<li>Scheduling backups</li>
+<li>Routine maintenance</li>
+</ul>
 <p><img alt="pgAgent Jobs" src="../../assets/images/pgadmin/pgadmin-pgagent-jobs.png" /></p>
-<hr />
-<h2 id="-example-scheduled-backups-with-pgagent">💾 Example: Scheduled Backups with pgAgent<a class="headerlink" href="#-example-scheduled-backups-with-pgagent" title="Permanent link">#</a></h2>
-<ol>
-<li>Navigate to <code>pgAgent Jobs</code> under your connected DMB server.</li>
-<li>
-<p>Right-click → <code>Create → pgAgent Job</code></p>
-<p><img alt="Create Job" src="../../assets/images/pgadmin/pgadmin-create-job.png" /></p>
-</li>
-<li>
-<p>Enter the job name and any comments you like:</p>
-<p><img alt="Add Job" src="../../assets/images/pgadmin/pgadmin-add-job.png" /></p>
-</li>
-<li>
-<p>In the <strong>Steps</strong> tab, click the <code>+</code> button to <strong>Add row</strong> to the steps:</p>
-<p><img alt="Add Step" src="../../assets/images/pgadmin/pgadmin-add-step.png" /></p>
-</li>
-<li>
-<p>Click the <code>pencil</code> icon to edit the new row and configure the step:</p>
-<p><img alt="Edit Step" src="../../assets/images/pgadmin/pgadmin-edit-step.png" /></p>
-</li>
-<li>
-<p>Enter a step name and select <code>Kind</code> = <code>Batch</code>:</p>
-<p><img alt="Step Details" src="../../assets/images/pgadmin/pgadmin-step-details.png" /></p>
-</li>
-<li>
-<p>Add backup commands to the <strong>Code</strong> tab:</p>
-<div class="admonition note">
-<p class="admonition-title">The following code is an example of a backup command. You may need to modify it to suit your needs.</p>
-</div>
-<div class="highlight"><pre><span></span><code><span class="n">pg_dump</span><span class="w"> </span><span class="c1">--username=DMB --dbname=riven --clean --file=/pgadmin/data/riven_backup-`date +%Y-%m-%d-%H-%M-%S`.sql</span>
-<span class="n">pg_dump</span><span class="w"> </span><span class="c1">--username=DMB --dbname=zilean --clean --file=/pgadmin/data/zilean_backup-`date +%Y-%m-%d-%H-%M-%S`.sql</span>
-</code></pre></div>
-<p><img alt="Step Code" src="../../assets/images/pgadmin/pgadmin-backup-step-code.png" /></p>
-</li>
-<li>
-<p>Click on the <strong>Schedules</strong> tab to set the schedule for the backup.</p>
-</li>
-<li>
-<p>As before with the <strong>Steps</strong>, add a row to add a new schedule, and edit the row to configure the schedule.</p>
-</li>
-<li>
-<p>Enter the schedule name, select the <strong>Enabled?</strong> toggle, and set the Start and End dates for the schedule.</p>
-<p><img alt="Add Schedule" src="../../assets/images/pgadmin/pgadmin-schedule-add.png" /></p>
-</li>
-<li>
-<p>On the <strong>Repeat</strong> tab, set the repeat frequency (e.g., daily at 12:00 AM):</p>
-<p><img alt="Repeat Tab" src="../../assets/images/pgadmin/pgadmin-schedule-repeat.png" /></p>
-</li>
-<li>
-<p>Click <strong>Save</strong> to save the scheduled backup job.</p>
-</li>
-</ol>
-<div class="admonition tip">
-<p class="admonition-title">Backups are stored in <code>/pgadmin/data</code>.</p>
-</div>
 <hr />
 <h2 id="-more-info">📚 More Info<a class="headerlink" href="#-more-info" title="Permanent link">#</a></h2>
 <ul>
-<li><a href="https://www.pgadmin.org/docs/pgadmin4/latest/index.html">pgAdmin Docs</a></li>
-<li><a href="https://www.pgadmin.org/docs/pgadmin4/development/pgagent_jobs.html">pgAgent Job Scheduler</a></li>
+<li>
+<p><a href="../../faq/pgadmin/">pgAdmin FAQ</a></p>
+</li>
+<li>
+<p><a href="https://www.pgadmin.org/docs/pgadmin4/latest/index.html">pgAdmin Docs</a></p>
+</li>
+<li>
+<p><a href="https://www.pgadmin.org/docs/pgadmin4/development/pgagent_jobs.html">pgAgent Job Scheduler</a></p>
+</li>
 </ul>
 <hr />
 <h2 id="-summary">🧠 Summary<a class="headerlink" href="#-summary" title="Permanent link">#</a></h2>
