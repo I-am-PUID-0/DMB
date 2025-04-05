@@ -992,6 +992,48 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#host-based-media-server-mount-path-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Host-Based Media Server: Mount Path Consistency
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Host-Based Media Server: Mount Path Consistency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-riven-media-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Riven Media Directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-zurg-media-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Zurg Media Directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simplified-approach-using-standard-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simplified Approach Using Standard Paths
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1952,6 +1994,48 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#host-based-media-server-mount-path-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Host-Based Media Server: Mount Path Consistency
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Host-Based Media Server: Mount Path Consistency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-riven-media-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Riven Media Directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-zurg-media-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Zurg Media Directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simplified-approach-using-standard-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simplified Approach Using Standard Paths
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2116,6 +2200,50 @@
 <p class="admonition-title">✅ <strong>Best Practice:</strong></p>
 <p>Use the same mount paths across DMB and Media Server containers — even if the host paths differ.</p>
 </div>
+<hr />
+<h3 id="host-based-media-server-mount-path-consistency">Host-Based Media Server: Mount Path Consistency<a class="headerlink" href="#host-based-media-server-mount-path-consistency" title="Permanent link">#</a></h3>
+<p>If your media server (such as Plex) runs <strong>directly on the host</strong> (not in Docker), it will access media files using the host's file system. In this setup, any symlinks created inside the DMB container must resolve correctly <strong>on the host</strong>. This means the media paths inside the container must exactly match the paths used by the host.</p>
+<p>Symlink resolution is based on absolute paths. If those paths don't exist or don't match outside the container, the symlinks will be broken or unusable by the media server.</p>
+<h4 id="example-riven-media-directory">Example: Riven Media Directory<a class="headerlink" href="#example-riven-media-directory" title="Permanent link">#</a></h4>
+<p>Suppose your media is mounted on the host at:</p>
+<div class="highlight"><pre><span></span><code>/docker/DMB/Riven/mnt
+</code></pre></div>
+<p>Since Plex (or another media server) and the DMB container need to both access this path and resolve symlinks, your Docker bind mount must look like:</p>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">/docker/DMB/Riven/mnt:/docker/DMB/Riven/mnt</span>
+</code></pre></div>
+<p>Then, inside the <code>dmb_config.json</code>, make sure you define:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;riven&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;symlink_library_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/docker/DMB/Riven/mnt&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>This ensures that any symlinks Riven creates will remain valid on the host.</p>
+<h4 id="example-zurg-media-directory">Example: Zurg Media Directory<a class="headerlink" href="#example-zurg-media-directory" title="Permanent link">#</a></h4>
+<p>For media processed by Zurg and symlinked by Riven:</p>
+<div class="highlight"><pre><span></span><code>/docker/DMB/Zurg/mnt
+</code></pre></div>
+<p>Use the following bind mount:</p>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">/docker/DMB/Zurg/mnt:/docker/DMB/Zurg/mnt:shared</span>
+</code></pre></div>
+<p>And configure the <code>dmb_config.json</code> as follows:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;rclone&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mount_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/docker/DMB/Zurg/mnt&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="simplified-approach-using-standard-paths">Simplified Approach Using Standard Paths<a class="headerlink" href="#simplified-approach-using-standard-paths" title="Permanent link">#</a></h4>
+<p>To simplify configuration and reduce the need to hardcode deep paths, you can instead use standard directory mounts like <code>/mnt</code> and <code>/data</code>.</p>
+<p>Docker Compose example:</p>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">/mnt:/mnt</span>
+<span class="l l-Scalar l-Scalar-Plain">/data:/data:shared</span>
+</code></pre></div>
+<p>And then update the configuration:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;riven&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;symlink_library_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/mnt&quot;</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="nt">&quot;rclone&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mount_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/data&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Using standardized top-level paths makes your setup more portable and ensures symlinks will resolve correctly regardless of the underlying directory structure.</p>
 <hr />
 <h2 id="rivens-environment-variables-in-the-envexample">Riven's Environment Variables in the <code>.env.example</code><a class="headerlink" href="#rivens-environment-variables-in-the-envexample" title="Permanent link">#</a></h2>
 <p>The <code>.env.example</code> file includes:</p>
