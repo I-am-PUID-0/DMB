@@ -1,4 +1,3 @@
-from sys import version
 from fastapi import APIRouter, HTTPException, Depends, Query
 from pydantic import BaseModel
 from utils.dependencies import get_process_handler, get_logger, get_api_state
