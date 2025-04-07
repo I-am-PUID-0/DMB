@@ -16,3 +16,4 @@ websockets
 wsproto
 jsonschema
 pyyaml
+scalar-fastapi

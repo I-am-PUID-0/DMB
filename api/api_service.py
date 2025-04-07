@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute, APIWebSocketRoute
+from scalar_fastapi import get_scalar_api_reference
+from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
 from uvicorn.config import Config
 from uvicorn.server import Server
@@ -29,8 +31,21 @@ async def lifespan(app: FastAPI):
     logger.info("WebSocket manager shutdown complete.")
 
 
+def get_version_from_file(path="/version.txt") -> str:
+    try:
+        with open(path, "r") as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        return "0.0.0"
+
+
 def create_app() -> FastAPI:
-    app = FastAPI(lifespan=lifespan)
+    app = FastAPI(
+        title="Debrid Media Bridge",
+        version=get_version_from_file(),
+        redoc_url=None,
+        lifespan=lifespan,
+    )
 
     app.dependency_overrides[get_process_handler] = get_process_handler
     app.dependency_overrides[get_logger] = get_logger
@@ -42,6 +57,13 @@ def create_app() -> FastAPI:
     app.include_router(health_router, prefix="/health", tags=["Health"])
     app.include_router(logs_router, prefix="/logs", tags=["Logs"])
     app.include_router(websocket_router, prefix="/ws", tags=["WebSocket Logs"])
+
+    @app.get("/scalar", include_in_schema=False)
+    async def scalar_docs():
+        return get_scalar_api_reference(
+            openapi_url=app.openapi_url,
+            title=app.title,
+        )
 
     logger = get_logger()
     for route in app.routes:
