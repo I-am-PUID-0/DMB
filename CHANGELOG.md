@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.5.0](https://github.com/I-am-PUID-0/DMB/compare/6.4.0...6.5.0) (2025-04-07)
+
+
+### ✨ Features
+
+* **api:** add version retrieval and scalar API documentation endpoint ([a1dcbc1](https://github.com/I-am-PUID-0/DMB/commit/a1dcbc13516e2e0b99177576b5831512d3c98bf7))
+
+
+### 🐛 Bug Fixes
+
+* **process:** remove unused import of sys.version ([5ca0312](https://github.com/I-am-PUID-0/DMB/commit/5ca0312db593f4f32e04e8e5f1ac516d9167750e))
+
 ## [6.4.0](https://github.com/I-am-PUID-0/DMB/compare/6.3.0...6.4.0) (2025-04-04)
 
 
