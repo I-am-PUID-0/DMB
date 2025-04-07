@@ -142,7 +142,7 @@ RUN curl -L https://github.com/nicocapalbo/dmbdb/archive/refs/tags/${DMB_FRONTEN
 ####################################################################################################################################################
 FROM ubuntu:24.04 AS requirements-builder
 ENV DEBIAN_FRONTEND=noninteractive
-COPY requirements.txt .
+COPY pyproject.toml poetry.lock ./
 RUN apt-get update && apt-get install -y software-properties-common wget gnupg2 lsb-release && \
     add-apt-repository ppa:deadsnakes/ppa -y && apt-get update && \
     apt-get install -y python3.11 python3.11-venv python3.11-dev curl gcc build-essential libxml2-utils linux-headers-generic && \
@@ -150,7 +150,9 @@ RUN apt-get update && apt-get install -y software-properties-common wget gnupg2 
     python3.11 -m venv /venv && \
     . /venv/bin/activate && \
     pip install --upgrade pip && \
-    pip install -r requirements.txt
+    pip install poetry && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-root
 
 ####################################################################################################################################################
 # Stage 8: final-stage (Ubuntu 24.04 with Python 3.11, .NET SDK, PostgreSQL, pgAdmin4, Node.js, Rclone, Zilean, SystemStats, Riven, & DMB)

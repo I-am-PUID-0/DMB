@@ -5,14 +5,15 @@ from api.api_service import start_fastapi_process
 from utils.processes import ProcessHandler
 from utils.auto_update import Update
 from utils.dependencies import initialize_dependencies
-import subprocess, threading, time
+import subprocess, threading, time, tomllib
 from time import sleep
 
 
 def main():
 
-    with open("version.txt", "r") as file:
-        version = file.read().strip()
+    with open("pyproject.toml", "rb") as file:
+        pyproject = tomllib.load(file)
+        version = pyproject["project"]["version"]
 
     ascii_art = f"""
                                                                        
