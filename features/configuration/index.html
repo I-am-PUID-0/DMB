@@ -2053,9 +2053,17 @@ As such, it is <strong>not recommended</strong> to make modifications unless you
 <ol>
 <li>Go to <a href="https://github.com/settings/tokens">GitHub Developer Settings → Tokens (Classic)</a></li>
 <li>Click <strong>Generate new token (classic)</strong></li>
-<li>Set an expiration and enable the following scopes:</li>
-<li><code>repo</code> - select all</li>
-<li>Click <strong>Generate token</strong> and <strong>copy the token</strong> — it will only be shown once</li>
+<li>
+<p>Set an expiration and enable the following scopes:</p>
+<ul>
+<li><code>write:packages</code> </li>
+<li><code>read:packages</code></li>
+</ul>
+<p><img alt="GitHub Token" src="../../assets/images/github_token_scope.png" /></p>
+</li>
+<li>
+<p>Click <strong>Generate token</strong> and <strong>copy the token</strong> — it will only be shown once</p>
+</li>
 <li>Add the token to your <code>.env</code> file or docker compose with <code>DMB_GITHUB_TOKEN=</code>, or <code>dmb_config.json</code> under <code>"github_token"</code></li>
 </ol>
 <hr />
