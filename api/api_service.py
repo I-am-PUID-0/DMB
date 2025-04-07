@@ -18,7 +18,7 @@ from api.routers.health import health_router
 from api.routers.logs import logs_router
 from api.routers.websocket_logs import websocket_router
 from utils.config_loader import CONFIG_MANAGER
-import threading
+import threading, tomllib
 
 
 @asynccontextmanager
@@ -31,18 +31,19 @@ async def lifespan(app: FastAPI):
     logger.info("WebSocket manager shutdown complete.")
 
 
-def get_version_from_file(path="/version.txt") -> str:
+def get_version_from_pyproject(path="pyproject.toml") -> str:
     try:
-        with open(path, "r") as f:
-            return f.read().strip()
-    except FileNotFoundError:
+        with open(path, "rb") as f:
+            data = tomllib.load(f)
+            return data["project"]["version"]
+    except Exception:
         return "0.0.0"
 
 
 def create_app() -> FastAPI:
     app = FastAPI(
         title="Debrid Media Bridge",
-        version=get_version_from_file(),
+        version=get_version_from_pyproject(),
         redoc_url=None,
         lifespan=lifespan,
     )

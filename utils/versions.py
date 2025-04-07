@@ -14,7 +14,7 @@ class Versions:
     ):
         try:
             if key == "dmb_api_service":
-                version_path = "/version.txt"
+                version_path = "/pyproject.toml"
                 is_file = True
             if key == "dmb_frontend":
                 version_path = "/dmb/frontend/package.json"
@@ -95,7 +95,7 @@ class Versions:
                                 version = None
                         elif key == "riven_frontend":
                             version = f"v{f.read().strip()}"
-                        elif key == "riven_backend":
+                        elif key == "riven_backend" or key == "dmb_api_service":
                             for line in f:
                                 if line.startswith("version = "):
                                     version = (
@@ -104,7 +104,7 @@ class Versions:
                                     break
                             else:
                                 version = None
-                        elif key == "zilean" or key == "dmb_api_service":
+                        elif key == "zilean":
                             version = f.read().strip()
                         if version:
                             return version, None
