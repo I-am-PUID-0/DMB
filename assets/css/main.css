@@ -20,6 +20,14 @@
     }
   }
 
+img.hero {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  border-radius: 10px;
+  margin: 0 auto;
+  display: block;
+}
 
 .md-header {
     background-image: linear-gradient(to right, #283085, #050c53) !important;
