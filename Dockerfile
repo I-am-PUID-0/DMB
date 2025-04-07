@@ -145,7 +145,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 COPY pyproject.toml poetry.lock ./
 RUN apt-get update && apt-get install -y software-properties-common wget gnupg2 lsb-release && \
     add-apt-repository ppa:deadsnakes/ppa -y && apt-get update && \
-    apt-get install -y python3.11 python3.11-venv python3.11-dev curl gcc build-essential libxml2-utils linux-headers-generic && \
+    apt-get install -y python3.11 python3.11-venv python3.11-dev curl gcc build-essential libxml2-utils linux-headers-generic libpq-dev pkg-config && \
     rm -rf /var/lib/apt/lists/* && \
     python3.11 -m venv /venv && \
     . /venv/bin/activate && \
