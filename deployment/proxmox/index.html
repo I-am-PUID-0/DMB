@@ -2104,15 +2104,11 @@
 <span class="na">lxc.apparmor.profile</span><span class="o">:</span><span class="w"> </span><span class="s">unconfined</span>
 </code></pre></div>
 </li>
-<li>
-<p><strong>Restart the container:</strong></p>
-<div class="highlight"><pre><span></span><code>pct<span class="w"> </span>start<span class="w"> </span>&lt;CTID&gt;
-</code></pre></div>
-<div class="admonition note">
-<p class="admonition-title"><code>systemctl restart pve-container@&lt;CTID&gt;</code> may need to be used for changes to apply</p>
-</div>
-</li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Don't restart the LXC until the below sections have been completed. </p>
+</div>
 <hr />
 <h3 id="-configure-host-bind-mount">📂 Configure Host Bind Mount<a class="headerlink" href="#-configure-host-bind-mount" title="Permanent link">#</a></h3>
 <ol>
@@ -2187,6 +2183,16 @@ systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> 
 <div class="admonition warning">
 <p class="admonition-title">DMB must be ran as any user other than root</p>
 </div>
+<ol>
+<li>
+<p><strong>Start/Restart the container:</strong></p>
+<div class="highlight"><pre><span></span><code>pct<span class="w"> </span>start<span class="w"> </span>&lt;CTID&gt;
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title"><code>systemctl restart pve-container@&lt;CTID&gt;</code> may need to be used for changes to apply</p>
+</div>
+</li>
+<li>
 <p>If not already created, add a user (<code>ubuntu</code>) and configure passwordless sudo:</p>
 <div class="highlight"><pre><span></span><code>adduser<span class="w"> </span>ubuntu
 usermod<span class="w"> </span>-aG<span class="w"> </span>sudo<span class="w"> </span>ubuntu
@@ -2195,6 +2201,8 @@ usermod<span class="w"> </span>-aG<span class="w"> </span>sudo<span class="w"> <
 <span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ubuntu ALL=(ALL) NOPASSWD:ALL&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/etc/sudoers.d/ubuntu
 chmod<span class="w"> </span><span class="m">440</span><span class="w"> </span>/etc/sudoers.d/ubuntu
 </code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <p>To find the UID and GID (needed for <code>PUID</code> and <code>PGID</code> in your DMB config):
 <div class="highlight"><pre><span></span><code>id<span class="w"> </span>ubuntu
 </code></pre></div></p>
@@ -2205,6 +2213,9 @@ chmod<span class="w"> </span><span class="m">440</span><span class="w"> </span>/
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;puid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
 <span class="nt">&quot;pgid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
 </code></pre></div></p>
+</div>
+</li>
+</ol>
 <hr />
 <h2 id="-define-the-directory-structure">📁 Define the Directory Structure<a class="headerlink" href="#-define-the-directory-structure" title="Permanent link">#</a></h2>
 <div class="admonition note">
