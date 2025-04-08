@@ -411,6 +411,8 @@ def zurg_setup():
 
         for key_type, instance in config.get("instances", {}).items():
             if instance.get("enabled"):
+                if not instance.get("api_key"):
+                    raise ValueError(f"API key not found for Zurg instance {key_type}")
                 logger.info(f"Setting up enabled instance: {key_type}")
                 success, error = setup_zurg_instance(instance, key_type)
                 if not success:

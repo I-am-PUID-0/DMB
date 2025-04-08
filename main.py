@@ -34,7 +34,7 @@ D:::::::::::::::DD   M::::::M               M::::::MB:::::::::::::::::B
 D::::::::::::DDD     M::::::M               M::::::MB::::::::::::::::B  
 DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                              Version: {version}                                    
+                             Version: {version}                                    
 """
 
     logger.info(ascii_art.format(version=version) + "\n" + "\n")
@@ -90,7 +90,8 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                     updater.auto_update(process_name, True)
                 else:
                     updater.auto_update(process_name, False)
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         process_handler.shutdown(exit_code=1)
 
     try:
@@ -132,7 +133,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                         f"No mount name found for rclone instance: {instance_name}"
                     )
     except Exception as e:
-        logger.error(f"An error occurred in the rclone setup process: {e}")
+        logger.error(e)
         process_handler.shutdown(exit_code=1)
 
     try:
@@ -147,7 +148,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 process_name = postgres_config.get("process_name")
                 updater.auto_update(process_name, False)
             except Exception as e:
-                logger.error(f"An error occurred in the PostgreSQL setup: {e}")
+                logger.error(e)
                 process_handler.shutdown(exit_code=1)
 
         if pgadmin_config.get("enabled"):
@@ -155,7 +156,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 process_name = pgadmin_config.get("process_name")
                 updater.auto_update(process_name, False)
             except Exception as e:
-                logger.error(f"An error occurred in the pgAdmin setup: {e}")
+                logger.error(e)
                 process_handler.shutdown(exit_code=1)
 
         if zilean_config.get("enabled"):
@@ -166,7 +167,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 else:
                     updater.auto_update(process_name, False)
             except Exception as e:
-                logger.error(f"An error occurred in the Zilean setup: {e}")
+                logger.error(e)
                 process_handler.shutdown(exit_code=1)
 
         sleep(10)
@@ -179,7 +180,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 else:
                     updater.auto_update(process_name, False)
             except Exception as e:
-                logger.error(f"An error occurred in the Riven Backend setup: {e}")
+                logger.error(e)
                 process_handler.shutdown(exit_code=1)
 
         if riven_frontend_config.get("enabled"):
@@ -190,11 +191,11 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                 else:
                     updater.auto_update(process_name, False)
             except Exception as e:
-                logger.error(f"An error occurred in the Riven Frontend setup: {e}")
+                logger.error(e)
                 process_handler.shutdown(exit_code=1)
 
     except Exception as e:
-        logger.error(f"An error occurred in the setup process: {e}")
+        logger.error(e)
         process_handler.shutdown(exit_code=1)
 
     def healthcheck():
