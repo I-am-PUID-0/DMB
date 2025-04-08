@@ -1974,70 +1974,84 @@
 <h3 id="-wsl-install">🐧 WSL Install<a class="headerlink" href="#-wsl-install" title="Permanent link">#</a></h3>
 <ol>
 <li>
-<p>From the Microsoft store, install Windows Subsystem for Linux (WSL)</p>
+<p>From the Microsoft Store, install <strong>Windows Subsystem for Linux (WSL)</strong></p>
 </li>
 <li>
-<p>From the Microsoft store, install Ubuntu 22.04 LTS</p>
+<p>From the Microsoft Store, install <strong>Ubuntu 22.04 LTS</strong></p>
 </li>
 <li>
 <p>Follow the setup to create your Ubuntu username and password</p>
 </li>
 <li>
-<p>From a Windows command prompt, paste the following:</p>
+<p>From a Windows Command Prompt, paste the following:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>C:<span class="se">\W</span>INDOWS<span class="se">\s</span>ystem32
 </code></pre></div>
 </li>
 <li>
-<p>Then paste:</p>
+<p>Then set Ubuntu 22.04 as the default distro:</p>
 <div class="highlight"><pre><span></span><code>wsl<span class="w"> </span>--setdefault<span class="w"> </span>Ubuntu-22.04
 </code></pre></div>
 </li>
 <li>
-<p>From Windows apps, start Ubuntu 22.04, and paste the following inside the terminal:</p>
+<p>From the Windows app menu, start <strong>Ubuntu 22.04</strong>, then paste the following inside the terminal:</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>update
 sudo<span class="w"> </span>apt<span class="w"> </span>upgrade<span class="w"> </span>-y
 sudo<span class="w"> </span>mount<span class="w"> </span>--make-rshared<span class="w"> </span>/
 </code></pre></div>
-</li>
-</ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><code>sudo mount --make-rshared</code> does not persist reboots, so it will need to be run each time WSL2 or Windows is restarted. Alternatively, see the <a href="../../faq/rclone/#ubuntu-systemd-service">Ubuntu systemd service</a> guide for automatically executing the command on startup for Ubuntu.</p>
+<p><code>sudo mount --make-rshared /</code> does <strong>not</strong> persist after reboots. You’ll need to run it each time WSL2 or Windows is restarted.  </p>
+<p>Alternatively, see the <a href="../../faq/rclone/#ubuntu-systemd-service">Ubuntu systemd service</a> guide to automate this at startup.</p>
 </div>
+</li>
+</ol>
 <hr />
 <h3 id="-docker-install">🐳 Docker Install<a class="headerlink" href="#-docker-install" title="Permanent link">#</a></h3>
 <ol>
 <li>
-<p>Follow the <strong><a href="https://docs.docker.com/engine/install/ubuntu/">Docker</a></strong> install guide.</p>
+<p>Follow the <a href="https://docs.docker.com/engine/install/ubuntu/">official Docker Engine install guide for Ubuntu</a></p>
 </li>
 <li>
-<p>Follow the standard docker process for creating the container or follow the <a href="../docker/">Docker Deployment</a> or <a href="../portainer/">Portainer Deployment</a> guides</p>
+<p>Once Docker is installed, you can either:</p>
+<ul>
+<li>Use the standard Docker CLI to create the container</li>
+<li>Or follow the <a href="../docker/">Docker Deployment</a> or <a href="../portainer/">Portainer Deployment</a> guides for predefined setups</li>
+</ul>
 </li>
 </ol>
 <hr />
 <h3 id="-accessing-the-mount-on-windows">📂 Accessing the Mount on Windows<a class="headerlink" href="#-accessing-the-mount-on-windows" title="Permanent link">#</a></h3>
 <ol>
 <li>
-<p>From the Ubuntu terminal, paste the following, including the punctuation:</p>
-<div class="highlight"><pre><span></span><code>explorer.exe<span class="w"> </span>.<span class="w"> </span>
+<p>From the Ubuntu terminal, open File Explorer in the current directory:</p>
+<div class="highlight"><pre><span></span><code>explorer.exe<span class="w"> </span>.
 </code></pre></div>
 </li>
 <li>
-<p>A new file explorer window will appear; you’re now inside the Ubuntu directory structure</p>
+<p>A new File Explorer window will appear — you’re now inside the Ubuntu file system</p>
 </li>
 <li>
-<p>Navigate to the mount location and copy the full path from the explore window</p>
+<p>Navigate to the mount location and copy the full path from the Explorer address bar</p>
 </li>
 <li>
-<p>From another file explorer window, click "This PC," then right-click in the space below the listed drives and select add a network location</p>
+<p>In another File Explorer window:</p>
+<ul>
+<li>Click <strong>This PC</strong></li>
+<li>Right-click in the blank space and select <strong>Add a network location</strong></li>
+</ul>
 </li>
 <li>
-<p>In the pop-up, click next twice and past the mount location.</p>
+<p>In the popup:</p>
+<ul>
+<li>Click <strong>Next</strong> twice</li>
+<li>Paste the WSL path you copied</li>
+</ul>
 </li>
 <li>
-<p>Follow the remaining prompted steps</p>
+<p>Complete the remaining prompts to finalize the mount</p>
 </li>
 </ol>
+<hr />
 <h3 id="-mirrored-mode-networking">🌐 Mirrored Mode Networking<a class="headerlink" href="#-mirrored-mode-networking" title="Permanent link">#</a></h3>
 <p>Starting with <strong>Windows 11 22H2</strong>, WSL2 supports a new networking mode called <strong>mirrored networking</strong>, which improves compatibility and unlocks several new features by mirroring Windows' network interfaces into Linux.</p>
 <h4 id="-benefits-of-mirrored-networking">✅ Benefits of Mirrored Networking<a class="headerlink" href="#-benefits-of-mirrored-networking" title="Permanent link">#</a></h4>
@@ -2051,24 +2065,26 @@ sudo<span class="w"> </span>mount<span class="w"> </span>--make-rshared<span cla
 <hr />
 <h4 id="-enabling-mirrored-mode">🔧 Enabling Mirrored Mode<a class="headerlink" href="#-enabling-mirrored-mode" title="Permanent link">#</a></h4>
 <ol>
-<li>Open (or create) the <code>.wslconfig</code> file in your Windows home directory:</li>
-</ol>
+<li>
+<p>Open (or create) the <code>.wslconfig</code> file in your Windows home directory:</p>
 <div class="highlight"><pre><span></span><code><span class="n">notepad</span> <span class="nv">$env:USERPROFILE</span><span class="p">\.</span><span class="n">wslconfig</span>
 </code></pre></div>
-<ol>
-<li>Add the following section:</li>
-</ol>
+</li>
+<li>
+<p>Add the following section:</p>
 <div class="highlight"><pre><span></span><code><span class="k">[wsl2]</span>
 <span class="na">networkingMode</span><span class="o">=</span><span class="s">mirrored</span>
 </code></pre></div>
-<ol>
-<li>Restart WSL for the changes to take effect:</li>
-</ol>
+</li>
+<li>
+<p>Restart WSL for the changes to take effect:</p>
 <div class="highlight"><pre><span></span><code>wsl<span class="w"> </span>--shutdown
 </code></pre></div>
 <p>Then restart your distro from the Windows menu or run:</p>
 <div class="highlight"><pre><span></span><code>wsl
 </code></pre></div>
+</li>
+</ol>
 <hr />
 <h4 id="-additional-notes">📌 Additional Notes<a class="headerlink" href="#-additional-notes" title="Permanent link">#</a></h4>
 <ul>
