@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#-windows-setup-guide-dockerwsl" class="md-skip">
+        <a href="#-deploying-dmb-on-windows-setup-guide-dockerwsl" class="md-skip">
           Skip to content
         </a>
       
@@ -1119,13 +1119,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-windows-setup-guide-dockerwsl" class="md-nav__link">
+  <a href="#-deploying-dmb-on-windows-setup-guide-dockerwsl" class="md-nav__link">
     <span class="md-ellipsis">
-      🖥️ Windows Setup Guide (Docker/WSL)
+      🖥️ Deploying DMB on Windows Setup Guide (Docker/WSL)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="🖥️ Windows Setup Guide (Docker/WSL)">
+    <nav class="md-nav" aria-label="🖥️ Deploying DMB on Windows Setup Guide (Docker/WSL)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1851,13 +1851,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-windows-setup-guide-dockerwsl" class="md-nav__link">
+  <a href="#-deploying-dmb-on-windows-setup-guide-dockerwsl" class="md-nav__link">
     <span class="md-ellipsis">
-      🖥️ Windows Setup Guide (Docker/WSL)
+      🖥️ Deploying DMB on Windows Setup Guide (Docker/WSL)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="🖥️ Windows Setup Guide (Docker/WSL)">
+    <nav class="md-nav" aria-label="🖥️ Deploying DMB on Windows Setup Guide (Docker/WSL)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1964,11 +1964,12 @@
 
   <h1>WSL</h1>
 
-<h2 id="-windows-setup-guide-dockerwsl">🖥️ Windows Setup Guide (Docker/WSL)<a class="headerlink" href="#-windows-setup-guide-dockerwsl" title="Permanent link">#</a></h2>
+<h2 id="-deploying-dmb-on-windows-setup-guide-dockerwsl">🖥️ Deploying DMB on Windows Setup Guide (Docker/WSL)<a class="headerlink" href="#-deploying-dmb-on-windows-setup-guide-dockerwsl" title="Permanent link">#</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Docker Desktop</p>
 <p>Ensure that Docker Desktop is not installed; if so, uninstall and reboot before proceeding.</p>
 </div>
+<p>This guide will walk you through setting up DMB on a Windows system using a <strong>lightweight Docker + WSL2 setup</strong>, without relying on Docker Desktop. </p>
 <hr />
 <h3 id="-wsl-install">🐧 WSL Install<a class="headerlink" href="#-wsl-install" title="Permanent link">#</a></h3>
 <ol>
@@ -2075,9 +2076,39 @@ sudo<span class="w"> </span>mount<span class="w"> </span>--make-rshared<span cla
 <li>This setting applies globally across all WSL2 instances.</li>
 </ul>
 <h3 id="-extra-credit">🌟 Extra Credit<a class="headerlink" href="#-extra-credit" title="Permanent link">#</a></h3>
+<p>If you want to manage Docker visually via Portainer:</p>
 <ol>
-<li>install <strong><a href="https://docs.portainer.io/start/install-ce/server/docker/linux">Portainer</a></strong></li>
+<li>
+<p>Create the Portainer data volume:
+    <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>volume<span class="w"> </span>create<span class="w"> </span>portainer_data
+</code></pre></div></p>
+</li>
+<li>
+<p>Start the Portainer container:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+-p<span class="w"> </span><span class="m">8000</span>:8000<span class="w"> </span><span class="se">\</span>
+-p<span class="w"> </span><span class="m">9443</span>:9443<span class="w"> </span><span class="se">\</span>
+--name<span class="w"> </span>portainer<span class="w"> </span><span class="se">\</span>
+--restart<span class="o">=</span>always<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>/var/run/docker.sock:/var/run/docker.sock<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>portainer_data:/data<span class="w"> </span><span class="se">\</span>
+portainer/portainer-ce:latest
+</code></pre></div>
+</li>
 </ol>
+<p>You can now manage Docker containers via the browser at: <code>https://&lt;ip&gt;:9443</code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On the first run of Portainer, you need to access the Web UI quickly to create your initial administrator user, which is crucial for accessing and managing your Docker environment. </p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you can't access the UI after the initial setup, ensure the Portainer container is running and that the correct port is open. 
+You might need to restart the container if it timed out. </p>
+</div>
+<p>For more, see the <a href="../portainer/">Portainer Deployment Guide</a>.</p>
+<hr />
+<p>Now you’re ready to run DMB inside WSL2 with full Docker support — no Docker Desktop required!</p>
 
 
 
