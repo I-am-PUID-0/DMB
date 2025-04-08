@@ -2157,19 +2157,15 @@ sed<span class="w"> </span>-i<span class="w"> </span><span class="se">\</span>
 <p>✅ Once started, the container will run in the background.</p>
 <h2 id="-thats-it">🎉 That’s It!<a class="headerlink" href="#-thats-it" title="Permanent link">#</a></h2>
 <p>Once deployed, DMB will initialize and make its services available at their respective ports (e.g., DMB Frontend at <code>:3005</code>, API at <code>:8000</code>, etc.).</p>
-<p>You can now manage DMB entirely through the <strong>DMB Frontend</strong>, or explore the <a href="../../features/configuration/">Configuration</a> docs to adjust settings as needed.</p>
+<p>You can now manage DMB entirely through the <strong><a href="../../services/dmb-frontend/">DMB Frontend</a></strong>, or explore the <a href="../../features/configuration/">Configuration</a> docs to adjust settings as needed.</p>
 <hr />
 <h2 id="-additional-useful-commands">🛠️ Additional Useful Commands<a class="headerlink" href="#-additional-useful-commands" title="Permanent link">#</a></h2>
 <h3 id="-attach-to-the-running-container">▶️ Attach to the Running Container<a class="headerlink" href="#-attach-to-the-running-container" title="Permanent link">#</a></h3>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>docker<span class="w"> </span>attach<span class="w"> </span>DMB
 </code></pre></div>
 <h3 id="-detach-without-stopping-the-container">🔄 Detach Without Stopping the Container<a class="headerlink" href="#-detach-without-stopping-the-container" title="Permanent link">#</a></h3>
-<ol>
-<li>
 <p>Press Ctrl + P followed by Ctrl + Q.</p>
 <p>This sequence sends a signal to Docker to detach from the container while leaving it running in the background.</p>
-</li>
-</ol>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Use this sequence rather than simply closing the terminal window or using Ctrl + C, as those actions might stop the container.</p>
@@ -2181,27 +2177,23 @@ sed<span class="w"> </span>-i<span class="w"> </span><span class="se">\</span>
 <p>After this, you will be returned to your host terminal, and the container will continue to run in the background.</p>
 </div>
 <h3 id="-view-docker-container-logs">📜 View Docker Container Logs<a class="headerlink" href="#-view-docker-container-logs" title="Permanent link">#</a></h3>
-<ol>
-<li>
-<p>To view the container logs, enter the following:
+<p>To view the container logs, enter the following:</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>docker<span class="w"> </span>container<span class="w"> </span>logs<span class="w"> </span>DMB
-</code></pre></div></p>
-</li>
-<li>
-<p>Alternatively, use -f to follow the logs in real-time. 
-    You can exit with Ctrl + C (this does not stop the container).
+</code></pre></div>
+<p>Alternatively, use -f to follow the logs in real-time. </p>
+<div class="admonition note">
+<p class="admonition-title">You can exit with Ctrl + C (this does not stop the container).</p>
+</div>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>docker<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>DMB
-</code></pre></div></p>
-</li>
-</ol>
+</code></pre></div>
 <h3 id="-shutdown-docker-compose">🧯 Shutdown Docker Compose<a class="headerlink" href="#-shutdown-docker-compose" title="Permanent link">#</a></h3>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>down
 </code></pre></div>
 <p>Example output:
 <div class="highlight"><pre><span></span><code>ubuntu@DMB:~/docker$<span class="w"> </span>sudo<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>down
 <span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Running<span class="w"> </span><span class="m">2</span>/2
-<span class="w"> </span>✔<span class="w"> </span>Container<span class="w"> </span>DMB<span class="w">       </span>Removed<span class="w">                                                                                                                                                      </span><span class="m">10</span>.4s<span class="w"> </span>
-<span class="w"> </span>✔<span class="w"> </span>Network<span class="w"> </span>docker_default<span class="w">  </span>Removed<span class="w">     </span>
+✔<span class="w"> </span>Container<span class="w"> </span>DMB<span class="w">       </span>Removed<span class="w">                                                                                                                                                      </span><span class="m">10</span>.4s<span class="w"> </span>
+✔<span class="w"> </span>Network<span class="w"> </span>docker_default<span class="w">  </span>Removed<span class="w">     </span>
 </code></pre></div></p>
 
 
