@@ -12,13 +12,13 @@
         <meta name="author" content="DMB Team">
       
       
-        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/services/zilean/">
+        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/deployment/proxmox/">
       
       
-        <link rel="prev" href="../riven-frontend/">
+        <link rel="prev" href="../wsl/">
       
       
-        <link rel="next" href="../zurg/">
+        <link rel="next" href="../synology/">
       
       
       <link rel="icon" href="../../assets/images/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Zilean - DMB</title>
+        <title>Deploying on Proxmox - DMB</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#-configuration-settings-in-dmb_configjson" class="md-skip">
+        <a href="#-deploying-dmb-on-proxmox-lxc-container" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Zilean
+              Deploying on Proxmox
             
           </span>
         </div>
@@ -273,13 +273,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../services/" class="md-tabs__link">
           
   
   Services
@@ -293,11 +291,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../deployment/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   Deployment
@@ -670,6 +670,274 @@
       
   
   
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Services
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Services
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DMB API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/dmb-frontend/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DMB Frontend
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/pgadmin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pgAdmin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/postgres/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PostgreSQL
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/rclone/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    rclone
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/riven-backend/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Riven Backend
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/riven-frontend/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Riven Frontend
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/zilean/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Zilean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/zurg/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Zurg
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -690,14 +958,14 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   <span class="md-ellipsis">
-    Services
+    Deployment
     
   </span>
   
@@ -705,10 +973,10 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
-            Services
+            Deployment
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -741,11 +1009,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/" class="md-nav__link">
+      <a href="../docker/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    DMB API
+    Docker
     
   </span>
   
@@ -763,11 +1031,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../dmb-frontend/" class="md-nav__link">
+      <a href="../portainer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    DMB Frontend
+    Portainer
     
   </span>
   
@@ -785,11 +1053,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../pgadmin/" class="md-nav__link">
+      <a href="../unraid/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    pgAdmin
+    Unraid
     
   </span>
   
@@ -807,77 +1075,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../postgres/" class="md-nav__link">
+      <a href="../wsl/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    PostgreSQL
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../rclone/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    rclone
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../riven-backend/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Riven Backend
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../riven-frontend/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Riven Frontend
+    WSL
     
   </span>
   
@@ -901,12 +1103,14 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
   
   <span class="md-ellipsis">
-    Zilean
+    Proxmox
     
   </span>
   
@@ -918,7 +1122,7 @@
         
   
   <span class="md-ellipsis">
-    Zilean
+    Proxmox
     
   </span>
   
@@ -931,6 +1135,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -939,19 +1145,130 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-configuration-settings-in-dmb_configjson" class="md-nav__link">
+  <a href="#-prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚙️ Configuration Settings in dmb_config.json
+      ✅ Prerequisites
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="⚙️ Configuration Settings in dmb_config.json">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-create-an-ubuntu-lxc-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐧 Create an Ubuntu LXC Container
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-lxc-configuration-for-docker--fuse-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ LXC Configuration for Docker + Fuse Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛠️ LXC Configuration for Docker + Fuse Support">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-configuration-key-descriptions" class="md-nav__link">
+  <a href="#-update-the-lxc-config-file" class="md-nav__link">
     <span class="md-ellipsis">
-      🔍 Configuration Key Descriptions
+      🔧 Update the LXC Config File
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-configure-host-bind-mount" class="md-nav__link">
+    <span class="md-ellipsis">
+      📂 Configure Host Bind Mount
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-make-the-mount-persistent-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      💾 Make the Mount Persistent (Recommended)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="💾 Make the Mount Persistent (Recommended)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-a-use-etcfstab-and-manually-set-the-mount-propagation-after-reboot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option A: Use /etc/fstab and manually set the mount propagation after reboot
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-b-automate-rshared-with-systemd-optional-but-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option B: Automate rshared with systemd (Optional, but recommended)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-add-and-configure-a-user-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      👤 Add and Configure a User (Required)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-define-the-directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      📁 Define the Directory Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-install-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐳 Install Docker
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-install-portainer-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚢 Install Portainer (Optional)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚢 Install Portainer (Optional)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-update-docker-bind-mount-important" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐳 Update Docker Bind Mount (Important)
     </span>
   </a>
   
@@ -963,27 +1280,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-branch--version-targeting" class="md-nav__link">
+  <a href="#-next-steps" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚙️ Branch / Version Targeting
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-tips" class="md-nav__link">
-    <span class="md-ellipsis">
-      🧠 Tips
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-resources" class="md-nav__link">
-    <span class="md-ellipsis">
-      📚 Resources
+      🚀 Next Steps
     </span>
   </a>
   
@@ -1005,209 +1304,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../zurg/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Zurg
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Deployment
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
-            <span class="md-nav__icon md-icon"></span>
-            Deployment
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Overview
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/docker/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Docker
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/portainer/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Portainer
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/unraid/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Unraid
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/wsl/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    WSL
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/proxmox/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Proxmox
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/synology/" class="md-nav__link">
+      <a href="../synology/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1229,7 +1326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/qnap/" class="md-nav__link">
+      <a href="../qnap/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1251,7 +1348,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/truenas/" class="md-nav__link">
+      <a href="../truenas/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1273,7 +1370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/dockge/" class="md-nav__link">
+      <a href="../dockge/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1801,6 +1898,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1809,19 +1908,130 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-configuration-settings-in-dmb_configjson" class="md-nav__link">
+  <a href="#-prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚙️ Configuration Settings in dmb_config.json
+      ✅ Prerequisites
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="⚙️ Configuration Settings in dmb_config.json">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-create-an-ubuntu-lxc-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐧 Create an Ubuntu LXC Container
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-lxc-configuration-for-docker--fuse-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ LXC Configuration for Docker + Fuse Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛠️ LXC Configuration for Docker + Fuse Support">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-configuration-key-descriptions" class="md-nav__link">
+  <a href="#-update-the-lxc-config-file" class="md-nav__link">
     <span class="md-ellipsis">
-      🔍 Configuration Key Descriptions
+      🔧 Update the LXC Config File
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-configure-host-bind-mount" class="md-nav__link">
+    <span class="md-ellipsis">
+      📂 Configure Host Bind Mount
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-make-the-mount-persistent-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      💾 Make the Mount Persistent (Recommended)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="💾 Make the Mount Persistent (Recommended)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-a-use-etcfstab-and-manually-set-the-mount-propagation-after-reboot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option A: Use /etc/fstab and manually set the mount propagation after reboot
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-b-automate-rshared-with-systemd-optional-but-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option B: Automate rshared with systemd (Optional, but recommended)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-add-and-configure-a-user-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      👤 Add and Configure a User (Required)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-define-the-directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      📁 Define the Directory Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-install-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐳 Install Docker
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-install-portainer-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚢 Install Portainer (Optional)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚢 Install Portainer (Optional)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-update-docker-bind-mount-important" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐳 Update Docker Bind Mount (Important)
     </span>
   </a>
   
@@ -1833,27 +2043,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-branch--version-targeting" class="md-nav__link">
+  <a href="#-next-steps" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚙️ Branch / Version Targeting
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-tips" class="md-nav__link">
-    <span class="md-ellipsis">
-      🧠 Tips
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-resources" class="md-nav__link">
-    <span class="md-ellipsis">
-      📚 Resources
+      🚀 Next Steps
     </span>
   </a>
   
@@ -1878,101 +2070,243 @@
   
 
 
-  <h1>Zilean</h1>
-
-<p>Zilean is a service that enables users to search for content sourced by <a href="https://github.com/debridmediamanager/">Debrid Media Manager</a> and shared by others. It can be configured as a Torznab indexer in various content applications, allowing seamless integration and content discovery. Additionally, Zilean can scrape data from a running Zurg instance and other Zilean instances. </p>
+<h1 id="-deploying-dmb-on-proxmox-lxc-container">🧱 Deploying DMB on Proxmox (LXC Container)<a class="headerlink" href="#-deploying-dmb-on-proxmox-lxc-container" title="Permanent link">#</a></h1>
+<p>This guide walks you through deploying <strong>DMB</strong> inside a lightweight <strong>Ubuntu-based LXC container</strong> on <strong>Proxmox VE</strong>.</p>
 <hr />
-<h2 id="-configuration-settings-in-dmb_configjson">⚙️ Configuration Settings in <code>dmb_config.json</code><a class="headerlink" href="#-configuration-settings-in-dmb_configjson" title="Permanent link">#</a></h2>
-<p>Below is a sample configuration for Zilean within the <code>dmb_config.json</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;zilean&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Zilean&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;repo_owner&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iPromKnight&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;repo_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;zilean&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;release_version_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;release_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v3.3.0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;branch_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;branch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;suppress_logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8182</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;auto_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;auto_update_interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;clear_on_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;exclude_dirs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/zilean/app/data&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;env_copy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/zilean/app/data/.env&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;destination&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/zilean/app/src/.env&quot;</span>
-<span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;platforms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;python&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;dotnet&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/zilean/app/zilean-api&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;config_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/zilean&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;config_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/zilean/app/data/settings.json&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;DOTNET_RUNNING_IN_CONTAINER&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;DOTNET_gcServer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;DOTNET_GCDynamicAdaptationMode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;DOTNET_SYSTEM_GLOBALIZATION_INVARIANT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;false&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;PYTHONUNBUFFERED&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;ASPNETCORE_URLS&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://+:{port}&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;PYTHONPATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/zilean/venv/lib/python3.11/site-packages&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;PATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/zilean/venv/bin:${PATH}&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;ZILEAN_PYTHON_PYLIB&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/usr/local/lib/libpython3.11.so.1.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;Zilean__Database__ConnectionString&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Host={postgres_host};Port={postgres_port};Database=zilean;Username={postgres_user};Password={postgres_password};Timeout=300;CommandTimeout=3600;&quot;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">},</span>
+<h2 id="-prerequisites">✅ Prerequisites<a class="headerlink" href="#-prerequisites" title="Permanent link">#</a></h2>
+<ul>
+<li>Proxmox VE installed</li>
+<li>Internet access on the host</li>
+<li>Basic knowledge of Proxmox shell and web UI</li>
+</ul>
+<hr />
+<h2 id="-create-an-ubuntu-lxc-container">🐧 Create an Ubuntu LXC Container<a class="headerlink" href="#-create-an-ubuntu-lxc-container" title="Permanent link">#</a></h2>
+<p>You can automate Ubuntu LXC creation with the following community script:</p>
+<div class="highlight"><pre><span></span><code>bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/ubuntu.sh<span class="k">)</span><span class="s2">&quot;</span>
 </code></pre></div>
-<h3 id="-configuration-key-descriptions">🔍 Configuration Key Descriptions<a class="headerlink" href="#-configuration-key-descriptions" title="Permanent link">#</a></h3>
-<ul>
-<li><strong><code>enabled</code></strong>: Whether to start the Zilean service.</li>
-<li><strong><code>process_name</code></strong>: Used in logs and process tracking.</li>
-<li><strong><code>repo_owner</code></strong> / <strong><code>repo_name</code></strong>: GitHub repo to pull from.</li>
-<li><strong><code>release_version_enabled</code></strong> / <strong><code>release_version</code></strong>: Use a tagged release if enabled.</li>
-<li><strong><code>branch_enabled</code></strong> / <strong><code>branch</code></strong>: Use a specific branch if enabled.</li>
-<li><strong><code>suppress_logging</code></strong>: If <code>true</code>, disables log output for this service.</li>
-<li><strong><code>log_level</code></strong>: Logging verbosity (e.g., <code>DEBUG</code>, <code>INFO</code>).</li>
-<li><strong><code>host</code></strong>: IP address for the Zilean service to bind to.</li>
-<li><strong><code>port</code></strong>: Port the Zilean API is exposed on.</li>
-<li><strong><code>auto_update</code></strong>: Enables automatic self-updates.</li>
-<li><strong><code>auto_update_interval</code></strong>: How often (in hours) to check for updates.</li>
-<li><strong><code>clear_on_update</code></strong>: Clears build artifacts or cache during updates.</li>
-<li><strong><code>exclude_dirs</code></strong>: Prevents specific directories from being affected by updates when using <code>clear_on_update</code></li>
-<li><strong><code>env_copy</code></strong>: Paths to copy a <code>.env</code> file from source to destination for runtime support.</li>
-<li><strong><code>platforms</code></strong>: Required environments—Zilean uses both .NET and Python.</li>
-<li><strong><code>command</code></strong>: The binary or command used to launch Zilean.</li>
-<li><strong><code>config_dir</code></strong> / <strong><code>config_file</code></strong>: Where configuration files are stored and loaded.</li>
-<li><strong><code>env</code></strong>: Dictionary of environment variables passed at runtime, including:</li>
-<li><strong><code>DOTNET_RUNNING_IN_CONTAINER</code></strong>: Informs .NET that it is containerized.</li>
-<li><strong><code>DOTNET_gcServer</code></strong>: Enables server-mode garbage collection.</li>
-<li><strong><code>DOTNET_GCDynamicAdaptationMode</code></strong>: Adjusts GC behavior adaptively.</li>
-<li><strong><code>DOTNET_SYSTEM_GLOBALIZATION_INVARIANT</code></strong>: Controls globalization features.</li>
-<li><strong><code>PYTHONUNBUFFERED</code></strong>: Ensures Python output is unbuffered.</li>
-<li><strong><code>ASPNETCORE_URLS</code></strong>: Specifies ASP.NET Core server bind address.</li>
-<li><strong><code>PYTHONPATH</code></strong>: Adds Python libraries to runtime path.</li>
-<li><strong><code>PATH</code></strong>: Prepends Python virtual environment binaries.</li>
-<li><strong><code>ZILEAN_PYTHON_PYLIB</code></strong>: Full path to the Python shared object.</li>
-<li><strong><code>Zilean__Database__ConnectionString</code></strong>: Connection string for PostgreSQL.</li>
-</ul>
+<div class="admonition note">
+<p class="admonition-title">This will download and install an Ubuntu container in Proxmox.</p>
+</div>
 <hr />
-<h2 id="-branch--version-targeting">⚙️ Branch / Version Targeting<a class="headerlink" href="#-branch--version-targeting" title="Permanent link">#</a></h2>
-<p>You can control which version or branch of Zilean is deployed by setting:</p>
-<ul>
-<li><code>branch_enabled: true</code> and specifying a <code>branch</code></li>
-<li>or <code>release_version_enabled: true</code> and specifying a <code>release_version</code></li>
-</ul>
+<h2 id="-lxc-configuration-for-docker--fuse-support">🛠️ LXC Configuration for Docker + Fuse Support<a class="headerlink" href="#-lxc-configuration-for-docker--fuse-support" title="Permanent link">#</a></h2>
+<p>To ensure DMB works correctly inside your LXC container (especially with Docker, rclone, and bind mounts), you’ll need to update both the <strong>container config</strong>, the <strong>Proxmox host</strong>, and optionally configure persistence across reboots.</p>
 <hr />
-<h2 id="-tips">🧠 Tips<a class="headerlink" href="#-tips" title="Permanent link">#</a></h2>
-<ul>
-<li>The first-time run of Zilean can take a long time; see the <a href="../../faq/zilean/#why-is-zilean-spamming-my-logs">Zilean FAQ</a> for more info.</li>
-<li>Logs from Zilean can be accessed via DMB’s Frontend or directly from <code>/log/zilean.log</code>.</li>
-<li>If Zilean fails to bind, check for existing services on port <code>8182</code>.</li>
-<li>Use the <code>clear_on_update</code> and <code>exclude_dirs</code> settings to preserve persistent data.</li>
-</ul>
+<h3 id="-update-the-lxc-config-file">🔧 Update the LXC Config File<a class="headerlink" href="#-update-the-lxc-config-file" title="Permanent link">#</a></h3>
+<div class="admonition note">
+<p class="admonition-title"><code>&lt;CTID&gt;</code> is the container ID.</p>
+</div>
+<ol>
+<li>
+<p><strong>Stop the container:</strong></p>
+<div class="highlight"><pre><span></span><code>pct<span class="w"> </span>stop<span class="w"> </span>&lt;CTID&gt;
+</code></pre></div>
+</li>
+<li>
+<p><strong>Edit the container config file:</strong></p>
+<div class="highlight"><pre><span></span><code>nano<span class="w"> </span>/etc/pve/lxc/&lt;CTID&gt;.conf
+</code></pre></div>
+</li>
+<li>
+<p><strong>Ensure the following lines are present:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="na">features</span><span class="o">:</span><span class="w"> </span><span class="s">nesting=1</span>
+<span class="na">lxc.cgroup2.devices.allow</span><span class="o">:</span><span class="w"> </span><span class="s">a</span>
+<span class="na">lxc.cgroup2.devices.allow</span><span class="o">:</span><span class="w"> </span><span class="s">c 10:229 rwm</span>
+<span class="na">lxc.mount.entry</span><span class="o">:</span><span class="w"> </span><span class="s">/dev/fuse dev/fuse none bind,create=file</span>
+<span class="na">lxc.mount.entry</span><span class="o">:</span><span class="w"> </span><span class="s">/mnt/docker-mounts mnt/docker-mounts none bind,create=dir</span>
+<span class="na">lxc.apparmor.profile</span><span class="o">:</span><span class="w"> </span><span class="s">unconfined</span>
+</code></pre></div>
+</li>
+<li>
+<p><strong>Restart the container:</strong></p>
+<div class="highlight"><pre><span></span><code>pct<span class="w"> </span>start<span class="w"> </span>&lt;CTID&gt;
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title"><code>systemctl restart pve-container@&lt;CTID&gt;</code> may need to be used for changes to apply</p>
+</div>
+</li>
+</ol>
 <hr />
-<h2 id="-resources">📚 Resources<a class="headerlink" href="#-resources" title="Permanent link">#</a></h2>
+<h3 id="-configure-host-bind-mount">📂 Configure Host Bind Mount<a class="headerlink" href="#-configure-host-bind-mount" title="Permanent link">#</a></h3>
+<ol>
+<li>
+<p>On the <strong>Proxmox host</strong>, create the mount target and bind it:</p>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>/mnt/docker-mounts
+mount<span class="w"> </span>--bind<span class="w"> </span>/mnt/docker-mounts<span class="w"> </span>/mnt/docker-mounts
+mount<span class="w"> </span>--make-rshared<span class="w"> </span>/mnt/docker-mounts
+</code></pre></div>
+</li>
+</ol>
+<hr />
+<h3 id="-make-the-mount-persistent-recommended">💾 Make the Mount Persistent (Recommended)<a class="headerlink" href="#-make-the-mount-persistent-recommended" title="Permanent link">#</a></h3>
+<div class="admonition tip">
+<p class="admonition-title">This ensures the bind mount is restored after reboots.</p>
+</div>
+<h4 id="option-a-use-etcfstab-and-manually-set-the-mount-propagation-after-reboot">Option A: Use <code>/etc/fstab</code> and manually set the mount propagation after reboot<a class="headerlink" href="#option-a-use-etcfstab-and-manually-set-the-mount-propagation-after-reboot" title="Permanent link">#</a></h4>
+<ol>
+<li>
+<p>Open the file:</p>
+<div class="highlight"><pre><span></span><code>nano<span class="w"> </span>/etc/fstab
+</code></pre></div>
+</li>
+<li>
+<p>Add this line at the bottom:</p>
+<div class="highlight"><pre><span></span><code>/mnt/docker-mounts<span class="w"> </span>/mnt/docker-mounts<span class="w"> </span>none<span class="w"> </span><span class="nb">bind</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">0</span>
+</code></pre></div>
+</li>
+<li>
+<p>After a reboot, paste the following </p>
+<div class="highlight"><pre><span></span><code>mount<span class="w"> </span>--make-rshared<span class="w"> </span>/mnt/docker-mounts
+</code></pre></div>
+</li>
+</ol>
+<hr />
+<h4 id="option-b-automate-rshared-with-systemd-optional-but-recommended">Option B: Automate <code>rshared</code> with <code>systemd</code> (Optional, but recommended)<a class="headerlink" href="#option-b-automate-rshared-with-systemd-optional-but-recommended" title="Permanent link">#</a></h4>
+<div class="admonition tip">
+<p class="admonition-title">This ensures the bind mount propagation is set after reboots.</p>
+</div>
+<p>To persist the <code>rshared</code> behavior across boots:</p>
+<ol>
+<li>
+<p>Create a new service file:</p>
+<div class="highlight"><pre><span></span><code>nano<span class="w"> </span>/etc/systemd/system/mnt-docker-mounts-rshared.service
+</code></pre></div>
+</li>
+<li>
+<p>Paste the following:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[Unit]</span>
+<span class="na">Description</span><span class="o">=</span><span class="s">Make /mnt/docker-mounts rshared</span>
+<span class="na">After</span><span class="o">=</span><span class="s">local-fs.target</span>
+<span class="na">RequiresMountsFor</span><span class="o">=</span><span class="s">/mnt/docker-mounts</span>
+
+<span class="k">[Service]</span>
+<span class="na">Type</span><span class="o">=</span><span class="s">oneshot</span>
+<span class="na">ExecStart</span><span class="o">=</span><span class="s">/bin/mount --make-rshared /mnt/docker-mounts</span>
+<span class="na">RemainAfterExit</span><span class="o">=</span><span class="s">true</span>
+
+<span class="k">[Install]</span>
+<span class="na">WantedBy</span><span class="o">=</span><span class="s">multi-user.target</span>
+</code></pre></div>
+</li>
+<li>
+<p>Reload systemd and enable the service:</p>
+<div class="highlight"><pre><span></span><code>systemctl<span class="w"> </span>daemon-reexec
+systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>mnt-docker-mounts-rshared.service
+</code></pre></div>
+</li>
+</ol>
+<hr />
+<h2 id="-add-and-configure-a-user-required">👤 Add and Configure a User (Required)<a class="headerlink" href="#-add-and-configure-a-user-required" title="Permanent link">#</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">DMB must be ran as any user other than root</p>
+</div>
+<p>If not already created, add a user (<code>ubuntu</code>) and configure passwordless sudo:</p>
+<div class="highlight"><pre><span></span><code>adduser<span class="w"> </span>ubuntu
+usermod<span class="w"> </span>-aG<span class="w"> </span>sudo<span class="w"> </span>ubuntu
+
+<span class="c1"># Enable passwordless sudo:</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ubuntu ALL=(ALL) NOPASSWD:ALL&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/etc/sudoers.d/ubuntu
+chmod<span class="w"> </span><span class="m">440</span><span class="w"> </span>/etc/sudoers.d/ubuntu
+</code></pre></div>
+<p>To find the UID and GID (needed for <code>PUID</code> and <code>PGID</code> in your DMB config):
+<div class="highlight"><pre><span></span><code>id<span class="w"> </span>ubuntu
+</code></pre></div></p>
+<p>Example output:
+<div class="highlight"><pre><span></span><code><span class="nv">uid</span><span class="o">=</span><span class="m">1000</span><span class="o">(</span>ubuntu<span class="o">)</span><span class="w"> </span><span class="nv">gid</span><span class="o">=</span><span class="m">1000</span><span class="o">(</span>ubuntu<span class="o">)</span>
+</code></pre></div></p>
+<p>Use these values in your <code>dmb_config.json</code> or docker-compose:
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;puid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="nt">&quot;pgid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+</code></pre></div></p>
+<hr />
+<h2 id="-define-the-directory-structure">📁 Define the Directory Structure<a class="headerlink" href="#-define-the-directory-structure" title="Permanent link">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you already have a directory structure you'd like to use, then you can skip this step.</p>
+</div>
+<ol>
+<li>
+<p>Switch to the <code>ubuntu</code> user:</p>
+<div class="highlight"><pre><span></span><code>su<span class="w"> </span>ubuntu
+</code></pre></div>
+</li>
+<li>
+<p>Create a directory for docker in your user directory and change directories to docker.
+    <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mkdir<span class="w"> </span>docker<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>docker
+</code></pre></div></p>
+</li>
+<li>
+<p>Create the DMB directories.
+    <div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>DMB/config<span class="w"> </span>DMB/log<span class="w"> </span>DMB/Zurg/RD<span class="w"> </span>DMB/Riven/data<span class="w"> </span>DMB/Riven/mnt<span class="w"> </span>DMB/PostgreSQL/data<span class="w"> </span>DMB/pgAdmin4/data<span class="w"> </span>/DMB/Zilean/data
+</code></pre></div></p>
+</li>
+</ol>
+<hr />
+<h2 id="-install-docker">🐳 Install Docker<a class="headerlink" href="#-install-docker" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Run the official Docker install script:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://get.docker.com<span class="w"> </span>-o<span class="w"> </span>get-docker.sh
+sh<span class="w"> </span>get-docker.sh
+</code></pre></div>
+</li>
+<li>
+<p>After installing Docker, verify it:
+    <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>--version
+docker<span class="w"> </span>compose<span class="w"> </span>version
+</code></pre></div></p>
+</li>
+</ol>
+<hr />
+<h2 id="-install-portainer-optional">🚢 Install Portainer (Optional)<a class="headerlink" href="#-install-portainer-optional" title="Permanent link">#</a></h2>
+<p>If you want to manage Docker visually via Portainer:</p>
+<ol>
+<li>
+<p>Create the Portainer data volume:
+    <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>volume<span class="w"> </span>create<span class="w"> </span>portainer_data
+</code></pre></div></p>
+</li>
+<li>
+<p>Start the Portainer container:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+-p<span class="w"> </span><span class="m">8000</span>:8000<span class="w"> </span><span class="se">\</span>
+-p<span class="w"> </span><span class="m">9443</span>:9443<span class="w"> </span><span class="se">\</span>
+--name<span class="w"> </span>portainer<span class="w"> </span><span class="se">\</span>
+--restart<span class="o">=</span>always<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>/var/run/docker.sock:/var/run/docker.sock<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>portainer_data:/data<span class="w"> </span><span class="se">\</span>
+portainer/portainer-ce:latest
+</code></pre></div>
+</li>
+</ol>
+<p>You can now manage Docker containers via the browser at: <code>https://&lt;ip&gt;:9443</code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On the first run of Portainer, you need to access the Web UI quickly to create your initial administrator user, which is crucial for accessing and managing your Docker environment. </p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you can't access the UI after the initial setup, ensure the Portainer container is running and that the correct port is open. 
+You might need to restart the container if it timed out. </p>
+</div>
+<p>For more, see the <a href="../portainer/">Portainer Deployment Guide</a>.</p>
+<hr />
+<h3 id="-update-docker-bind-mount-important">🐳 Update Docker Bind Mount (Important)<a class="headerlink" href="#-update-docker-bind-mount-important" title="Permanent link">#</a></h3>
+<p>When launching DMB or your media server, make sure the following mount is used:</p>
+<p>Replace:
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/home/username/docker/DMB/Zurg/mnt:/data:shared</span>
+</code></pre></div></p>
+<p>With:
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/mnt/docker-mounts:/data:rshared</span>
+</code></pre></div></p>
+<div class="admonition tip">
+<p class="admonition-title">This ensures proper visibility between <code>zurg</code>, <code>rclone</code>, and your media server inside the LXC container.</p>
+</div>
+<hr />
+<h2 id="-next-steps">🚀 Next Steps<a class="headerlink" href="#-next-steps" title="Permanent link">#</a></h2>
+<p>Now that Docker (and optionally Portainer) are installed, continue with:</p>
 <ul>
-<li><a href="https://github.com/iPromKnight/zilean">Zilean GitHub Repository</a></li>
+<li><a href="../docker/">Deploy DMB via Docker Compose</a></li>
+<li><a href="../portainer/">Configure your stack with Portainer</a></li>
 </ul>
 
 
@@ -1980,6 +2314,9 @@
 
 
 
+
+  
+  
 
 
 
