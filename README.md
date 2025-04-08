@@ -7,6 +7,47 @@
     </picture>
   </a>
 </div>
+<div
+  align="center"
+  style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 1em;"
+>
+  <a href="https://github.com/I-am-PUID-0/DMB/stargazers">
+    <img
+      alt="GitHub Repo stars"
+      src="https://img.shields.io/github/stars/I-am-PUID-0/DMB?style=for-the-badge"
+    />
+  </a>
+  <a href="https://github.com/I-am-PUID-0/DMB/issues">
+    <img
+      alt="Issues"
+      src="https://img.shields.io/github/issues/I-am-PUID-0/DMB?style=for-the-badge"
+    />
+  </a>
+  <a href="https://github.com/I-am-PUID-0/DMB/blob/master/COPYING">
+    <img
+      alt="License"
+      src="https://img.shields.io/github/license/I-am-PUID-0/DMB?style=for-the-badge"
+    />
+  </a>
+  <a href="https://github.com/I-am-PUID-0/DMB/graphs/contributors">
+    <img
+      alt="Contributors"
+      src="https://img.shields.io/github/contributors/I-am-PUID-0/DMB?style=for-the-badge"
+    />
+  </a>
+  <a href="https://hub.docker.com/r/iampuid0/dmb">
+    <img
+      alt="Docker Pulls"
+      src="https://img.shields.io/docker/pulls/iampuid0/dmb?style=for-the-badge&logo=docker&logoColor=white"
+    />
+  </a>
+  <a href="https://discord.gg/8dqKUBtbp5">
+    <img
+      alt="Join Discord"
+      src="https://img.shields.io/badge/Join%20us%20on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white"
+    />
+  </a>
+</div>
 
 ## 📜 Description
 
