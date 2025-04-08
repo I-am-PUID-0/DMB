@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.6.0](https://github.com/I-am-PUID-0/DMB/compare/6.5.0...6.6.0) (2025-04-08)
+
+
+### ✨ Features
+
+* enable poetry-based release flow ([7e7d948](https://github.com/I-am-PUID-0/DMB/commit/7e7d948b42487df12f4183886834de9caeefaffd))
+
+
+### 🐛 Bug Fixes
+
+* **docker:** add libpq-dev and pkg-config to dependencies; remove requirements.txt ([5d61381](https://github.com/I-am-PUID-0/DMB/commit/5d61381d606d1e6325f918ea7da04b5109fbecb4))
+* **setup:** add validation for missing API key in Zurg instance setup ([9b96c30](https://github.com/I-am-PUID-0/DMB/commit/9b96c304cd388d5255e426c8d601b7da13bf6b08))
+
 ## [6.5.0](https://github.com/I-am-PUID-0/DMB/compare/6.4.0...6.5.0) (2025-04-07)
 
 
