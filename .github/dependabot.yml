@@ -26,3 +26,7 @@ updates:
     reviewers:
       - "I-am-PUID-0"
       
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    schedule:
+      interval: "weekly"
