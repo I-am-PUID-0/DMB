@@ -134,7 +134,7 @@ services:
       - /home/username/docker/DMB/Zurg/mnt:/data            ## rclone mount location from DMB must be shared to Plex container. Don't add to plex library
       - /home/username/docker/DMB/Riven/mnt:/mnt            ## Riven symlink location from DMB must be shared to Plex container. Add to plex library
     environment:
-      - TZ=${TZ}
+      - TZ=
       - PLEX_UID=                                           ## Same as PUID
       - PLEX_GID=                                           ## Same as PGID
       - PLEX_CLAIM=claimToken                               ## Need for the first run of Plex - get claimToken here https://www.plex.tv/claim/
