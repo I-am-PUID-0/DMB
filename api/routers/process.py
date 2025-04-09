@@ -14,6 +14,33 @@ process_router = APIRouter()
 versions = Versions()
 
 
+@process_router.get("/")
+async def fetch_process(process_name: str = Query(...), logger=Depends(get_logger)):
+    try:
+        if not process_name:
+            raise HTTPException(status_code=400, detail="process_name is required")
+
+        config = find_service_config(CONFIG_MANAGER.config, process_name)
+        if not config:
+            raise HTTPException(status_code=404, detail="Process not found")
+
+        config_key, instance_name = CONFIG_MANAGER.find_key_for_process(process_name)
+        version, _ = versions.version_check(
+            process_name=config.get("process_name"),
+            instance_name=instance_name,
+            key=config_key,
+        )
+
+        return {
+            "process_name": process_name,
+            "config": config,
+            "version": version,
+        }
+    except Exception as e:
+        logger.error(f"Failed to load process: {e}")
+        raise HTTPException(status_code=500, detail="Failed to load process")
+
+
 @process_router.get("/processes")
 async def fetch_processes():
     logger = (Depends(get_logger),)
