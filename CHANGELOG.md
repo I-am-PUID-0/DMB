@@ -1,5 +1,29 @@
 # Changelog
 
+## [6.7.0](https://github.com/I-am-PUID-0/DMB/compare/6.6.0...6.7.0) (2025-04-09)
+
+
+### ✨ Features
+
+* **api:** add fetch_process endpoint ([d86e385](https://github.com/I-am-PUID-0/DMB/commit/d86e385feed431a3ff0731fa3f433710695c7108))
+
+
+### 🐛 Bug Fixes
+
+* **workflows:** revert dependabot.ym; rtfm ([b1918d9](https://github.com/I-am-PUID-0/DMB/commit/b1918d9d1ee26036604c831598e071fb63233569))
+
+
+### 🤡 Other Changes
+
+* **workflows:** add devcontainers to dependabot.yml ([bc812e1](https://github.com/I-am-PUID-0/DMB/commit/bc812e1cf503c524d2c07e179b78cfba2e6d8362))
+* **workflows:** update dependabot.yml ([bc6cfee](https://github.com/I-am-PUID-0/DMB/commit/bc6cfeed7c921ff6503e47d608a0dab454457947))
+
+
+### 📖 Documentation
+
+* **readme:** add badges for stars, issues, license, contributors, Docker pulls, and Discord ([83ebef1](https://github.com/I-am-PUID-0/DMB/commit/83ebef1486f00a84bb3dc9c51cbb41a878c7672b))
+* **readme:** update plex example ([f680386](https://github.com/I-am-PUID-0/DMB/commit/f68038651b3cbe3dad6c3619fe2abef02474b155))
+
 ## [6.6.0](https://github.com/I-am-PUID-0/DMB/compare/6.5.0...6.6.0) (2025-04-08)
 
 

@@ -1,6 +1,6 @@
 [project]
 name = "DMB"
-version = "6.6.0"
+version = "6.7.0"
 description = "Debrid Media Bridge (DMB) is an all-in-one, containerized platform for managing and automating media workflows using premium debrid services like Real-Debrid."
 authors = [
     {name = "I-am-PUID-0",email = "36779668+I-am-PUID-0@users.noreply.github.com"}
