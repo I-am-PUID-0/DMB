@@ -1564,6 +1564,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#-whats-the-difference-between-using-rclonezurg-mounts-vs-symlinks-riven-etc-in-my-media-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔗 What’s the difference between using rclone/Zurg mounts vs. symlinks (Riven, etc.) in my media server?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔗 What’s the difference between using rclone/Zurg mounts vs. symlinks (Riven, etc.) in my media server?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-direct-mount-zurgrclone" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Direct Mount (Zurg/rclone)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-symlinked-mount-via-riven" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Symlinked Mount (via Riven)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1941,6 +1974,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#-whats-the-difference-between-using-rclonezurg-mounts-vs-symlinks-riven-etc-in-my-media-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔗 What’s the difference between using rclone/Zurg mounts vs. symlinks (Riven, etc.) in my media server?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔗 What’s the difference between using rclone/Zurg mounts vs. symlinks (Riven, etc.) in my media server?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-direct-mount-zurgrclone" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Direct Mount (Zurg/rclone)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-symlinked-mount-via-riven" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Symlinked Mount (via Riven)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2010,6 +2076,43 @@
 <hr />
 <h3 id="-can-i-monitor-the-system">📈 Can I monitor the system?<a class="headerlink" href="#-can-i-monitor-the-system" title="Permanent link">#</a></h3>
 <p>Yes — the DMB Frontend shows real-time logs, service status, and allows interactive config management. You can also access logs from the filesystem or via the DMB API (see <a href="../../api/">API docs</a>).</p>
+<hr />
+<h3 id="-whats-the-difference-between-using-rclonezurg-mounts-vs-symlinks-riven-etc-in-my-media-server">🔗 What’s the difference between using rclone/Zurg mounts vs. symlinks (Riven, etc.) in my media server?<a class="headerlink" href="#-whats-the-difference-between-using-rclonezurg-mounts-vs-symlinks-riven-etc-in-my-media-server" title="Permanent link">#</a></h3>
+<p>DMB supports <strong>two methods of exposing content to your media server</strong>, each with its own use case:</p>
+<h4 id="1-direct-mount-zurgrclone">1. <strong>Direct Mount (Zurg/rclone)</strong><a class="headerlink" href="#1-direct-mount-zurgrclone" title="Permanent link">#</a></h4>
+<p>Mounting the WebDAV or remote storage directly using <code>rclone</code> (which often connects to a Zurg instance) gives you full access to all files in your debrid account.</p>
+<p><strong>✅ Pros:</strong></p>
+<ul>
+<li>Access to <strong>all debrid content</strong>, including content not added by Riven</li>
+<li>Instant visibility of new files from your debrid service</li>
+<li>Useful for manual browsing or catching content missed by automation</li>
+<li>Allows content orchestration with <a href="https://github.com/debridmediamanager/debrid-media-manager">Debrid Media Manager</a> (DMM)</li>
+<li>Less complexity when sharing mounts across the host or network</li>
+</ul>
+<p><strong>⚠️ Cons:</strong></p>
+<ul>
+<li>File/folder naming is often <strong>inconsistent or messy</strong></li>
+<li>Can lead to <strong>Plex/Emby/Jellyfin misidentification</strong></li>
+<li>Media scanners may perform poorly due to large, unorganized libraries</li>
+</ul>
+<h4 id="2-symlinked-mount-via-riven">2. <strong>Symlinked Mount (via Riven)</strong><a class="headerlink" href="#2-symlinked-mount-via-riven" title="Permanent link">#</a></h4>
+<p>Riven creates cleanly named <strong>symlinks</strong> pointing to content in the underlying Zurg/rclone mount (usually in a shared directory like <code>/data</code>). </p>
+<p>These symlinks are stored in a separate directory (like <code>/mnt</code>) and represent only <strong>curated content</strong> Riven has identified and processed.</p>
+<p><strong>✅ Pros:</strong></p>
+<ul>
+<li>Only includes content that’s been properly scraped and sorted</li>
+<li>Directory structure and filenames are optimized for media servers</li>
+<li>More accurate <strong>library scans</strong> and faster detection</li>
+<li>Ideal for fully automated Plex/Emby/Jellyfin setups</li>
+</ul>
+<p><strong>⚠️ Cons:</strong></p>
+<ul>
+<li>Only includes what Riven has processed — not your full debrid library</li>
+<li>Requires Riven to stay running and correctly configured</li>
+<li>If Riven settings are misconfigured, some content may not appear</li>
+<li>If Riven's database is lost or reset, all content must be scraped and added again</li>
+<li>Symlinks add complexity by requiring your media server to share the same exact container paths as defined in DMB's <code>dmb_config.json</code> — e.g., <code>/mnt</code> &amp; <code>/data</code> must exist <strong>exactly</strong> the same inside your media server container or on the host when the media server is not containerized  </li>
+</ul>
 <hr />
 <h2 id="-related-pages">📎 Related Pages<a class="headerlink" href="#-related-pages" title="Permanent link">#</a></h2>
 <ul>
