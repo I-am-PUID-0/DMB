@@ -2092,9 +2092,9 @@
 psql<span class="w"> </span>-U<span class="w"> </span>DMB<span class="w"> </span>-d<span class="w"> </span>riven
 </code></pre></div>
 <h3 id="-drop-the-riven-database">🗑️ Drop the Riven Database<a class="headerlink" href="#-drop-the-riven-database" title="Permanent link">#</a></h3>
-<blockquote>
-<p>⚠️ This will permanently delete the Riven database. Be sure you’ve backed up anything important.</p>
-</blockquote>
+<div class="admonition warning">
+<p class="admonition-title">This will permanently delete the Riven database. Be sure you’ve backed up anything important.</p>
+</div>
 <p>From the host (one-liner):
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>DMB<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>DMB<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;DROP DATABASE riven;&#39;</span>
 </code></pre></div></p>

@@ -970,6 +970,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#-optimizing-rclone-for-media-server-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      📚 Optimizing rclone for Media Server Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📚 Optimizing rclone for Media Server Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-settings-description" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌐 Settings Description
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-buffer-size-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚡ Buffer Size Tips
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#-accessing-rclone-inside-the-container" class="md-nav__link">
     <span class="md-ellipsis">
       💻 Accessing rclone Inside the Container
@@ -1977,6 +2010,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#-optimizing-rclone-for-media-server-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      📚 Optimizing rclone for Media Server Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📚 Optimizing rclone for Media Server Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-settings-description" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌐 Settings Description
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-buffer-size-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚡ Buffer Size Tips
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#-accessing-rclone-inside-the-container" class="md-nav__link">
     <span class="md-ellipsis">
       💻 Accessing rclone Inside the Container
@@ -2142,6 +2208,211 @@ Example:
 This enables advanced control without modifying CLI or config files.</p>
 <p>For more info, see <a href="https://rclone.org/docs/#environment-variables">rclone docs</a>.</p>
 <hr />
+<h2 id="-optimizing-rclone-for-media-server-usage">📚 Optimizing rclone for Media Server Usage<a class="headerlink" href="#-optimizing-rclone-for-media-server-usage" title="Permanent link">#</a></h2>
+<p>To improve streaming performance and reduce excessive bandwidth usage when using rclone with media servers (e.g., Plex, Jellyfin, Emby), consider tuning the mount behavior using additional flags.</p>
+<div class="admonition warning">
+<p class="admonition-title">VFS cache will use hard drive space, so ensure you set an appropriate max size for your system</p>
+</div>
+<p>You can apply these flags in three ways:</p>
+<ol>
+<li>
+<p><strong>As environment variables</strong> in Docker Compose or <code>.env</code> (Recommended):</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Applying the below will make these settings applicable to all rclone instances.</p>
+<p>If you prefer to apply settings per-instance, then see option 2 or 3.</p>
+</div>
+<div class="highlight"><pre><span></span><code>RCLONE_VFS_CACHE_MODE=writes
+RCLONE_VFS_READ_CHUNK_SIZE=1M
+RCLONE_VFS_READ_CHUNK_SIZE_LIMIT=32M
+RCLONE_BUFFER_SIZE=64M
+RCLONE_DIR_CACHE_TIME=72h
+RCLONE_VFS_CACHE_MAX_AGE=6h
+RCLONE_VFS_CACHE_MAX_SIZE=100G
+RCLONE_ATTR_TIMEOUT=1s
+RCLONE_TPSLIMIT=10
+RCLONE_TPSLIMIT_BURST=10
+</code></pre></div>
+</li>
+<li>
+<p><strong>By modifying the <code>command</code> list</strong> in the <code>dmb_config.json</code> rclone instance:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>command</code> field is empty by default (<code>"command": []</code>) because DMB generates the rclone command dynamically during setup and applies it in memory.</p>
+<p>If you add custom arguments to the <code>command</code> list, it will override the auto-generated defaults. </p>
+<p>You will be responsible for maintaining all required options, such as <code>--mount-name</code> and <code>--mount-dir</code>. </p>
+<p>To revert to default behavior, simply clear the field again by setting <code>"command": []</code>.</p>
+</div>
+<p>Example default command DMB generates:
+  <div class="highlight"><pre><span></span><code><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="s2">&quot;rclone&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;mount&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;rclone_RD:&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;/data/rclone_RD&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--config&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/config/rclone.config&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--uid=1000&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--gid=1000&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--allow-other&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--poll-interval=0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--dir-cache-time=10m&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--allow-non-empty&quot;</span>
+<span class="p">]</span>
+</code></pre></div></p>
+<p>To apply performance optimizations:
+  <div class="highlight"><pre><span></span><code><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="s2">&quot;rclone&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;mount&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;rclone_RD:&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;/data/rclone_RD&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--config&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/config/rclone.config&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--uid=1000&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--gid=1000&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--allow-other&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--poll-interval=0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--dir-cache-time=72h&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--allow-non-empty&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--vfs-cache-mode=writes&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--vfs-read-chunk-size=1M&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--vfs-read-chunk-size-limit=32M&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--buffer-size=64M&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--vfs-cache-max-age=6h&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--vfs-cache-max-size=100G&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--attr-timeout=1s&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--tpslimit=10&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--tpslimit-burst=10&quot;</span>
+<span class="p">]</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Using the DMB Frontend</strong> to edit the instance config and add these options under <code>command</code>.</p>
+<ul>
+<li>Use the <strong>"Apply in Memory"</strong> button to test changes without saving. This temporarily updates the in-memory config.</li>
+<li>Use the <strong>"Save to File"</strong> button to persist changes to <code>dmb_config.json</code>.</li>
+<li>After either action, press the <strong>"Restart"</strong> button for the changes to take effect.</li>
+</ul>
+</li>
+</ol>
+<h3 id="-settings-description">🌐 Settings Description<a class="headerlink" href="#-settings-description" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--config</code></td>
+<td><code>/config/rclone.config</code></td>
+<td>Path to the rclone config file generated by DMB.</td>
+</tr>
+<tr>
+<td><code>--uid</code></td>
+<td><code>1000</code></td>
+<td>UID to mount as (Linked to <code>PUID</code>).</td>
+</tr>
+<tr>
+<td><code>--gid</code></td>
+<td><code>1000</code></td>
+<td>GID to mount as (Linked to <code>PGID</code>).</td>
+</tr>
+<tr>
+<td><code>--allow-other</code></td>
+<td><em>(enabled)</em></td>
+<td>Allows other processes (like Plex) to access the mount.</td>
+</tr>
+<tr>
+<td><code>--poll-interval</code></td>
+<td><code>0</code></td>
+<td>Disables polling for changes (not supported by debrid remotes).</td>
+</tr>
+<tr>
+<td><code>--dir-cache-time</code></td>
+<td><code>10m</code></td>
+<td>Cache directory structure for 10 minutes.</td>
+</tr>
+<tr>
+<td><code>--allow-non-empty</code></td>
+<td><em>(enabled)</em></td>
+<td>Allows mounting to non-empty directories.</td>
+</tr>
+<tr>
+<td><code>--vfs-cache-mode</code></td>
+<td><code>writes</code></td>
+<td>Allows writing &amp; deletion, necessary for media server interaction.</td>
+</tr>
+<tr>
+<td><code>--vfs-read-chunk-size</code></td>
+<td><code>1M</code></td>
+<td>Minimizes initial bandwidth usage per file during scans.</td>
+</tr>
+<tr>
+<td><code>--vfs-read-chunk-size-limit</code></td>
+<td><code>32M</code></td>
+<td>Allows efficient chunking during actual playback.</td>
+</tr>
+<tr>
+<td><code>--buffer-size</code></td>
+<td><code>64M</code></td>
+<td>Buffers streaming into RAM per open file (adjust to your available RAM).</td>
+</tr>
+<tr>
+<td><code>--dir-cache-time</code></td>
+<td><code>72h</code></td>
+<td>Caches directory structure, reducing API calls.</td>
+</tr>
+<tr>
+<td><code>--vfs-cache-max-age</code></td>
+<td><code>6h</code></td>
+<td>Removes old cache files to preserve space.</td>
+</tr>
+<tr>
+<td><code>--vfs-cache-max-size</code></td>
+<td><code>100G</code></td>
+<td>Limits total disk cache size.</td>
+</tr>
+<tr>
+<td><code>--attr-timeout</code></td>
+<td><code>1s</code></td>
+<td>Prevents stale attribute caching.</td>
+</tr>
+<tr>
+<td><code>--tpslimit</code> / <code>--tpslimit-burst</code></td>
+<td><code>10</code></td>
+<td>Prevents overwhelming debrid APIs with too many requests.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="-buffer-size-tips">⚡ Buffer Size Tips<a class="headerlink" href="#-buffer-size-tips" title="Permanent link">#</a></h3>
+<p>Adjust <code>--buffer-size</code> based on the system RAM:</p>
+<table>
+<thead>
+<tr>
+<th>System RAM</th>
+<th>Recommended <code>--buffer-size</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt; 4 GB</td>
+<td><code>16M</code></td>
+</tr>
+<tr>
+<td>4–8 GB</td>
+<td><code>32M–64M</code></td>
+</tr>
+<tr>
+<td>8–16 GB</td>
+<td><code>128M–256M</code></td>
+</tr>
+<tr>
+<td>&gt; 16 GB</td>
+<td><code>256M–512M+</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
 <h2 id="-accessing-rclone-inside-the-container">💻 Accessing rclone Inside the Container<a class="headerlink" href="#-accessing-rclone-inside-the-container" title="Permanent link">#</a></h2>
 <p>To run rclone commands manually:
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>DMB<span class="w"> </span>/bin/bash
@@ -2153,7 +2424,7 @@ rclone<span class="w"> </span>mount<span class="w"> </span>rclone_RD:<span class
 <ul>
 <li>Mounts are bind-mounted into the container by default.</li>
 <li>If you mount <code>/data</code> to the host, you will see all Zurg-fetched content.</li>
-<li>Use the <code>ZURG_LOG_LEVEL</code> or <code>RCLONE_LOG_LEVEL</code> env vars to control verbosity.</li>
+<li>Use the <code>RCLONE_LOG_LEVEL</code> env var to control verbosity.</li>
 </ul>
 <hr />
 <h2 id="-resources">📚 Resources<a class="headerlink" href="#-resources" title="Permanent link">#</a></h2>
