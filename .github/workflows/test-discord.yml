@@ -17,7 +17,7 @@ jobs:
           VERSION: "100.100.100"
         run: |
           RELEASE_NOTES=$(awk '/^## Version \[${{ env.VERSION }}\]/ {flag=1; next} /^## Version \[/ {flag=0} flag' CHANGELOG.md)
-          ANNOUNCEMENT_BODY="<@&1360241608649605240>\n🚀 **New Release: Version [${{ env.VERSION }}]**${RELEASE_NOTES}"
+          ANNOUNCEMENT_BODY="<@&1360241608649605240>\\n\\n🚀 **New Release: Version [${{ env.VERSION }}]**${RELEASE_NOTES}"
           ESCAPED_BODY=$(echo "$ANNOUNCEMENT_BODY" | jq -Rsa .)
           curl -H "Content-Type: application/json" \
                -d "{\"content\": $ESCAPED_BODY, \"flags\": 4}" \
