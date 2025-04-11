@@ -1,5 +1,19 @@
 # Changelog
 
+## [6.7.1](https://github.com/I-am-PUID-0/DMB/compare/6.7.0...6.7.1) (2025-04-11)
+
+
+### 🐛 Bug Fixes
+
+* **postgres:** pgagent process ([ee27aba](https://github.com/I-am-PUID-0/DMB/commit/ee27aba0aa92466bcdfe88245ca0a7ba254dde0b))
+* **workflows:** escape newlines in Discord announcement body ([a04def8](https://github.com/I-am-PUID-0/DMB/commit/a04def83f4109aaeeefd7eb58ab6d7f298cd608b))
+* **workflows:** remove unnecessary newlines in Discord announcement body ([2a74d62](https://github.com/I-am-PUID-0/DMB/commit/2a74d627ae06ff18dd1416f5644008d5e9143a86))
+
+
+### 🤡 Other Changes
+
+* **workflows:** update announcement body format for Discord notifications ([c4e6af1](https://github.com/I-am-PUID-0/DMB/commit/c4e6af13bf43092cfa4c883494ddb6a4815fcbe9))
+
 ## [6.7.0](https://github.com/I-am-PUID-0/DMB/compare/6.6.0...6.7.0) (2025-04-09)
 
 
