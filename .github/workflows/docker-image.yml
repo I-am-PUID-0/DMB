@@ -272,7 +272,7 @@ jobs:
           VERSION: ${{ needs.build-and-push.outputs.version }}
         run: |
           RELEASE_NOTES=$(sed -n '/^## \[[0-9]\+\.[0-9]\+\.[0-9]\+\](/,$p' CHANGELOG.md | sed -n '1!{/^## \[/q;p}')
-          ANNOUNCEMENT_BODY="<@&1360241608649605240>\\n\\n🚀 **New Release: Version [${{ env.VERSION }}]**${RELEASE_NOTES}"
+          ANNOUNCEMENT_BODY="<@&1360241608649605240> 🚀 **New Release: Version [${{ env.VERSION }}]**${RELEASE_NOTES}"
           ESCAPED_BODY=$(echo "$ANNOUNCEMENT_BODY" | jq -Rsa .)
           curl -H "Content-Type: application/json" \
                -d "{\"content\": $ESCAPED_BODY, \"flags\": 4}" \
