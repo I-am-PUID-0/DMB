@@ -2073,6 +2073,12 @@
 <li>Any data directories (e.g., <code>/riven/backend/data</code>, <code>/zilean/app/data</code>, <code>/pgadmin/data</code>, <code>postgres_data</code>)</li>
 </ul>
 <p>Regularly backing these up allows you to quickly restore your environment.</p>
+<div class="admonition warning">
+<p class="admonition-title">Exclude mounted paths from your backup</p>
+<p>Be sure to exclude any mounted paths (e.g., /data/rclone_RD) when backing up. 
+Otherwise, you’ll unintentionally download and archive the entire contents of your debrid services, which can be massive and unnecessary.</p>
+<p>Don’t believe me? Just ask Mr. Krabs.</p>
+</div>
 <hr />
 <h3 id="-can-i-monitor-the-system">📈 Can I monitor the system?<a class="headerlink" href="#-can-i-monitor-the-system" title="Permanent link">#</a></h3>
 <p>Yes — the DMB Frontend shows real-time logs, service logs, service status, and allows interactive config management. You can also access logs from the filesystem or via the DMB API (see <a href="../../api/">API docs</a>).</p>
