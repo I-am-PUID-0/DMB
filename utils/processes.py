@@ -51,7 +51,8 @@ class ProcessHandler:
         suppress_logging=False,
         env=None,
     ):
-        skip_setup = {}
+        skip_setup = {"pgAgent"}
+        key = None
 
         if process_name in skip_setup:
             self.logger.info(
@@ -167,6 +168,10 @@ class ProcessHandler:
                 )
                 self.subprocess_loggers[process_name] = subprocess_logger
 
+            # success, error = self._check_immediate_exit_and_log(process, process_name)
+            # if not success:
+            #    return False, error
+
             self.logger.info(f"{process_name} process started with PID: {process.pid}")
             self.processes[process.pid] = {
                 "name": process_name,
@@ -181,6 +186,23 @@ class ProcessHandler:
 
         except Exception as e:
             return False, f"Error running subprocess for {process_name}: {e}"
+
+    def _check_immediate_exit_and_log(self, process, process_name):
+        time.sleep(0.5)
+        if process.poll() is not None:
+            stdout_output = process.stdout.read().strip()
+            stderr_output = process.stderr.read().strip()
+
+            self.logger.error(
+                f"{process_name} exited immediately with return code {process.returncode}"
+            )
+            if stdout_output:
+                self.logger.error(f"{process_name} stdout:\n{stdout_output}")
+            if stderr_output:
+                self.logger.error(f"{process_name} stderr:\n{stderr_output}")
+            return False, f"{process_name} failed to start. See logs for details."
+
+        return True, None
 
     def reap_zombies(self, signum, frame):
         while True:

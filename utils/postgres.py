@@ -435,12 +435,14 @@ def list_database_sizes(postgres_host, postgres_port, postgres_user, postgres_pa
 
 def start_pgagent(process_handler, postgres_user, postgres_host, postgres_port):
     try:
-        pgagent_command = f"pgagent host={postgres_host} port={postgres_port} -f dbname=postgres user={postgres_user}"
-        process_handler.start_process(
+        pgagent_command = f'pgagent -f "host={postgres_host} port={postgres_port} dbname=postgres user={postgres_user}"'
+        success, error = process_handler.start_process(
             "pgAgent",
-            f"{postgres_host}:{postgres_port}",
+            "/usr/bin/",
             ["/bin/bash", "-c", pgagent_command],
         )
+        if not success:
+            return False, error
         return True, None
     except Exception as e:
         return False, f"Error starting pgAgent daemon: {e}"
