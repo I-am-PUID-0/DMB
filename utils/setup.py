@@ -702,7 +702,7 @@ def rclone_setup():
                     f"--gid={group_id}",
                     "--allow-other",
                     "--poll-interval=0",
-                    "--dir-cache-time=10m",
+                    "--dir-cache-time=10s",
                     "--allow-non-empty",
                 ]
                 logger.debug(
