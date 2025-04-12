@@ -2222,7 +2222,7 @@ This enables advanced control without modifying CLI or config files.</p>
 <p>Applying the below will make these settings applicable to all rclone instances.</p>
 <p>If you prefer to apply settings per-instance, then see option 2 or 3.</p>
 </div>
-<div class="highlight"><pre><span></span><code>RCLONE_VFS_CACHE_MODE=writes
+<div class="highlight"><pre><span></span><code>RCLONE_VFS_CACHE_MODE=full
 RCLONE_VFS_READ_CHUNK_SIZE=1M
 RCLONE_VFS_READ_CHUNK_SIZE_LIMIT=32M
 RCLONE_BUFFER_SIZE=64M
@@ -2271,7 +2271,7 @@ RCLONE_TPSLIMIT_BURST=10
 <span class="w">  </span><span class="s2">&quot;--poll-interval=0&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--dir-cache-time=72h&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--allow-non-empty&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s2">&quot;--vfs-cache-mode=writes&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--vfs-cache-mode=full&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--vfs-read-chunk-size=1M&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--vfs-read-chunk-size-limit=32M&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--buffer-size=64M&quot;</span><span class="p">,</span>
@@ -2339,7 +2339,7 @@ RCLONE_TPSLIMIT_BURST=10
 </tr>
 <tr>
 <td><code>--vfs-cache-mode</code></td>
-<td><code>writes</code></td>
+<td><code>full</code></td>
 <td>Allows writing &amp; deletion, necessary for media server interaction.</td>
 </tr>
 <tr>
