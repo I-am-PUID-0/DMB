@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.7.2](https://github.com/I-am-PUID-0/DMB/compare/6.7.1...6.7.2) (2025-04-12)
+
+
+### 🐛 Bug Fixes
+
+* **rclone:** update dir-cache-time to use 10s ([5257cdb](https://github.com/I-am-PUID-0/DMB/commit/5257cdbe9ae8eed7ea52e26468928595f15d5a4a))
+
 ## [6.7.1](https://github.com/I-am-PUID-0/DMB/compare/6.7.0...6.7.1) (2025-04-11)
 
 
