@@ -2226,7 +2226,7 @@ This enables advanced control without modifying CLI or config files.</p>
 RCLONE_VFS_READ_CHUNK_SIZE=1M
 RCLONE_VFS_READ_CHUNK_SIZE_LIMIT=32M
 RCLONE_BUFFER_SIZE=64M
-RCLONE_DIR_CACHE_TIME=72h
+RCLONE_DIR_CACHE_TIME=10s
 RCLONE_VFS_CACHE_MAX_AGE=6h
 RCLONE_VFS_CACHE_MAX_SIZE=100G
 RCLONE_ATTR_TIMEOUT=1s
@@ -2254,7 +2254,7 @@ RCLONE_TPSLIMIT_BURST=10
 <span class="w">  </span><span class="s2">&quot;--gid=1000&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--allow-other&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--poll-interval=0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s2">&quot;--dir-cache-time=10m&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--dir-cache-time=10s&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--allow-non-empty&quot;</span>
 <span class="p">]</span>
 </code></pre></div></p>
@@ -2269,7 +2269,7 @@ RCLONE_TPSLIMIT_BURST=10
 <span class="w">  </span><span class="s2">&quot;--gid=1000&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--allow-other&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--poll-interval=0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s2">&quot;--dir-cache-time=72h&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;--dir-cache-time=10s&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--allow-non-empty&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--vfs-cache-mode=full&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">&quot;--vfs-read-chunk-size=1M&quot;</span><span class="p">,</span>
@@ -2359,7 +2359,7 @@ RCLONE_TPSLIMIT_BURST=10
 </tr>
 <tr>
 <td><code>--dir-cache-time</code></td>
-<td><code>72h</code></td>
+<td><code>10s</code></td>
 <td>Caches directory structure, reducing API calls.</td>
 </tr>
 <tr>
