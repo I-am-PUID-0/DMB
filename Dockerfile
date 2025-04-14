@@ -143,7 +143,7 @@ RUN curl -L https://github.com/nicocapalbo/dmbdb/archive/refs/tags/${DMB_FRONTEN
 FROM ubuntu:24.04 AS plex_debrid-builder
 ARG PLEX_DEBRID_TAG
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y software-properties-common curl && \
+RUN apt-get update && apt-get install -y software-properties-common curl unzip && \
     add-apt-repository ppa:deadsnakes/ppa -y && apt-get update && \
     apt-get install -y \
     python3.11 \
