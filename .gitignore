@@ -376,3 +376,4 @@ FodyWeavers.xsd
 *.VS*
 *.vs*
 *.pnpm-store*
+settings.json

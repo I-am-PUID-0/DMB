@@ -93,7 +93,10 @@ class Update:
                     raise RuntimeError(error)
 
     def update_check(self, process_name, config, key, instance_name):
-        if config.get("release_version").lower() == "nightly":
+        if (
+            not key == "plex_debrid"
+            and config.get("release_version").lower() == "nightly"
+        ):
             nightly = True
         else:
             nightly = False

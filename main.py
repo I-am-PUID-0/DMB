@@ -137,11 +137,23 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
         process_handler.shutdown(exit_code=1)
 
     try:
+        plex_debrid_config = config.get("plex_debrid", {})
         postgres_config = config.get("postgres", {})
         pgadmin_config = config.get("pgadmin", {})
         riven_backend_config = config.get("riven_backend", {})
         riven_frontend_config = config.get("riven_frontend", {})
         zilean_config = config.get("zilean", {})
+
+        if plex_debrid_config.get("enabled"):
+            try:
+                process_name = plex_debrid_config.get("process_name")
+                if plex_debrid_config.get("auto_update", False):
+                    updater.auto_update(process_name, True)
+                else:
+                    updater.auto_update(process_name, False)
+            except Exception as e:
+                logger.error(e)
+                process_handler.shutdown(exit_code=1)
 
         if postgres_config.get("enabled"):
             try:

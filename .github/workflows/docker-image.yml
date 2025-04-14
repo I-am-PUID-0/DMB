@@ -25,6 +25,7 @@ jobs:
       RIVEN_TAG: ${{ env.RIVEN_TAG }}
       RIVEN_FRONTEND_TAG: ${{ env.RIVEN_FRONTEND_TAG }}
       DMB_FRONTEND_TAG: ${{ env.DMB_FRONTEND_TAG }}
+      PLEX_DEBRID_TAG: ${{ env.PLEX_DEBRID_TAG }}      
     steps:
       - name: Fetch latest pgAgent release tag
         run: |
@@ -55,6 +56,13 @@ jobs:
         run: |
           DMB_FRONTEND_TAG=$(curl -s https://api.github.com/repos/nicocapalbo/dmbdb/releases/latest | jq -r .tag_name)
           echo "DMB_FRONTEND_TAG=$DMB_FRONTEND_TAG" >> $GITHUB_ENV 
+
+      - name: Fetch latest plex_debrid version from source
+        run: |
+          PLEX_DEBRID_TAG=$(curl -s https://raw.githubusercontent.com/elfhosted/plex_debrid/main/ui/ui_settings.py | \
+            grep '^version\s*=' | \
+            sed -E "s/.*=\s*\[\s*'([^']+)'.*/\1/")
+          echo "PLEX_DEBRID_TAG=$PLEX_DEBRID_TAG" >> $GITHUB_ENV
 
   build-and-push:   
     needs: fetch-latest-tags
@@ -159,6 +167,7 @@ jobs:
             RIVEN_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_TAG }}
             RIVEN_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_FRONTEND_TAG }}
             DMB_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.DMB_FRONTEND_TAG }}
+            PLEX_DEBRID_TAG=${{ needs.fetch-latest-tags.outputs.PLEX_DEBRID_TAG }}
           load: true 
 
       - name: Extract Versions from Built Image
@@ -197,6 +206,7 @@ jobs:
           echo "- Riven: \`${{ needs.fetch-latest-tags.outputs.RIVEN_TAG }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- Riven Frontend: \`${{ needs.fetch-latest-tags.outputs.RIVEN_FRONTEND_TAG }}\`" >> $GITHUB_STEP_SUMMARY 
           echo "- Zilean: \`${{ needs.fetch-latest-tags.outputs.ZILEAN_TAG }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Plex Debrid: \`${{ needs.fetch-latest-tags.outputs.PLEX_DEBRID_TAG }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- PostgreSQL: \`${{ env.PSQL_VERSION }}\`" >> $GITHUB_STEP_SUMMARY                   
           echo "- pgAgent: \`${{ needs.fetch-latest-tags.outputs.PGAGENT_TAG }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- pgAdmin4: \`${{ env.PGADMIN_VERSION }}\`" >> $GITHUB_STEP_SUMMARY
