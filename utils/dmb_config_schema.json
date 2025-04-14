@@ -58,6 +58,30 @@
       },
       "required": ["log_level", "log_name", "log_dir", "log_count", "log_size", "color_log", "plex_token", "plex_address", "github_token", "api_service", "frontend"]
     },
+    "plex_debrid": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "process_name": { "type": "string" },
+        "repo_owner": { "type": "string" },
+        "repo_name": { "type": "string" },
+        "branch_enabled": { "type": "boolean" },
+        "branch": { "type": "string" },
+        "suppress_logging": { "type": "boolean" },
+        "log_level": { "type": "string" },
+        "auto_update": { "type": "boolean" },
+        "auto_update_interval": { "type": "integer" },
+        "clear_on_update": { "type": "boolean" },
+        "exclude_dirs": { "type": "array", "items": { "type": "string" } },
+        "platforms": { "type": "array", "items": { "type": "string" } },
+        "command": { "type": "array", "items": { "type": "string" } },
+        "config_dir": { "type": "string" },
+        "config_file": { "type": "string" },
+        "log_file": { "type": "string" },    
+        "env": { "type": "object" }
+      },
+      "required": ["enabled", "process_name", "repo_owner", "repo_name", "branch_enabled", "branch", "suppress_logging", "log_level", "auto_update", "auto_update_interval", "clear_on_update", "exclude_dirs", "platforms", "command", "config_dir", "config_file", "log_file", "env"] 
+    },
     "postgres": {
       "type": "object",
       "properties": {

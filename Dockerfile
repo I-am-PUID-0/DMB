@@ -138,7 +138,30 @@ RUN curl -L https://github.com/nicocapalbo/dmbdb/archive/refs/tags/${DMB_FRONTEN
     pnpm run build --log-level verbose
 
 ####################################################################################################################################################
-# Stage 7: requirements-builder (Ubuntu 24.04 with Python 3.11)
+# Stage 7: plex_debrid-builder (Ubuntu 24.04 with Python 3.11)
+####################################################################################################################################################
+FROM ubuntu:24.04 AS plex_debrid-builder
+ARG PLEX_DEBRID_TAG
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y software-properties-common curl && \
+    add-apt-repository ppa:deadsnakes/ppa -y && apt-get update && \
+    apt-get install -y \
+    python3.11 \
+    python3.11-venv \
+    python3-pip && \
+    rm -rf /var/lib/apt/lists/*
+RUN curl -L https://github.com/elfhosted/plex_debrid/archive/refs/heads/main.zip -o plex_debrid.zip && \
+    unzip plex_debrid.zip && \
+    mkdir -p /plex_debrid && \
+    mv plex_debrid-main/* /plex_debrid && \
+    rm -rf plex_debrid.zip plex_debrid-main   
+ADD https://raw.githubusercontent.com/I-am-PUID-0/pd_zurg/master/plex_debrid_/settings-default.json /plex_debrid/config/settings.json
+RUN python3.11 -m venv /plex_debrid/venv && \
+    /plex_debrid/venv/bin/python -m pip install --upgrade pip && \
+    /plex_debrid/venv/bin/python -m pip install -r requirements.txt
+
+####################################################################################################################################################
+# Stage 8: requirements-builder (Ubuntu 24.04 with Python 3.11)
 ####################################################################################################################################################
 FROM ubuntu:24.04 AS requirements-builder
 ENV DEBIAN_FRONTEND=noninteractive
@@ -155,7 +178,7 @@ RUN apt-get update && apt-get install -y software-properties-common wget gnupg2 
     poetry install --no-root
 
 ####################################################################################################################################################
-# Stage 8: final-stage (Ubuntu 24.04 with Python 3.11, .NET SDK, PostgreSQL, pgAdmin4, Node.js, Rclone, Zilean, SystemStats, Riven, & DMB)
+# Stage 9: final-stage (Ubuntu 24.04 with Python 3.11, .NET SDK, PostgreSQL, pgAdmin4, Node.js, Rclone, Zilean, SystemStats, Riven, & DMB)
 ####################################################################################################################################################
 FROM ubuntu:24.04 AS final-stage
 ARG TARGETARCH
@@ -205,6 +228,7 @@ COPY --from=zilean-builder /zilean /zilean
 COPY --from=riven-frontend-builder /riven/frontend /riven/frontend
 COPY --from=riven-backend-builder /riven/backend /riven/backend
 COPY --from=dmb-frontend-builder /dmb/frontend /dmb/frontend
+COPY --from=plex_debrid-builder /plex_debrid /plex_debrid
 COPY --from=rclone/rclone:latest /usr/local/bin/rclone /usr/local/bin/rclone
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/config.yml /zurg/
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/scripts/plex_update.sh /zurg/

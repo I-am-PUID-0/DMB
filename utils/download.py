@@ -93,6 +93,27 @@ class Downloader:
                             logger.error(error)
                             return False, error
 
+            elif key == "plex_debrid":
+                branch = "main"
+                branch_url, zip_folder_name = self.get_branch(
+                    repo_owner, repo_name, branch
+                )
+                if not branch_url:
+                    return False, error
+                success, error = self.download_and_extract(
+                    branch_url,
+                    target_dir,
+                    zip_folder_name=zip_folder_name,
+                    headers=headers,
+                    exclude_dirs=exclude_dirs,
+                )
+                if not success:
+                    logger.error(
+                        f"Failed to download the {release_version} for {process_name}: {error}"
+                    )
+                    return False, error
+                return True, None
+
             else:
                 architecture = None
 
@@ -144,6 +165,26 @@ class Downloader:
     def get_latest_release(self, repo_owner, repo_name, nightly=False):
         self.logger.debug(f"Fetching latest {repo_name} release.")
         headers = self.get_headers()
+        if repo_name == "plex_debrid":
+            try:
+                url = f"https://raw.githubusercontent.com/{repo_owner}/{repo_name}/main/ui/ui_settings.py"
+                response = self.fetch_with_retries(url, headers=self.get_headers())
+                if response and response.status_code == 200:
+                    for line in response.text.splitlines():
+                        if line.strip().startswith("version"):
+                            parts = line.split("=", 1)[1].strip()
+                            if parts.startswith("["):
+                                version = parts.split(",")[0].strip("[] '\"")
+                                self.logger.debug(
+                                    f"Latest plex_debrid version: {version}"
+                                )
+                                return version, None
+                return (
+                    None,
+                    f"Failed to extract version from ui_settings.py for {repo_name}",
+                )
+            except Exception as e:
+                return None, f"Exception while fetching version for {repo_name}: {e}"
         if nightly:
             api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases"
         else:
@@ -270,9 +311,10 @@ class Downloader:
                             continue
                         try:
                             os.makedirs(os.path.dirname(fpath), exist_ok=True)
-                            with open(fpath, "wb") as dst, z.open(
-                                file_info, "r"
-                            ) as src:
+                            with (
+                                open(fpath, "wb") as dst,
+                                z.open(file_info, "r") as src,
+                            ):
                                 shutil.copyfileobj(src, dst)
                         except Exception as e:
                             self.logger.error(

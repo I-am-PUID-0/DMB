@@ -13,6 +13,9 @@ versions = Versions()
 
 
 def setup_release_version(process_handler, config, process_name, key):
+    if key == "plex_debrid":
+        return False, "Release version not supported for plex_debrid."
+
     logger.info(f"Using release version {config['release_version']} for {process_name}")
 
     if config.get("clear_on_update"):
@@ -127,6 +130,10 @@ def additional_setup(process_handler, process_name, config, key):
                 f"Failed to set up environment for {process_name}: {error}",
             )
 
+    if key == "plex_debrid":
+        success, error = chown_recursive(config["config_dir"], user_id, group_id)
+        if not success:
+            return False, error
     #    if user_id and group_id and not config["config_dir"].startswith("/zurg"):
     #        success, error = chown_recursive(config["config_dir"], user_id, group_id)
     #        if not success:

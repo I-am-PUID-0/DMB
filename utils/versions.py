@@ -1,7 +1,7 @@
 from utils.global_logger import logger
 from utils.download import Downloader
 from utils.config_loader import CONFIG_MANAGER
-import subprocess, json
+import subprocess, json, re
 
 
 class Versions:
@@ -83,6 +83,9 @@ class Versions:
                     return None, "rclone binary not found"
                 except Exception as e:
                     return None, f"Error reading rclone version: {e}"
+            elif key == "plex_debrid":
+                version_path = "/plex_debrid/ui/ui_settings.py"
+                is_file = True
 
             if is_file:
                 try:
@@ -95,12 +98,18 @@ class Versions:
                                 version = None
                         elif key == "riven_frontend":
                             version = f"v{f.read().strip()}"
-                        elif key == "riven_backend" or key == "dmb_api_service":
+                        elif (
+                            key == "riven_backend"
+                            or key == "dmb_api_service"
+                            or key == "plex_debrid"
+                        ):
                             for line in f:
                                 if line.startswith("version = "):
-                                    version = (
-                                        line.split("=")[1].strip().replace('"', "")
+                                    version_raw = (
+                                        line.split("=")[1].strip().strip('"').strip("'")
                                     )
+                                    match = re.search(r"v?\d+(\.\d+)*", version_raw)
+                                    version = match.group(0) if match else ""
                                     break
                             else:
                                 version = None
