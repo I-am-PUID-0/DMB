@@ -119,6 +119,7 @@ def create_system_user(username="DMB"):
         config_dir = "/config"
         riven_dir = "/riven/backend/data"
         zilean_dir = "/zilean/app/data"
+        plex_debrid_dir = "/plex-debrid"
 
         rclone_instances = config.get("rclone", {}).get("instances", {})
 
@@ -131,6 +132,7 @@ def create_system_user(username="DMB"):
         chown_recursive(riven_dir, user_id, group_id)
         chown_recursive(home_dir, user_id, group_id)
         chown_recursive(zilean_dir, user_id, group_id)
+        chown_recursive(plex_debrid_dir, user_id, group_id)
 
         for instance_name, instance_config in rclone_instances.items():
             if instance_config.get("enabled", False):
