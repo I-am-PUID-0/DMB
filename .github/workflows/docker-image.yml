@@ -98,7 +98,7 @@ jobs:
           VERSION=$(grep -E '^version *= *' pyproject.toml | head -n 1 | cut -d '"' -f2)
           REPO_OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           REPO_NAME=$(basename "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          BRANCH_NAME=${{ github.ref_name }}
+          BRANCH_NAME=$(echo "${{ github.ref_name }}" | tr '/' '-')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "REPO_OWNER_LOWER=$REPO_OWNER_LOWER" >> $GITHUB_ENV
           echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
