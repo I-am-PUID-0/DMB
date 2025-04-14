@@ -145,6 +145,7 @@ jobs:
             RIVEN_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_TAG }}
             RIVEN_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_FRONTEND_TAG }}
             DMB_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.DMB_FRONTEND_TAG }}
+            PLEX_DEBRID_TAG=${{ needs.fetch-latest-tags.outputs.PLEX_DEBRID_TAG }}
           provenance: true
           sbom: true
           push: true
