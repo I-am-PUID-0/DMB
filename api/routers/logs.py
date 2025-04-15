@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from pathlib import Path
 from utils.dependencies import get_logger
 from utils.config_loader import CONFIG_MANAGER
-import os, re
+import os, re, asyncio
 
 logs_router = APIRouter()
 
@@ -63,17 +63,39 @@ def filter_dmb_log(log_path, logger):
         with open(log_path, "r") as log_file:
             lines = log_file.readlines()
 
-        for i in range(len(lines) - 2, -1, -1):
-            if re.match(r"^.* - INFO - ", lines[i]) and re.match(
-                r"^\s*DDDDDDDDDDDDD", lines[i + 2]
-            ):
-                logger.debug(f"Found latest DMB startup banner at line {i}")
-                return "".join(lines[i:])
+        for i in range(len(lines) - 1, -1, -1):
+            if i + 2 < len(lines):
+                try:
+                    if re.match(r"^.* - INFO - ", lines[i]) and re.match(
+                        r"^\s*DDDDDDDDDDDDD", lines[i + 2]
+                    ):
+                        logger.debug(f"Found latest DMB startup banner at line {i}")
+                        return "".join(lines[i:])
+                except Exception as e:
+                    logger.warning(f"Error matching log lines at index {i}: {e}")
 
+        logger.warning("No DMB startup banner found; returning full log")
         return "".join(lines)
 
     except Exception as e:
         logger.error(f"Error filtering DMB log file: {e}")
+        return ""
+
+
+def _read_log_for_process(process_name: str, logger):
+    log_path = find_log_file(process_name, logger)
+    logger.debug(f"Resolved log path: {log_path}")
+    if not log_path or not log_path.exists():
+        return ""
+
+    try:
+        if "dmb" in process_name.lower():
+            return filter_dmb_log(log_path, logger)
+        else:
+            with open(log_path, "r") as log_file:
+                return log_file.read()
+    except Exception as e:
+        logger.error(f"Error reading log file for {process_name}: {e}")
         return ""
 
 
@@ -82,22 +104,12 @@ async def get_log_file(
     process_name: str = Query(..., description="The process name"),
     logger=Depends(get_logger),
 ):
-    log_path = find_log_file(process_name, logger)
-    logger.debug(f"Resolved log path: {log_path}")
-    if not log_path or not log_path.exists():
-        return {
-            "process_name": process_name,
-            "log": "",
-        }
+    loop = asyncio.get_running_loop()
+    log_content = await loop.run_in_executor(
+        None, lambda: _read_log_for_process(process_name, logger)
+    )
 
-    try:
-        if process_name.lower() == "dmb":
-            log_content = filter_dmb_log(log_path, logger)
-        else:
-            with open(log_path, "r") as log_file:
-                log_content = log_file.read()
-
-        return {"process_name": process_name, "log": log_content}
-    except Exception as e:
-        logger.error(f"Error reading log file for {process_name}: {e}")
-        return {"process_name": process_name, "log": ""}
+    return {
+        "process_name": process_name,
+        "log": log_content,
+    }
