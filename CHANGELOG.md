@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.7.3](https://github.com/I-am-PUID-0/DMB/compare/6.7.2...6.7.3) (2025-04-15)
+
+
+### 🐛 Bug Fixes
+
+* **logs:** Fixes DMB log filtering and improves error handling ([fdefd62](https://github.com/I-am-PUID-0/DMB/commit/fdefd628bb22a02b5cd06322438da728ece3d898))
+
 ## [6.7.2](https://github.com/I-am-PUID-0/DMB/compare/6.7.1...6.7.2) (2025-04-12)
 
 
