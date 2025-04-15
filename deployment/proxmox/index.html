@@ -1234,36 +1234,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-add-and-configure-a-user-required" class="md-nav__link">
+  <a href="#-add-and-configure-a-user-inside-the-lxc-required" class="md-nav__link">
     <span class="md-ellipsis">
-      👤 Add and Configure a User (Required)
+      👤 Add and Configure a User inside the LXC (Required)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#-define-the-directory-structure" class="md-nav__link">
+  <a href="#-define-the-directory-structure-inside-the-lxc" class="md-nav__link">
     <span class="md-ellipsis">
-      📁 Define the Directory Structure
+      📁 Define the Directory Structure inside the LXC
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#-install-docker" class="md-nav__link">
+  <a href="#-install-docker-inside-the-lxc" class="md-nav__link">
     <span class="md-ellipsis">
-      🐳 Install Docker
+      🐳 Install Docker inside the LXC
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#-install-portainer-optional" class="md-nav__link">
+  <a href="#-install-portainer-inside-the-lxc-optional" class="md-nav__link">
     <span class="md-ellipsis">
-      🚢 Install Portainer (Optional)
+      🚢 Install Portainer inside the LXC (Optional)
     </span>
   </a>
   
@@ -1998,36 +1998,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-add-and-configure-a-user-required" class="md-nav__link">
+  <a href="#-add-and-configure-a-user-inside-the-lxc-required" class="md-nav__link">
     <span class="md-ellipsis">
-      👤 Add and Configure a User (Required)
+      👤 Add and Configure a User inside the LXC (Required)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#-define-the-directory-structure" class="md-nav__link">
+  <a href="#-define-the-directory-structure-inside-the-lxc" class="md-nav__link">
     <span class="md-ellipsis">
-      📁 Define the Directory Structure
+      📁 Define the Directory Structure inside the LXC
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#-install-docker" class="md-nav__link">
+  <a href="#-install-docker-inside-the-lxc" class="md-nav__link">
     <span class="md-ellipsis">
-      🐳 Install Docker
+      🐳 Install Docker inside the LXC
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#-install-portainer-optional" class="md-nav__link">
+  <a href="#-install-portainer-inside-the-lxc-optional" class="md-nav__link">
     <span class="md-ellipsis">
-      🚢 Install Portainer (Optional)
+      🚢 Install Portainer inside the LXC (Optional)
     </span>
   </a>
   
@@ -2193,7 +2193,7 @@ systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> 
 </li>
 </ol>
 <hr />
-<h2 id="-add-and-configure-a-user-required">👤 Add and Configure a User (Required)<a class="headerlink" href="#-add-and-configure-a-user-required" title="Permanent link">#</a></h2>
+<h2 id="-add-and-configure-a-user-inside-the-lxc-required">👤 Add and Configure a User inside the LXC (Required)<a class="headerlink" href="#-add-and-configure-a-user-inside-the-lxc-required" title="Permanent link">#</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">DMB must be ran as any user other than root</p>
 </div>
@@ -2207,7 +2207,7 @@ systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> 
 </div>
 </li>
 <li>
-<p>If not already created, add a user (<code>ubuntu</code>) and configure passwordless sudo:</p>
+<p>If not already created in the LXC, add a user (<code>ubuntu</code>) and configure passwordless sudo:</p>
 <div class="highlight"><pre><span></span><code>adduser<span class="w"> </span>ubuntu
 usermod<span class="w"> </span>-aG<span class="w"> </span>sudo<span class="w"> </span>ubuntu
 </code></pre></div>
@@ -2233,7 +2233,7 @@ chmod 440 /etc/sudoers.d/ubuntu
 </li>
 </ol>
 <hr />
-<h2 id="-define-the-directory-structure">📁 Define the Directory Structure<a class="headerlink" href="#-define-the-directory-structure" title="Permanent link">#</a></h2>
+<h2 id="-define-the-directory-structure-inside-the-lxc">📁 Define the Directory Structure inside the LXC<a class="headerlink" href="#-define-the-directory-structure-inside-the-lxc" title="Permanent link">#</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you already have a directory structure you'd like to use, then you can skip this step.</p>
@@ -2256,7 +2256,7 @@ chmod 440 /etc/sudoers.d/ubuntu
 </li>
 </ol>
 <hr />
-<h2 id="-install-docker">🐳 Install Docker<a class="headerlink" href="#-install-docker" title="Permanent link">#</a></h2>
+<h2 id="-install-docker-inside-the-lxc">🐳 Install Docker inside the LXC<a class="headerlink" href="#-install-docker-inside-the-lxc" title="Permanent link">#</a></h2>
 <ol>
 <li>
 <p>Run the official Docker install script:</p>
@@ -2270,9 +2270,15 @@ sh<span class="w"> </span>get-docker.sh
 docker<span class="w"> </span>compose<span class="w"> </span>version
 </code></pre></div></p>
 </li>
+<li>
+<p>Add your user to the docker group:
+    <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>groupadd<span class="w"> </span>docker
+sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>docker<span class="w"> </span><span class="nv">$USER</span>
+</code></pre></div></p>
+</li>
 </ol>
 <hr />
-<h2 id="-install-portainer-optional">🚢 Install Portainer (Optional)<a class="headerlink" href="#-install-portainer-optional" title="Permanent link">#</a></h2>
+<h2 id="-install-portainer-inside-the-lxc-optional">🚢 Install Portainer inside the LXC (Optional)<a class="headerlink" href="#-install-portainer-inside-the-lxc-optional" title="Permanent link">#</a></h2>
 <p>If you want to manage Docker visually via Portainer:</p>
 <ol>
 <li>
