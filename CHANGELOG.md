@@ -1,5 +1,27 @@
 # Changelog
 
+## [6.8.0](https://github.com/I-am-PUID-0/DMB/compare/6.7.3...6.8.0) (2025-04-15)
+
+
+### ✨ Features
+
+* **plex_debrid:** add support for Plex Debrid integration and auto-update functionality ([ed948ed](https://github.com/I-am-PUID-0/DMB/commit/ed948ed7424c5a1855131d57895dc16a35122542))
+
+
+### 🐛 Bug Fixes
+
+* **api:** change shell from sh to bash for health check execution ([04e33c1](https://github.com/I-am-PUID-0/DMB/commit/04e33c102df08f076c1b4807eddba87e3da7316a))
+* **docker-image:** add unzip to dependencies for plex_debrid-builder ([ad8f163](https://github.com/I-am-PUID-0/DMB/commit/ad8f1633552896cafad83fc12613cd1b9378319f))
+* **docker-image:** include PLEX_DEBRID_TAG in the build process ([b4b8a37](https://github.com/I-am-PUID-0/DMB/commit/b4b8a3729dfef5b66856093393b6351c8741b478))
+* **docker-image:** normalize branch name format by replacing slashes with dashes ([6d1d228](https://github.com/I-am-PUID-0/DMB/commit/6d1d228c46bf912e43b90f145205c37d9a767d06))
+* **docker-image:** update requirements file path for Plex Debrid installation ([cfc3608](https://github.com/I-am-PUID-0/DMB/commit/cfc36080e233343ffdf9f339501114f1af542bc0))
+* **user-management:** add plex_debrid directory to ownership change in create_system_user ([b3f3146](https://github.com/I-am-PUID-0/DMB/commit/b3f31463b22ce9fb1258f7f9c8728c5b5000947e))
+
+
+### 📖 Documentation
+
+* **README:** update plex_debrid references and add configuration details ([b823711](https://github.com/I-am-PUID-0/DMB/commit/b82371151cefddb8c79a0681e23bf9124282f932))
+
 ## [6.7.3](https://github.com/I-am-PUID-0/DMB/compare/6.7.2...6.7.3) (2025-04-15)
 
 
