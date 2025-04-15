@@ -8,7 +8,7 @@ health_router = APIRouter()
 async def health_check():
     try:
         result = subprocess.run(
-            ["sh", "-c", "source /venv/bin/activate && python /healthcheck.py"],
+            ["bash", "-c", "source /venv/bin/activate && python /healthcheck.py"],
             capture_output=True,
             text=True,
         )
