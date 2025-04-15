@@ -2210,11 +2210,13 @@ systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> 
 <p>If not already created, add a user (<code>ubuntu</code>) and configure passwordless sudo:</p>
 <div class="highlight"><pre><span></span><code>adduser<span class="w"> </span>ubuntu
 usermod<span class="w"> </span>-aG<span class="w"> </span>sudo<span class="w"> </span>ubuntu
-
-<span class="c1"># Enable passwordless sudo:</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ubuntu ALL=(ALL) NOPASSWD:ALL&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/etc/sudoers.d/ubuntu
-chmod<span class="w"> </span><span class="m">440</span><span class="w"> </span>/etc/sudoers.d/ubuntu
 </code></pre></div>
+</li>
+<li>
+<p>Enable passwordless sudo (Optional):
+    <div class="highlight"><pre><span></span><code>echo &quot;ubuntu ALL=(ALL) NOPASSWD:ALL&quot; &gt; /etc/sudoers.d/ubuntu
+chmod 440 /etc/sudoers.d/ubuntu
+</code></pre></div></p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>To find the UID and GID (needed for <code>PUID</code> and <code>PGID</code> in your DMB config):
@@ -2249,7 +2251,7 @@ chmod<span class="w"> </span><span class="m">440</span><span class="w"> </span>/
 </li>
 <li>
 <p>Create the DMB directories.
-    <div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>DMB/config<span class="w"> </span>DMB/log<span class="w"> </span>DMB/Zurg/RD<span class="w"> </span>DMB/Riven/data<span class="w"> </span>DMB/Riven/mnt<span class="w"> </span>DMB/PostgreSQL/data<span class="w"> </span>DMB/pgAdmin4/data<span class="w"> </span>/DMB/Zilean/data
+    <div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>DMB/config<span class="w"> </span>DMB/log<span class="w"> </span>DMB/Zurg/RD<span class="w"> </span>DMB/Riven/data<span class="w"> </span>DMB/Riven/mnt<span class="w"> </span>DMB/PostgreSQL/data<span class="w"> </span>DMB/pgAdmin4/data<span class="w"> </span>DMB/Zilean/data
 </code></pre></div></p>
 </li>
 </ol>
