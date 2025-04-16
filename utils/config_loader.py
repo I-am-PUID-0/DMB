@@ -1,7 +1,9 @@
+import re
 import os, shutil
 from json import load, dump, JSONDecodeError
 from jsonschema import validate, ValidationError
 from dotenv import load_dotenv, find_dotenv
+from collections import OrderedDict
 
 
 class ConfigManager:
@@ -24,6 +26,7 @@ class ConfigManager:
             raise FileNotFoundError(f"Schema file not found: {self.schema_path}")
 
         # self.update_config_with_defaults()
+        self.update_config_with_top_level_defaults()
         self.schema = self._load_schema()
         self.config = self._load_and_validate_config()
 
@@ -39,6 +42,32 @@ class ConfigManager:
             raise ValueError(
                 f"JSON syntax error in {self.file_path}: {e.msg} at line {e.lineno}, column {e.colno}"
             )
+
+    def update_config_with_top_level_defaults(self):
+        try:
+            with open("/utils/dmb_config.json", "r") as default_file:
+                default_config = load(default_file, object_pairs_hook=OrderedDict)
+
+            existing_config = self._load_config()
+            updated_config = OrderedDict()
+            updated = False
+
+            for key in default_config:
+                if key in existing_config and existing_config[key]:
+                    updated_config[key] = existing_config[key]
+                else:
+                    updated_config[key] = default_config[key]
+                    updated = True
+
+            for key in existing_config:
+                if key not in updated_config:
+                    updated_config[key] = existing_config[key]
+
+            if updated:
+                with open(self.file_path, "w") as config_file:
+                    dump(updated_config, config_file, indent=4)
+        except Exception as e:
+            raise ValueError(f"Error during update_config_with_top_level_defaults: {e}")
 
     def update_config_with_defaults(self):
         try:
