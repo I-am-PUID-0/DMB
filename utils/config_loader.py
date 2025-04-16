@@ -1,4 +1,3 @@
-import re
 import os, shutil
 from json import load, dump, JSONDecodeError
 from jsonschema import validate, ValidationError
