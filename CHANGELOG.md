@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.8.2](https://github.com/I-am-PUID-0/DMB/compare/6.8.1...6.8.2) (2025-04-16)
+
+
+### 🐛 Bug Fixes
+
+* **config_loader:** remove unused regex import ([34fe0b2](https://github.com/I-am-PUID-0/DMB/commit/34fe0b2bc56ec13e0a0ccae95d0f460912941d19))
+* **config:** implement update_config_with_top_level_defaults to merge default config ([bb7aa31](https://github.com/I-am-PUID-0/DMB/commit/bb7aa3112523c8b7af2c99d420bfc4de77709dce))
+
 ## [6.8.1](https://github.com/I-am-PUID-0/DMB/compare/6.8.0...6.8.1) (2025-04-16)
 
 
