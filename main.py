@@ -137,7 +137,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
         process_handler.shutdown(exit_code=1)
 
     try:
-        plex_debrid_config = config.get("plex_debrid", {})
+        plex_debrid_config = config.get("plex_debrid") or {}
         postgres_config = config.get("postgres", {})
         pgadmin_config = config.get("pgadmin", {})
         riven_backend_config = config.get("riven_backend", {})
