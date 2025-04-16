@@ -155,7 +155,7 @@ RUN curl -L https://github.com/elfhosted/plex_debrid/archive/refs/heads/main.zip
     mkdir -p /plex_debrid && \
     mv plex_debrid-main/* /plex_debrid && \
     rm -rf plex_debrid.zip plex_debrid-main   
-ADD https://raw.githubusercontent.com/I-am-PUID-0/pd_zurg/master/plex_debrid_/settings-default.json /plex_debrid/config/settings.json
+ADD https://raw.githubusercontent.com/I-am-PUID-0/pd_zurg/master/plex_debrid_/settings-default.json /plex_debrid/settings-default.json
 RUN python3.11 -m venv /plex_debrid/venv && \
     /plex_debrid/venv/bin/python -m pip install --upgrade pip && \
     /plex_debrid/venv/bin/python -m pip install -r /plex_debrid/requirements.txt

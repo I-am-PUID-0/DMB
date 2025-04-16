@@ -259,6 +259,16 @@ def setup_project(process_handler, process_name):
             success, error = postgres.pgadmin_setup(process_handler)
             if not success:
                 return False, error
+        if key == "plex_debrid":
+            if not os.path.exists(config["config_file"]):
+                logger.debug(
+                    f"Copying settings-default.json from {config['config_dir']} to {config['config_file']}"
+                )
+                shutil.copy(
+                    os.path.join(config["config_dir"], "settings-default.json"),
+                    config["config_file"],
+                )
+                chown_recursive(config["config_file"], user_id, group_id)
 
         process_handler.setup_tracker.add(process_name)
         logger.debug(f"Post Setup tracker: {process_handler.setup_tracker}")
