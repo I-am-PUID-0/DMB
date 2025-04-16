@@ -35,7 +35,8 @@
     "source=${localWorkspaceFolder}/log,target=/log,type=bind",
     "source=${localWorkspaceFolder}/data,target=/data,type=bind",
     "source=${localWorkspaceFolder}/postgres_data,target=/postgres_data,type=bind",
-    "source=${localWorkspaceFolder}/pgadmin/data,target=/pgadmin/data,type=bind"
+    "source=${localWorkspaceFolder}/pgadmin/data,target=/pgadmin/data,type=bind",
+    "source=${localWorkspaceFolder}/plex_debrid/config,target=/plex_debrid/config,type=bind"
   ],
   "runArgs": [
     "--name=dmb_dev",
