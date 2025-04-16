@@ -119,7 +119,7 @@ def create_system_user(username="DMB"):
         config_dir = "/config"
         riven_dir = "/riven/backend/data"
         zilean_dir = "/zilean/app/data"
-        plex_debrid_dir = "/plex-debrid"
+        plex_debrid_dir = "/plex_debrid/config"
 
         rclone_instances = config.get("rclone", {}).get("instances", {})
 

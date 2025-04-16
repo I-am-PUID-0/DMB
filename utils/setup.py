@@ -4,7 +4,7 @@ from utils.global_logger import logger
 from utils.download import Downloader
 from utils.versions import Versions
 from utils.user_management import chown_recursive
-import yaml, os, shutil, random, subprocess
+import yaml, os, shutil, random, subprocess, re
 
 user_id = CONFIG_MANAGER.get("puid")
 group_id = CONFIG_MANAGER.get("pgid")
@@ -260,15 +260,9 @@ def setup_project(process_handler, process_name):
             if not success:
                 return False, error
         if key == "plex_debrid":
-            if not os.path.exists(config["config_file"]):
-                logger.debug(
-                    f"Copying settings-default.json from {config['config_dir']} to {config['config_file']}"
-                )
-                shutil.copy(
-                    os.path.join(config["config_dir"], "settings-default.json"),
-                    config["config_file"],
-                )
-                chown_recursive(config["config_file"], user_id, group_id)
+            success, error = plex_debrid_setup()
+            if not success:
+                return False, error
 
         process_handler.setup_tracker.add(process_name)
         logger.debug(f"Post Setup tracker: {process_handler.setup_tracker}")
@@ -277,6 +271,39 @@ def setup_project(process_handler, process_name):
 
     except Exception as e:
         return False, f"Error during setup of {process_name}: {e}"
+
+
+def plex_debrid_setup():
+    config = CONFIG_MANAGER.get("plex_debrid")
+    if not config:
+        return False, "Configuration for Plex Debrid not found."
+
+    if not os.path.exists(config["config_file"]):
+        logger.debug(
+            f"Copying settings-default.json from {config['config_dir']} to {config['config_file']}"
+        )
+        shutil.copy(
+            os.path.join(config["config_dir"], "settings-default.json"),
+            config["config_file"],
+        )
+        chown_recursive(os.path.join(config["config_dir"], "config"), user_id, group_id)
+
+    trakt_file = os.path.join(config["config_dir"], "content", "services", "trakt.py")
+    if os.path.exists(trakt_file):
+        with open(trakt_file, "r") as f:
+            trakt_contents = f.read()
+
+        updated_trakt_contents = re.sub(
+            r'env_file\s*=\s*[\'"]\.env[\'"]',
+            'env_file = "./config/.env"',
+            trakt_contents,
+        )
+
+        with open(trakt_file, "w") as f:
+            f.write(updated_trakt_contents)
+
+        logger.debug("Updated env_file path in trakt.py to './config/.env'")
+    return True, None
 
 
 def dmb_frontend_setup():
