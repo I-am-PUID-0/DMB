@@ -2234,7 +2234,7 @@
 <div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">/docker/DMB/Riven/mnt:/docker/DMB/Riven/mnt</span>
 </code></pre></div>
 <p>Then, inside the <code>dmb_config.json</code>, make sure you define:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;riven&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;riven_backend&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;symlink_library_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/docker/DMB/Riven/mnt&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -2258,7 +2258,7 @@
 <span class="l l-Scalar l-Scalar-Plain">/data:/data:shared</span>
 </code></pre></div>
 <p>And then update the configuration:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;riven&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;riven_backend&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;symlink_library_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/mnt&quot;</span><span class="p">,</span>
 <span class="p">},</span>
 <span class="nt">&quot;rclone&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
