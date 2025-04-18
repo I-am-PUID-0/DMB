@@ -89,7 +89,7 @@ services:
       - /home/username/docker/DMB/config:/config                     ## Location of configuration files. If a Zurg config.yml and/or Zurg app is placed here, it will be used to override the default configuration and/or app used at startup.
       - /home/username/docker/DMB/log:/log                           ## Location for logs
       - /home/username/docker/DMB/Zurg/RD:/zurg/RD                   ## Location for Zurg RealDebrid active configuration
-      - /home/username/docker/DMB/Zurg/mnt:/data:shared              ## Location for rclone mount to host
+      - /home/username/docker/DMB/Zurg/mnt:/data:rshared             ## Location for rclone mount to host
       - /home/username/docker/DMB/Riven/data:/riven/backend/data     ## Location for Riven backend data
       - /home/username/docker/DMB/Riven/mnt:/mnt                     ## Location for Riven symlinks
       - /home/username/docker/DMB/PostgreSQL/data:/postgres_data     ## Location for PostgreSQL database
@@ -147,8 +147,8 @@ services:
       timeout: 15s
       retries: 3
       start_period: 1m00s
-    depends_on:                                            ## Used to delay the startup of plex to ensure the rclone mount is available.
-      DMB:                                                 ## set to the name of the container running rclone
+    depends_on:                                             ## Used to delay the startup of plex to ensure the rclone mount is available.
+      DMB:                                                  ## The name of the container running rclone
         condition: service_healthy
         restart: true                                       ## Will automatically restart the plex container if the DMB container restarts
 ```
@@ -164,7 +164,7 @@ Variables required by DMB:
 | `PGID`         | `1000`   | Your Group ID |:heavy_check_mark: |
 | `TZ`           | `(null)` | Your time zone listed as `Area/Location` | :heavy_check_mark: |
 | `ZURG_INSTANCES_REALDEBRID_API_KEY` | `(null)` | Enter your Real-Debrid API Token | :heavy_check_mark: |
-| `RIVEN_FRONTEND_ENV_ORIGIN` | `http://0.0.0.0:3000` | The IP address used to access the DMB frontend.  Change this to the IP address of your DMB container. | :heavy_check_mark: |
+| `RIVEN_FRONTEND_ENV_ORIGIN` | `http://0.0.0.0:3000` | The IP address used to access the DMB frontend.  Change this to the IP address you use in the browser for Riven Frontend. | :heavy_check_mark: |
 
 See the [.env.example](https://github.com/I-am-PUID-0/DMB/blob/master/.env.example)
 
@@ -191,16 +191,17 @@ The following table describes the data volumes used by the container. The mappin
 are set via the `-v` parameter or via the docker-compose file within the `volumes:` section. Each mapping is specified with the following
 format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 
-| Container path   | Permissions | Description                                                                                                                                                                                                                                 |
-| ---------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/config`        | rw          | This is where the application stores the rclone.conf, and any files needing persistence. CAUTION: rclone.conf is overwritten upon start/restart of the container. Do NOT use an existing rclone.conf file if you have other rclone services |
-| `/log`           | rw          | This is where the application stores its log files                                                                                                                                                                                          |
-| `/data`          | shared      | This is where rclone will be mounted.                                                                                                                                                                                                       |
-| `/zurg/RD`       | rw          | This is where Zurg will store the active configuration and data for RealDebrid. Not required when only utilizing Riven                                                                                                                      |
-| `/riven/data`    | rw          | This is where Riven will store its data. Not required when only utilizing Zurg                                                                                                                                                              |
-| `/riven/mnt`     | rw          | This is where Riven will set its symlinks. Not required when only utilizing Zurg                                                                                                                                                            |
-| `/postgres_data` | rw          | This is where PostgreSQL will store its data. Not required when only utilizing Zurg                                                                                                                                                         |
-| `/pgadmin/data`  | rw          | This is where pgAdmin 4 will store its data. Not required when only utilizing Zurg                                                                                                                                                          |
+| Container path        | Permissions | Description                                                                                                                                                                                                                                 |
+| --------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/config`             | rw          | This is where the application stores the rclone.conf, and any files needing persistence. CAUTION: rclone.conf is overwritten upon start/restart of the container. Do NOT use an existing rclone.conf file if you have other rclone services |
+| `/log`                | rw          | This is where the application stores its log files                                                                                                                                                                                          |
+| `/data`               | rshared     | This is where rclone will be mounted.                                                                                                                                                                                                       |
+| `/zurg/RD`            | rw          | This is where Zurg will store the active configuration and data for RealDebrid. Not required when only utilizing Riven                                                                                                                      |
+| `/riven/data`         | rw          | This is where Riven will store its data. Not required when only utilizing Zurg                                                                                                                                                              |
+| `/riven/mnt`          | rw          | This is where Riven will set its symlinks. Not required when only utilizing Zurg                                                                                                                                                            |
+| `/postgres_data`      | rw          | This is where PostgreSQL will store its data. Not required when only utilizing Zurg                                                                                                                                                         |
+| `/pgadmin/data`       | rw          | This is where pgAdmin 4 will store its data. Not required when only utilizing Zurg                                                                                                                                                          |
+| `/plex_debrid/config` | rw          | This is where plex_debrid will store its data. Not required when only utilizing Zurg                                                                                                                                                  |
 
 ## 📝 TODO
 
