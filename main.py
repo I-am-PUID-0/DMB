@@ -13,7 +13,7 @@ def main():
 
     with open("pyproject.toml", "rb") as file:
         pyproject = tomllib.load(file)
-        version = pyproject["project"]["version"]
+        version = pyproject["tool"]["poetry"]["version"]
 
     ascii_art = f"""
                                                                        
