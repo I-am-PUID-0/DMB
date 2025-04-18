@@ -1,5 +1,19 @@
 # Changelog
 
+## [6.8.3](https://github.com/I-am-PUID-0/DMB/compare/6.8.2...6.8.3) (2025-04-18)
+
+
+### 🐛 Bug Fixes
+
+* **main:** update version extraction from pyproject.toml to align with poetry structure ([619b37f](https://github.com/I-am-PUID-0/DMB/commit/619b37f8c02c55c589baa4afedaab1472dce24e0))
+
+
+### 🤡 Other Changes
+
+* **docs:** change rclone mount permissions for `shared` to `rshared` and clarify ORIGIN address instructions ([08622ea](https://github.com/I-am-PUID-0/DMB/commit/08622ea9ef9d36f8f03611557b705e3913060ea0))
+* **license:** switch to GPL-3.0 ([4b4ddfb](https://github.com/I-am-PUID-0/DMB/commit/4b4ddfb5228516268f361c0d4c206b43830f8179))
+* **poetry:** update dev dependencies and enhance post-create command for devcontainer ([a40b082](https://github.com/I-am-PUID-0/DMB/commit/a40b0825114ecec5f14640d01865c083506bac21))
+
 ## [6.8.2](https://github.com/I-am-PUID-0/DMB/compare/6.8.1...6.8.2) (2025-04-16)
 
 
