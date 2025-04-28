@@ -131,7 +131,9 @@ def additional_setup(process_handler, process_name, config, key):
             )
 
     if key == "plex_debrid":
-        success, error = chown_recursive(config["config_dir"], user_id, group_id)
+        success, error = chown_recursive(
+            os.path.join(config["config_dir"], "config"), user_id, group_id
+        )
         if not success:
             return False, error
     #    if user_id and group_id and not config["config_dir"].startswith("/zurg"):
@@ -873,6 +875,13 @@ def setup_python_environment(process_handler, key, config_dir):
             if os.path.exists(os.path.join(config_dir, "requirements.txt"))
             else None
         )
+
+        if key == "cli_debrid":
+            requirements_file = (
+                os.path.join(config_dir, "requirements-linux.txt")
+                if os.path.exists(os.path.join(config_dir, "requirements-linux.txt"))
+                else None
+            )
 
         poetry_install = True if key == "riven_backend" else False
 

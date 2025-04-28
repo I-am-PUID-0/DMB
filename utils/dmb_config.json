@@ -30,20 +30,58 @@
             "branch_enabled": false,
             "branch": "main",
             "suppress_logging": false,
-            "log_level": "INFO",            
+            "log_level": "INFO",
             "origins": [
                 "http://0.0.0.0:3005"
             ],
             "host": "0.0.0.0",
-            "port": 3005,            
+            "port": 3005,
             "auto_update": false,
             "auto_update_interval": 24,
             "clear_on_update": true,
             "exclude_dirs": [],
-            "platforms": ["pnpm"],
-            "command": ["node",".output/server/index.mjs"],
+            "platforms": [
+                "pnpm"
+            ],
+            "command": [
+                "node",
+                ".output/server/index.mjs"
+            ],
             "config_dir": "/dmb/frontend",
-            "env": {}            
+            "env": {}
+        }
+    },
+    "cli_debrid": {
+        "enabled": false,
+        "process_name": "CLI Debrid",
+        "repo_owner": "godver3",
+        "repo_name": "cli_debrid",
+        "release_version_enabled": false,
+        "release_version": "v0.6.07",
+        "branch_enabled": false,
+        "branch": "main",
+        "suppress_logging": false,
+        "log_level": "INFO",
+        "auto_update": false,
+        "auto_update_interval": 24,
+        "clear_on_update": true,
+        "exclude_dirs": [
+            "/cli_debrid/data"
+        ],
+        "platforms": [
+            "python"
+        ],
+        "command": [
+            "/cli_debrid/venv/bin/python",
+            "main.py"
+        ],
+        "config_dir": "/cli_debrid",
+        "config_file": "/cli_debrid/data/config/config.json",
+        "log_file": "/cli_debrid/data/logs/debug.log",
+        "env": {
+            "USER_CONFIG": "/cli_debrid/data/config/",
+            "USER_LOGS": "/cli_debrid/data/logs/",
+            "USER_DB_CONTENT": "/cli_debrid/data/db_content/"
         }
     },
     "plex_debrid": {
@@ -56,9 +94,11 @@
         "suppress_logging": false,
         "log_level": "INFO",
         "auto_update": false,
-        "auto_update_interval": 24,        
+        "auto_update_interval": 24,
         "clear_on_update": true,
-        "exclude_dirs": ["/plex_debrid/config"],
+        "exclude_dirs": [
+            "/plex_debrid/config"
+        ],
         "platforms": [
             "python"
         ],
@@ -71,9 +111,9 @@
         ],
         "config_dir": "/plex_debrid",
         "config_file": "/plex_debrid/config/settings.json",
-        "log_file": "/plex_debrid/config/plex_debrid.log",        
+        "log_file": "/plex_debrid/config/plex_debrid.log",
         "env": {}
-    },    
+    },
     "postgres": {
         "enabled": true,
         "process_name": "PostgreSQL",
@@ -176,7 +216,7 @@
             "{port}"
         ],
         "config_dir": "/riven/backend",
-        "config_file": "/riven/backend/data/settings.json",        
+        "config_file": "/riven/backend/data/settings.json",
         "env": {},
         "wait_for_dir": "/data/rclone_RD/__all__"
     },
@@ -272,7 +312,9 @@
                 "auto_update": false,
                 "auto_update_interval": 1,
                 "clear_on_update": false,
-                "exclude_dirs": ["/zurg/RD"],
+                "exclude_dirs": [
+                    "/zurg/RD"
+                ],
                 "key_type": "RealDebrid",
                 "config_dir": "/zurg/RD",
                 "config_file": "/zurg/RD/config.yml",

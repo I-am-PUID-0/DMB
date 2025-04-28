@@ -160,8 +160,32 @@ RUN python3.11 -m venv /plex_debrid/venv && \
     /plex_debrid/venv/bin/python -m pip install --upgrade pip && \
     /plex_debrid/venv/bin/python -m pip install -r /plex_debrid/requirements.txt
 
+
 ####################################################################################################################################################
-# Stage 8: requirements-builder (Ubuntu 24.04 with Python 3.11)
+# Stage 8: cli_debrid-builder (Ubuntu 24.04 with Python 3.11)
+####################################################################################################################################################
+FROM ubuntu:24.04 AS cli_debrid-builder
+ARG CLI_DEBRID_TAG
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y software-properties-common curl unzip && \
+    add-apt-repository ppa:deadsnakes/ppa -y && apt-get update && \
+    apt-get install -y \
+    python3.11 \
+    python3.11-venv \
+    python3-pip && \
+    rm -rf /var/lib/apt/lists/*
+RUN curl -L https://github.com/godver3/cli_debrid/archive/refs/tags/${CLI_DEBRID_TAG}.zip -o cli_debrid.zip && \
+    unzip cli_debrid.zip && \
+    mkdir -p /cli_debrid && \
+    mv cli_debrid-*/*  /cli_debrid && \
+    rm -rf cli_debrid.zip cli_debrid-*/*   
+RUN python3.11 -m venv /cli_debrid/venv && \
+    /cli_debrid/venv/bin/python -m pip install --upgrade pip && \
+    /cli_debrid/venv/bin/python -m pip install -r /cli_debrid/requirements-linux.txt
+
+
+####################################################################################################################################################
+# Stage 9: requirements-builder (Ubuntu 24.04 with Python 3.11)
 ####################################################################################################################################################
 FROM ubuntu:24.04 AS requirements-builder
 ENV DEBIAN_FRONTEND=noninteractive
@@ -178,7 +202,7 @@ RUN apt-get update && apt-get install -y software-properties-common wget gnupg2 
     poetry install --no-root
 
 ####################################################################################################################################################
-# Stage 9: final-stage (Ubuntu 24.04 with Python 3.11, .NET SDK, PostgreSQL, pgAdmin4, Node.js, Rclone, Zilean, SystemStats, Riven, Plex Debrid, & DMB)
+# Stage 10: final-stage (Ubuntu 24.04 with Python 3.11, .NET SDK, PostgreSQL, pgAdmin4, Node.js, Rclone, Zilean, SystemStats, Riven, Plex Debrid, & DMB)
 ####################################################################################################################################################
 FROM ubuntu:24.04 AS final-stage
 ARG TARGETARCH
@@ -229,6 +253,7 @@ COPY --from=riven-frontend-builder /riven/frontend /riven/frontend
 COPY --from=riven-backend-builder /riven/backend /riven/backend
 COPY --from=dmb-frontend-builder /dmb/frontend /dmb/frontend
 COPY --from=plex_debrid-builder /plex_debrid /plex_debrid
+COPY --from=cli_debrid-builder /cli_debrid /cli_debrid
 COPY --from=rclone/rclone:latest /usr/local/bin/rclone /usr/local/bin/rclone
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/config.yml /zurg/
 ADD https://raw.githubusercontent.com/debridmediamanager/zurg-testing/main/scripts/plex_update.sh /zurg/

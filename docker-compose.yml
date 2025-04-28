@@ -1,7 +1,7 @@
 services:
   DMB:
     container_name: DMB
-    image: iampuid0/dmb:latest                                      ## Optionally, specify a specific version of DMB w/ image: iampuid0/dmb:2.0.0
+    image: iampuid0/dmb:latest                                       ## Optionally, specify a specific version of DMB w/ image: iampuid0/dmb:2.0.0
     stop_grace_period: 30s                                           ## Adjust as need to allow for graceful shutdown of the container
     shm_size: 128mb                                                  ## Increased for PostgreSQL
     stdin_open: true                                                 ## docker run -i
@@ -16,6 +16,8 @@ services:
       - /home/username/docker/DMB/PostgreSQL/data:/postgres_data     ## Location for PostgreSQL database
       - /home/username/docker/DMB/pgAdmin4/data:/pgadmin/data        ## Location for pgAdmin 4 data
       - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data
+      - /home/username/docker/DMB/plex_debrid:/plex_debrid/config    ## Location for plex_debrid data
+      - /home/username/docker/DMB/cli_debrid:/cli_debrid/data        ## Location for cli_debrid data      
     environment:
       - TZ=
       - PUID=
@@ -28,6 +30,7 @@ services:
       - "3005:3005"                                                 ## DMB Frontend
       - "3000:3000"                                                 ## Riven Frontend
       - "5050:5050"                                                 ## pgAdmin 4
+      - "5000:5000"                                                 ## CLI Debrid Frontend
     devices:
       - /dev/fuse:/dev/fuse:rwm
     cap_add:
