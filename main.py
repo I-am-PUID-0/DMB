@@ -139,6 +139,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
     try:
         plex_debrid_config = config.get("plex_debrid") or {}
         cli_debrid_config = config.get("cli_debrid") or {}
+        cli_battery_config = config.get("cli_battery") or {}
         postgres_config = config.get("postgres", {})
         pgadmin_config = config.get("pgadmin", {})
         riven_backend_config = config.get("riven_backend", {})
@@ -163,6 +164,14 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
                     updater.auto_update(process_name, True)
                 else:
                     updater.auto_update(process_name, False)
+            except Exception as e:
+                logger.error(e)
+                process_handler.shutdown(exit_code=1)
+
+        if cli_battery_config.get("enabled"):
+            try:
+                process_name = cli_battery_config.get("process_name")
+                updater.auto_update(process_name, False)
             except Exception as e:
                 logger.error(e)
                 process_handler.shutdown(exit_code=1)

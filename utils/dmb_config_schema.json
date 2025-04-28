@@ -266,6 +266,8 @@
         "process_name",
         "repo_owner",
         "repo_name",
+        "release_version_enabled",
+        "release_version",
         "branch_enabled",
         "branch",
         "suppress_logging",
@@ -274,6 +276,59 @@
         "auto_update_interval",
         "clear_on_update",
         "exclude_dirs",
+        "platforms",
+        "command",
+        "config_dir",
+        "config_file",
+        "log_file",
+        "env"
+      ]
+    },
+    "cli_battery": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "process_name": {
+          "type": "string"
+        },
+        "suppress_logging": {
+          "type": "boolean"
+        },
+        "log_level": {
+          "type": "string"
+        },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "config_dir": {
+          "type": "string"
+        },
+        "config_file": {
+          "type": "string"
+        },
+        "log_file": {
+          "type": "string"
+        },
+        "env": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "enabled",
+        "process_name",
+        "suppress_logging",
+        "log_level",
         "platforms",
         "command",
         "config_dir",
