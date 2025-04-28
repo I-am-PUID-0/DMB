@@ -25,6 +25,9 @@ class Versions:
             elif key == "cli_debrid":
                 version_path = "/cli_debrid/version.txt"
                 is_file = True
+            elif key == "cli_battery":
+                version_path = "/cli_debrid/cli_battery/version.txt"
+                is_file = True
             elif key == "riven_backend":
                 version_path = "/riven/backend/pyproject.toml"
                 is_file = True
@@ -99,7 +102,11 @@ class Versions:
                                 version = f'v{data["version"]}'
                             except (json.JSONDecodeError, KeyError) as e:
                                 version = None
-                        elif key == "riven_frontend" or key == "cli_debrid":
+                        elif (
+                            key == "riven_frontend"
+                            or key == "cli_debrid"
+                            or key == "cli_battery"
+                        ):
                             version = f"v{f.read().strip()}"
                         elif (
                             key == "riven_backend"

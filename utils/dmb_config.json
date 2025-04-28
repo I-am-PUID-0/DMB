@@ -84,6 +84,27 @@
             "USER_DB_CONTENT": "/cli_debrid/data/db_content/"
         }
     },
+    "cli_battery": {
+        "enabled": false,
+        "process_name": "CLI Battery",
+        "suppress_logging": false,
+        "log_level": "INFO",
+        "platforms": [
+            "python"
+        ],
+        "command": [
+            "/cli_debrid/venv/bin/python",
+            "cli_battery/main.py"
+        ],
+        "config_dir": "/cli_debrid",
+        "config_file": "/cli_debrid/data/config/settings.json",
+        "log_file": "/cli_debrid/data/logs/battery_debug.log",
+        "env": {
+            "USER_CONFIG": "/cli_debrid/data/config/",
+            "USER_LOGS": "/cli_debrid/data/logs/",
+            "USER_DB_CONTENT": "/cli_debrid/data/db_content/"
+        }
+    },
     "plex_debrid": {
         "enabled": false,
         "process_name": "Plex Debrid",
