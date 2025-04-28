@@ -79,6 +79,14 @@ class SubprocessLogger:
                     message = match.group(1).strip()
             else:
                 message = line
+
+        elif process_name == "CLI Debrid":
+            date_time_prefix_pattern = re.compile(
+                r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} - "
+            )
+            message = date_time_prefix_pattern.sub("", line).strip()
+            log_level = "INFO"
+
         else:
             log_level_pattern = re.compile(r"({})\s*(.*)".format("|".join(log_levels)))
             match = log_level_pattern.search(line)

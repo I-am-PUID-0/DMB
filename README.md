@@ -51,7 +51,7 @@
 
 ## 📜 Description
 
-**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of **[Riven Media's](https://github.com/rivenmedia)**, **[itsToggle's](https://github.com/itsToggle)**, **[yowmamasita's](https://github.com/yowmamasita)**, **[iPromKnight's](https://github.com/iPromKnight/zilean)**, **[Nick Craig-Wood's](https://github.com/ncw)**, **[Michael Stonebraker's](https://en.wikipedia.org/wiki/Michael_Stonebraker)**, and **[Dave Page's](https://github.com/dpage)** projects -- **[Riven](https://github.com/rivenmedia/riven)**, **[plex_debrid](https://github.com/itsToggle/plex_debrid)**, **[Zurg](https://github.com/debridmediamanager/zurg-testing)**, **[Zilean](https://github.com/iPromKnight/zilean)**, **[rclone](https://github.com/rclone/rclone)**, **[PostgreSQL](https://www.postgresql.org/)**, and **[pgAdmin 4](https://www.pgadmin.org/)**.
+**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of **[Riven Media's](https://github.com/rivenmedia)**, **[itsToggle's](https://github.com/itsToggle)**, **[godver3's](https://github.com/godver3)**, **[yowmamasita's](https://github.com/yowmamasita)**, **[iPromKnight's](https://github.com/iPromKnight/zilean)**, **[Nick Craig-Wood's](https://github.com/ncw)**, **[Michael Stonebraker's](https://en.wikipedia.org/wiki/Michael_Stonebraker)**, and **[Dave Page's](https://github.com/dpage)** projects -- **[Riven](https://github.com/rivenmedia/riven)**, **[plex_debrid](https://github.com/itsToggle/plex_debrid)**, **[cli_debrid](https://github.com/godver3/cli_debrid)**, **[Zurg](https://github.com/debridmediamanager/zurg-testing)**, **[Zilean](https://github.com/iPromKnight/zilean)**, **[rclone](https://github.com/rclone/rclone)**, **[PostgreSQL](https://www.postgresql.org/)**, and **[pgAdmin 4](https://www.pgadmin.org/)**.
 
 > ⚠️ **IMPORTANT**: Docker Desktop **CANNOT** be used to run DMB. Docker Desktop does not support the [mount propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation) required for rclone mounts.
 >
@@ -96,6 +96,7 @@ services:
       - /home/username/docker/DMB/pgAdmin4/data:/pgadmin/data        ## Location for pgAdmin 4 data
       - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data
       - /home/username/docker/DMB/plex_debrid:/plex_debrid/config    ## Location for plex_debrid data
+      - /home/username/docker/DMB/cli_debrid:/cli_debrid/data        ## Location for cli_debrid data
     environment:
       - TZ=
       - PUID=
@@ -108,6 +109,7 @@ services:
       - "3005:3005"                                                 ## DMB Frontend
       - "3000:3000"                                                 ## Riven Frontend
       - "5050:5050"                                                 ## pgAdmin 4
+      - "5000:5000"                                                 ## CLI Debrid Frontend      
     devices:
       - /dev/fuse:/dev/fuse:rwm
     cap_add:
@@ -184,6 +186,7 @@ The following table describes the ports used by the container. The mappings are 
 | `5050`         | TCP      | pgAdmin 4 - A web UI is accessible at the assigned port                              |
 | `8182`         | TCP      | Zilean - The API and Web Ui (/swagger/index.html) is accessible at the assigned port |
 | `9090`         | TCP      | Zurg - A web UI is accessible at the assigned port                                   |
+| `5000`         | TCP      | CLI Debrid - A web UI is accessible at the assigned port                             |
 
 ## 📂 Data Volumes
 
@@ -196,12 +199,14 @@ format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 | `/config`             | rw          | This is where the application stores the rclone.conf, and any files needing persistence. CAUTION: rclone.conf is overwritten upon start/restart of the container. Do NOT use an existing rclone.conf file if you have other rclone services |
 | `/log`                | rw          | This is where the application stores its log files                                                                                                                                                                                          |
 | `/data`               | rshared     | This is where rclone will be mounted.                                                                                                                                                                                                       |
-| `/zurg/RD`            | rw          | This is where Zurg will store the active configuration and data for RealDebrid. Not required when only utilizing Riven                                                                                                                      |
-| `/riven/data`         | rw          | This is where Riven will store its data. Not required when only utilizing Zurg                                                                                                                                                              |
-| `/riven/mnt`          | rw          | This is where Riven will set its symlinks. Not required when only utilizing Zurg                                                                                                                                                            |
-| `/postgres_data`      | rw          | This is where PostgreSQL will store its data. Not required when only utilizing Zurg                                                                                                                                                         |
-| `/pgadmin/data`       | rw          | This is where pgAdmin 4 will store its data. Not required when only utilizing Zurg                                                                                                                                                          |
-| `/plex_debrid/config` | rw          | This is where plex_debrid will store its data. Not required when only utilizing Zurg                                                                                                                                                  |
+| `/zurg/RD`            | rw          | This is where Zurg will store the active configuration and data for RealDebrid.                                                                                                    |
+| `/riven/data`         | rw          | This is where Riven will store its data.                                                                                                                                                               |
+| `/riven/mnt`          | rw          | This is where Riven will set its symlinks.                                                                                                                                                             |
+| `/postgres_data`      | rw          | This is where PostgreSQL will store its data.                                                                                                                                                          |
+| `/pgadmin/data`       | rw          | This is where pgAdmin 4 will store its data.                                                                                                                                                          |
+| `/plex_debrid/config` | rw          | This is where plex_debrid will store its data.                                                                                                                                                   |
+| `/cli_debrid/data` | rw             | This is where cli_debrid will store its data.                                                                                                                                                    |       
+
 
 ## 📝 TODO
 
@@ -244,6 +249,11 @@ For additional details on deployment, see the [DMB Docs](https://i-am-puid-0.git
 - or create a new [issue](https://github.com/itsToggle/plex_debrid/issues) if you find a bug or have an idea for an improvement.
 - or join the plex_debrid [discord server](https://discord.gg/u3vTDGjeKE) 
 
+### cli_debrid
+- For questions related to cli_debrid, join the cli_debrid [discord server](https://discord.gg/jAmqZJCZJ4) 
+- or create a new [issue](https://github.com/godver3/cli_debrid/issues) if you find a bug or have an idea for an improvement. 
+
+
 ## 🍻 Buy **[Riven Media](https://github.com/rivenmedia)** a beer/coffee? :)
 
 If you enjoy the underlying projects and want to buy Riven Media a beer/coffee, feel free to use the [GitHub sponsor link](https://github.com/sponsors/dreulavelle/)
@@ -251,6 +261,10 @@ If you enjoy the underlying projects and want to buy Riven Media a beer/coffee, 
 ## 🍻 Buy **[itsToggle](https://github.com/itsToggle)** a beer/coffee? :)
 
 If you enjoy the underlying projects and want to buy itsToggle a beer/coffee, feel free to use the real-debrid [affiliate link](http://real-debrid.com/?id=5708990) or send a virtual beverage via [PayPal](https://www.paypal.com/paypalme/oidulibbe) :)
+
+## 🍻 Buy **[godver3](https://github.com/godver3/cli_debrid)** a beer/coffee? :)
+
+If you enjoy the underlying projects and want to buy godver3 a beer/coffee, feel free to use the [GitHub sponsor link](https://github.com/sponsors/godver3)
 
 ## 🍻 Buy **[yowmamasita](https://github.com/yowmamasita)** a beer/coffee? :)
 
