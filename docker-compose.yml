@@ -17,7 +17,8 @@ services:
       - /home/username/docker/DMB/pgAdmin4/data:/pgadmin/data        ## Location for pgAdmin 4 data
       - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data
       - /home/username/docker/DMB/plex_debrid:/plex_debrid/config    ## Location for plex_debrid data
-      - /home/username/docker/DMB/cli_debrid:/cli_debrid/data        ## Location for cli_debrid data      
+      - /home/username/docker/DMB/cli_debrid:/cli_debrid/data        ## Location for cli_debrid data
+      - /home/username/docker/DMB/phalanx_db:/phalanx_db/data        ## Location for phalanx_db data      
     environment:
       - TZ=
       - PUID=

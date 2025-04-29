@@ -261,8 +261,14 @@ def setup_project(process_handler, process_name):
             success, error = postgres.pgadmin_setup(process_handler)
             if not success:
                 return False, error
+
         if key == "plex_debrid":
             success, error = plex_debrid_setup()
+            if not success:
+                return False, error
+
+        if key == "phalanx_db":
+            success, error = phalanx_setup()
             if not success:
                 return False, error
 
@@ -329,6 +335,78 @@ def dmb_frontend_setup():
     }
     config["env"] = env_vars
     return True, None
+
+
+def phalanx_setup():
+    config = CONFIG_MANAGER.get("phalanx_db")
+    if not config:
+        return False, "Configuration for Phalanx not found."
+
+    logger.info("Starting Phalanx setup...")
+
+    try:
+        phalanx_config_dir = config.get("config_dir")
+        phalanx_data_dir = os.path.join(phalanx_config_dir, "data")
+        original_js_file = os.path.join(phalanx_config_dir, "phalanx_db_rest.js")
+
+        if not os.path.isfile(original_js_file):
+            logger.warning(f"Phalanx project not found at {original_js_file}")
+            success, error = downloader.download_release_version(
+                process_name=config.get("process_name"),
+                key="phalanx_db",
+                repo_owner=config.get("repo_owner"),
+                repo_name=config.get("repo_name"),
+                release_version="latest",
+                target_dir=config.get("config_dir"),
+                zip_folder_name=None,
+                exclude_dirs=config.get("exclude_dirs", []),
+            )
+            if not success:
+                return False, f"Failed to download Phalanx: {error}"
+
+        for subdir in ["db_data", "p2p-db-storage", "logs"]:
+            target_path = os.path.join(phalanx_data_dir, subdir)
+            symlink_path = os.path.join(phalanx_config_dir, subdir)
+
+            os.makedirs(target_path, exist_ok=True)
+
+            if os.path.islink(symlink_path):
+                if not os.path.exists(os.readlink(symlink_path)):
+                    logger.warning(
+                        f"Broken symlink detected at {symlink_path}. Recreating..."
+                    )
+                    os.remove(symlink_path)
+                    os.symlink(target_path, symlink_path)
+            elif os.path.exists(symlink_path):
+                logger.warning(
+                    f"Expected symlink at {symlink_path}, but found real file/dir. Skipping."
+                )
+            else:
+                os.symlink(target_path, symlink_path)
+
+        logs_dir = os.path.join(phalanx_data_dir, "logs")
+        os.makedirs(logs_dir, exist_ok=True)
+
+        chown_recursive(
+            phalanx_data_dir, CONFIG_MANAGER.get("puid"), CONFIG_MANAGER.get("pgid")
+        )
+
+        port = str(config.get("port", 8888))
+        debug = (
+            "true" if config.get("log_level", "debug").lower() == "debug" else "false"
+        )
+        env_vars = {
+            "PORT": port,
+            "DEBUG": debug,
+            **config.get("env", {}),
+        }
+        config["env"] = env_vars
+
+        logger.info("Phalanx setup complete.")
+        return True, None
+
+    except Exception as e:
+        return False, f"Error during Phalanx setup: {e}"
 
 
 def zurg_setup():
@@ -1046,22 +1124,43 @@ def vite_modifications(config_dir):
 
 def setup_pnpm_environment(process_handler, config_dir):
     try:
-        # echo "store-dir=./.pnpm-store" > {config_dir}/.npmrc
         with open(os.path.join(config_dir, ".npmrc"), "w") as file:
             file.write("store-dir=./.pnpm-store\n")
 
         logger.info(f"Setting up pnpm environment in {config_dir}")
-        process_handler.start_process("pnpm_install", config_dir, ["pnpm", "install"])
-        process_handler.wait("pnpm_install")
-        if process_handler.returncode != 0:
+        for attempt in range(3):
+            process_handler.start_process(
+                "pnpm_install", config_dir, ["pnpm", "install"]
+            )
+            process_handler.wait("pnpm_install")
+            if process_handler.returncode == 0:
+                break
+            if "EAGAIN" not in process_handler.stderr:
+                return False, f"Error during pnpm install: {process_handler.stderr}"
+            logger.warning("pnpm install hit EAGAIN. Retrying...")
+        else:
             return False, f"Error during pnpm install: {process_handler.stderr}"
 
-        process_handler.start_process(
-            "pnpm_build", config_dir, ["pnpm", "run", "build"]
-        )
-        process_handler.wait("pnpm_build")
-        if process_handler.returncode != 0:
-            return False, f"Error during pnpm build: {process_handler.stderr}"
+        package_json_path = os.path.join(config_dir, "package.json")
+        build_script_exists = False
+        if os.path.isfile(package_json_path):
+            import json
+
+            with open(package_json_path, "r") as f:
+                package_data = json.load(f)
+                scripts = package_data.get("scripts", {})
+                build_script_exists = "build" in scripts
+
+        if build_script_exists:
+            logger.info(f"Build script found. Running pnpm build...")
+            process_handler.start_process(
+                "pnpm_build", config_dir, ["pnpm", "run", "build"]
+            )
+            process_handler.wait("pnpm_build")
+            if process_handler.returncode != 0:
+                return False, f"Error during pnpm build: {process_handler.stderr}"
+        else:
+            logger.info(f"No build script found. Skipping pnpm build step.")
 
         logger.info(f"pnpm environment setup complete")
         return True, None

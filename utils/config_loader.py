@@ -1,4 +1,4 @@
-import os, shutil
+import os, shutil, copy
 from json import load, dump, JSONDecodeError
 from jsonschema import validate, ValidationError
 from dotenv import load_dotenv, find_dotenv
@@ -24,8 +24,8 @@ class ConfigManager:
         if not os.path.exists(self.schema_path):
             raise FileNotFoundError(f"Schema file not found: {self.schema_path}")
 
-        # self.update_config_with_defaults()
-        self.update_config_with_top_level_defaults()
+        self.update_config_with_defaults()
+        # self.update_config_with_top_level_defaults()
         self.schema = self._load_schema()
         self.config = self._load_and_validate_config()
 
@@ -71,45 +71,43 @@ class ConfigManager:
     def update_config_with_defaults(self):
         try:
             with open("/utils/dmb_config.json", "r") as default_file:
-                default_config = load(default_file)
+                default_config = load(default_file, object_pairs_hook=OrderedDict)
 
             existing_config = self._load_config()
 
-            updated_config = self._merge_configs(existing_config, default_config)
+            merged_config = self._merge_configs(
+                copy.deepcopy(existing_config), default_config
+            )
 
-            # Write updated configuration to the file
-            with open(self.file_path, "w") as config_file:
-                dump(updated_config, config_file, indent=4)
-
-            print(f"Configuration updated successfully: {self.file_path}")
+            if merged_config != existing_config:
+                backup_path = self.file_path + ".bak"
+                shutil.copyfile(self.file_path, backup_path)
+                with open(self.file_path, "w") as config_file:
+                    dump(merged_config, config_file, indent=4)
         except Exception as e:
-            print(f"Error during update_config_with_defaults: {e}")
+            raise ValueError(f"Error during update_config_with_defaults: {e}")
 
     def _merge_configs(self, existing, default):
-        """
-        Recursively merge the default config into the existing config.
-        Preserve existing keys and values, and add missing keys.
-        """
-        for key, value in default.items():
-            # Debugging: Show the current key and value
-            print(f"Processing key: {key}, Value: {value}")
+        if not isinstance(existing, dict) or not isinstance(default, dict):
+            return existing
 
-            # Check if the key is missing
-            if key not in existing:
-                print(f"Adding missing key: {key} with value: {value}")
-                existing[key] = value
-            elif isinstance(value, dict):
-                # If value is a dictionary, ensure the corresponding structure exists in `existing`
-                if key not in existing or not isinstance(existing[key], dict):
-                    print(f"Key {key} is missing or not a dictionary, initializing it.")
-                    existing[key] = {}
-                # Recursively merge
-                print(f"Recursively merging nested key: {key}")
-                self._merge_configs(existing[key], value)
+        merged = OrderedDict()
+
+        for key, default_value in default.items():
+            if key in existing:
+                existing_value = existing[key]
+                if isinstance(existing_value, dict) and isinstance(default_value, dict):
+                    merged[key] = self._merge_configs(existing_value, default_value)
+                else:
+                    merged[key] = existing_value
             else:
-                # Skip existing keys with valid values
-                print(f"Key {key} exists with value: {existing[key]}, skipping update.")
-        return existing
+                merged[key] = default_value
+
+        for key, existing_value in existing.items():
+            if key not in merged:
+                merged[key] = existing_value
+
+        return merged
 
     def _load_and_validate_config(self):
         config = self._load_config()
