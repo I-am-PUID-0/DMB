@@ -115,7 +115,7 @@
         "repo_owner": "godver3",
         "repo_name": "phalanx_db_hyperswarm",
         "release_version_enabled": false,
-        "release_version": "v1.0.0",
+        "release_version": "v0.50",
         "branch_enabled": false,
         "branch": "main",
         "suppress_logging": false,
