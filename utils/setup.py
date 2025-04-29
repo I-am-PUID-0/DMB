@@ -268,7 +268,7 @@ def setup_project(process_handler, process_name):
                 return False, error
 
         if key == "phalanx_db":
-            success, error = phalanx_setup()
+            success, error = phalanx_setup(process_handler)
             if not success:
                 return False, error
 
@@ -337,7 +337,7 @@ def dmb_frontend_setup():
     return True, None
 
 
-def phalanx_setup():
+def phalanx_setup(process_handler):
     config = CONFIG_MANAGER.get("phalanx_db")
     if not config:
         return False, "Configuration for Phalanx not found."
@@ -351,15 +351,11 @@ def phalanx_setup():
 
         if not os.path.isfile(original_js_file):
             logger.warning(f"Phalanx project not found at {original_js_file}")
-            success, error = downloader.download_release_version(
+            success, error = setup_release_version(
+                process_handler,
+                config,
                 process_name=config.get("process_name"),
                 key="phalanx_db",
-                repo_owner=config.get("repo_owner"),
-                repo_name=config.get("repo_name"),
-                release_version="latest",
-                target_dir=config.get("config_dir"),
-                zip_folder_name=None,
-                exclude_dirs=config.get("exclude_dirs", []),
             )
             if not success:
                 return False, f"Failed to download Phalanx: {error}"

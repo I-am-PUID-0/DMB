@@ -29,7 +29,7 @@ class Versions:
                 version_path = "/cli_debrid/cli_battery/version.txt"
                 is_file = True
             elif key == "phalanx_db":
-                version_path = "/phalanx_db/package.json"
+                version_path = "/phalanx_db/version.txt"
                 is_file = True
             elif key == "riven_backend":
                 version_path = "/riven/backend/pyproject.toml"
@@ -99,7 +99,7 @@ class Versions:
             if is_file:
                 try:
                     with open(version_path, "r") as f:
-                        if key == "dmb_frontend" or key == "phalanx_db":
+                        if key == "dmb_frontend":
                             try:
                                 data = json.load(f)
                                 version = f'v{data["version"]}'
@@ -109,6 +109,7 @@ class Versions:
                             key == "riven_frontend"
                             or key == "cli_debrid"
                             or key == "cli_battery"
+                            or key == "phalanx_db"
                         ):
                             version = f"v{f.read().strip()}"
                         elif (
