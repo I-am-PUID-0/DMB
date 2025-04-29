@@ -8,6 +8,8 @@ from utils.dependencies import initialize_dependencies
 import subprocess, threading, time, tomllib
 from time import sleep
 
+from utils.setup import phalanx_setup
+
 
 def main():
 
@@ -140,6 +142,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
         plex_debrid_config = config.get("plex_debrid") or {}
         cli_debrid_config = config.get("cli_debrid") or {}
         cli_battery_config = config.get("cli_battery") or {}
+        phalanx_db_config = config.get("phalanx_db") or {}
         postgres_config = config.get("postgres", {})
         pgadmin_config = config.get("pgadmin", {})
         riven_backend_config = config.get("riven_backend", {})
@@ -172,6 +175,17 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
             try:
                 process_name = cli_battery_config.get("process_name")
                 updater.auto_update(process_name, False)
+            except Exception as e:
+                logger.error(e)
+                process_handler.shutdown(exit_code=1)
+
+        if phalanx_db_config.get("enabled"):
+            try:
+                process_name = phalanx_db_config.get("process_name")
+                if phalanx_db_config.get("auto_update", False):
+                    updater.auto_update(process_name, True)
+                else:
+                    updater.auto_update(process_name, False)
             except Exception as e:
                 logger.error(e)
                 process_handler.shutdown(exit_code=1)

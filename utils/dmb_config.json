@@ -62,6 +62,7 @@
         "branch": "main",
         "suppress_logging": false,
         "log_level": "INFO",
+        "port": 5000,
         "auto_update": false,
         "auto_update_interval": 24,
         "clear_on_update": true,
@@ -81,7 +82,8 @@
         "env": {
             "USER_CONFIG": "/cli_debrid/data/config/",
             "USER_LOGS": "/cli_debrid/data/logs/",
-            "USER_DB_CONTENT": "/cli_debrid/data/db_content/"
+            "USER_DB_CONTENT": "/cli_debrid/data/db_content/",
+            "CLI_DEBRID_PORT": "{port}"
         }
     },
     "cli_battery": {
@@ -89,6 +91,7 @@
         "process_name": "CLI Battery",
         "suppress_logging": false,
         "log_level": "INFO",
+        "port": 5001,
         "platforms": [
             "python"
         ],
@@ -102,8 +105,37 @@
         "env": {
             "USER_CONFIG": "/cli_debrid/data/config/",
             "USER_LOGS": "/cli_debrid/data/logs/",
-            "USER_DB_CONTENT": "/cli_debrid/data/db_content/"
+            "USER_DB_CONTENT": "/cli_debrid/data/db_content/",
+            "CLI_DEBRID_BATTERY_PORT": "{port}"
         }
+    },
+    "phalanx_db": {
+        "enabled": false,
+        "process_name": "Phalanx DB",
+        "repo_owner": "godver3",
+        "repo_name": "phalanx_db_hyperswarm",
+        "release_version_enabled": false,
+        "release_version": "v1.0.0",
+        "branch_enabled": false,
+        "branch": "main",
+        "suppress_logging": false,
+        "log_level": "INFO",
+        "port": 8888,
+        "auto_update": false,
+        "auto_update_interval": 24,
+        "clear_on_update": true,
+        "exclude_dirs": [
+            "/phalanx_db/data"
+        ],
+        "platforms": [
+            "pnpm"
+        ],
+        "command": [
+            "node",
+            "phalanx_db_rest.js"
+        ],
+        "config_dir": "/phalanx_db",
+        "env": {}
     },
     "plex_debrid": {
         "enabled": false,

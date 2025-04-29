@@ -97,6 +97,7 @@ services:
       - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data
       - /home/username/docker/DMB/plex_debrid:/plex_debrid/config    ## Location for plex_debrid data
       - /home/username/docker/DMB/cli_debrid:/cli_debrid/data        ## Location for cli_debrid data
+      - /home/username/docker/DMB/phalanx_db:/phalanx_db/data        ## Location for phalanx_db data 
     environment:
       - TZ=
       - PUID=
@@ -187,6 +188,7 @@ The following table describes the ports used by the container. The mappings are 
 | `8182`         | TCP      | Zilean - The API and Web Ui (/swagger/index.html) is accessible at the assigned port |
 | `9090`         | TCP      | Zurg - A web UI is accessible at the assigned port                                   |
 | `5000`         | TCP      | CLI Debrid - A web UI is accessible at the assigned port                             |
+| `8888`         | TCP      | Phalanx DB - The API is accessible at the assigned port                              |
 
 ## 📂 Data Volumes
 
@@ -206,7 +208,7 @@ format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 | `/pgadmin/data`       | rw          | This is where pgAdmin 4 will store its data.                                                                                                                                                          |
 | `/plex_debrid/config` | rw          | This is where plex_debrid will store its data.                                                                                                                                                   |
 | `/cli_debrid/data` | rw             | This is where cli_debrid will store its data.                                                                                                                                                    |       
-
+| `/phalanx_db/data` | rw             | This is where phalanx_db will store its data.                                                                                                                                                    |    
 
 ## 📝 TODO
 
@@ -249,8 +251,8 @@ For additional details on deployment, see the [DMB Docs](https://i-am-puid-0.git
 - or create a new [issue](https://github.com/itsToggle/plex_debrid/issues) if you find a bug or have an idea for an improvement.
 - or join the plex_debrid [discord server](https://discord.gg/u3vTDGjeKE) 
 
-### cli_debrid
-- For questions related to cli_debrid, join the cli_debrid [discord server](https://discord.gg/jAmqZJCZJ4) 
+### cli_debrid & phalanx_db
+- For questions related to cli_debrid or phalanx_db, join the cli_debrid [discord server](https://discord.gg/jAmqZJCZJ4) 
 - or create a new [issue](https://github.com/godver3/cli_debrid/issues) if you find a bug or have an idea for an improvement. 
 
 
