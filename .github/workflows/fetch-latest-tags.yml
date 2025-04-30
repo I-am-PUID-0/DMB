@@ -35,7 +35,7 @@ jobs:
             grep '^version\s*=' | \
             sed -E "s/.*=\s*\[\s*'([^']+)'.*/\1/")
 
-          exho "CLI_DEBRID_TAG=$CLI_DEBRID_TAG" >> $GITHUB_ENV
+          echo "CLI_DEBRID_TAG=$CLI_DEBRID_TAG" >> $GITHUB_ENV
           echo "PLEX_DEBRID_TAG=$PLEX_DEBRID_TAG" >> $GITHUB_ENV
           echo "ZILEAN_TAG=$ZILEAN_TAG" >> $GITHUB_ENV
           echo "RIVEN_TAG=$RIVEN_TAG" >> $GITHUB_ENV
