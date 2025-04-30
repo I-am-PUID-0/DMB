@@ -1,5 +1,38 @@
 # Changelog
 
+## [6.9.0](https://github.com/I-am-PUID-0/DMB/compare/6.8.2...6.9.0) (2025-04-30)
+
+
+### ✨ Features
+
+* **cli_battery:** add configuration for CLI Battery integration ([1c73a60](https://github.com/I-am-PUID-0/DMB/commit/1c73a60e8965a1e48e1e95e0cc2eb594ead57748))
+* **cli_debrid:** adds cli_debrid integration ([d7b4314](https://github.com/I-am-PUID-0/DMB/commit/d7b4314bbde1fee31df88ea153010f59ac22dcf0))
+* **phalanx_db:** adds Phalanx DB integration ([f697942](https://github.com/I-am-PUID-0/DMB/commit/f697942ce6f355af666b6c0338f925aba25d79e1))
+* **setup:** add symlink creation for wwwroot directory in Zilean setup ([49f0897](https://github.com/I-am-PUID-0/DMB/commit/49f08974828c8b983001b9ccec8f21dad38be7ff))
+
+
+### 🐛 Bug Fixes
+
+* **main:** update version extraction from pyproject.toml to align with poetry structure ([619b37f](https://github.com/I-am-PUID-0/DMB/commit/619b37f8c02c55c589baa4afedaab1472dce24e0))
+* **phalanx_db:** set default release_version in dmb_config.json to v0.50 ([5d0661a](https://github.com/I-am-PUID-0/DMB/commit/5d0661a75b8d667708c81a5f4325bd9467e0117c))
+
+
+### 🤡 Other Changes
+
+* **deps:** bump packaging from 24.2 to 25.0 ([#142](https://github.com/I-am-PUID-0/DMB/issues/142)) ([75dcaa2](https://github.com/I-am-PUID-0/DMB/commit/75dcaa20ff5d64f9b4dd2a84f629807a51c9a0ec))
+* **deps:** bump plexapi from 4.16.1 to 4.17.0 ([#140](https://github.com/I-am-PUID-0/DMB/issues/140)) ([3fdbdb5](https://github.com/I-am-PUID-0/DMB/commit/3fdbdb54a07fb17bde3e3bd6def5331f12e4c5af))
+* **deps:** bump pydantic from 2.11.2 to 2.11.3 ([#139](https://github.com/I-am-PUID-0/DMB/issues/139)) ([73d28fc](https://github.com/I-am-PUID-0/DMB/commit/73d28fce9b6dff3ba237be2e42ddcf04a0f00256))
+* **deps:** bump pydantic from 2.11.3 to 2.11.4 ([#145](https://github.com/I-am-PUID-0/DMB/issues/145)) ([93046ab](https://github.com/I-am-PUID-0/DMB/commit/93046abbf18bcd6a6c0b57d8419c113300f3c37e))
+* **deps:** bump uvicorn from 0.34.0 to 0.34.2 ([#141](https://github.com/I-am-PUID-0/DMB/issues/141)) ([70bea2d](https://github.com/I-am-PUID-0/DMB/commit/70bea2db23d8ddf594afd393f82b78b55886f3e2))
+* **docs:** change rclone mount permissions for `shared` to `rshared` and clarify ORIGIN address instructions ([08622ea](https://github.com/I-am-PUID-0/DMB/commit/08622ea9ef9d36f8f03611557b705e3913060ea0))
+* **license:** switch to GPL-3.0 ([4b4ddfb](https://github.com/I-am-PUID-0/DMB/commit/4b4ddfb5228516268f361c0d4c206b43830f8179))
+* **poetry:** update dev dependencies and enhance post-create command for devcontainer ([a40b082](https://github.com/I-am-PUID-0/DMB/commit/a40b0825114ecec5f14640d01865c083506bac21))
+
+
+### 🛠️ Refactors
+
+* **phalanx:** refactors Phalanx setup ([17837bd](https://github.com/I-am-PUID-0/DMB/commit/17837bdf071856041a89dad0f6d0e87c9e99c279))
+
 ## [6.8.2](https://github.com/I-am-PUID-0/DMB/compare/6.8.1...6.8.2) (2025-04-16)
 
 
