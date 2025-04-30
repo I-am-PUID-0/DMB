@@ -247,6 +247,14 @@ def setup_project(process_handler, process_name):
             if not success:
                 return False, error
 
+        if key == "zilean":
+            config_app_wwwroot_dir = os.path.join(
+                config["config_dir"], "app", "wwwroot"
+            )
+            config_wwwroot_dir = os.path.join(config["config_dir"], "wwwroot")
+            if not os.path.exists(config_wwwroot_dir):
+                os.symlink(config_app_wwwroot_dir, config_wwwroot_dir)
+
         if key == "rclone":
             success, error = rclone_setup()
             if not success:
