@@ -1,3 +1,4 @@
+from functools import cache
 from utils import postgres
 from utils.config_loader import CONFIG_MANAGER
 from utils.global_logger import logger
@@ -818,6 +819,7 @@ def rclone_setup():
             chown_recursive(f"{mount_dir}/{mount_name}", user_id, group_id)
             os.makedirs(instance["cache_dir"], exist_ok=True)
             chown_recursive(instance["cache_dir"], user_id, group_id)
+            cache_dir = os.path.abspath(instance["cache_dir"])
             if not instance.get("command"):
                 rclone_command = [
                     "rclone",
@@ -832,6 +834,7 @@ def rclone_setup():
                     "--poll-interval=0",
                     "--dir-cache-time=10s",
                     "--allow-non-empty",
+                    f"--cache-dir={cache_dir}",
                 ]
                 logger.debug(
                     f"Generated rclone command for {instance_name}: {rclone_command}"
