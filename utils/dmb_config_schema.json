@@ -707,6 +707,9 @@
                 "config_file": {
                   "type": "string"
                 },
+                "log_file": {
+                  "type": "string"
+                },
                 "zurg_config_file": {
                   "type": "string"
                 },
@@ -732,6 +735,7 @@
                 "cache_dir",
                 "config_dir",
                 "config_file",
+                "log_file",
                 "zurg_config_file",
                 "command",
                 "api_key"

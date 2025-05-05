@@ -94,6 +94,22 @@ class ConfigManager:
         merged = OrderedDict()
 
         for key, default_value in default.items():
+            if key == "instances" and isinstance(default_value, dict):
+                existing_instances = existing.get("instances", {})
+                merged_instances = OrderedDict()
+                default_template = next(iter(default_value.values()))
+
+                if existing_instances:
+                    for instance_name, instance_value in existing_instances.items():
+                        merged_instances[instance_name] = self._merge_configs(
+                            instance_value, default_template
+                        )
+                else:
+                    merged_instances = default_value
+
+                merged["instances"] = merged_instances
+                continue
+
             if key in existing:
                 existing_value = existing[key]
                 if isinstance(existing_value, dict) and isinstance(default_value, dict):

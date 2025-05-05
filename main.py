@@ -149,47 +149,6 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
         riven_frontend_config = config.get("riven_frontend", {})
         zilean_config = config.get("zilean", {})
 
-        if plex_debrid_config.get("enabled"):
-            try:
-                process_name = plex_debrid_config.get("process_name")
-                if plex_debrid_config.get("auto_update", False):
-                    updater.auto_update(process_name, True)
-                else:
-                    updater.auto_update(process_name, False)
-            except Exception as e:
-                logger.error(e)
-                process_handler.shutdown(exit_code=1)
-
-        if cli_debrid_config.get("enabled"):
-            try:
-                process_name = cli_debrid_config.get("process_name")
-                if cli_debrid_config.get("auto_update", False):
-                    updater.auto_update(process_name, True)
-                else:
-                    updater.auto_update(process_name, False)
-            except Exception as e:
-                logger.error(e)
-                process_handler.shutdown(exit_code=1)
-
-        if cli_battery_config.get("enabled"):
-            try:
-                process_name = cli_battery_config.get("process_name")
-                updater.auto_update(process_name, False)
-            except Exception as e:
-                logger.error(e)
-                process_handler.shutdown(exit_code=1)
-
-        if phalanx_db_config.get("enabled"):
-            try:
-                process_name = phalanx_db_config.get("process_name")
-                if phalanx_db_config.get("auto_update", False):
-                    updater.auto_update(process_name, True)
-                else:
-                    updater.auto_update(process_name, False)
-            except Exception as e:
-                logger.error(e)
-                process_handler.shutdown(exit_code=1)
-
         if postgres_config.get("enabled"):
             try:
                 process_name = postgres_config.get("process_name")
@@ -210,6 +169,47 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
             try:
                 process_name = zilean_config.get("process_name")
                 if zilean_config.get("auto_update", False):
+                    updater.auto_update(process_name, True)
+                else:
+                    updater.auto_update(process_name, False)
+            except Exception as e:
+                logger.error(e)
+                process_handler.shutdown(exit_code=1)
+
+        if plex_debrid_config.get("enabled"):
+            try:
+                process_name = plex_debrid_config.get("process_name")
+                if plex_debrid_config.get("auto_update", False):
+                    updater.auto_update(process_name, True)
+                else:
+                    updater.auto_update(process_name, False)
+            except Exception as e:
+                logger.error(e)
+                process_handler.shutdown(exit_code=1)
+
+        if phalanx_db_config.get("enabled"):
+            try:
+                process_name = phalanx_db_config.get("process_name")
+                if phalanx_db_config.get("auto_update", False):
+                    updater.auto_update(process_name, True)
+                else:
+                    updater.auto_update(process_name, False)
+            except Exception as e:
+                logger.error(e)
+                process_handler.shutdown(exit_code=1)
+
+        if cli_battery_config.get("enabled"):
+            try:
+                process_name = cli_battery_config.get("process_name")
+                updater.auto_update(process_name, False)
+            except Exception as e:
+                logger.error(e)
+                process_handler.shutdown(exit_code=1)
+
+        if cli_debrid_config.get("enabled"):
+            try:
+                process_name = cli_debrid_config.get("process_name")
+                if cli_debrid_config.get("auto_update", False):
                     updater.auto_update(process_name, True)
                 else:
                     updater.auto_update(process_name, False)

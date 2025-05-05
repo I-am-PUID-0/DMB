@@ -114,7 +114,7 @@ def create_system_user(username="DMB"):
         logger.info(f"Password set for user '{username}'. Stored securely in memory.")
 
         zurg_dir = "/zurg"
-        mnt_dir = config.get("riven_backend").get("symlink_library_path")
+        # mnt_dir = config.get("riven_backend").get("symlink_library_path")
         log_dir = config.get("dmb").get("log_dir")
         config_dir = "/config"
         riven_dir = "/riven/backend/data"
@@ -126,7 +126,7 @@ def create_system_user(username="DMB"):
 
         chown_start = time.time()
         # chown_recursive(zurg_dir, user_id, group_id)
-        os.chown(mnt_dir, user_id, group_id)
+        # os.chown(mnt_dir, user_id, group_id)
         os.chown(zurg_dir, user_id, group_id)
         chown_recursive(log_dir, user_id, group_id)
         chown_recursive(config_dir, user_id, group_id)

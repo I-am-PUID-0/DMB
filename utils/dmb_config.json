@@ -229,6 +229,7 @@
                 "cache_dir": "/cache",
                 "config_dir": "/config",
                 "config_file": "/config/rclone.config",
+                "log_file": "/log/rclone_w_realdebrid.log",
                 "zurg_config_file": "/zurg/RD/config.yml",
                 "command": [],
                 "api_key": ""

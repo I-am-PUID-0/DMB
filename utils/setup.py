@@ -1,4 +1,3 @@
-from functools import cache
 from utils import postgres
 from utils.config_loader import CONFIG_MANAGER
 from utils.global_logger import logger
@@ -242,6 +241,10 @@ def setup_project(process_handler, process_name):
                 for arg in riven_backend_command
             ]
             config["command"] = riven_backend_command
+            symlink_library_path = config.get("symlink_library_path")
+            if not os.path.exists(symlink_library_path):
+                os.makedirs(symlink_library_path, exist_ok=True)
+                os.chown(symlink_library_path, user_id, group_id)
 
         if key == "zurg":
             success, error = zurg_setup()
@@ -820,6 +823,7 @@ def rclone_setup():
             os.makedirs(instance["cache_dir"], exist_ok=True)
             chown_recursive(instance["cache_dir"], user_id, group_id)
             cache_dir = os.path.abspath(instance["cache_dir"])
+            log_file = os.path.abspath(instance["log_file"])
             if not instance.get("command"):
                 rclone_command = [
                     "rclone",
@@ -835,6 +839,7 @@ def rclone_setup():
                     "--dir-cache-time=10s",
                     "--allow-non-empty",
                     f"--cache-dir={cache_dir}",
+                    f"--log-file={log_file}",
                 ]
                 logger.debug(
                     f"Generated rclone command for {instance_name}: {rclone_command}"
@@ -1142,7 +1147,7 @@ def setup_pnpm_environment(process_handler, config_dir):
             process_handler.wait("pnpm_install")
             if process_handler.returncode == 0:
                 break
-            if "EAGAIN" not in process_handler.stderr:
+            if "eagain" not in (process_handler.stdout or "").lower():
                 return False, f"Error during pnpm install: {process_handler.stderr}"
             logger.warning("pnpm install hit EAGAIN. Retrying...")
         else:
