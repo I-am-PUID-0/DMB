@@ -822,31 +822,70 @@ def rclone_setup():
             chown_recursive(f"{mount_dir}/{mount_name}", user_id, group_id)
             os.makedirs(instance["cache_dir"], exist_ok=True)
             chown_recursive(instance["cache_dir"], user_id, group_id)
-            cache_dir = os.path.abspath(instance["cache_dir"])
-            log_file = os.path.abspath(instance["log_file"])
-            log_level = instance.get("log_level", "INFO").upper()
-            if not instance.get("command"):
-                rclone_command = [
+
+            def update_or_generate_command(instance):
+                mount_name = instance["mount_name"]
+                mount_dir = instance["mount_dir"]
+                config_file = instance["config_file"]
+                cache_dir = os.path.abspath(instance["cache_dir"])
+                log_file = os.path.abspath(instance["log_file"])
+                log_level = instance.get("log_level", "INFO").upper()
+
+                base_cmd = [
                     "rclone",
                     "mount",
                     f"{mount_name}:",
                     f"{mount_dir}/{mount_name}",
-                    "--config",
-                    config_file,
-                    f"--uid={user_id}",
-                    f"--gid={group_id}",
-                    "--allow-other",
-                    "--poll-interval=0",
-                    "--dir-cache-time=10s",
-                    "--allow-non-empty",
-                    f"--cache-dir={cache_dir}",
-                    f"--log-file={log_file}",
-                    f"--log-level={log_level}",
                 ]
+
+                required_flags = {
+                    "--config": config_file,
+                    "--uid": str(user_id),
+                    "--gid": str(group_id),
+                    "--allow-other": None,
+                    "--poll-interval": "0",
+                    "--dir-cache-time": "10s",
+                    "--allow-non-empty": None,
+                    "--cache-dir": cache_dir,
+                    "--log-file": log_file,
+                    "--log-level": log_level,
+                }
+
+                existing = instance.get("command", [])
+                parsed_flags = {}
+
+                i = 0
+                while i < len(existing):
+                    item = existing[i]
+                    if item.startswith("--"):
+                        if "=" in item:
+                            flag, val = item.split("=", 1)
+                            parsed_flags[flag] = val
+                        elif i + 1 < len(existing) and not existing[i + 1].startswith(
+                            "--"
+                        ):
+                            parsed_flags[item] = existing[i + 1]
+                            i += 1
+                        else:
+                            parsed_flags[item] = None
+                    i += 1
+
+                for key, value in required_flags.items():
+                    parsed_flags[key] = value
+
+                final_cmd = base_cmd
+                for key, value in parsed_flags.items():
+                    if value is None:
+                        final_cmd.append(key)
+                    else:
+                        final_cmd.append(f"{key}={value}")
+
+                instance["command"] = final_cmd
                 logger.debug(
-                    f"Generated rclone command for {instance_name}: {rclone_command}"
+                    f"Final rclone command for {instance['mount_name']}: {final_cmd}"
                 )
-                instance["command"] = rclone_command
+
+            update_or_generate_command(instance)
 
             from utils.riven_settings import parse_config_keys
 
