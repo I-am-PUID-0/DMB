@@ -215,6 +215,14 @@ async def restart_service(
                 status_code=404, detail="Service configuration not found."
             )
 
+        if process_name in process_handler.setup_tracker:
+            process_handler.setup_tracker.remove(process_name)
+            success, error = setup_project(process_handler, process_name)
+            if not success:
+                raise HTTPException(
+                    status_code=500, detail=f"Failed to setup project: {error}"
+                )
+
         process_handler.start_process(
             process_name=process_name,
             config_dir=service_config.get("config_dir"),
