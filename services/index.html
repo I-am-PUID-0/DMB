@@ -2247,58 +2247,59 @@
 <h2 id="-how-the-services-work-together">🧩 How the Services Work Together<a class="headerlink" href="#-how-the-services-work-together" title="Permanent link">#</a></h2>
 <p>DMB is built as a collection of microservices, each fulfilling a specific role in the pipeline:</p>
 <ol>
-<li><strong>User Interaction</strong></li>
-</ol>
-<div class="highlight"><pre><span></span><code>- 🖥️ **DMB Frontend** provides a graphical interface for managing all services.
-</code></pre></div>
-<ol>
 <li>
-<p><strong>API &amp; Coordination</strong></p>
+<p><strong>User Interaction</strong></p>
+<ul>
+<li>🖥️ <strong>DMB Frontend</strong> provides a graphical interface for managing all services.</li>
+</ul>
 </li>
 <li>
-<p>🔌 <strong>DMB API</strong> acts as a centralized endpoint for frontend communication and coordinating actions between services.</p>
+<p><strong>API &amp; Coordination</strong></p>
+<ul>
+<li>🔌 <strong>DMB API</strong> acts as a centralized endpoint for frontend communication and coordinating actions between services.</li>
+</ul>
 </li>
 <li>
 <p><strong>Metadata Management &amp; Discovery</strong></p>
-</li>
-<li>
-<p>🧠 <strong>Riven Backend</strong> searches and indexes content, initiates downloads, and maintains integration with media platforms (Trakt, Overseerr, Plex).</p>
-</li>
+<ul>
+<li>🧠 <strong>Riven Backend</strong> searches and indexes content, initiates downloads, and maintains integration with media platforms (Trakt, Overseerr, Plex).</li>
 <li>🧲 <strong>CLI Debrid</strong> automates discovery, upgrading, content management, and maintains integration with media platforms (Trakt, Overseerr, Plex).</li>
 <li>🎨 <strong>Riven Frontend</strong> interfaces directly with the backend to manage searches, downloads, and settings.</li>
-</ol>
-<p>!!! note "See the <a href="https://rivenmedia.github.io/wiki/">Riven Wiki</a> and <a href="https://github.com/godver3/cli_debrid">CLI Debrid GitHub</a> for more details"</p>
-<ol>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">See the <a href="https://rivenmedia.github.io/wiki/">Riven Wiki</a> and <a href="https://github.com/godver3/cli_debrid">CLI Debrid GitHub</a> for more details</p>
+</div>
+</li>
 <li>
 <p><strong>Metadata Caching</strong></p>
-</li>
-<li>
-<p>🔋 <strong>CLI Battery</strong> provides local metadata storage and Trakt integration, caching frequently accessed metadata.</p>
-</li>
+<ul>
+<li>🔋 <strong>CLI Battery</strong> provides local metadata storage and Trakt integration, caching frequently accessed metadata.</li>
 <li>🌐 <strong>Phalanx DB</strong> offers an optional decentralized metadata store powered by Hyperswarm.</li>
 <li>🧠 <strong>Zilean</strong> caches metadata (e.g., hashes, content names) and serves repeated requests to reduce lookup time for indexed content.</li>
-</ol>
-<p>!!! note "See the <a href="https://ipromknight.github.io/zilean/getting-started.html">Zilean Wiki</a> and <a href="https://github.com/godver3/cli_debrid">CLI Debrid GitHub</a> for more details "</p>
-<ol>
-<li>
-<p><strong>Content Acquisition</strong></p>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">See the <a href="https://ipromknight.github.io/zilean/getting-started.html">Zilean Wiki</a> and <a href="https://github.com/godver3/cli_debrid">CLI Debrid GitHub</a> for more details </p>
+</div>
 </li>
 <li>
-<p>⚡ <strong>Zurg</strong> interfaces with Real-Debrid to manage content on the debrid service.</p>
+<p><strong>Content Acquisition</strong></p>
+<ul>
+<li>⚡ <strong>Zurg</strong> interfaces with Real-Debrid to manage content on the debrid service.</li>
+</ul>
 </li>
 <li>
 <p><strong>Cloud Storage Mounting</strong></p>
-</li>
-<li>
-<p>☁️ <strong>rclone</strong> mounts debrid storage (via WebDAV or similar) inside the container, making downloaded content available to other services.</p>
+<ul>
+<li>☁️ <strong>rclone</strong> mounts debrid storage (via WebDAV or similar) inside the container, making downloaded content available to other services.</li>
+</ul>
 </li>
 <li>
 <p><strong>Persistent Storage and Management</strong></p>
-</li>
-<li>
-<p>🗃️ <strong>PostgreSQL</strong> provides the primary database layer for Zilean, Riven, and pgAdmin.</p>
-</li>
+<ul>
+<li>🗃️ <strong>PostgreSQL</strong> provides the primary database layer for Zilean, Riven, and pgAdmin.</li>
 <li>📊 <strong>pgAdmin 4</strong> gives users a web-based interface for inspecting and managing PostgreSQL.</li>
+</ul>
+</li>
 </ol>
 <h2 id="-core-service-summaries">🧱 Core Service Summaries<a class="headerlink" href="#-core-service-summaries" title="Permanent link">#</a></h2>
 <h3 id="-dmb-api">🔌 DMB API<a class="headerlink" href="#-dmb-api" title="Permanent link">#</a></h3>
