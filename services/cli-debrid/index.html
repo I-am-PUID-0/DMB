@@ -12,13 +12,13 @@
         <meta name="author" content="DMB Team">
       
       
-        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/faq/rclone/">
+        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/services/cli-debrid/">
       
       
-        <link rel="prev" href="../postgres/">
+        <link rel="prev" href="../dmb-frontend/">
       
       
-        <link rel="next" href="../riven/">
+        <link rel="next" href="../cli-battery/">
       
       
       <link rel="icon" href="../../assets/images/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>rclone - DMB</title>
+        <title>CLI Debrid - DMB</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rclone-faq" class="md-skip">
+        <a href="#cli-debrid-configuration" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              rclone
+              CLI Debrid
             
           </span>
         </div>
@@ -273,11 +273,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../services/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   Services
@@ -327,13 +329,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../general/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../faq/general/" class="md-tabs__link">
           
   
   FAQ
@@ -670,25 +670,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -700,7 +705,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Services
@@ -714,7 +719,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -736,7 +741,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/api/" class="md-nav__link">
+      <a href="../api/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -758,7 +763,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/dmb-frontend/" class="md-nav__link">
+      <a href="../dmb-frontend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -777,10 +782,31 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../services/cli-debrid/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    CLI Debrid
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -790,6 +816,164 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-configuration-in-dmb_configjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      📦 Configuration in dmb_config.json
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📦 Configuration in dmb_config.json">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-key-configuration-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Key Configuration Fields
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-what-cli-debrid-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚙️ What CLI Debrid Does
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚙️ What CLI Debrid Does">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-intelligent-automation" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 Intelligent Automation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-supported-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎛️ Supported Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-required-component-cli-battery" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚡ Required Component: CLI Battery
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-optional-utility-phalanx-db" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧰 Optional Utility: Phalanx DB
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-mount-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔁 Mount Considerations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-zilean-built-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Zilean Built-in!
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-queues--processing-behind-the-scenes" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 Queues &amp; Processing (Behind the Scenes)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-webhook-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      📡 Webhook Support
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-branch--version-targeting" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚙️ Branch / Version Targeting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌐 Access
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Resources
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -802,7 +986,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/cli-battery/" class="md-nav__link">
+      <a href="../cli-battery/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -824,7 +1008,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/phalanx-db/" class="md-nav__link">
+      <a href="../phalanx-db/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -846,7 +1030,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/plex-debrid/" class="md-nav__link">
+      <a href="../plex-debrid/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -868,7 +1052,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/pgadmin/" class="md-nav__link">
+      <a href="../pgadmin/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -890,7 +1074,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/postgres/" class="md-nav__link">
+      <a href="../postgres/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -912,7 +1096,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/rclone/" class="md-nav__link">
+      <a href="../rclone/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -934,7 +1118,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/riven-backend/" class="md-nav__link">
+      <a href="../riven-backend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -956,7 +1140,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/riven-frontend/" class="md-nav__link">
+      <a href="../riven-frontend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -978,7 +1162,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/zilean/" class="md-nav__link">
+      <a href="../zilean/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1000,7 +1184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../services/zurg/" class="md-nav__link">
+      <a href="../zurg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1474,30 +1658,25 @@
       
   
   
-    
   
   
-  
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1509,7 +1688,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             FAQ
@@ -1523,7 +1702,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../general/" class="md-nav__link">
+      <a href="../../faq/general/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1545,7 +1724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../dmb/" class="md-nav__link">
+      <a href="../../faq/dmb/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1567,7 +1746,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cli-debrid/" class="md-nav__link">
+      <a href="../../faq/cli-debrid/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1589,7 +1768,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../plex/" class="md-nav__link">
+      <a href="../../faq/plex/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1611,7 +1790,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../plex-debrid/" class="md-nav__link">
+      <a href="../../faq/plex-debrid/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1633,7 +1812,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../pgadmin/" class="md-nav__link">
+      <a href="../../faq/pgadmin/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1655,7 +1834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../postgres/" class="md-nav__link">
+      <a href="../../faq/postgres/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1674,31 +1853,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    rclone
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../faq/rclone/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1708,221 +1866,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#-frequently-asked-questions-faq" class="md-nav__link">
-    <span class="md-ellipsis">
-      ❓ Frequently Asked Questions (FAQ)
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="❓ Frequently Asked Questions (FAQ)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#i-think-i-might-be-rate-limited-by-the-debrid-service---seeing-423-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      I think I might be rate limited by the debrid service - seeing 423 errors.
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#how-do-i-enable-rclone-filtering-to-include-only-specific-resolutions" class="md-nav__link">
-    <span class="md-ellipsis">
-      How do I enable rclone filtering to include only specific resolutions?
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="How do I enable rclone filtering to include only specific resolutions?">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-rclone---exclude-pattern-matching" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using rclone --exclude pattern matching:
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Using rclone --exclude pattern matching:">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-docker-compose-to-include-only-4k2160uhd-content" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example docker-compose to include only 4k|2160|UHD content.
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-docker-compose-to-exclude-only-4k2160uhd-content" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example docker-compose to exclude only 4k|2160|UHD content.
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-rclone---filter-from-pattern-matching" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using rclone --filter-from pattern matching:
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Using rclone --filter-from pattern matching:">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-docker-compose-to-include-only-4k2160uhd-content_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example docker-compose to include only 4k|2160|UHD content.
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Example docker-compose to include only 4k|2160|UHD content.">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-filter_include_2160txt" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example filter_include_2160.txt
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-docker-compose-to-exclude-only-4k2160uhd-content_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example docker-compose to exclude only 4k|2160|UHD content.
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Example docker-compose to exclude only 4k|2160|UHD content.">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-filter_exclude_2160txt" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example filter_exclude_2160.txt
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#error-response-from-daemon-path-yourhostpathmnt-is-mounted-on--but-it-is-not-a-shared-mount" class="md-nav__link">
-    <span class="md-ellipsis">
-      Error response from daemon: path /your/host/path/mnt is mounted on / but it is not a shared mount.
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ubuntu-systemd-service" class="md-nav__link">
-    <span class="md-ellipsis">
-      Ubuntu systemd service:
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Ubuntu systemd service:">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#create-a-systemd-service-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      Create a systemd service file:
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#enable-and-start-the-service" class="md-nav__link">
-    <span class="md-ellipsis">
-      Enable and start the service:
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#verify-the-service-is-active" class="md-nav__link">
-    <span class="md-ellipsis">
-      Verify the service is active:
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-related-pages" class="md-nav__link">
-    <span class="md-ellipsis">
-      📎 Related Pages
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1935,7 +1878,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../riven/" class="md-nav__link">
+      <a href="../../faq/riven/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1957,7 +1900,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../zilean/" class="md-nav__link">
+      <a href="../../faq/zilean/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1979,7 +1922,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../zurg/" class="md-nav__link">
+      <a href="../../faq/zurg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2091,183 +2034,21 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-frequently-asked-questions-faq" class="md-nav__link">
+  <a href="#-configuration-in-dmb_configjson" class="md-nav__link">
     <span class="md-ellipsis">
-      ❓ Frequently Asked Questions (FAQ)
+      📦 Configuration in dmb_config.json
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="❓ Frequently Asked Questions (FAQ)">
+    <nav class="md-nav" aria-label="📦 Configuration in dmb_config.json">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#i-think-i-might-be-rate-limited-by-the-debrid-service---seeing-423-errors" class="md-nav__link">
+  <a href="#-key-configuration-fields" class="md-nav__link">
     <span class="md-ellipsis">
-      I think I might be rate limited by the debrid service - seeing 423 errors.
+      🔍 Key Configuration Fields
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#how-do-i-enable-rclone-filtering-to-include-only-specific-resolutions" class="md-nav__link">
-    <span class="md-ellipsis">
-      How do I enable rclone filtering to include only specific resolutions?
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="How do I enable rclone filtering to include only specific resolutions?">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-rclone---exclude-pattern-matching" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using rclone --exclude pattern matching:
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Using rclone --exclude pattern matching:">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-docker-compose-to-include-only-4k2160uhd-content" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example docker-compose to include only 4k|2160|UHD content.
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-docker-compose-to-exclude-only-4k2160uhd-content" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example docker-compose to exclude only 4k|2160|UHD content.
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-rclone---filter-from-pattern-matching" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using rclone --filter-from pattern matching:
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Using rclone --filter-from pattern matching:">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-docker-compose-to-include-only-4k2160uhd-content_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example docker-compose to include only 4k|2160|UHD content.
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Example docker-compose to include only 4k|2160|UHD content.">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-filter_include_2160txt" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example filter_include_2160.txt
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-docker-compose-to-exclude-only-4k2160uhd-content_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example docker-compose to exclude only 4k|2160|UHD content.
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Example docker-compose to exclude only 4k|2160|UHD content.">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-filter_exclude_2160txt" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example filter_exclude_2160.txt
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#error-response-from-daemon-path-yourhostpathmnt-is-mounted-on--but-it-is-not-a-shared-mount" class="md-nav__link">
-    <span class="md-ellipsis">
-      Error response from daemon: path /your/host/path/mnt is mounted on / but it is not a shared mount.
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ubuntu-systemd-service" class="md-nav__link">
-    <span class="md-ellipsis">
-      Ubuntu systemd service:
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Ubuntu systemd service:">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#create-a-systemd-service-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      Create a systemd service file:
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#enable-and-start-the-service" class="md-nav__link">
-    <span class="md-ellipsis">
-      Enable and start the service:
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#verify-the-service-is-active" class="md-nav__link">
-    <span class="md-ellipsis">
-      Verify the service is active:
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -2277,9 +2058,114 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-related-pages" class="md-nav__link">
+  <a href="#-what-cli-debrid-does" class="md-nav__link">
     <span class="md-ellipsis">
-      📎 Related Pages
+      ⚙️ What CLI Debrid Does
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚙️ What CLI Debrid Does">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-intelligent-automation" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 Intelligent Automation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-supported-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎛️ Supported Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-required-component-cli-battery" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚡ Required Component: CLI Battery
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-optional-utility-phalanx-db" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧰 Optional Utility: Phalanx DB
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-mount-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔁 Mount Considerations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-zilean-built-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Zilean Built-in!
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-queues--processing-behind-the-scenes" class="md-nav__link">
+    <span class="md-ellipsis">
+      🧠 Queues &amp; Processing (Behind the Scenes)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-webhook-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      📡 Webhook Support
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-branch--version-targeting" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚙️ Branch / Version Targeting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌐 Access
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Resources
     </span>
   </a>
   
@@ -2304,78 +2190,221 @@
   
 
 
-<h1 id="rclone-faq">rclone FAQ<a class="headerlink" href="#rclone-faq" title="Permanent link">#</a></h1>
-<p>Below are some common questions and solutions related to using <strong>rclone</strong> with <strong>DMB</strong>.</p>
-<hr />
-<h2 id="-frequently-asked-questions-faq">❓ Frequently Asked Questions (FAQ)<a class="headerlink" href="#-frequently-asked-questions-faq" title="Permanent link">#</a></h2>
-<h3 id="i-think-i-might-be-rate-limited-by-the-debrid-service---seeing-423-errors">I think I might be rate limited by the debrid service - seeing <code>423</code> errors.<a class="headerlink" href="#i-think-i-might-be-rate-limited-by-the-debrid-service---seeing-423-errors" title="Permanent link">#</a></h3>
-<p>Add <code>- RCLONE_TSP_LIMIT=10</code> to the environment variable section of the compose.</p>
-<hr />
-<h3 id="how-do-i-enable-rclone-filtering-to-include-only-specific-resolutions">How do I enable rclone filtering to include only specific resolutions?<a class="headerlink" href="#how-do-i-enable-rclone-filtering-to-include-only-specific-resolutions" title="Permanent link">#</a></h3>
-<h4 id="using-rclone---exclude-pattern-matching">Using rclone <a href="https://rclone.org/filtering/#exclude-exclude-files-matching-pattern">--exclude</a> pattern matching:<a class="headerlink" href="#using-rclone---exclude-pattern-matching" title="Permanent link">#</a></h4>
-<h5 id="example-docker-compose-to-include-only-4k2160uhd-content">Example docker-compose to include only 4k|2160|UHD content.<a class="headerlink" href="#example-docker-compose-to-include-only-4k2160uhd-content" title="Permanent link">#</a></h5>
-<p>Add <code>- RCLONE_EXCLUDE=**/**{{(?i)(1080|720|480)}}**</code> to the environment variable section of the compose.</p>
-<h5 id="example-docker-compose-to-exclude-only-4k2160uhd-content">Example docker-compose to exclude only 4k|2160|UHD content.<a class="headerlink" href="#example-docker-compose-to-exclude-only-4k2160uhd-content" title="Permanent link">#</a></h5>
-<p>Add <code>- RCLONE_EXCLUDE=**/**{{(?i)(4k|uhd|2160)}}**</code> to the environment variable section of the compose. </p>
-<h4 id="using-rclone---filter-from-pattern-matching">Using rclone <a href="https://rclone.org/filtering/#filter-from-read-filtering-patterns-from-a-file">--filter-from</a> pattern matching:<a class="headerlink" href="#using-rclone---filter-from-pattern-matching" title="Permanent link">#</a></h4>
-<h5 id="example-docker-compose-to-include-only-4k2160uhd-content_1">Example docker-compose to include only 4k|2160|UHD content.<a class="headerlink" href="#example-docker-compose-to-include-only-4k2160uhd-content_1" title="Permanent link">#</a></h5>
-<p>Add <code>- RCLONE_FILTER_FROM=/config/filter_include_2160.txt</code> to the environment variable section of the compose and add the below content to a <code>filter_include_2160.txt</code> file in the config directory for the container. </p>
-<h6 id="example-filter_include_2160txt">Example filter_include_2160.txt<a class="headerlink" href="#example-filter_include_2160txt" title="Permanent link">#</a></h6>
-<div class="highlight"><pre><span></span><code>-<span class="w"> </span>**/**<span class="o">{{(</span>?i<span class="o">)(</span><span class="m">1080</span><span class="p">|</span><span class="m">720</span><span class="p">|</span><span class="m">480</span><span class="o">)}}</span>**
-+<span class="w"> </span>*
-</code></pre></div>
-<h5 id="example-docker-compose-to-exclude-only-4k2160uhd-content_1">Example docker-compose to exclude only 4k|2160|UHD content.<a class="headerlink" href="#example-docker-compose-to-exclude-only-4k2160uhd-content_1" title="Permanent link">#</a></h5>
-<p>Add <code>- RCLONE_FILTER_FROM=/config/filter_exclude_2160.txt</code> to the environment variable section of the compose and the below content to a <code>filter_exclude_2160.txt</code> file in the config directory for the container.</p>
-<h6 id="example-filter_exclude_2160txt">Example filter_exclude_2160.txt<a class="headerlink" href="#example-filter_exclude_2160txt" title="Permanent link">#</a></h6>
-<div class="highlight"><pre><span></span><code>-<span class="w"> </span>**/**<span class="o">{{(</span>?i<span class="o">)(</span>4k<span class="p">|</span>uhd<span class="p">|</span><span class="m">2160</span><span class="o">)}}</span>**
-+<span class="w"> </span>*
-</code></pre></div>
-<hr />
-<h3 id="error-response-from-daemon-path-yourhostpathmnt-is-mounted-on--but-it-is-not-a-shared-mount">Error response from daemon: path <code>/your/host/path/mnt</code> is mounted on <code>/</code> but it is not a shared mount.<a class="headerlink" href="#error-response-from-daemon-path-yourhostpathmnt-is-mounted-on--but-it-is-not-a-shared-mount" title="Permanent link">#</a></h3>
-<p>From the host OS, enter <code>sudo mount --make-rshared /</code> </p>
-<p>Or if using a NAS device <code>sudo mount --make-rshared /volume1/</code> </p>
-<p>If neither of the above resolves the error, ensure that docker is not installed via snap. Install docker via apt. </p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><code>sudo mount --make-rshared</code> does not persist reboots, so it will need to be run each time WSL2 or Windows is restarted. Alternatively, see the below guide for automatically executing the command on startup for Ubuntu.</p>
-</div>
-<h3 id="ubuntu-systemd-service">Ubuntu systemd service:<a class="headerlink" href="#ubuntu-systemd-service" title="Permanent link">#</a></h3>
-<p>To make Ubuntu run a command like <code>sudo mount --make-rshared /</code> on startup, you can use a systemd service unit that executes this command at boot.</p>
-<p>Systemd is a system and service manager for Linux operating systems, which allows you to specify custom startup tasks through service units.</p>
-<p>Here's how you can do it:</p>
-<h4 id="create-a-systemd-service-file">Create a systemd service file:<a class="headerlink" href="#create-a-systemd-service-file" title="Permanent link">#</a></h4>
-<p>First, you need to create a new systemd service file. You can do this by creating a file in the /etc/systemd/system directory. Let's call this file make-rshared.service.</p>
-<p>Open a terminal and use your favorite text editor to create this file. You'll need sudo privileges to create a file in this directory. For example, using nano:</p>
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/systemd/system/make-rshared.service
-</code></pre></div>
-<p>Add the following contents to the service file:</p>
-<div class="highlight"><pre><span></span><code><span class="o">[</span>Unit<span class="o">]</span>
-<span class="nv">Description</span><span class="o">=</span>Make<span class="w"> </span>root<span class="w"> </span>filesystem<span class="w"> </span>rshared
-<span class="nv">After</span><span class="o">=</span>local-fs.target
-
-<span class="o">[</span>Service<span class="o">]</span>
-<span class="nv">Type</span><span class="o">=</span>oneshot
-<span class="nv">ExecStart</span><span class="o">=</span>/bin/mount<span class="w"> </span>--make-rshared<span class="w"> </span>/
-<span class="nv">RemainAfterExit</span><span class="o">=</span>yes
-
-<span class="o">[</span>Install<span class="o">]</span>
-<span class="nv">WantedBy</span><span class="o">=</span>multi-user.target
-</code></pre></div>
-<h4 id="enable-and-start-the-service">Enable and start the service:<a class="headerlink" href="#enable-and-start-the-service" title="Permanent link">#</a></h4>
-<p>After saving the file, you need to reload the systemd daemon to recognize your new service and then enable the service to start on boot:</p>
-<p><div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
-sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>make-rshared.service
-</code></pre></div>
-To start the service immediately without rebooting, you can use:</p>
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>make-rshared.service
-</code></pre></div>
-<h4 id="verify-the-service-is-active">Verify the service is active:<a class="headerlink" href="#verify-the-service-is-active" title="Permanent link">#</a></h4>
-<p>After rebooting or starting the service, you can check its status to ensure it's active and has run successfully:</p>
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>make-rshared.service
-</code></pre></div>
-<h2 id="-related-pages">📎 Related Pages<a class="headerlink" href="#-related-pages" title="Permanent link">#</a></h2>
+<h1 id="cli-debrid-configuration">CLI Debrid Configuration<a class="headerlink" href="#cli-debrid-configuration" title="Permanent link">#</a></h1>
+<p><strong>CLI Debrid</strong> is a lightweight, Python-based downloader (streaming link creator) and media automation system designed to integrate tightly with Real-Debrid, Trakt, Plex, and various scraping services. It manages media collection intelligently, seeking out higher quality versions of existing content, and automating upgrades based on a defined set of rules and content sources.</p>
+<p>It operates within the <strong>DMB</strong> ecosystem and relies on:</p>
 <ul>
-<li><a href="../../services/rclone/">Rclone Configuration</a></li>
+<li><a href="../cli-battery/">CLI Battery</a> (required) for metadata services and background processing</li>
+<li><a href="../phalanx-db/">Phalanx DB</a> (optional) for decentralized metadata storage and sharing </li>
+</ul>
+<hr />
+<h2 id="-configuration-in-dmb_configjson">📦 Configuration in <code>dmb_config.json</code><a class="headerlink" href="#-configuration-in-dmb_configjson" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;cli_debrid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CLI Debrid&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;repo_owner&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;godver3&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;repo_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cli_debrid&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;release_version_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;release_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v0.6.07&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;branch_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;branch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;suppress_logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;auto_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;auto_update_interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;clear_on_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;exclude_dirs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;/cli_debrid/data&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;platforms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;python&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;/cli_debrid/venv/bin/python&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;main.py&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;config_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;config_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/config/config.json&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;log_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/logs/debug.log&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;USER_CONFIG&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/config/&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;USER_LOGS&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/logs/&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;USER_DB_CONTENT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/db_content/&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;CLI_DEBRID_PORT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{port}&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">},</span>
+</code></pre></div>
+<h3 id="-key-configuration-fields">🔍 Key Configuration Fields<a class="headerlink" href="#-key-configuration-fields" title="Permanent link">#</a></h3>
+<ul>
+<li><code>enabled</code>: Toggle to run CLI Debrid via DMB.</li>
+<li><code>process_name</code>: Used for display and logs.</li>
+<li><code>repo_owner</code>, <code>repo_name</code>: GitHub repo to use for updates.</li>
+<li><code>release_version_enabled</code>, <code>branch_enabled</code>: Target a specific tag or branch.</li>
+<li><code>log_level</code>, <code>suppress_logging</code>: Logging controls.</li>
+<li><code>port</code>: Flask web interface port.</li>
+<li><code>env</code>: Environment variable configuration used by CLI Debrid.</li>
+<li><code>clear_on_update</code>, <code>exclude_dirs</code>: Clean old files during update while protecting data dirs.</li>
+</ul>
+<hr />
+<h2 id="-what-cli-debrid-does">⚙️ What CLI Debrid Does<a class="headerlink" href="#-what-cli-debrid-does" title="Permanent link">#</a></h2>
+<h3 id="-intelligent-automation">🧠 Intelligent Automation<a class="headerlink" href="#-intelligent-automation" title="Permanent link">#</a></h3>
+<ul>
+<li>Monitors your Plex library or local folder structure (symlinked library)</li>
+<li>Scrapes for content from various sources (Zilean, Jackett, Torrentio, Nyaa, Media Fusion)</li>
+<li>Downloads new or upgraded content using Debrid providers</li>
+<li>Optionally leverages webhook notifications from Overseerr or Zurg to trigger updates</li>
+</ul>
+<h3 id="-supported-features">🎛️ Supported Features<a class="headerlink" href="#-supported-features" title="Permanent link">#</a></h3>
+<ul>
+<li>Content Sources: MDBList, Trakt, Overseerr</li>
+<li>Upgrading: Queue system for quality upgrades</li>
+<li>Web UI: Web dashboard for real-time monitoring and control</li>
+<li>Metadata: Cached locally in the <code>cli_battery</code></li>
+<li>Notifications: Optional support for Discord, Email, Telegram, NTFY</li>
+<li>Scraping Tuning: Manual test interface to evaluate scraper priorities</li>
+</ul>
+<hr />
+<h2 id="-required-component-cli-battery">⚡ Required Component: CLI Battery<a class="headerlink" href="#-required-component-cli-battery" title="Permanent link">#</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">CLI Battery must be running for CLI Debrid to function.</p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;cli_battery&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CLI Battery&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;suppress_logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5001</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;platforms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;python&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;/cli_debrid/venv/bin/python&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;cli_battery/main.py&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;config_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;config_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/config/settings.json&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;log_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/logs/battery_debug.log&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;USER_CONFIG&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/config/&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;USER_LOGS&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/logs/&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;USER_DB_CONTENT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/db_content/&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;CLI_DEBRID_BATTERY_PORT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{port}&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">},</span>
+</code></pre></div>
+<p>CLI Battery provides local metadata storage and Trakt integration, acting as the "memory" of CLI Debrid.</p>
+<hr />
+<h2 id="-optional-utility-phalanx-db">🧰 Optional Utility: Phalanx DB<a class="headerlink" href="#-optional-utility-phalanx-db" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;phalanx_db&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Phalanx DB&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;repo_owner&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;godver3&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;repo_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;phalanx_db_hyperswarm&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;release_version_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;release_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v0.50&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;branch_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;branch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;suppress_logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8888</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;auto_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;auto_update_interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;clear_on_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;exclude_dirs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;/phalanx_db/data&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;platforms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pnpm&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;phalanx_db_rest.js&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;config_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/phalanx_db&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="p">},</span>
+</code></pre></div>
+<p>Phalanx DB provides distributed metadata storage via Hyperswarm. It is optional but can enhance metadata resilience and syncing.</p>
+<hr />
+<h2 id="-mount-considerations">🔁 Mount Considerations<a class="headerlink" href="#-mount-considerations" title="Permanent link">#</a></h2>
+<p>CLI Debrid can create symlinks to be used in the media server, or if using the rclone mounts directly in the media server it can monitor the Plex libraries for completed items.</p>
+<p>In both cases, ensure the appropriate path for the rclone or zurg mount is used when adding the <code>Original Files Path</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">The <code>Original Files Path</code> is relative to the paths inside the container</p>
+<p>Example: If the rclone <code>mount_dir</code> is set to <code>/data</code>, the rclone <code>mount_name</code> is set to <code>rclone_RD</code>, and you're using <code>zurg_enabled: true</code> for rclone, then you would enter:  </p>
+<p><img alt="Original Files Path" src="../../assets/images/cli_debrid/clid_original_files_path.png" /></p>
+</div>
+<p>As mentioned, CLI Debrid also monitors either the created symlinks or the Plex libraries for completed items.</p>
+<p>As such, it's important to ensure you select the appropriate option for your deployment. </p>
+<div class="admonition note">
+<p class="admonition-title"><code>Symlinked/Local</code> will create symlinks in the user defined path, whereas <code>Plex</code> will monitor the Plex Libraries defined and not create symlinks</p>
+<p><img alt="File Collection Management" src="../../assets/images/cli_debrid/clid_file_collection_management.png" />
+<img alt="Symlinked Files Path" src="../../assets/images/cli_debrid/clid_symlinked_files_path.png" /></p>
+</div>
+<hr />
+<h2 id="-zilean-built-in">🚀 Zilean Built-in!<a class="headerlink" href="#-zilean-built-in" title="Permanent link">#</a></h2>
+<p>With <a href="../zilean/">Zilean</a> enabled in DMB, you can also leverage it with CLI Debrid</p>
+<p><img alt="Add A Scraper" src="../../assets/images/cli_debrid/clid_add_a_scraper_zilean.png" /></p>
+<h2 id="-queues--processing-behind-the-scenes">🧠 Queues &amp; Processing (Behind the Scenes)<a class="headerlink" href="#-queues--processing-behind-the-scenes" title="Permanent link">#</a></h2>
+<ul>
+<li><strong>Wanted Queue</strong>: Items identified from your lists that need to be downloaded but haven't been processed by the scraper yet. Shows the time the item was last scraped. If within 24 hours of scraping items will remain in the Wanted queue.</li>
+<li><strong>Scraping Queue</strong>: Items actively being searched for download sources (torrents/magnets).</li>
+<li><strong>Adding Queue</strong>: Items for which a source has been found and are being added to your debrid service</li>
+<li>
+<p><strong>Checking Queue</strong>: Monitoring items for presence locally or in Plex. </p>
+<ul>
+<li>
+<p><strong>Cached</strong>: Available in debrid cache and ready to use. </p>
+</li>
+<li>
+<p><strong>Downloading</strong>: Currently being downloaded with progress shown; grouped if multiple files. </p>
+</li>
+<li>
+<p><strong>Filenames</strong>: Can be toggled to show specific files being processed</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Unreleased</strong>: Items identified but waiting for their release date before processing continues. Displays the relevant release date(s). Items requiring a physical release will indicate this.</p>
+</li>
+<li><strong>Blacklisting</strong>: Items that have been explicitly marked to be ignored by the application.</li>
+<li><strong>Upgrading Queue</strong>: Items that are being considered for Upgrading. They have been collected and now for 24 hours cli_debrid will try to find upgrades once an hour.</li>
+<li><strong>Final Check</strong>: Items for which initial scraping attempts failed. These items wait for a configured delay (defined in settings) before one last search attempt is automatically triggered. Shows when the item entered this waiting period. If the final search is successful, the item moves to Adding. If it fails again, the item is typically moved to Blacklisted.</li>
+<li><strong>Pending Uncached</strong>: Items associated with uncached torrents that would take your account over its limit wait in the Pending Uncached queue until your download limit returns to normal.</li>
+<li><strong>Sleeping Queue</strong>: Items that cli_debrid failed to find. Shows a 'Wake Count' indicating how many times the item has been retried.</li>
+</ul>
+<p>All queues are managed on scheduled intervals.</p>
+<hr />
+<h2 id="-webhook-support">📡 Webhook Support<a class="headerlink" href="#-webhook-support" title="Permanent link">#</a></h2>
+<p>CLI Debrid can listen for:</p>
+<ul>
+<li><strong>Overseerr Webhooks</strong>: Add content when users request it</li>
+<li><strong>Zurg Webhooks</strong>: React to completed downloads (Symlink mode)</li>
+</ul>
+<p>Example Zurg update hook:</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+<span class="nv">webhook_url</span><span class="o">=</span><span class="s2">&quot;http://localhost:5000/webhook/rclone&quot;</span>
+<span class="k">for</span><span class="w"> </span>arg<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
+<span class="k">do</span>
+<span class="w">  </span><span class="nv">encoded</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$arg</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import sys, urllib.parse as ul; print(ul.quote(sys.stdin.read()))&quot;</span><span class="k">)</span>
+<span class="w">  </span>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$webhook_url</span><span class="s2">?file=</span><span class="nv">$encoded</span><span class="s2">&quot;</span>
+<span class="k">done</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Webhook update complete.&quot;</span>
+</code></pre></div>
+<h2 id="-branch--version-targeting">⚙️ Branch / Version Targeting<a class="headerlink" href="#-branch--version-targeting" title="Permanent link">#</a></h2>
+<p>You can control which version or branch is deployed by setting:</p>
+<ul>
+<li><code>branch_enabled: true</code> and specifying a <code>branch</code></li>
+<li>or <code>release_version_enabled: true</code> and specifying a <code>release_version</code></li>
+</ul>
+<hr />
+<h2 id="-access">🌐 Access<a class="headerlink" href="#-access" title="Permanent link">#</a></h2>
+<ul>
+<li>Navigate to: <code>http://&lt;host&gt;:&lt;port&gt;</code> <ul>
+<li>default port <code>5000</code></li>
+</ul>
+</li>
+</ul>
+<hr />
+<hr />
+<h2 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="https://github.com/godver3/cli_debrid">CLI Debrid GitHub</a></li>
+<li><a href="https://github.com/godver3/cli_debrid/tree/main/cli_battery">CLI Battery GitHub</a></li>
+<li><a href="https://github.com/godver3/phalanx_db_hyperswarm">Phalanx DB GitHub</a></li>
+<li><a href="https://discord.gg/jAmqZJCZJ4">Join the CLI Debrid Community on Discord</a></li>
 </ul>
 
 
