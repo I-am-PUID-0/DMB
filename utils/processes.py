@@ -114,7 +114,14 @@ class ProcessHandler:
 
             if key or instance_name:
                 config = CONFIG_MANAGER.get_instance(instance_name, key)
-                env = config.get("env", None)
+                if key == "zurg":
+                    config.get("log_level", "INFO")
+                    env = config.get("env", None)
+                    if env is None:
+                        env = {}
+                        env["LOG_LEVEL"] = config.get("log_level", "INFO")
+                else:
+                    env = config.get("env", None)
 
             process_env = os.environ.copy()
             if env is not None:

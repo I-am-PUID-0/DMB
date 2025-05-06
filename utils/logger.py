@@ -488,9 +488,6 @@ def get_logger(log_name=None, log_dir=None, websocket_manager=None):
     log_level_env = CONFIG_MANAGER.get("dmb").get("log_level", "INFO")
     if log_level_env:
         log_level = log_level_env.upper()
-        os.environ["LOG_LEVEL"] = log_level
-        if not os.getenv("RCLONE_LOG_LEVEL") and not os.getenv("RCLONE_LOGS"):
-            os.environ["RCLONE_LOG_LEVEL"] = log_level
     else:
         log_level = "INFO"
     numeric_level = getattr(logging, log_level, logging.INFO)
