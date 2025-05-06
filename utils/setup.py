@@ -227,22 +227,26 @@ def setup_project(process_handler, process_name):
 
         if key == "riven_backend":
             port = str(config.get("port", 8080))
-            riven_backend_command = config.get("command", [])
-            if not isinstance(riven_backend_command, list):
-                raise ValueError(
-                    f"Unexpected type for command: {type(riven_backend_command)}"
-                )
-            for i, arg in enumerate(riven_backend_command):
-                if arg in ("-p", "--port") and i + 1 < len(riven_backend_command):
-                    riven_backend_command[i + 1] = port
+            command = config.get("command", [])
+            if not isinstance(command, list):
+                raise ValueError(f"Unexpected type for command: {type(command)}")
+
+            for i, arg in enumerate(command):
+                if arg in ("-p", "--port") and i + 1 < len(command):
+                    if command[i + 1] != "{port}":
+                        command[i + 1] = "{port}"
                     break
-            riven_backend_command = [
-                arg.format(port=port) if "{port}" in arg else arg
-                for arg in riven_backend_command
+            else:
+                command.extend(["-p", "{port}"])
+
+            formatted_command = [
+                arg.format(port=port) if "{port}" in arg else arg for arg in command
             ]
-            config["command"] = riven_backend_command
+
+            config["command"] = formatted_command
+
             symlink_library_path = config.get("symlink_library_path")
-            if not os.path.exists(symlink_library_path):
+            if symlink_library_path and not os.path.exists(symlink_library_path):
                 os.makedirs(symlink_library_path, exist_ok=True)
                 os.chown(symlink_library_path, user_id, group_id)
 
