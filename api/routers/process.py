@@ -35,7 +35,7 @@ async def fetch_process(process_name: str = Query(...), logger=Depends(get_logge
             "process_name": process_name,
             "config": config,
             "version": version,
-            "key": config_key,
+            "config_key": config_key,
         }
     except Exception as e:
         logger.error(f"Failed to load process: {e}")
