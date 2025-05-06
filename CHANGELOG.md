@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.9.2](https://github.com/I-am-PUID-0/DMB/compare/6.9.1...6.9.2) (2025-05-06)
+
+
+### 🐛 Bug Fixes
+
+* **api process:** include config key in fetch_process response ([7598b73](https://github.com/I-am-PUID-0/DMB/commit/7598b733957cb277d828f0b8e4168965177a7b58))
+* **api process:** rename key to config_key in fetch_process response - because words matter [@nicocapalbo](https://github.com/nicocapalbo) :P ([20a2f9a](https://github.com/I-am-PUID-0/DMB/commit/20a2f9acc2bb89b9d6bc8436d9b7dbf48b9063a4))
+
 ## [6.9.1](https://github.com/I-am-PUID-0/DMB/compare/6.9.0...6.9.1) (2025-05-06)
 
 
