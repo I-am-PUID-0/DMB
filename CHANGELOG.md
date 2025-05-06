@@ -1,5 +1,24 @@
 # Changelog
 
+## [6.9.1](https://github.com/I-am-PUID-0/DMB/compare/6.9.0...6.9.1) (2025-05-06)
+
+
+### 🐛 Bug Fixes
+
+* **api process:** ensure project setup is completed before restarting the service ([f7a500c](https://github.com/I-am-PUID-0/DMB/commit/f7a500c933ebce462784ae17d25d2d6b732dce7c))
+* **logger:** remove redundant environment variable assignments for log level ([e19b9f2](https://github.com/I-am-PUID-0/DMB/commit/e19b9f2a9f7b377e0975442696716a9b7399546a))
+* **processes:** set log level in environment for 'zurg' key in process handler ([e19b9f2](https://github.com/I-am-PUID-0/DMB/commit/e19b9f2a9f7b377e0975442696716a9b7399546a))
+* **rclone:** add cache directory option to rclone command in rclone_setup ([d11daad](https://github.com/I-am-PUID-0/DMB/commit/d11daad96ca7d91169aa55226a4122e7fbeb3d8b))
+* **setup:** add log level option to rclone command in rclone setup ([e19b9f2](https://github.com/I-am-PUID-0/DMB/commit/e19b9f2a9f7b377e0975442696716a9b7399546a))
+* **setup:** update riven_backend command handling to ensure port substitution ([ff63b14](https://github.com/I-am-PUID-0/DMB/commit/ff63b14b2cb1b555e270cfb18e316754320480bb))
+* **workflows:** correct typo in echo command for CLI_DEBRID_TAG in fetch-latest-tags ([d2a47b7](https://github.com/I-am-PUID-0/DMB/commit/d2a47b7cd33bb16d187e90352e7d8ad9a9ad926d))
+
+
+### 🛠️ Refactors
+
+* **rclone:** updates rclone command generation ([d0972b2](https://github.com/I-am-PUID-0/DMB/commit/d0972b234d3f235138fa9fb37b5348b8e2191957))
+* rearranges config loading and process updates ([16b9a5a](https://github.com/I-am-PUID-0/DMB/commit/16b9a5ab7c13a38ee36cbbda31ebacdee37d391e))
+
 ## [6.9.0](https://github.com/I-am-PUID-0/DMB/compare/6.8.2...6.9.0) (2025-04-30)
 
 
