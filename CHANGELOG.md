@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.9.3](https://github.com/I-am-PUID-0/DMB/compare/6.9.2...6.9.3) (2025-05-07)
+
+
+### 🐛 Bug Fixes
+
+* **rclone:** Fixes mount directory ownership ([1fee36e](https://github.com/I-am-PUID-0/DMB/commit/1fee36e0432c7f74d4e52b28c0f9c21e72f2a7a2))
+* **setup:** add check to prevent duplicate venv path in exclude_dirs ([3acd131](https://github.com/I-am-PUID-0/DMB/commit/3acd1317bce502b2061a576998b5036d63e3ef8c))
+
 ## [6.9.2](https://github.com/I-am-PUID-0/DMB/compare/6.9.1...6.9.2) (2025-05-06)
 
 
