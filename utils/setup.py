@@ -947,7 +947,11 @@ def clear_directory(directory_path, exclude_dirs=None, retries=3, delay=2):
         exclude_dirs = []
 
     venv_path = os.path.abspath(os.path.join(directory_path, "venv"))
-    exclude_dirs.append(venv_path)
+    if os.path.exists(venv_path) and not any(
+        os.path.abspath(ex) == venv_path for ex in exclude_dirs
+    ):
+        logger.debug(f"Adding venv path to exclude_dirs: {venv_path}")
+        exclude_dirs.append(venv_path)
 
     exclude_dirs = {os.path.abspath(exclude_dir) for exclude_dir in exclude_dirs}
     directory_path = os.path.abspath(directory_path)
