@@ -660,14 +660,16 @@ def ensure_directory(mount_dir, mount_name):
         try:
             subprocess.run(["umount", full_path], check=True)
             logger.info(f"Successfully unmounted {full_path}.")
+            return full_path, None
         except subprocess.CalledProcessError as e:
-            raise RuntimeError(f"Failed to unmount {full_path}: {e.stderr}")
+            return False, f"Failed to unmount {full_path}: {e.stderr}"
 
     if os.path.exists(full_path) and not os.path.isdir(full_path):
-        raise NotADirectoryError(f"{full_path} exists but is not a directory.")
+        return False, f"{full_path} exists but is not a directory."
 
     os.makedirs(full_path, exist_ok=True)
     logger.info(f"Directory {full_path} is ready.")
+    return full_path, None
 
 
 def rclone_setup():
@@ -822,8 +824,18 @@ def rclone_setup():
                         f.write(f"[{section}]\n")
                         f.write("\n".join(lines) + "\n")
 
-            ensure_directory(mount_dir, mount_name)
-            chown_recursive(f"{mount_dir}/{mount_name}", user_id, group_id)
+            full_path, error = ensure_directory(mount_dir, mount_name)
+            if error:
+                return False, f"Failed to ensure mount directory: {error}"
+            if os.path.exists(full_path):
+                stat_info = os.stat(full_path)
+                if stat_info.st_uid != user_id or stat_info.st_gid != group_id:
+                    logger.debug(
+                        f"Changing ownership of {full_path} to {user_id}:{group_id}"
+                    )
+                    os.chown(full_path, user_id, group_id)
+                else:
+                    logger.debug(f"Ownership of {full_path} is already correct.")
             os.makedirs(instance["cache_dir"], exist_ok=True)
             chown_recursive(instance["cache_dir"], user_id, group_id)
 

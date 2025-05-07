@@ -140,10 +140,19 @@ def create_system_user(username="DMB"):
             if instance_config.get("enabled", False):
                 rclone_dir = instance_config.get("mount_dir")
                 if rclone_dir and os.path.exists(rclone_dir):
-                    logger.debug(
-                        f"Changing ownership of {rclone_dir} for {instance_name}"
-                    )
-                    chown_recursive(rclone_dir, user_id, group_id)
+                    stat_info = os.stat(rclone_dir)
+                    if stat_info.st_uid == user_id and stat_info.st_gid == group_id:
+                        logger.debug(
+                            f"Directory {rclone_dir} is already owned by {user_id}:{group_id}"
+                        )
+                    else:
+                        logger.debug(
+                            f"Directory {rclone_dir} is not owned by {user_id}:{group_id}, changing ownership"
+                        )
+                        logger.debug(
+                            f"Changing ownership of {rclone_dir} for {instance_name}"
+                        )
+                        chown_recursive(rclone_dir, user_id, group_id)
                 else:
                     logger.warning(
                         f"Mount directory for {instance_name} does not exist or is not set: {rclone_dir}"
