@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.11.0](https://github.com/I-am-PUID-0/DMB/compare/6.10.0...6.11.0) (2025-05-08)
+
+
+### ✨ Features
+
+* **api process:** add static URLs for services and include repository URL in process list ([af3f4b6](https://github.com/I-am-PUID-0/DMB/commit/af3f4b662c9de75182b17ef97a063ffb5827831f))
+
 ## [6.10.0](https://github.com/I-am-PUID-0/DMB/compare/6.9.3...6.10.0) (2025-05-08)
 
 
