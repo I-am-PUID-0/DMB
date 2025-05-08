@@ -13,6 +13,14 @@ class ServiceRequest(BaseModel):
 process_router = APIRouter()
 versions = Versions()
 
+STATIC_URLS_BY_KEY = {
+    "rclone": "https://rclone.org",
+    "pgadmin": "https://www.pgadmin.org/",
+    "postgres": "https://www.postgresql.org/",
+    "dmb_api_service": "https://github.com/I-am-PUID-0/DMB",
+    "cli_battery": "https://github.com/godver3/cli_debrid/tree/main/cli_battery",
+}
+
 
 @process_router.get("/")
 async def fetch_process(process_name: str = Query(...), logger=Depends(get_logger)):
@@ -64,6 +72,12 @@ async def fetch_processes():
                             instance_name=instance_name,
                             key=config_key,
                         )
+                        repo_owner = value.get("repo_owner")
+                        repo_name = value.get("repo_name")
+                        if repo_owner and repo_name:
+                            repo_url = f"https://github.com/{repo_owner}/{repo_name}"
+                        else:
+                            repo_url = STATIC_URLS_BY_KEY.get(config_key)
                         processes.append(
                             {
                                 "name": display_name,
@@ -73,6 +87,7 @@ async def fetch_processes():
                                 "version": version,
                                 "key": key,
                                 "config_key": config_key,
+                                "repo_url": repo_url,
                             }
                         )
                     elif isinstance(value, dict):
