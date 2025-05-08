@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.10.0](https://github.com/I-am-PUID-0/DMB/compare/6.9.3...6.10.0) (2025-05-08)
+
+
+### ✨ Features
+
+* **auto-update:** enhance logging and version handling for updates; support prerelease and nightly checks ([60dd280](https://github.com/I-am-PUID-0/DMB/commit/60dd2804dffdc17c5148c5fb6ea3f732c04da21d))
+
 ## [6.9.3](https://github.com/I-am-PUID-0/DMB/compare/6.9.2...6.9.3) (2025-05-07)
 
 
