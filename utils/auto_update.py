@@ -32,7 +32,9 @@ class Update:
                 self.scheduled_update_check, process_name, config, key, instance_name
             )
             Update._jobs[process_name] = True
-            self.logger.debug(f"Scheduled automatic update check for {process_name}")
+            self.logger.debug(
+                f"Scheduled automatic update check for {process_name}, w/ key: {key}, and job ID: {id(self.scheduler.jobs[-1])}"
+            )
 
         while not self.process_handler.shutting_down:
             self.scheduler.run_pending()
@@ -74,32 +76,46 @@ class Update:
 
     def initial_update_check(self, process_name, config, key, instance_name):
         with self.updating:
+            self.logger.info(f"Performing initial update check for {process_name}")
             success, error = self.update_check(process_name, config, key, instance_name)
             if not success:
                 if "No updates available" in error:
                     self.logger.info(error)
+                    from utils.setup import setup_project
+
+                    success, error = setup_project(self.process_handler, process_name)
+                    if not success:
+                        return False, f"Failed to set up {process_name}: {error}"
+
                     self.start_process(process_name, config, key, instance_name)
                 else:
                     raise RuntimeError(error)
 
     def scheduled_update_check(self, process_name, config, key, instance_name):
         with self.updating:
+            self.logger.info(f"Performing scheduled update check for {process_name}")
             success, error = self.update_check(process_name, config, key, instance_name)
             if not success:
                 if "No updates available" in error:
                     self.logger.info(error)
-                    self.start_process(process_name, config, key, instance_name)
+                    # self.start_process(process_name, config, key, instance_name)
                 else:
                     raise RuntimeError(error)
 
     def update_check(self, process_name, config, key, instance_name):
-        if (
-            not key == "plex_debrid"
-            and config.get("release_version").lower() == "nightly"
-        ):
+        if "nightly" in config["release_version"].lower():
             nightly = True
+            prerelease = False
+            self.logger.info(f"Checking for nightly updates for {process_name}.")
+        elif config.get("release_version").lower() == "prerelease":
+            nightly = False
+            prerelease = True
+            self.logger.info(f"Checking for prerelease updates for {process_name}.")
         else:
             nightly = False
+            prerelease = False
+            self.logger.info(f"Checking for stable updates for {process_name}.")
+
         versions = Versions()
         try:
             repo_owner = config["repo_owner"]
@@ -111,6 +127,7 @@ class Update:
                 instance_name,
                 key,
                 nightly=nightly,
+                prerelease=prerelease,
             )
 
             if not update_needed:

@@ -124,6 +124,8 @@ class Versions:
                                     )
                                     match = re.search(r"v?\d+(\.\d+)*", version_raw)
                                     version = match.group(0) if match else ""
+                                    if key == "riven_backend":
+                                        version = f"v{version}"
                                     break
                             else:
                                 version = None
@@ -199,11 +201,18 @@ class Versions:
             return False, str(e)
 
     def compare_versions(
-        self, process_name, repo_owner, repo_name, instance_name, key, nightly=False
+        self,
+        process_name,
+        repo_owner,
+        repo_name,
+        instance_name,
+        key,
+        nightly=False,
+        prerelease=False,
     ):
         try:
             latest_release_version, error = self.downloader.get_latest_release(
-                repo_owner, repo_name, nightly=nightly
+                repo_owner, repo_name, nightly=nightly, prerelease=prerelease
             )
             if not latest_release_version:
                 self.logger.error(
@@ -217,7 +226,19 @@ class Versions:
                 self.logger.error(
                     f"Failed to get the current version for {process_name}: {error}"
                 )
-                raise Exception(error)
+                current_version = "0.0.0"
+                self.logger.error(
+                    f"Setting current version to 0.0.0 for {process_name}"
+                )
+                # raise Exception(error)
+            if nightly:
+                current_date = ".".join(current_version.split(".")[0:3])
+                latest_date = ".".join(latest_release_version.split(".")[0:3])
+                if current_date == latest_date:
+                    return False, {
+                        "message": "No updates available (same nightly date)",
+                        "current_version": current_version,
+                    }
             if current_version == latest_release_version:
                 return False, {
                     "message": "No updates available",

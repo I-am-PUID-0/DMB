@@ -85,13 +85,23 @@ class Downloader:
                 if CONFIG_MANAGER.get("dmb").get("github_token"):
                     logger.debug("Using GitHub token for downloading zurg.")
                     # repo_name = "zurg"
-                    if release_version == "nightly":
+                    if "nightly" in release_version:
                         release_version, error = self.get_latest_release(
                             repo_owner, repo_name, nightly=True
                         )
                         if error:
                             logger.error(error)
                             return False, error
+
+            elif key == "cli_debrid":
+                architecture = None
+                if release_version == "prerelease":
+                    release_version, error = self.get_latest_release(
+                        repo_owner, repo_name, nightly=False, prerelease=True
+                    )
+                    if error:
+                        logger.error(error)
+                        return False, error
 
             elif key == "plex_debrid":
                 branch = "main"
@@ -154,15 +164,15 @@ class Downloader:
                     f"Failed to download the {release_version} for {process_name}: {error}"
                 )
                 return False, error
-            logger.info(
-                f"Successfully downloaded the {release_version} for {process_name}"
-            )
+            logger.info(f"Successfully downloaded {release_version} for {process_name}")
             return True, None
         except Exception as e:
             logger.error(f"Error in download release version: {e}")
             return False, str(e)
 
-    def get_latest_release(self, repo_owner, repo_name, nightly=False):
+    def get_latest_release(
+        self, repo_owner, repo_name, nightly=False, prerelease=False
+    ):
         self.logger.debug(f"Fetching latest {repo_name} release.")
         headers = self.get_headers()
         if repo_name == "plex_debrid":
@@ -185,7 +195,7 @@ class Downloader:
                 )
             except Exception as e:
                 return None, f"Exception while fetching version for {repo_name}: {e}"
-        if nightly:
+        if nightly or prerelease:
             api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases"
         else:
             api_url = (
@@ -202,6 +212,17 @@ class Downloader:
                     latest_nightly = max(nightly_releases, key=lambda x: x["tag_name"])
                     return latest_nightly["tag_name"], None
                 return None, "No nightly releases found."
+
+            elif prerelease:
+                prerelease_releases = [
+                    release for release in releases if release["prerelease"]
+                ]
+                if prerelease_releases:
+                    latest_prerelease = max(
+                        prerelease_releases, key=lambda x: x["tag_name"]
+                    )
+                    return latest_prerelease["tag_name"], None
+                return None, "No prerelease versions found."
 
             else:
                 latest_release = response.json()
@@ -241,23 +262,24 @@ class Downloader:
 
     def find_asset_download_url(self, release_info, architecture=None):
         assets = release_info.get("assets", [])
-        for asset in assets:
-            if architecture and architecture in asset["name"]:
-                self.logger.debug(
-                    f"Assets ID found: {asset['id']} for architecture: {architecture}"
-                )
-                self.logger.debug(
-                    f"Browser Download URL: {asset['browser_download_url']}"
-                )
-                return asset["browser_download_url"], asset["id"]
+        if architecture:
+            for asset in assets:
+                if architecture and architecture in asset["name"]:
+                    self.logger.debug(
+                        f"Assets ID found: {asset['id']} for architecture: {architecture}"
+                    )
+                    self.logger.debug(
+                        f"Browser Download URL: {asset['browser_download_url']}"
+                    )
+                    return asset["browser_download_url"], asset["id"]
 
-        if assets:
-            self.logger.warning(
-                "No matching asset found for architecture: %s. Falling back to the first available asset.",
-                architecture,
-            )
-            self.logger.debug(f"Download URL: {asset['browser_download_url']}")
-            return assets[0]["browser_download_url"], assets[0]["id"]
+            if assets:
+                self.logger.warning(
+                    "No matching asset found for architecture: %s. Falling back to the first available asset.",
+                    architecture,
+                )
+                self.logger.debug(f"Download URL: {asset['browser_download_url']}")
+                return assets[0]["browser_download_url"], assets[0]["id"]
 
         zipball_url = release_info.get("zipball_url")
         tarball_url = release_info.get("tarball_url")

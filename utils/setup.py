@@ -161,12 +161,34 @@ def setup_project(process_handler, process_name):
 
     logger.info(f"Setting up {process_name}...")
     try:
-        if config.get("release_version_enabled"):
-            success, error = setup_release_version(
-                process_handler, config, process_name, key
+        if config.get("release_version_enabled") and not config.get("auto_update"):
+            repo_owner = config.get("repo_owner")
+            repo_name = config.get("repo_name")
+            nightly = "nightly" in config["release_version"].lower()
+            prerelease = config.get("release_version").lower() == "prerelease"
+            update_needed, update_info = versions.compare_versions(
+                process_name,
+                repo_owner,
+                repo_name,
+                instance_name,
+                key,
+                nightly=nightly,
+                prerelease=prerelease,
             )
-            if not success:
-                return False, error
+
+            if update_needed:
+                logger.info(
+                    f"Update needed for {process_name}: {update_info['latest_version']}, but using the requested version: {config['release_version']}"
+                )
+                success, error = setup_release_version(
+                    process_handler, config, process_name, key
+                )
+                if not success:
+                    return False, error
+            else:
+                logger.info(
+                    f"No update needed for {process_name}: current version is {update_info['current_version']}, and requested version is: {config['release_version']}"
+                )
 
         elif config.get("branch_enabled"):
             success, error = setup_branch_version(
@@ -525,12 +547,16 @@ def zurg_setup():
                 )
 
                 if not os.path.exists(instance_zurg_binaries):
+                    if instance.get("release_version_enabled"):
+                        release_version = instance.get("release_version")
+                    else:
+                        release_version = "latest"
                     success, error = downloader.download_release_version(
                         process_name=instance["process_name"],
                         key="zurg",
                         repo_owner=instance["repo_owner"],
                         repo_name=instance["repo_name"],
-                        release_version="latest",
+                        release_version=release_version,
                         target_dir=instance_config_dir,
                         zip_folder_name=None,
                         exclude_dirs=instance.get("exclude_dirs", []),
