@@ -103,6 +103,7 @@
         "config_file": "/cli_debrid/data/config/settings.json",
         "log_file": "/cli_debrid/data/logs/battery_debug.log",
         "env": {
+            "PYTHONPATH": "/cli_debrid",
             "USER_CONFIG": "/cli_debrid/data/config/",
             "USER_LOGS": "/cli_debrid/data/logs/",
             "USER_DB_CONTENT": "/cli_debrid/data/db_content/",
