@@ -812,6 +812,18 @@ def rclone_setup():
 
             if not instance.get("zurg_enabled", False):
                 config_data = {}
+                if os.path.exists(config_file):
+                    with open(config_file, "r") as f:
+                        lines = f.readlines()
+                    section = None
+                    for line in lines:
+                        line = line.strip()
+                        if line.startswith("[") and line.endswith("]"):
+                            section = line[1:-1]
+                            config_data[section] = []
+                        elif section and line:
+                            config_data[section].append(line)
+
                 if instance.get("key_type"):
                     key_type = instance["key_type"]
                     if key_type.lower() == "realdebrid":
@@ -824,26 +836,41 @@ def rclone_setup():
                             f"pass = {obscured_password}",
                         ]
                     elif key_type.lower() == "alldebrid":
-                        config_data = {
-                            "type": "webdav",
-                            "url": "https://webdav.debrid.it/",
-                            "vendor": "other",
-                            "username": instance["api_key"],
-                            "password": "eeeee",
-                        }
+                        obscured_password = obscure_password("eeeee")
+                        config_data[mount_name] = [
+                            "type = webdav",
+                            "url = https://webdav.debrid.it/",
+                            "vendor = other",
+                            f"user = {instance['api_key']}",
+                            f"pass = {obscured_password}",
+                        ]
                     elif key_type.lower() == "premiumize":
-                        config_data = {
-                            "type": "webdav",
-                            "url": "davs://webdav.premiumize.me ",
-                            "vendor": "other",
-                            "customer_id": instance["customer_id"],
-                            "password": instance["api_key"],
-                        }
+                        obscured_password = obscure_password(instance["api_key"])
+                        config_data[mount_name] = [
+                            "type = webdav",
+                            "url = davs://webdav.premiumize.me",
+                            "vendor = other",
+                            f"user = {instance['customer_id']}",
+                            f"pass = {obscured_password}",
+                        ]
                     elif key_type.lower() == "torbox":
-                        config_data = {
-                            "type": "torbox",
-                            "api_key": instance["api_key"],
-                        }
+                        obscured_password = obscure_password(instance["password"])
+                        config_data[mount_name] = [
+                            "type = webdav",
+                            "url = https://webdav.torbox.app",
+                            "vendor = rclone",
+                            f"user = {instance['username']}",
+                            f"pass = {obscured_password}",
+                            "pacer_min_sleep = 15s",
+                        ]
+                    elif key_type.lower() == "torbox-ftp":
+                        obscured_password = obscure_password(instance["password"])
+                        config_data[mount_name] = [
+                            "type = ftp",
+                            "host = ftp.torbox.app",
+                            f"user = {instance['username']}",
+                            f"pass = {obscured_password}",
+                        ]
 
                 with open(config_file, "w") as f:
                     for section, lines in config_data.items():
