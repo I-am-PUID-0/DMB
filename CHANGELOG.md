@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.12.1](https://github.com/I-am-PUID-0/DMB/compare/6.12.0...6.12.1) (2025-05-09)
+
+
+### 🐛 Bug Fixes
+
+* **auto_update:** release version handling for nightly and prerelease updates ([c9e205f](https://github.com/I-am-PUID-0/DMB/commit/c9e205fd0eec9c783db7fad5754ded34f6911eb8))
+
 ## [6.12.0](https://github.com/I-am-PUID-0/DMB/compare/6.11.0...6.12.0) (2025-05-09)
 
 
