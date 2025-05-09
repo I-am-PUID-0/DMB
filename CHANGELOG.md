@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.12.2](https://github.com/I-am-PUID-0/DMB/compare/6.12.1...6.12.2) (2025-05-09)
+
+
+### 🐛 Bug Fixes
+
+* **cli_battery:** add PYTHONPATH to environment variables in config ([8667c56](https://github.com/I-am-PUID-0/DMB/commit/8667c564988f230435e4088b195ddcf6f7c244fb))
+
 ## [6.12.1](https://github.com/I-am-PUID-0/DMB/compare/6.12.0...6.12.1) (2025-05-09)
 
 
