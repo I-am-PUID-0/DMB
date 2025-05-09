@@ -107,7 +107,7 @@ class Update:
             nightly = True
             prerelease = False
             self.logger.info(f"Checking for nightly updates for {process_name}.")
-        elif config.get("release_version").lower() == "prerelease":
+        elif "prerelease" in config["release_version"].lower():
             nightly = False
             prerelease = True
             self.logger.info(f"Checking for prerelease updates for {process_name}.")
@@ -141,7 +141,11 @@ class Update:
             if process_name in self.process_handler.setup_tracker:
                 self.process_handler.setup_tracker.remove(process_name)
             release_version = f"{update_info.get('latest_version')}"
-            config["release_version"] = release_version
+            if not prerelease and not nightly:
+                config["release_version"] = release_version
+                self.logger.info(
+                    f"Updating {process_name} config to {release_version}."
+                )
             success, error = setup_release_version(
                 self.process_handler, config, process_name, key
             )
