@@ -16,8 +16,11 @@ class Versions:
             if key == "dmb_api_service":
                 version_path = "/pyproject.toml"
                 is_file = True
-            if key == "dmb_frontend":
+            elif key == "dmb_frontend":
                 version_path = "/dmb/frontend/package.json"
+                is_file = True
+            elif key == "decypharr":
+                version_path = "/decypharr/version.txt"
                 is_file = True
             elif key == "riven_frontend":
                 version_path = "/riven/frontend/version.txt"
@@ -129,7 +132,7 @@ class Versions:
                                     break
                             else:
                                 version = None
-                        elif key == "zilean":
+                        elif key == "zilean" or key == "decypharr":
                             version = f.read().strip()
                         if version:
                             return version, None
@@ -158,46 +161,18 @@ class Versions:
 
     def version_write(self, process_name, key=None, version_path=None, version=None):
         try:
-            if key == "dmb_frontend":
-                version_path = "/dmb/frontend/package.json"
-            elif key == "riven_frontend":
-                version_path = "/riven/frontend/version.txt"
-            elif key == "riven_backend":
-                version_path = "/riven/backend/pyproject.toml"
-            elif key == "zilean":
+            if key == "zilean":
                 version_path = "/zilean/version.txt"
-            if key == "dmb_frontend":
-                try:
-                    with open(version_path, "r", encoding="utf-8") as f:
-                        data = json.load(f)
-
-                    data["version"] = version.lstrip("v")
-
-                    with open(version_path, "w", encoding="utf-8") as f:
-                        json.dump(data, f, indent=2)
-                        f.write("\n")
-                except (json.JSONDecodeError, KeyError) as e:
-                    return False, str(e)
-            elif not key == "riven_backend":
                 with open(version_path, "w") as f:
                     f.write(version)
-            elif key == "riven_backend":
-                with open(version_path, "r") as file:
-                    lines = file.readlines()
+            elif key == "decypharr":
+                version_path = "/decypharr/version.txt"
                 with open(version_path, "w") as f:
-                    for line in lines:
-                        if line.startswith("version = "):
-                            f.write(f'version = "{version}"\n')
-                        else:
-                            f.write(line)
+                    f.write(version)
             return True, None
         except FileNotFoundError:
-            self.logger.error(f"Version file not found: {version_path}")
             return False, f"Version file not found: {version_path}"
         except Exception as e:
-            self.logger.error(
-                f"Error writing current version for {process_name} to {version_path}: {e}"
-            )
             return False, str(e)
 
     def compare_versions(

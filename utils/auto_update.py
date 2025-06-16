@@ -255,4 +255,21 @@ class Update:
             time.sleep(10)
             load_settings()
 
+        if key == "decypharr":
+            from utils.decypharr_settings import patch_decypharr_config
+
+            time.sleep(10)
+            patched, error = patch_decypharr_config()
+            if patched:
+                self.logger.info("Restarting Decypharr to apply new config")
+                self.process_handler.stop_process(process_name)
+                self.process_handler.start_process(
+                    process_name,
+                    config_dir,
+                    command,
+                    instance_name,
+                    suppress_logging=suppress_logging,
+                    env=env,
+                )
+
         return process, error

@@ -1,6 +1,6 @@
 from utils.global_logger import logger
 from utils.config_loader import CONFIG_MANAGER
-import requests, time, os, zipfile, io, shutil, platform, fnmatch
+import requests, time, os, zipfile, io, shutil, platform, fnmatch, re, tarfile
 
 
 class Downloader:
@@ -92,6 +92,9 @@ class Downloader:
                         if error:
                             logger.error(error)
                             return False, error
+
+            elif key == "decypharr":
+                architecture = self.get_architecture()
 
             elif key == "cli_debrid":
                 architecture = None
@@ -262,7 +265,20 @@ class Downloader:
 
     def find_asset_download_url(self, release_info, architecture=None):
         assets = release_info.get("assets", [])
+        self.logger.debug(
+            f"Found {len(assets)} assets for the release: {release_info.get('tag_name')}"
+        )
+        self.logger.debug(f"Architecture requested: {architecture}")
         if architecture:
+            normalized_arch = self.normalize_arch(architecture)
+            arch_parts = normalized_arch.split("_")
+            self.logger.debug(
+                f"Normalized architecture: {normalized_arch}, parts: {arch_parts}"
+            )
+            self.logger.debug(
+                f"Searching for assets matching architecture: {architecture}"
+            )
+
             for asset in assets:
                 if architecture and architecture in asset["name"]:
                     self.logger.debug(
@@ -272,6 +288,18 @@ class Downloader:
                         f"Browser Download URL: {asset['browser_download_url']}"
                     )
                     return asset["browser_download_url"], asset["id"]
+
+                else:
+                    name = asset["name"].lower()
+                    self.logger.debug(f"Checking asset: {name}")
+                    if normalized_arch in name:
+                        self.logger.debug(
+                            f"Assets ID found: {asset['id']} for architecture: {architecture}"
+                        )
+                        self.logger.debug(
+                            f"Browser Download URL: {asset['browser_download_url']}"
+                        )
+                        return asset["browser_download_url"], asset["id"]
 
             if assets:
                 self.logger.warning(
@@ -295,6 +323,66 @@ class Downloader:
         self.logger.error("No assets or zipball/tarball URL found for the release.")
         return None, None
 
+    def _extract_tarfile(
+        self, tar_bytes_io, target_dir, zip_folder_name=None, exclude_dirs=None
+    ):
+        try:
+            with tarfile.open(fileobj=tar_bytes_io, mode="r:*") as tar:
+                members = tar.getmembers()
+
+                for member in members:
+                    self.logger.debug(
+                        f"Found tar member: {member.name} ({member.size} bytes)"
+                    )
+                    if not member.isfile():
+                        continue
+
+                    member_name = member.name
+
+                    if exclude_dirs and any(
+                        exclude in member_name for exclude in exclude_dirs
+                    ):
+                        continue
+
+                    file_obj = tar.extractfile(member)
+                    if not file_obj:
+                        continue
+
+                    if member_name.endswith(".tar"):
+                        self.logger.debug(
+                            f"Found nested TAR: {member_name}, extracting inline..."
+                        )
+                        file_obj = tar.extractfile(member)
+                        if not file_obj:
+                            self.logger.error(
+                                f"Could not open nested tar: {member_name}"
+                            )
+                            continue
+                        nested_tar_data = file_obj.read()
+                        self.logger.debug(
+                            f"Nested TAR {member_name} size: {len(nested_tar_data)} bytes"
+                        )
+                        self._extract_tarfile(
+                            io.BytesIO(nested_tar_data),
+                            target_dir,
+                            zip_folder_name,
+                            exclude_dirs,
+                        )
+                        continue
+
+                    fpath = os.path.join(target_dir, member_name)
+
+                    try:
+                        os.makedirs(os.path.dirname(fpath), exist_ok=True)
+                        with open(fpath, "wb") as dst:
+                            shutil.copyfileobj(file_obj, dst)
+                    except Exception as e:
+                        self.logger.error(f"Error while extracting {member_name}: {e}")
+
+        except tarfile.TarError as e:
+            self.logger.error(f"Failed to extract TAR file: {e}")
+            raise
+
     def download_and_extract(
         self, url, target_dir, zip_folder_name=None, headers=None, exclude_dirs=None
     ):
@@ -302,15 +390,18 @@ class Downloader:
             self.logger.debug(f"Downloading from {url}")
             headers = headers or self.get_headers()
             response = self.fetch_with_retries(url, headers)
+
             if response and response.status_code == 200:
                 self.logger.debug(
                     f"{zip_folder_name} download successful. Content size: {len(response.content)} bytes"
                 )
+
+                archive_data = io.BytesIO(response.content)
+
                 try:
                     z = zipfile.ZipFile(io.BytesIO(response.content))
                     self.logger.debug(f"Extracting {zip_folder_name} to {target_dir}")
                     for file_info in z.infolist():
-                        # self.logger.debug(f"Processing {file_info.filename}")
                         if file_info.is_dir():
                             continue
                         if zip_folder_name:
@@ -346,9 +437,19 @@ class Downloader:
                         f"Successfully downloaded {zip_folder_name} and extracted to {target_dir}"
                     )
                     return True, None
-                except zipfile.BadZipFile as e:
-                    self.logger.error(f"Failed to create ZipFile object: {e}")
+                except zipfile.BadZipFile:
+                    archive_data.seek(0)
+
+                try:
+                    self.logger.debug("Attempting TAR extraction...")
+                    self._extract_tarfile(
+                        archive_data, target_dir, zip_folder_name, exclude_dirs
+                    )
+                    self.logger.debug(f"Successfully extracted TAR to {target_dir}")
+                    return True, None
+                except Exception as e:
                     return False, str(e)
+
             else:
                 return False, "Failed to download."
         except Exception as e:
@@ -388,3 +489,14 @@ class Downloader:
         except Exception as e:
             self.logger.error(f"Error determining system architecture: {e}")
             return "unknown"
+
+    @staticmethod
+    def normalize_arch(arch):
+        arch = arch.lower().replace("-", "_")
+        full_replacements = {
+            "linux_amd64": "linux_x86_64",
+            "darwin_amd64": "darwin_x86_64",
+            "windows_amd64": "windows_x86_64",
+            "linux_aarch64": "linux_arm64",
+        }
+        return full_replacements.get(arch, arch)

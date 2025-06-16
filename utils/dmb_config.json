@@ -110,6 +110,32 @@
             "CLI_DEBRID_BATTERY_PORT": "{port}"
         }
     },
+    "decypharr": {
+        "enabled": false,
+        "process_name": "Decypharr",
+        "repo_owner": "sirrobot01",
+        "repo_name": "decypharr",
+        "release_version_enabled": false,
+        "release_version": "v1.0.0",
+        "branch_enabled": false,
+        "branch": "main",
+        "suppress_logging": false,
+        "log_level": "INFO",
+        "port": 8282,
+        "auto_update": false,
+        "auto_update_interval": 24,
+        "clear_on_update": false,
+        "exclude_dirs": [],
+        "command": [
+            "/decypharr/decypharr",
+            "--config",
+            "/decypharr"
+        ],
+        "config_dir": "/decypharr",
+        "config_file": "/decypharr/config.json",
+        "log_file": "/decypharr/logs/decypharr.log",
+        "env": {}
+    },
     "phalanx_db": {
         "enabled": false,
         "process_name": "Phalanx DB",
