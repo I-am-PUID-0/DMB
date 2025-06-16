@@ -51,7 +51,7 @@
 
 ## 📜 Description
 
-**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of **[Riven Media's](https://github.com/rivenmedia)**, **[itsToggle's](https://github.com/itsToggle)**, **[godver3's](https://github.com/godver3)**, **[yowmamasita's](https://github.com/yowmamasita)**, **[iPromKnight's](https://github.com/iPromKnight/zilean)**, **[Nick Craig-Wood's](https://github.com/ncw)**, **[Michael Stonebraker's](https://en.wikipedia.org/wiki/Michael_Stonebraker)**, and **[Dave Page's](https://github.com/dpage)** projects -- **[Riven](https://github.com/rivenmedia/riven)**, **[plex_debrid](https://github.com/itsToggle/plex_debrid)**, **[cli_debrid](https://github.com/godver3/cli_debrid)**, **[Zurg](https://github.com/debridmediamanager/zurg-testing)**, **[Zilean](https://github.com/iPromKnight/zilean)**, **[rclone](https://github.com/rclone/rclone)**, **[PostgreSQL](https://www.postgresql.org/)**, and **[pgAdmin 4](https://www.pgadmin.org/)**.
+**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of **[Riven Media's](https://github.com/rivenmedia)**, **[itsToggle's](https://github.com/itsToggle)**, **[godver3's](https://github.com/godver3)**, **[yowmamasita's](https://github.com/yowmamasita)**, **[iPromKnight's](https://github.com/iPromKnight/zilean)**, **[Mukhtar Akere's](https://github.com/sirrobot01)**, **[Nick Craig-Wood's](https://github.com/ncw)**, **[Michael Stonebraker's](https://en.wikipedia.org/wiki/Michael_Stonebraker)**, and **[Dave Page's](https://github.com/dpage)** projects -- **[Riven](https://github.com/rivenmedia/riven)**, **[plex_debrid](https://github.com/itsToggle/plex_debrid)**, **[cli_debrid](https://github.com/godver3/cli_debrid)**, **[Zurg](https://github.com/debridmediamanager/zurg-testing)**, **[Zilean](https://github.com/iPromKnight/zilean)**, **[Decypharr](https://github.com/sirrobot01/decypharr)**,**[rclone](https://github.com/rclone/rclone)**, **[PostgreSQL](https://www.postgresql.org/)**, and **[pgAdmin 4](https://www.pgadmin.org/)**.
 
 > ⚠️ **IMPORTANT**: Docker Desktop **CANNOT** be used to run DMB. Docker Desktop does not support the [mount propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation) required for rclone mounts.
 >
@@ -97,7 +97,8 @@ services:
       - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data
       - /home/username/docker/DMB/plex_debrid:/plex_debrid/config    ## Location for plex_debrid data
       - /home/username/docker/DMB/cli_debrid:/cli_debrid/data        ## Location for cli_debrid data
-      - /home/username/docker/DMB/phalanx_db:/phalanx_db/data        ## Location for phalanx_db data 
+      - /home/username/docker/DMB/phalanx_db:/phalanx_db/data        ## Location for phalanx_db data
+      - /home/username/docker/DMB/decypharr:/decypharr               ## Location for decypharr data
     environment:
       - TZ=
       - PUID=
@@ -111,6 +112,7 @@ services:
       - "3000:3000"                                                 ## Riven Frontend
       - "5050:5050"                                                 ## pgAdmin 4
       - "5000:5000"                                                 ## CLI Debrid Frontend      
+      - "8282:8282"                                                 ## Decypharr Frontend         
     devices:
       - /dev/fuse:/dev/fuse:rwm
     cap_add:
@@ -189,6 +191,7 @@ The following table describes the ports used by the container. The mappings are 
 | `9090`         | TCP      | Zurg - A web UI is accessible at the assigned port                                   |
 | `5000`         | TCP      | CLI Debrid - A web UI is accessible at the assigned port                             |
 | `8888`         | TCP      | Phalanx DB - The API is accessible at the assigned port                              |
+| `8282`         | TCP      | Decypharr - A web UI is accessible at the assigned port                              |
 
 ## 📂 Data Volumes
 
@@ -208,7 +211,8 @@ format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 | `/pgadmin/data`       | rw          | This is where pgAdmin 4 will store its data.                                                                                                                                                          |
 | `/plex_debrid/config` | rw          | This is where plex_debrid will store its data.                                                                                                                                                   |
 | `/cli_debrid/data` | rw             | This is where cli_debrid will store its data.                                                                                                                                                    |       
-| `/phalanx_db/data` | rw             | This is where phalanx_db will store its data.                                                                                                                                                    |    
+| `/phalanx_db/data` | rw             | This is where phalanx_db will store its data.                                                                                                                                                    |  
+| `/decypharr`       | rw             | This is where decypharr will store its data.                                                                                                                                                     |  
 
 ## 📝 TODO
 
@@ -255,6 +259,10 @@ For additional details on deployment, see the [DMB Docs](https://i-am-puid-0.git
 - For questions related to cli_debrid or phalanx_db, join the cli_debrid [discord server](https://discord.gg/jAmqZJCZJ4) 
 - or create a new [issue](https://github.com/godver3/cli_debrid/issues) if you find a bug or have an idea for an improvement. 
 
+### Decypharr
+- For questions related to decypharr, check out the [Docs](https://sirrobot01.github.io/decypharr/) 
+- or create a new [issue](https://github.com/sirrobot01/decypharr/issues) if you find a bug or have an idea for an improvement. 
+
 
 ## 🍻 Buy **[Riven Media](https://github.com/rivenmedia)** a beer/coffee? :)
 
@@ -264,9 +272,13 @@ If you enjoy the underlying projects and want to buy Riven Media a beer/coffee, 
 
 If you enjoy the underlying projects and want to buy itsToggle a beer/coffee, feel free to use the real-debrid [affiliate link](http://real-debrid.com/?id=5708990) or send a virtual beverage via [PayPal](https://www.paypal.com/paypalme/oidulibbe) :)
 
-## 🍻 Buy **[godver3](https://github.com/godver3/cli_debrid)** a beer/coffee? :)
+## 🍻 Buy **[godver3](https://github.com/godver3)** a beer/coffee? :)
 
 If you enjoy the underlying projects and want to buy godver3 a beer/coffee, feel free to use the [GitHub sponsor link](https://github.com/sponsors/godver3)
+
+## 🍻 Buy **[Mukhtar Akere](https://github.com/sirrobot01)** a beer/coffee? :)
+
+If you enjoy the underlying projects and want to buy Mukhtar Akere a beer/coffee, feel free to use the [GitHub sponsor link](https://github.com/sponsors/sirrobot01)
 
 ## 🍻 Buy **[yowmamasita](https://github.com/yowmamasita)** a beer/coffee? :)
 

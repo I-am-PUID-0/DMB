@@ -142,6 +142,7 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
         plex_debrid_config = config.get("plex_debrid") or {}
         cli_debrid_config = config.get("cli_debrid") or {}
         cli_battery_config = config.get("cli_battery") or {}
+        decypharr_config = config.get("decypharr") or {}
         phalanx_db_config = config.get("phalanx_db") or {}
         postgres_config = config.get("postgres", {})
         pgadmin_config = config.get("pgadmin", {})
@@ -234,6 +235,17 @@ DDDDDDDDDDDDD        MMMMMMMM               MMMMMMMMBBBBBBBBBBBBBBBBB
             try:
                 process_name = riven_frontend_config.get("process_name")
                 if riven_frontend_config.get("auto_update", False):
+                    updater.auto_update(process_name, True)
+                else:
+                    updater.auto_update(process_name, False)
+            except Exception as e:
+                logger.error(e)
+                process_handler.shutdown(exit_code=1)
+
+        if decypharr_config.get("enabled"):
+            try:
+                process_name = decypharr_config.get("process_name")
+                if decypharr_config.get("auto_update", False):
                     updater.auto_update(process_name, True)
                 else:
                     updater.auto_update(process_name, False)

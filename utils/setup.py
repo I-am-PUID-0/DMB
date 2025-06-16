@@ -73,6 +73,14 @@ def setup_release_version(process_handler, config, process_name, key):
             version=config["release_version"],
         )
 
+    elif key == "decypharr":
+        versions.version_write(
+            process_name,
+            key,
+            version_path=os.path.join(config["config_dir"], "version.txt"),
+            version=config["release_version"],
+        )
+
     success, error = additional_setup(process_handler, process_name, config, key)
     if not success:
         return False, error
@@ -310,6 +318,11 @@ def setup_project(process_handler, process_name):
             if not success:
                 return False, error
 
+        if key == "decypharr":
+            success, error = setup_decypharr()
+            if not success:
+                return False, error
+
         process_handler.setup_tracker.add(process_name)
         logger.debug(f"Post Setup tracker: {process_handler.setup_tracker}")
         logger.info(f"{process_name} setup complete")
@@ -317,6 +330,75 @@ def setup_project(process_handler, process_name):
 
     except Exception as e:
         return False, f"Error during setup of {process_name}: {e}"
+
+
+def setup_decypharr():
+    config = CONFIG_MANAGER.get("decypharr")
+    if not config:
+        return False, "Configuration for Decypharr not found."
+
+    logger.info("Starting Decypharr setup...")
+
+    try:
+        decypharr_config_dir = config.get("config_dir")
+        decypharr_config_file = config.get("config_file")
+        decypharr_binary_file = config.get("binary_file", "decypharr")
+        binary_path = os.path.join(decypharr_config_dir, decypharr_binary_file)
+
+        if not os.path.exists(decypharr_config_dir):
+            logger.debug(
+                f"Creating Decypharr config directory at {decypharr_config_dir}"
+            )
+            os.makedirs(decypharr_config_dir, exist_ok=True)
+            chown_recursive(decypharr_config_dir, user_id, group_id)
+
+        if not os.path.isfile(binary_path):
+            logger.warning(
+                f"Decypharr project not found at {decypharr_config_dir}. Downloading..."
+            )
+            release, error = downloader.get_latest_release(
+                repo_owner=config.get("repo_owner"),
+                repo_name=config.get("repo_name"),
+            )
+            if not release:
+                return False, f"Failed to get latest release: {error}"
+
+            success, error = downloader.download_release_version(
+                process_name=config.get("process_name"),
+                key="decypharr",
+                repo_owner=config.get("repo_owner"),
+                repo_name=config.get("repo_name"),
+                release_version=release,
+                target_dir=decypharr_config_dir,
+            )
+            if not success:
+                return False, f"Failed to download Decypharr: {error}"
+
+            if os.path.isfile(binary_path):
+                os.chmod(binary_path, 0o755)
+                logger.debug(f"Marked {binary_path} as executable")
+
+            versions.version_write(
+                process_name=config.get("process_name"),
+                key="decypharr",
+                version_path=os.path.join(decypharr_config_dir, "version.txt"),
+                version=release,
+            )
+
+        env_vars = {
+            **config.get("env", {}),
+        }
+        config["env"] = env_vars
+
+        if os.path.exists(decypharr_config_file):
+            from utils.decypharr_settings import patch_decypharr_config
+
+            patch_decypharr_config()
+
+        logger.info("Decypharr setup complete.")
+        return True, None
+    except Exception as e:
+        return False, f"Error during Decypharr setup: {e}"
 
 
 def plex_debrid_setup():
