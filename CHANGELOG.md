@@ -1,5 +1,39 @@
 # Changelog
 
+## [6.13.0](https://github.com/I-am-PUID-0/DMB/compare/6.12.1...6.13.0) (2025-06-17)
+
+
+### ✨ Features
+
+* **api:** add service update request [#78](https://github.com/I-am-PUID-0/DMB/issues/78) ([a2e4a04](https://github.com/I-am-PUID-0/DMB/commit/a2e4a0415185e582f721305952a1d0d434d9e273))
+* **decypharr:** add decypharr_enabled flag and update rclone setup logic ([650557f](https://github.com/I-am-PUID-0/DMB/commit/650557f43b4fe26b6523cdf89bb1bde82f080a65))
+* **decypharr:** add support for Decypharr configuration and setup ([fd3b284](https://github.com/I-am-PUID-0/DMB/commit/fd3b284840d33400fa7511c8bd79e5c743a61107)), closes [#158](https://github.com/I-am-PUID-0/DMB/issues/158)
+
+
+### 🐛 Bug Fixes
+
+* **cli_battery:** add PYTHONPATH to environment variables in config ([8667c56](https://github.com/I-am-PUID-0/DMB/commit/8667c564988f230435e4088b195ddcf6f7c244fb))
+* **workflow:** update Git configuration and improve Dependabot rebase process ([c59b5dd](https://github.com/I-am-PUID-0/DMB/commit/c59b5dda848b610a5e71768b640f3f040e874191))
+
+
+### 🤡 Other Changes
+
+* **deps:** bump h11 from 0.14.0 to 0.16.0 in the pip group ([#143](https://github.com/I-am-PUID-0/DMB/issues/143)) ([f1707c2](https://github.com/I-am-PUID-0/DMB/commit/f1707c2629ad8a6d3e85f4bcd77faf44de2405c0))
+* **deps:** bump jsonschema from 4.23.0 to 4.24.0 ([#162](https://github.com/I-am-PUID-0/DMB/issues/162)) ([9d814ee](https://github.com/I-am-PUID-0/DMB/commit/9d814ee6148f97bbe596ff893eab5fb5b732dae8))
+* **deps:** bump pydantic from 2.11.4 to 2.11.7 ([#169](https://github.com/I-am-PUID-0/DMB/issues/169)) ([b80059c](https://github.com/I-am-PUID-0/DMB/commit/b80059c544984a122654d8f468beb2693d681476))
+* **deps:** bump ruamel-yaml from 0.18.10 to 0.18.14 ([#168](https://github.com/I-am-PUID-0/DMB/issues/168)) ([c02d252](https://github.com/I-am-PUID-0/DMB/commit/c02d2522741d2c0ab40360a8d55cc4e15e79ed55))
+* **deps:** bump uvicorn from 0.34.2 to 0.34.3 ([#165](https://github.com/I-am-PUID-0/DMB/issues/165)) ([950bbf6](https://github.com/I-am-PUID-0/DMB/commit/950bbf6946fddcf0e272eaa288373b1bbd173456))
+
+
+### 🚀 CI/CD Pipeline
+
+* **dependabot:** add workflow for testing combined Dependabot updates ([09b8cd7](https://github.com/I-am-PUID-0/DMB/commit/09b8cd7c2ffe8e83c021b4311ee1a32f3e32929a))
+
+
+### 🛠️ Refactors
+
+* **api:** use auto-update functionality and error handling ([a2e4a04](https://github.com/I-am-PUID-0/DMB/commit/a2e4a0415185e582f721305952a1d0d434d9e273))
+
 ## [6.12.1](https://github.com/I-am-PUID-0/DMB/compare/6.12.0...6.12.1) (2025-05-09)
 
 
