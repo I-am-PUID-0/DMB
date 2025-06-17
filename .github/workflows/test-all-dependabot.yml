@@ -1,0 +1,61 @@
+name: Test Combined Dependabot Updates
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *'
+
+jobs:
+  test-combined-dependabot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Comment @dependabot rebase on all PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for pr in $(gh pr list --label dependencies --state open --json number --jq '.[].number'); do
+            echo "Requesting rebase for PR #$pr"
+            gh pr comment "$pr" --body "@dependabot rebase"
+          done
+
+      - name: Wait for Dependabot to rebase
+        run: |
+          echo "Waiting 10 minutes for Dependabot to finish rebasing..."
+          sleep 600
+
+      - name: Create test branch from latest master
+        run: |
+          git checkout -B test-all-dependabot origin/master
+
+      - name: Fetch and merge all dependabot PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr list --label dependencies --state open --json number,headRefName --jq '.[] | [.number, .headRefName] | @tsv' |
+          while IFS=$'\t' read -r pr_number pr_branch; do
+            echo "Fetching and merging PR #$pr_number ($pr_branch)..."
+            git fetch origin "$pr_branch:$pr_branch"
+            git merge --no-edit "$pr_branch" || {
+              echo "❌ Merge conflict in PR #$pr_number — skipping..."
+              git merge --abort
+            }
+          done
+
+      - name: Push merged branch for CI testing
+        run: |
+          git push --force origin test-all-dependabot
