@@ -1,6 +1,11 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from pydantic import BaseModel
-from utils.dependencies import get_process_handler, get_logger, get_api_state
+from utils.dependencies import (
+    get_process_handler,
+    get_logger,
+    get_api_state,
+    get_updater,
+)
 from utils.config_loader import CONFIG_MANAGER, find_service_config
 from utils.setup import setup_project
 from utils.versions import Versions
@@ -104,6 +109,7 @@ async def fetch_processes():
 async def start_service(
     request: ServiceRequest,
     process_handler=Depends(get_process_handler),
+    updater=Depends(get_updater),
     logger=Depends(get_logger),
 ):
     process_name = request.process_name
@@ -146,13 +152,9 @@ async def start_service(
     logger.info(f"Starting {process_name} with command: {command}")
 
     try:
-        process, error = process_handler.start_process(
-            process_name=process_name,
-            config_dir=config_dir,
-            command=command,
-            instance_name=None,
-            suppress_logging=suppress_logging,
-            env=env,
+        auto_update_enabled = service_config.get("auto_update", False)
+        process, error = updater.auto_update(
+            process_name, enable_update=auto_update_enabled
         )
         if not process:
             raise Exception(f"Error starting {process_name}: {error}")
@@ -215,6 +217,7 @@ async def stop_service(
 async def restart_service(
     request: ServiceRequest,
     process_handler=Depends(get_process_handler),
+    updater=Depends(get_updater),
     logger=Depends(get_logger),
     api_state=Depends(get_api_state),
 ):
@@ -239,13 +242,13 @@ async def restart_service(
                     status_code=500, detail=f"Failed to setup project: {error}"
                 )
 
-        process_handler.start_process(
-            process_name=process_name,
-            config_dir=service_config.get("config_dir"),
-            command=service_config.get("command"),
-            suppress_logging=service_config.get("suppress_logging", False),
-            env=service_config.get("env"),
+        auto_update_enabled = service_config.get("auto_update", False)
+        process, error = updater.auto_update(
+            process_name, enable_update=auto_update_enabled
         )
+        if not process:
+            raise HTTPException(status_code=500, detail=f"Failed to restart: {error}")
+
         logger.info(f"{process_name} started successfully.")
 
         status = api_state.get_status(process_name)

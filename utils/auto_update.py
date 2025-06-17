@@ -56,7 +56,8 @@ class Update:
         key, instance_name = CONFIG_MANAGER.find_key_for_process(process_name)
         config = CONFIG_MANAGER.get_instance(instance_name, key)
         if not config:
-            raise ValueError(f"Configuration for {process_name} not found.")
+            return None, f"Configuration for {process_name} not found."
+
         if enable_update:
             self.logger.info(
                 f"Automatic updates set to {format_time(self.auto_update_interval(process_name, config))} for {process_name}"
@@ -66,13 +67,15 @@ class Update:
                 args=(process_name, config, key, instance_name),
             )
             self.schedule_thread.start()
-            self.initial_update_check(process_name, config, key, instance_name)
+
+            return self.initial_update_check(process_name, config, key, instance_name)
         else:
             self.logger.info(f"Automatic update disabled for {process_name}")
             success, error = setup_project(self.process_handler, process_name)
             if not success:
-                raise RuntimeError(error)
-            self.start_process(process_name, config, key, instance_name)
+                return None, error
+
+            return self.start_process(process_name, config, key, instance_name)
 
     def initial_update_check(self, process_name, config, key, instance_name):
         with self.updating:
@@ -81,15 +84,15 @@ class Update:
             if not success:
                 if "No updates available" in error:
                     self.logger.info(error)
-                    from utils.setup import setup_project
-
                     success, error = setup_project(self.process_handler, process_name)
                     if not success:
-                        return False, f"Failed to set up {process_name}: {error}"
+                        return None, f"Failed to set up {process_name}: {error}"
 
-                    self.start_process(process_name, config, key, instance_name)
+                    return self.start_process(process_name, config, key, instance_name)
                 else:
-                    raise RuntimeError(error)
+                    return None, error
+
+            return True, error
 
     def scheduled_update_check(self, process_name, config, key, instance_name):
         with self.updating:
@@ -238,7 +241,7 @@ class Update:
         env = os.environ.copy()
         env.update(config.get("env", {}))
 
-        self.process_handler.start_process(
+        process, error = self.process_handler.start_process(
             process_name,
             config_dir,
             command,
@@ -251,3 +254,5 @@ class Update:
 
             time.sleep(10)
             load_settings()
+
+        return process, error
