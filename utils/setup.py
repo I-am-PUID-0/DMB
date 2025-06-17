@@ -838,7 +838,17 @@ def rclone_setup():
             os.makedirs(config_dir, exist_ok=True)
             logger.info(f"Setting up Rclone instance: {instance_name}")
 
-            if instance.get("zurg_enabled", False):
+            if instance.get("zurg_enabled", False) and instance.get(
+                "decypharr_enabled", False
+            ):
+                return (
+                    False,
+                    "Both Zurg and Decypharr cannot be enabled at the same time for Rclone.",
+                )
+
+            elif instance.get("zurg_enabled", False) and not instance.get(
+                "decypharr_enabled", False
+            ):
 
                 zurg_instance = (
                     CONFIG_MANAGER.get("zurg", {})
@@ -892,7 +902,36 @@ def rclone_setup():
                         f.write(f"[{section}]\n")
                         f.write("\n".join(lines) + "\n")
 
-            if not instance.get("zurg_enabled", False):
+            elif instance.get("decypharr_enabled", False) and not instance.get(
+                "zurg_enabled", False
+            ):
+                decypharr_config = CONFIG_MANAGER.get("decypharr", {})
+                url = None
+                config_data = {}
+                if instance.get("key_type").lower() == "realdebrid":
+                    url = f"http://localhost:{decypharr_config.get('port', 8282)}/webdav/realdebrid"
+                elif instance.get("key_type").lower() == "alldebrid":
+                    url = f"http://localhost:{decypharr_config.get('port', 8282)}/webdav/alldebrid"
+                elif instance.get("key_type").lower() == "debrid link":
+                    url = f"http://localhost:{decypharr_config.get('port', 8282)}/webdav/debridlink"
+                elif instance.get("key_type").lower() == "torbox":
+                    url = f"http://localhost:{decypharr_config.get('port', 8282)}/webdav/torbox"
+
+                config_data[mount_name] = [
+                    "type = webdav",
+                    f"url = {url}",
+                    "vendor = other",
+                    "pacer_min_sleep = 0",
+                ]
+
+                with open(config_file, "w") as f:
+                    for section, lines in config_data.items():
+                        f.write(f"[{section}]\n")
+                        f.write("\n".join(lines) + "\n")
+
+            elif not instance.get("zurg_enabled", False) and not instance.get(
+                "decypharr_enabled", False
+            ):
                 config_data = {}
                 if os.path.exists(config_file):
                     with open(config_file, "r") as f:
@@ -1002,6 +1041,15 @@ def rclone_setup():
                     "--log-level": log_level,
                 }
 
+                if instance.get("decypharr_enabled", False):
+                    required_flags.update(
+                        {
+                            "--rc": None,
+                            "--rc-addr": ":5572",
+                            "--rc-no-auth": None,
+                        }
+                    )
+
                 existing = instance.get("command", [])
                 parsed_flags = {}
 
@@ -1024,10 +1072,13 @@ def rclone_setup():
                 for key, value in required_flags.items():
                     parsed_flags[key] = value
 
+                space_style = {"--rc-addr"}
                 final_cmd = base_cmd
                 for key, value in parsed_flags.items():
                     if value is None:
                         final_cmd.append(key)
+                    elif key in space_style:
+                        final_cmd.extend([key, value])
                     else:
                         final_cmd.append(f"{key}={value}")
 
