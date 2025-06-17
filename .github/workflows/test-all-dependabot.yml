@@ -21,12 +21,12 @@ jobs:
 
       - name: Set up Git
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "I-am-PUID-0"
+          git config user.email "36779668+I-am-PUID-0@users.noreply.github.com"
 
-      - name: Comment @dependabot rebase on all PRs
+      - name: Trigger @dependabot rebase
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.DEPENDA_KEY }}
         run: |
           for pr in $(gh pr list --label dependencies --state open --json number --jq '.[].number'); do
             echo "Requesting rebase for PR #$pr"
@@ -35,27 +35,27 @@ jobs:
 
       - name: Wait for Dependabot to rebase
         run: |
-          echo "Waiting 10 minutes for Dependabot to finish rebasing..."
+          echo "Waiting 10 minutes for Dependabot to rebase PRs..."
           sleep 600
 
-      - name: Create test branch from latest master
+      - name: Create integration branch
         run: |
           git checkout -B test-all-dependabot origin/master
 
-      - name: Fetch and merge all dependabot PRs
+      - name: Merge all Dependabot PRs
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.DEPENDA_KEY }}
         run: |
           gh pr list --label dependencies --state open --json number,headRefName --jq '.[] | [.number, .headRefName] | @tsv' |
           while IFS=$'\t' read -r pr_number pr_branch; do
-            echo "Fetching and merging PR #$pr_number ($pr_branch)..."
+            echo "Merging PR #$pr_number from $pr_branch"
             git fetch origin "$pr_branch:$pr_branch"
             git merge --no-edit "$pr_branch" || {
-              echo "❌ Merge conflict in PR #$pr_number — skipping..."
+              echo "❌ Merge conflict in PR #$pr_number — skipping"
               git merge --abort
             }
           done
 
-      - name: Push merged branch for CI testing
+      - name: Push test branch
         run: |
           git push --force origin test-all-dependabot
