@@ -251,6 +251,7 @@
                 "log_level": "INFO",
                 "key_type": "RealDebrid",
                 "zurg_enabled": true,
+                "decypharr_enabled": false,
                 "mount_dir": "/data",
                 "mount_name": "rclone_RD",
                 "cache_dir": "/cache",

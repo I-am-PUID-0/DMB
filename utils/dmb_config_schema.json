@@ -785,6 +785,9 @@
                 "zurg_enabled": {
                   "type": "boolean"
                 },
+                "decypharr_enabled": {
+                  "type": "boolean"
+                },
                 "mount_dir": {
                   "type": "string"
                 },
@@ -823,6 +826,7 @@
                 "log_level",
                 "key_type",
                 "zurg_enabled",
+                "decypharr_enabled",
                 "mount_dir",
                 "mount_name",
                 "cache_dir",
