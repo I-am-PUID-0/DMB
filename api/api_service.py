@@ -35,7 +35,7 @@ def get_version_from_pyproject(path="pyproject.toml") -> str:
     try:
         with open(path, "rb") as f:
             data = tomllib.load(f)
-            return data["project"]["version"]
+            return data["tool"]["poetry"]["version"]
     except Exception:
         return "0.0.0"
 

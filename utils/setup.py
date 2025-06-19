@@ -342,7 +342,7 @@ def setup_decypharr():
     try:
         decypharr_config_dir = config.get("config_dir")
         decypharr_config_file = config.get("config_file")
-        decypharr_binary_file = config.get("binary_file", "decypharr")
+        decypharr_binary_file = "decypharr"
         binary_path = os.path.join(decypharr_config_dir, decypharr_binary_file)
 
         if not os.path.exists(decypharr_config_dir):
@@ -656,6 +656,7 @@ def zurg_setup():
         for key_type, instance in config.get("instances", {}).items():
             if instance.get("enabled"):
                 if not instance.get("api_key"):
+                    logger.error(f"API key not found for Zurg instance {key_type}")
                     raise ValueError(f"API key not found for Zurg instance {key_type}")
                 logger.info(f"Setting up enabled instance: {key_type}")
                 success, error = setup_zurg_instance(instance, key_type)
@@ -830,6 +831,15 @@ def rclone_setup():
                 logger.debug(f"Skipping disabled Rclone instance: {instance_name}")
                 return True, None
 
+            process_name = instance.get("process_name")
+            from utils.dependencies import get_api_state
+
+            api_state = get_api_state()
+
+            if api_state.get_status(process_name) == "running":
+                logger.info(f"{process_name} is already running. Skipping setup.")
+                return True, None
+
             config_file = instance["config_file"]
             config_dir = instance["config_dir"]
             mount_name = instance["mount_name"]
@@ -838,17 +848,13 @@ def rclone_setup():
             os.makedirs(config_dir, exist_ok=True)
             logger.info(f"Setting up Rclone instance: {instance_name}")
 
-            if instance.get("zurg_enabled", False) and instance.get(
-                "decypharr_enabled", False
-            ):
+            if instance.get("zurg_enabled") and instance.get("decypharr_enabled"):
                 return (
                     False,
                     "Both Zurg and Decypharr cannot be enabled at the same time for Rclone.",
                 )
 
-            elif instance.get("zurg_enabled", False) and not instance.get(
-                "decypharr_enabled", False
-            ):
+            elif instance.get("zurg_enabled") and not instance.get("decypharr_enabled"):
 
                 zurg_instance = (
                     CONFIG_MANAGER.get("zurg", {})
@@ -902,9 +908,7 @@ def rclone_setup():
                         f.write(f"[{section}]\n")
                         f.write("\n".join(lines) + "\n")
 
-            elif instance.get("decypharr_enabled", False) and not instance.get(
-                "zurg_enabled", False
-            ):
+            elif instance.get("decypharr_enabled") and not instance.get("zurg_enabled"):
                 decypharr_config = CONFIG_MANAGER.get("decypharr", {})
                 url = None
                 config_data = {}
@@ -929,8 +933,8 @@ def rclone_setup():
                         f.write(f"[{section}]\n")
                         f.write("\n".join(lines) + "\n")
 
-            elif not instance.get("zurg_enabled", False) and not instance.get(
-                "decypharr_enabled", False
+            elif not instance.get("zurg_enabled") and not instance.get(
+                "decypharr_enabled"
             ):
                 config_data = {}
                 if os.path.exists(config_file):
@@ -1041,7 +1045,7 @@ def rclone_setup():
                     "--log-level": log_level,
                 }
 
-                if instance.get("decypharr_enabled", False):
+                if instance.get("decypharr_enabled"):
                     required_flags.update(
                         {
                             "--rc": None,

@@ -43,6 +43,9 @@
         "github_username": {
           "type": "string"
         },
+        "onboarding_completed": {
+          "type": "boolean"
+        },
         "api_service": {
           "type": "object",
           "properties": {
@@ -184,6 +187,8 @@
         "plex_token",
         "plex_address",
         "github_token",
+        "github_username",
+        "onboarding_completed",
         "api_service",
         "frontend"
       ]
@@ -739,10 +744,7 @@
           "type": "string"
         },
         "command": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         }
       },
       "required": [
@@ -769,6 +771,9 @@
               "properties": {
                 "enabled": {
                   "type": "boolean"
+                },
+                "core_service": {
+                  "type": "string"
                 },
                 "process_name": {
                   "type": "string"
@@ -821,6 +826,7 @@
               },
               "required": [
                 "enabled",
+                "core_service",
                 "process_name",
                 "suppress_logging",
                 "log_level",
@@ -1237,6 +1243,9 @@
                 "enabled": {
                   "type": "boolean"
                 },
+                "core_service": {
+                  "type": "string"
+                },
                 "process_name": {
                   "type": "string"
                 },
@@ -1300,6 +1309,7 @@
               },
               "required": [
                 "enabled",
+                "core_service",
                 "process_name",
                 "repo_owner",
                 "repo_name",
