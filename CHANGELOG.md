@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.13.1](https://github.com/I-am-PUID-0/DMB/compare/6.13.0...6.13.1) (2025-06-26)
+
+
+### 🐛 Bug Fixes
+
+* **phalanx:** Updates Phalanx DB setup to support v0.55 ([52dbaf8](https://github.com/I-am-PUID-0/DMB/commit/52dbaf8aa454421d17c86fc51a6d771daa801bc5))
+* **setup_pnpm_environment:** Addresses potential EAGAIN errors during pnpm install by checking both stdout and stderr. ([52dbaf8](https://github.com/I-am-PUID-0/DMB/commit/52dbaf8aa454421d17c86fc51a6d771daa801bc5))
+
+
+### 🤡 Other Changes
+
+* **gitignore:** Adds decypharr to gitignore. ([52dbaf8](https://github.com/I-am-PUID-0/DMB/commit/52dbaf8aa454421d17c86fc51a6d771daa801bc5))
+
 ## [6.13.0](https://github.com/I-am-PUID-0/DMB/compare/6.12.1...6.13.0) (2025-06-17)
 
 
