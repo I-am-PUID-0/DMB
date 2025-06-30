@@ -49,15 +49,52 @@
   </a>
 </div>
 
-## 📜 Description
-
-**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of **[Riven Media's](https://github.com/rivenmedia)**, **[itsToggle's](https://github.com/itsToggle)**, **[godver3's](https://github.com/godver3)**, **[yowmamasita's](https://github.com/yowmamasita)**, **[iPromKnight's](https://github.com/iPromKnight/zilean)**, **[Mukhtar Akere's](https://github.com/sirrobot01)**, **[Nick Craig-Wood's](https://github.com/ncw)**, **[Michael Stonebraker's](https://en.wikipedia.org/wiki/Michael_Stonebraker)**, and **[Dave Page's](https://github.com/dpage)** projects -- **[Riven](https://github.com/rivenmedia/riven)**, **[plex_debrid](https://github.com/itsToggle/plex_debrid)**, **[cli_debrid](https://github.com/godver3/cli_debrid)**, **[Zurg](https://github.com/debridmediamanager/zurg-testing)**, **[Zilean](https://github.com/iPromKnight/zilean)**, **[Decypharr](https://github.com/sirrobot01/decypharr)**,**[rclone](https://github.com/rclone/rclone)**, **[PostgreSQL](https://www.postgresql.org/)**, and **[pgAdmin 4](https://www.pgadmin.org/)**.
 
 > ⚠️ **IMPORTANT**: Docker Desktop **CANNOT** be used to run DMB. Docker Desktop does not support the [mount propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation) required for rclone mounts.
 >
 > ![image](https://github.com/I-am-PUID-0/DMB/assets/36779668/aff06342-1099-4554-a5a4-72a7c82cb16e)
 >
 > See the DMB Docs for [alternative deployment options](https://i-am-puid-0.github.io/DMB/deployment/wsl) to run DMB on Windows through WSL2.
+
+
+## 📜 Description
+
+**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of the following projects/tools.
+
+## 📦 Projects Included
+
+> You are free to use whichever components you like. Not all are required, and some may provide overlapping functionality in different ways.
+
+| Project                                                            | Author                                                               | Community / Docs / Support                                                                                                                     | 🍻 Support Dev                                                                                      |
+|--------------------------------------------------------------------|----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| [cli_debrid](https://github.com/godver3/cli_debrid)               | [godver3](https://github.com/godver3)                                | [Discord](https://discord.gg/jAmqZJCZJ4)                                                                                                         | [Sponsor](https://github.com/sponsors/godver3)                                                    |
+| [dmbdb](https://github.com/nicocapalbo/dmbdb)                     | [nicocapalbo](https://github.com/nicocapalbo)                        | [Issues](https://github.com/nicocapalbo/dmbdb/issues)                                                     | —                                                                                                   |
+| [Decypharr](https://github.com/sirrobot01/decypharr)              | [Mukhtar Akere](https://github.com/sirrobot01)                       | [Docs](https://sirrobot01.github.io/decypharr/) • [Issues](https://github.com/sirrobot01/decypharr/issues)                                     | [Sponsor](https://github.com/sponsors/sirrobot01)                                                 |
+| [pgAdmin 4](https://www.pgadmin.org/)                             | [pgAdmin Team](https://www.pgadmin.org/development/)                 | [Docs](https://www.pgadmin.org/docs/) • [Support](https://www.pgadmin.org/support/)                                                            | [Donate](https://www.pgadmin.org/donate/)                                                         |
+| [phalanx_db](https://github.com/godver3/phalanx_db_hyperswarm)   | [godver3](https://github.com/godver3)                                | [Discord](https://discord.gg/jAmqZJCZJ4)                                                                                                         | [Sponsor](https://github.com/sponsors/godver3)                                                    |
+| [plex_debrid](https://github.com/itsToggle/plex_debrid)          | [itsToggle](https://github.com/itsToggle)                            | [Discord](https://discord.gg/u3vTDGjeKE) • [Issues](https://github.com/itsToggle/plex_debrid/issues)                                            | [Affiliate](http://real-debrid.com/?id=5708990) • [PayPal](https://www.paypal.com/paypalme/oidulibbe) |
+| [PostgreSQL](https://www.postgresql.org/)                         | [Michael Stonebraker](https://en.wikipedia.org/wiki/Michael_Stonebraker) | [Docs](https://www.postgresql.org/docs/)                                                                                                         | [Donate](https://www.postgresql.org/about/donate/)                                                |
+| [rclone](https://github.com/rclone/rclone)                        | [Nick Craig-Wood](https://github.com/ncw)                            | [Docs](https://rclone.org/)                                                                                                                      | [Sponsor](https://rclone.org/sponsor/)                                                            |
+| [Riven](https://github.com/rivenmedia/riven)                      | [Riven Media](https://github.com/rivenmedia)                         | [Discord](https://discord.gg/VtYd42mxgb) • [Discussions](https://github.com/orgs/rivenmedia/discussions)                                       | [Sponsor](https://github.com/sponsors/dreulavelle/)                                               |
+| [Zilean](https://github.com/iPromKnight/zilean)                   | [iPromKnight](https://github.com/iPromKnight)                        | [Docs](https://ipromknight.github.io/zilean/) • [Issues](https://github.com/iPromKnight/zilean/issues)                                         | —                                                                                                   |
+| [Zurg](https://github.com/debridmediamanager/zurg-testing)        | [yowmamasita](https://github.com/yowmamasita)                        | [Wiki](https://github.com/debridmediamanager/zurg-testing/wiki)                                                                                 | [Sponsor](https://github.com/sponsors/debridmediamanager)                                         |
+
+
+## 🤩 Want the Media Server Built-In?
+
+**DMB does not include a Media Server within the image.**
+This project is designed to manage and prepare media through debrid services, but assumes that you will run your media server (like Plex, Jellyfin, or Emby) separately.
+
+If you're looking for an **all-in-one solution** that includes a media server directly inside the container — fully integrated with Riven, Zurg, rclone, and more — check out [**DUMB (Debrid Unlimited Media Bridge)**](https://github.com/I-am-PUID-0/DUMB):
+
+> ⚙️ DUMB includes:
+>
+> * Plex Media Server preconfigured with mount support
+> * Built-in support for Real-Debrid workflows
+> * Single-container deployment for easier onboarding
+> * Tight integration between media prep, serving, and metadata handling
+
+📦 [**View DUMB on GitHub →**](https://github.com/I-am-PUID-0/DUMB)
 
 ## 🌟 Features
 
@@ -218,17 +255,6 @@ format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 
 See the [DMB roadmap](https://github.com/users/I-am-PUID-0/projects/6) for a list of planned features and enhancements.
 
-## 🛠️ DEV
-
-### Tracking current development for an upcoming release:
-
-- [Pre-Release Changes](https://gist.github.com/I-am-PUID-0/7e02c2cb4a5211d810a913f947861bc2#file-pre-release_changes-md)
-- [Pre-Release TODO](https://gist.github.com/I-am-PUID-0/7e02c2cb4a5211d810a913f947861bc2#file-pre-release_todo-md)
-
-### Development support:
-
-- The repo contains a devcontainer for use with vscode.
-- Bind mounts will need to be populated with content from this repo
 
 ## 🚀 Deployment
 
@@ -238,59 +264,10 @@ For additional details on deployment, see the [DMB Docs](https://i-am-puid-0.git
 
 ## 🌍 Community
 
-### DMB
-
 - For questions related to DMB, see the GitHub [discussions](https://github.com/I-am-PUID-0/DMB/discussions)
 - or create a new [issue](https://github.com/I-am-PUID-0/DMB/issues) if you find a bug or have an idea for an improvement.
 - or join the DMB [discord server](https://discord.gg/8dqKUBtbp5)
 
-### Riven Media
-
-- For questions related to Riven, see the GitHub [discussions](https://github.com/orgs/rivenmedia/discussions)
-- or create a new [issue](https://github.com/rivenmedia/riven/issues) if you find a bug or have an idea for an improvement.
-- or join the Riven [discord server](https://discord.gg/VtYd42mxgb)
-
-### plex_debrid
-- For questions related to plex_debrid, see the GitHub [discussions](https://github.com/itsToggle/plex_debrid/discussions) 
-- or create a new [issue](https://github.com/itsToggle/plex_debrid/issues) if you find a bug or have an idea for an improvement.
-- or join the plex_debrid [discord server](https://discord.gg/u3vTDGjeKE) 
-
-### cli_debrid & phalanx_db
-- For questions related to cli_debrid or phalanx_db, join the cli_debrid [discord server](https://discord.gg/jAmqZJCZJ4) 
-- or create a new [issue](https://github.com/godver3/cli_debrid/issues) if you find a bug or have an idea for an improvement. 
-
-### Decypharr
-- For questions related to decypharr, check out the [Docs](https://sirrobot01.github.io/decypharr/) 
-- or create a new [issue](https://github.com/sirrobot01/decypharr/issues) if you find a bug or have an idea for an improvement. 
-
-
-## 🍻 Buy **[Riven Media](https://github.com/rivenmedia)** a beer/coffee? :)
-
-If you enjoy the underlying projects and want to buy Riven Media a beer/coffee, feel free to use the [GitHub sponsor link](https://github.com/sponsors/dreulavelle/)
-
-## 🍻 Buy **[itsToggle](https://github.com/itsToggle)** a beer/coffee? :)
-
-If you enjoy the underlying projects and want to buy itsToggle a beer/coffee, feel free to use the real-debrid [affiliate link](http://real-debrid.com/?id=5708990) or send a virtual beverage via [PayPal](https://www.paypal.com/paypalme/oidulibbe) :)
-
-## 🍻 Buy **[godver3](https://github.com/godver3)** a beer/coffee? :)
-
-If you enjoy the underlying projects and want to buy godver3 a beer/coffee, feel free to use the [GitHub sponsor link](https://github.com/sponsors/godver3)
-
-## 🍻 Buy **[Mukhtar Akere](https://github.com/sirrobot01)** a beer/coffee? :)
-
-If you enjoy the underlying projects and want to buy Mukhtar Akere a beer/coffee, feel free to use the [GitHub sponsor link](https://github.com/sponsors/sirrobot01)
-
-## 🍻 Buy **[yowmamasita](https://github.com/yowmamasita)** a beer/coffee? :)
-
-If you enjoy the underlying projects and want to buy yowmamasita a beer/coffee, feel free to use the [GitHub sponsor link](https://github.com/sponsors/debridmediamanager)
-
-## 🍻 Buy **[Nick Craig-Wood](https://github.com/ncw)** a beer/coffee? :)
-
-If you enjoy the underlying projects and want to buy Nick Craig-Wood a beer/coffee, feel free to use the website's [sponsor links](https://rclone.org/sponsor/)
-
-## 🍻 Buy **[PostgreSQL](https://www.postgresql.org)** a beer/coffee? :)
-
-If you enjoy the underlying projects and want to buy PostgreSQL a beer/coffee, feel free to use the [sponsor link](https://www.postgresql.org/about/donate/)
 
 ## ✅ GitHub Workflow Status
 
