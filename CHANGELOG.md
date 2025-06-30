@@ -1,5 +1,28 @@
 # Changelog
 
+## [6.14.0](https://github.com/I-am-PUID-0/DMB/compare/6.13.1...6.14.0) (2025-06-30)
+
+
+### ✨ Features
+
+* **api:** add start-core-service endpoint for future frontend onboarding ([979510c](https://github.com/I-am-PUID-0/DMB/commit/979510c074b1a493203168bab38a8f73be99ec8a))
+* **decypharr:** enhance configuration with debrid service and API key support ([979510c](https://github.com/I-am-PUID-0/DMB/commit/979510c074b1a493203168bab38a8f73be99ec8a))
+
+
+### 📖 Documentation
+
+* **README:** reorganize project descriptions and remove outdated sections ([924884b](https://github.com/I-am-PUID-0/DMB/commit/924884bbffa09779b41d2c4897c796f1452d70eb))
+
+
+### 🚀 CI/CD Pipeline
+
+* **workflows:** add SKIP_QEMU_SETUP environment variable to conditionally skip QEMU setup ([2ef392c](https://github.com/I-am-PUID-0/DMB/commit/2ef392c717b0dc441eb587cff6d766216a850fbe))
+
+
+### 🛠️ Build System
+
+* **deps:** Update poetry.lock dependencies ([0b85855](https://github.com/I-am-PUID-0/DMB/commit/0b8585555b7a836c056e2b531d49fe0706b1ec09))
+
 ## [6.13.1](https://github.com/I-am-PUID-0/DMB/compare/6.13.0...6.13.1) (2025-06-26)
 
 
