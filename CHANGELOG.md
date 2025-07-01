@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.14.1](https://github.com/I-am-PUID-0/DMB/compare/6.14.0...6.14.1) (2025-07-01)
+
+
+### 📖 Documentation
+
+* **readme:** Update readme.md ([#181](https://github.com/I-am-PUID-0/DMB/issues/181)) ([15e9dfb](https://github.com/I-am-PUID-0/DMB/commit/15e9dfb9869f080552722092742ff874ec8d400e))
+
 ## [6.14.0](https://github.com/I-am-PUID-0/DMB/compare/6.13.1...6.14.0) (2025-06-30)
 
 
