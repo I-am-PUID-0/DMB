@@ -50,10 +50,13 @@
 </div>
 
 
-> ⚠️ **IMPORTANT**: Docker Desktop **CANNOT** be used to run DMB. Docker Desktop does not support the [mount propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation) required for rclone mounts.
+> [!CAUTION]
+> Docker Desktop **CANNOT** be used to run DMB. Docker Desktop does not support the [mount propagation](https://docs.docker.com/storage/bind-mounts/#configure-bind-propagation) required for rclone mounts.
 >
 > ![image](https://github.com/I-am-PUID-0/DMB/assets/36779668/aff06342-1099-4554-a5a4-72a7c82cb16e)
 >
+
+> [!CAUTION]
 > See the DMB Docs for [alternative deployment options](https://i-am-puid-0.github.io/DMB/deployment/wsl) to run DMB on Windows through WSL2.
 
 
@@ -63,38 +66,42 @@
 
 ## 📦 Projects Included
 
+> [!NOTE]
 > You are free to use whichever components you like. Not all are required, and some may provide overlapping functionality in different ways.
 
-| Project                                                            | Author                                                               | Community / Docs / Support                                                                                                                     | 🍻 Support Dev                                                                                      |
-|--------------------------------------------------------------------|----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| [cli_debrid](https://github.com/godver3/cli_debrid)               | [godver3](https://github.com/godver3)                                | [Discord](https://discord.gg/jAmqZJCZJ4)                                                                                                         | [Sponsor](https://github.com/sponsors/godver3)                                                    |
-| [dmbdb](https://github.com/nicocapalbo/dmbdb)                     | [nicocapalbo](https://github.com/nicocapalbo)                        | [Issues](https://github.com/nicocapalbo/dmbdb/issues)                                                     | —                                                                                                   |
-| [Decypharr](https://github.com/sirrobot01/decypharr)              | [Mukhtar Akere](https://github.com/sirrobot01)                       | [Docs](https://sirrobot01.github.io/decypharr/) • [Issues](https://github.com/sirrobot01/decypharr/issues)                                     | [Sponsor](https://github.com/sponsors/sirrobot01)                                                 |
-| [pgAdmin 4](https://www.pgadmin.org/)                             | [pgAdmin Team](https://www.pgadmin.org/development/)                 | [Docs](https://www.pgadmin.org/docs/) • [Support](https://www.pgadmin.org/support/)                                                            | [Donate](https://www.pgadmin.org/donate/)                                                         |
-| [phalanx_db](https://github.com/godver3/phalanx_db_hyperswarm)   | [godver3](https://github.com/godver3)                                | [Discord](https://discord.gg/jAmqZJCZJ4)                                                                                                         | [Sponsor](https://github.com/sponsors/godver3)                                                    |
-| [plex_debrid](https://github.com/itsToggle/plex_debrid)          | [itsToggle](https://github.com/itsToggle)                            | [Discord](https://discord.gg/u3vTDGjeKE) • [Issues](https://github.com/itsToggle/plex_debrid/issues)                                            | [Affiliate](http://real-debrid.com/?id=5708990) • [PayPal](https://www.paypal.com/paypalme/oidulibbe) |
-| [PostgreSQL](https://www.postgresql.org/)                         | [Michael Stonebraker](https://en.wikipedia.org/wiki/Michael_Stonebraker) | [Docs](https://www.postgresql.org/docs/)                                                                                                         | [Donate](https://www.postgresql.org/about/donate/)                                                |
-| [rclone](https://github.com/rclone/rclone)                        | [Nick Craig-Wood](https://github.com/ncw)                            | [Docs](https://rclone.org/)                                                                                                                      | [Sponsor](https://rclone.org/sponsor/)                                                            |
-| [Riven](https://github.com/rivenmedia/riven)                      | [Riven Media](https://github.com/rivenmedia)                         | [Discord](https://discord.gg/VtYd42mxgb) • [Discussions](https://github.com/orgs/rivenmedia/discussions)                                       | [Sponsor](https://github.com/sponsors/dreulavelle/)                                               |
-| [Zilean](https://github.com/iPromKnight/zilean)                   | [iPromKnight](https://github.com/iPromKnight)                        | [Docs](https://ipromknight.github.io/zilean/) • [Issues](https://github.com/iPromKnight/zilean/issues)                                         | —                                                                                                   |
-| [Zurg](https://github.com/debridmediamanager/zurg-testing)        | [yowmamasita](https://github.com/yowmamasita)                        | [Wiki](https://github.com/debridmediamanager/zurg-testing/wiki)                                                                                 | [Sponsor](https://github.com/sponsors/debridmediamanager)                                         |
+| Project                                                        | Author                                                                   | Community / Docs / Support                                                                                 | 🍻 Support Dev                                                                                       |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [cli_debrid](https://github.com/godver3/cli_debrid)            | [godver3](https://github.com/godver3)                                    | [Discord](https://discord.gg/jAmqZJCZJ4)                                                                   | [Sponsor](https://github.com/sponsors/godver3)                                                        |
+| [dmbdb](https://github.com/nicocapalbo/dmbdb)                  | [nicocapalbo](https://github.com/nicocapalbo)                            | [Issues](https://github.com/nicocapalbo/dmbdb/issues)                                                      | —                                                                                                     |
+| [Decypharr](https://github.com/sirrobot01/decypharr)           | [Mukhtar Akere](https://github.com/sirrobot01)                           | [Docs](https://sirrobot01.github.io/decypharr/) • [Issues](https://github.com/sirrobot01/decypharr/issues) | [Sponsor](https://github.com/sponsors/sirrobot01)                                                     |
+| [pgAdmin 4](https://www.pgadmin.org/)                          | [pgAdmin Team](https://www.pgadmin.org/development/)                     | [Docs](https://www.pgadmin.org/docs/) • [Support](https://www.pgadmin.org/support/)                        | [Donate](https://www.pgadmin.org/donate/)                                                             |
+| [phalanx_db](https://github.com/godver3/phalanx_db_hyperswarm) | [godver3](https://github.com/godver3)                                    | [Discord](https://discord.gg/jAmqZJCZJ4)                                                                   | [Sponsor](https://github.com/sponsors/godver3)                                                        |
+| [plex_debrid](https://github.com/itsToggle/plex_debrid)        | [itsToggle](https://github.com/itsToggle)                                | [Discord](https://discord.gg/u3vTDGjeKE) • [Issues](https://github.com/itsToggle/plex_debrid/issues)       | [Affiliate](http://real-debrid.com/?id=5708990) • [PayPal](https://www.paypal.com/paypalme/oidulibbe) |
+| [PostgreSQL](https://www.postgresql.org/)                      | [Michael Stonebraker](https://en.wikipedia.org/wiki/Michael_Stonebraker) | [Docs](https://www.postgresql.org/docs/)                                                                   | [Donate](https://www.postgresql.org/about/donate/)                                                    |
+| [rclone](https://github.com/rclone/rclone)                     | [Nick Craig-Wood](https://github.com/ncw)                                | [Docs](https://rclone.org/)                                                                                | [Sponsor](https://rclone.org/sponsor/)                                                                |
+| [Riven](https://github.com/rivenmedia/riven)                   | [Riven Media](https://github.com/rivenmedia)                             | [Discord](https://discord.gg/VtYd42mxgb) • [Discussions](https://github.com/orgs/rivenmedia/discussions)   | [Sponsor](https://github.com/sponsors/dreulavelle/)                                                   |
+| [Zilean](https://github.com/iPromKnight/zilean)                | [iPromKnight](https://github.com/iPromKnight)                            | [Docs](https://ipromknight.github.io/zilean/) • [Issues](https://github.com/iPromKnight/zilean/issues)     | —                                                                                                     |
+| [Zurg](https://github.com/debridmediamanager/zurg-testing)     | [yowmamasita](https://github.com/yowmamasita)                            | [Wiki](https://github.com/debridmediamanager/zurg-testing/wiki)                                            | [Sponsor](https://github.com/sponsors/debridmediamanager)                                             |
 
 
 ## 🤩 Want the Media Server Built-In?
 
-**DMB does not include a Media Server within the image.**
+**DMB does not include a Media Server within the image.**  
 This project is designed to manage and prepare media through debrid services, but assumes that you will run your media server (like Plex, Jellyfin, or Emby) separately.
 
-If you're looking for an **all-in-one solution** that includes a media server directly inside the container — fully integrated with Riven, Zurg, rclone, and more — check out [**DUMB (Debrid Unlimited Media Bridge)**](https://github.com/I-am-PUID-0/DUMB):
+> [!TIP]
+> ### If you're looking for an **all-in-one solution** that includes a media server directly inside the container — fully integrated with Riven, Zurg, rclone, and more!?
+> 
+> ### Check out [**📦 DUMB (Debrid Unlimited Media Bridge)**](https://github.com/I-am-PUID-0/DUMB):
 
-> ⚙️ DUMB includes:
->
-> * Plex Media Server preconfigured with mount support
-> * Built-in support for Real-Debrid workflows
-> * Single-container deployment for easier onboarding
-> * Tight integration between media prep, serving, and metadata handling
 
-📦 [**View DUMB on GitHub →**](https://github.com/I-am-PUID-0/DUMB)
+⚙️ DUMB includes:
+* Plex Media Server preconfigured with mount support
+* Built-in support for Real-Debrid workflows
+* Single-container deployment for easier onboarding
+* Tight integration between media prep, serving, and metadata handling
+
+📦 [**View DUMB on GitHub **](https://github.com/I-am-PUID-0/DUMB)
 
 ## 🌟 Features
 
@@ -161,8 +168,14 @@ services:
 
 ## 🎥 Example Plex Docker-compose
 
-> [!NOTE]
-> The Plex server must be started after the rclone mount is available. The below example uses the `depends_on` parameter to delay the start of the Plex server until the rclone mount is available. The rclone mount must be shared to the Plex container. The rclone mount location should not be added to the Plex library. The Riven symlink location must be shared to the Plex container and added to the Plex library.
+> [!IMPORTANT]
+> The Plex server must be started after the rclone mount is available.  
+> The below example uses the `depends_on` parameter to delay the start of the Plex server until the rclone mount is available.  
+> The rclone mount must be shared to the Plex container.  
+> The rclone mount location should not be added to the Plex library.  
+> The Riven (If being used) symlink location must be shared to the Plex container and added to the Plex library.  
+>
+> Note: for `depends_on` to work this needs to be within the same docker compose file.
 
 ```YAML
 services:
@@ -197,18 +210,20 @@ services:
 
 ## 🌐 Environment Variables
 
-The following table lists the required environment variables used by the container. The environment variables are set via the `-e` parameter or via the docker-compose file within the `environment:` section or with a .env file saved to the config directory. Value of this parameter is listed as `<VARIABLE_NAME>=<Value>`
+The following table lists the required environment variables used by the container.  
+The environment variables are set via the `-e` parameter or via the docker-compose file within the `environment:` section or with a .env file saved to the config directory.  
+Value of this parameter is listed as `<VARIABLE_NAME>=<Value>`
 
 Variables required by DMB:
-| Variable       | Default  | Description                                                       | Required for DMB |
-| -------------- | -------- | ------------------------------------------------------------------|----------------- |
-| `PUID`         | `1000`   | Your User ID | :heavy_check_mark: |
-| `PGID`         | `1000`   | Your Group ID |:heavy_check_mark: |
-| `TZ`           | `(null)` | Your time zone listed as `Area/Location` | :heavy_check_mark: |
-| `ZURG_INSTANCES_REALDEBRID_API_KEY` | `(null)` | Enter your Real-Debrid API Token | :heavy_check_mark: |
-| `RIVEN_FRONTEND_ENV_ORIGIN` | `http://0.0.0.0:3000` | The IP address used to access the DMB frontend.  Change this to the IP address you use in the browser for Riven Frontend. | :heavy_check_mark: |
+| Variable                            | Default               | Description                                                                                                               | Required for DMB |
+| ----------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `PUID`                              | `1000`                | Your User ID                                                                                                              | ✔️             |
+| `PGID`                              | `1000`                | Your Group ID                                                                                                             | ✔️             |
+| `TZ`                                | `(null)`              | Your time zone listed as `Area/Location`                                                                                  | ✔️             |
+| `ZURG_INSTANCES_REALDEBRID_API_KEY` | `(null)`              | Enter your Real-Debrid API Token                                                                                          | ✔️             |
+| `RIVEN_FRONTEND_ENV_ORIGIN`         | `http://0.0.0.0:3000` | The IP address used to access the DMB frontend.  Change this to the IP address you use in the browser for Riven Frontend. | ✔️             |
 
-See the [.env.example](https://github.com/I-am-PUID-0/DMB/blob/master/.env.example)
+See the [.env.example](https://github.com/I-am-PUID-0/DMB/blob/master/.env.example) for more.
 
 ## 🌐 Ports Used
 
@@ -241,15 +256,15 @@ format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 | `/config`             | rw          | This is where the application stores the rclone.conf, and any files needing persistence. CAUTION: rclone.conf is overwritten upon start/restart of the container. Do NOT use an existing rclone.conf file if you have other rclone services |
 | `/log`                | rw          | This is where the application stores its log files                                                                                                                                                                                          |
 | `/data`               | rshared     | This is where rclone will be mounted.                                                                                                                                                                                                       |
-| `/zurg/RD`            | rw          | This is where Zurg will store the active configuration and data for RealDebrid.                                                                                                    |
-| `/riven/data`         | rw          | This is where Riven will store its data.                                                                                                                                                               |
-| `/riven/mnt`          | rw          | This is where Riven will set its symlinks.                                                                                                                                                             |
-| `/postgres_data`      | rw          | This is where PostgreSQL will store its data.                                                                                                                                                          |
-| `/pgadmin/data`       | rw          | This is where pgAdmin 4 will store its data.                                                                                                                                                          |
-| `/plex_debrid/config` | rw          | This is where plex_debrid will store its data.                                                                                                                                                   |
-| `/cli_debrid/data` | rw             | This is where cli_debrid will store its data.                                                                                                                                                    |       
-| `/phalanx_db/data` | rw             | This is where phalanx_db will store its data.                                                                                                                                                    |  
-| `/decypharr`       | rw             | This is where decypharr will store its data.                                                                                                                                                     |  
+| `/zurg/RD`            | rw          | This is where Zurg will store the active configuration and data for RealDebrid.                                                                                                                                                             |
+| `/riven/data`         | rw          | This is where Riven will store its data.                                                                                                                                                                                                    |
+| `/riven/mnt`          | rw          | This is where Riven will set its symlinks.                                                                                                                                                                                                  |
+| `/postgres_data`      | rw          | This is where PostgreSQL will store its data.                                                                                                                                                                                               |
+| `/pgadmin/data`       | rw          | This is where pgAdmin 4 will store its data.                                                                                                                                                                                                |
+| `/plex_debrid/config` | rw          | This is where plex_debrid will store its data.                                                                                                                                                                                              |
+| `/cli_debrid/data`    | rw          | This is where cli_debrid will store its data.                                                                                                                                                                                               |
+| `/phalanx_db/data`    | rw          | This is where phalanx_db will store its data.                                                                                                                                                                                               |
+| `/decypharr`          | rw          | This is where decypharr will store its data.                                                                                                                                                                                                |
 
 ## 📝 TODO
 
