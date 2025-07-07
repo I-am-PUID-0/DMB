@@ -2,51 +2,50 @@
   <h1>🎬 Debrid Media Bridge 🎬</h1>
   <a href="https://github.com/I-am-PUID-0/DMB">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/I-am-PUID-0/DMB/assets/36779668/d0cbc785-2e09-41da-b226-924fdfcc1f21">
-      <img alt="DMB" src="https://github.com/I-am-PUID-0/DMB/assets/36779668/d0cbc785-2e09-41da-b226-924fdfcc1f21" style="max-width: 100%; height: auto;">
+      <source srcset="https://github.com/I-am-PUID-0/DMB/assets/36779668/d0cbc785-2e09-41da-b226-924fdfcc1f21">
+      <img
+        alt="DMB"
+        src="https://github.com/I-am-PUID-0/DMB/assets/36779668/d0cbc785-2e09-41da-b226-924fdfcc1f21"
+        style="max-width: 100%; height: auto;">
     </picture>
   </a>
 </div>
-<div
-  align="center"
-  style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 1em;"
->
+<div align="center" style="margin-top: 1em;">
   <a href="https://github.com/I-am-PUID-0/DMB/stargazers">
     <img
       alt="GitHub Repo stars"
       src="https://img.shields.io/github/stars/I-am-PUID-0/DMB?style=for-the-badge"
-    />
-  </a>
+    /></a>
   <a href="https://github.com/I-am-PUID-0/DMB/issues">
     <img
       alt="Issues"
       src="https://img.shields.io/github/issues/I-am-PUID-0/DMB?style=for-the-badge"
-    />
-  </a>
+    /></a>
   <a href="https://github.com/I-am-PUID-0/DMB/blob/master/COPYING">
     <img
       alt="License"
       src="https://img.shields.io/github/license/I-am-PUID-0/DMB?style=for-the-badge"
-    />
-  </a>
+    /></a>
   <a href="https://github.com/I-am-PUID-0/DMB/graphs/contributors">
     <img
       alt="Contributors"
       src="https://img.shields.io/github/contributors/I-am-PUID-0/DMB?style=for-the-badge"
-    />
-  </a>
+    /></a>
   <a href="https://hub.docker.com/r/iampuid0/dmb">
     <img
       alt="Docker Pulls"
       src="https://img.shields.io/docker/pulls/iampuid0/dmb?style=for-the-badge&logo=docker&logoColor=white"
-    />
-  </a>
+    /></a>
+  <a href="https://github.com/I-am-PUID-0/DMB/actions?query=workflow%3A%22Docker+Image+CI%22">
+    <img
+      alt="GitHub Workflow Status"
+      src="https://img.shields.io/github/actions/workflow/status/I-am-PUID-0/DMB/docker-image.yml?style=for-the-badge&label=Docker%20build"
+    /></a>
   <a href="https://discord.gg/8dqKUBtbp5">
     <img
       alt="Join Discord"
       src="https://img.shields.io/badge/Join%20us%20on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white"
-    />
-  </a>
+    /></a>
 </div>
 
 
@@ -55,6 +54,8 @@
 >
 > ![image](https://github.com/I-am-PUID-0/DMB/assets/36779668/aff06342-1099-4554-a5a4-72a7c82cb16e)
 >
+> You might have some success provided the `:rshared` flag is omitted from the `/mnt/debird` bind mount. 
+> Which is means you can not use Decypharr.
 
 > [!CAUTION]
 > See the DMB Docs for [alternative deployment options](https://i-am-puid-0.github.io/DMB/deployment/wsl) to run DMB on Windows through WSL2.
@@ -62,7 +63,9 @@
 
 ## 📜 Description
 
-**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of the following projects/tools.
+**Debrid Media Bridge (DMB)** is an All-In-One (AIO) docker image for the unified deployment of the following projects/tools, with the caveat of no media servers included.
+
+If you want a media server included check out [DUMB (Debrid Unlimited Media Bridge)](https://github.com/I-am-PUID-0/DUMB)
 
 ## 📦 Projects Included
 
@@ -179,6 +182,10 @@ services:
 
 ```YAML
 services:
+  DMB:
+    ...
+      {{ DMB CONFIG HERE }}
+    ...
   plex:
     image: plexinc/pms-docker:latest
     container_name: plex
@@ -284,6 +291,10 @@ For additional details on deployment, see the [DMB Docs](https://i-am-puid-0.git
 - or join the DMB [discord server](https://discord.gg/8dqKUBtbp5)
 
 
-## ✅ GitHub Workflow Status
+## 🛠️ Developmnent
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/I-am-PUID-0/DMB/docker-image.yml)
+### Development support:
+
+- The repo contains a devcontainer for use with vscode.
+- Bind mounts will need to be populated with content from this repo
+
