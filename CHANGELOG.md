@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.14.1](https://github.com/I-am-PUID-0/DMB/compare/6.14.0...6.14.1) (2025-07-14)
+
+
+### 📖 Documentation
+
+* **readme:** Update readme.md ([#181](https://github.com/I-am-PUID-0/DMB/issues/181)) ([15e9dfb](https://github.com/I-am-PUID-0/DMB/commit/15e9dfb9869f080552722092742ff874ec8d400e))
+
+
+### 🛠️ Build System
+
+* **docker:** Refactor Dockerfile to consolidate base image and streamline build stages ([d386289](https://github.com/I-am-PUID-0/DMB/commit/d38628994b08c6be631660dfbcd68c9769397d70))
+
 ## [6.14.0](https://github.com/I-am-PUID-0/DMB/compare/6.13.1...6.14.0) (2025-06-30)
 
 
