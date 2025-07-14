@@ -1,5 +1,7 @@
 ﻿name: Docker Image CI
-
+env:
+  SKIP_QEMU_SETUP: 'true'
+  DOCKER_BUILD_RECORD_UPLOAD: false 
 on:
   workflow_dispatch:
   pull_request:
@@ -11,7 +13,32 @@ on:
       - '.gitattributes'
       - '.gitignore'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.setup_env_vars.outputs.VERSION }}
+      REPO_OWNER_LOWER: ${{ steps.setup_env_vars.outputs.REPO_OWNER_LOWER }}
+      REPO_NAME: ${{ steps.setup_env_vars.outputs.REPO_NAME }}
+      BRANCH_NAME: ${{ steps.setup_env_vars.outputs.BRANCH_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract version and set environment variables
+        id: setup_env_vars        
+        run: |
+          VERSION=$(grep -E '^version *= *' pyproject.toml | head -n 1 | cut -d '"' -f2)
+          REPO_OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          REPO_NAME=$(basename "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          BRANCH_NAME=$(echo "${{ github.ref_name }}" | tr '/' '-')
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "REPO_OWNER_LOWER=$REPO_OWNER_LOWER" >> $GITHUB_OUTPUT
+          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
   fetch-latest-tags:
     if: >
       github.event_name == 'workflow_dispatch' ||
@@ -19,66 +46,348 @@ jobs:
       startsWith(github.event.pull_request.title, 'chore(master): release '))
     runs-on: ubuntu-latest
     outputs:
-      PGAGENT_TAG: ${{ env.PGAGENT_TAG }}
-      SYS_STATS_TAG: ${{ env.SYS_STATS_TAG }}
-      ZILEAN_TAG: ${{ env.ZILEAN_TAG }}
-      RIVEN_TAG: ${{ env.RIVEN_TAG }}
-      RIVEN_FRONTEND_TAG: ${{ env.RIVEN_FRONTEND_TAG }}
-      DMB_FRONTEND_TAG: ${{ env.DMB_FRONTEND_TAG }}
-      PLEX_DEBRID_TAG: ${{ env.PLEX_DEBRID_TAG }}
-      CLI_DEBRID_TAG: ${{ env.CLI_DEBRID_TAG }}      
+      PGAGENT_TAG: ${{ steps.fetch_pgagent_tag.outputs.PGAGENT_TAG }}
+      SYS_STATS_TAG: ${{ steps.fetch_sys_stats_tag.outputs.SYS_STATS_TAG }}
+      ZILEAN_TAG: ${{ steps.fetch_zilean_tag.outputs.ZILEAN_TAG }}
+      RIVEN_TAG: ${{ steps.fetch_riven_tag.outputs.RIVEN_TAG }}
+      RIVEN_FRONTEND_TAG: ${{ steps.fetch_riven_frontend_tag.outputs.RIVEN_FRONTEND_TAG }}
+      DMB_FRONTEND_TAG: ${{ steps.fetch_dmb_frontend_tag.outputs.DMB_FRONTEND_TAG }}
+      PLEX_DEBRID_TAG: ${{ steps.fetch_plex_debrid_tag.outputs.PLEX_DEBRID_TAG }}
+      CLI_DEBRID_TAG: ${{ steps.fetch_cli_debrid_tag.outputs.CLI_DEBRID_TAG }}
     steps:
       - name: Fetch latest pgAgent release tag
+        id: fetch_pgagent_tag
         run: |
           PGAGENT_TAG=$(curl -s https://api.github.com/repos/pgadmin-org/pgagent/releases/latest | jq -r .tag_name)
-          echo "PGAGENT_TAG=$PGAGENT_TAG" >> $GITHUB_ENV
+          echo "PGAGENT_TAG=$PGAGENT_TAG" >> $GITHUB_OUTPUT
 
       - name: Fetch latest system_stats release tag
+        id: fetch_sys_stats_tag
         run: |
           SYS_STATS_TAG=$(curl -s https://api.github.com/repos/EnterpriseDB/system_stats/releases/latest | jq -r .tag_name)
-          echo "SYS_STATS_TAG=$SYS_STATS_TAG" >> $GITHUB_ENV
+          echo "SYS_STATS_TAG=$SYS_STATS_TAG" >> $GITHUB_OUTPUT
 
       - name: Fetch latest zilean release tag
+        id: fetch_zilean_tag
         run: |
           ZILEAN_TAG=$(curl -s https://api.github.com/repos/iPromKnight/zilean/releases/latest | jq -r .tag_name)
-          echo "ZILEAN_TAG=$ZILEAN_TAG" >> $GITHUB_ENV
+          echo "ZILEAN_TAG=$ZILEAN_TAG" >> $GITHUB_OUTPUT
 
       - name: Fetch latest riven release tag
+        id: fetch_riven_tag
         run: |
           RIVEN_TAG=$(curl -s https://api.github.com/repos/rivenmedia/riven/releases/latest | jq -r .tag_name)
-          echo "RIVEN_TAG=$RIVEN_TAG" >> $GITHUB_ENV
+          echo "RIVEN_TAG=$RIVEN_TAG" >> $GITHUB_OUTPUT
 
       - name: Fetch latest riven-frontend release tag
+        id: fetch_riven_frontend_tag
         run: |
           RIVEN_FRONTEND_TAG=$(curl -s https://api.github.com/repos/rivenmedia/riven-frontend/releases/latest | jq -r .tag_name)
-          echo "RIVEN_FRONTEND_TAG=$RIVEN_FRONTEND_TAG" >> $GITHUB_ENV
+          echo "RIVEN_FRONTEND_TAG=$RIVEN_FRONTEND_TAG" >> $GITHUB_OUTPUT
 
       - name: Fetch latest dmbdb release tag
+        id: fetch_dmb_frontend_tag
         run: |
           DMB_FRONTEND_TAG=$(curl -s https://api.github.com/repos/nicocapalbo/dmbdb/releases/latest | jq -r .tag_name)
-          echo "DMB_FRONTEND_TAG=$DMB_FRONTEND_TAG" >> $GITHUB_ENV 
+          echo "DMB_FRONTEND_TAG=$DMB_FRONTEND_TAG" >> $GITHUB_OUTPUT
 
       - name: Fetch latest plex_debrid version from source
+        id: fetch_plex_debrid_tag
         run: |
           PLEX_DEBRID_TAG=$(curl -s https://raw.githubusercontent.com/elfhosted/plex_debrid/main/ui/ui_settings.py | \
             grep '^version\s*=' | \
             sed -E "s/.*=\s*\[\s*'([^']+)'.*/\1/")
-          echo "PLEX_DEBRID_TAG=$PLEX_DEBRID_TAG" >> $GITHUB_ENV
+          echo "PLEX_DEBRID_TAG=$PLEX_DEBRID_TAG" >> $GITHUB_OUTPUT
 
       - name: Fetch latest cli_debrid release tag
+        id: fetch_cli_debrid_tag
         run: |
           CLI_DEBRID_TAG=$(curl -s https://api.github.com/repos/godver3/cli_debrid/releases/latest | jq -r .tag_name)
-          echo "CLI_DEBRID_TAG=$CLI_DEBRID_TAG" >> $GITHUB_ENV 
+          echo "CLI_DEBRID_TAG=$CLI_DEBRID_TAG" >> $GITHUB_OUTPUT
 
-  build-and-push:   
-    needs: fetch-latest-tags
+  build-base:
+    needs: setup
     runs-on: self-hosted
     env:
-      SKIP_QEMU_SETUP: 'true'    
-    outputs:
-      version: ${{ env.VERSION }}
-      repo_owner_lower: ${{ env.REPO_OWNER_LOWER }}
-      repo_name: ${{ env.REPO_NAME }}
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: env.SKIP_QEMU_SETUP != 'true'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build base stage (multi‑arch)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: base
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/base
+          cache-to:   type=local,dest=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/base,mode=max
+          push: false
+
+  build-zilean:
+    needs: [setup, fetch-latest-tags, build-base]
+    runs-on: self-hosted
+    env:
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }} 
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: env.SKIP_QEMU_SETUP != 'true'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build zilean‑builder stage (multi‑arch)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: zilean-builder
+          platforms: linux/amd64,linux/arm64
+          build-args: ZILEAN_TAG=${{ needs.fetch-latest-tags.outputs.ZILEAN_TAG }}
+          cache-from: |
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/base
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/zilean
+          cache-to: type=local,dest=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/zilean,mode=max
+          push: false
+
+  build-pgadmin:
+    needs: [setup, fetch-latest-tags, build-base]
+    runs-on: self-hosted
+    env:
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: env.SKIP_QEMU_SETUP != 'true'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build pgadmin‑builder stage
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: pgadmin-builder
+          platforms: linux/amd64,linux/arm64
+          cache-from: |
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/base
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/pgadmin
+          cache-to: type=local,dest=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/pgadmin,mode=max
+          push: false
+
+  build-systemstats:
+    needs: [setup, fetch-latest-tags, build-base]
+    runs-on: self-hosted
+    env:
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: env.SKIP_QEMU_SETUP != 'true'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build systemstats‑builder stage
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: systemstats-builder
+          platforms: linux/amd64,linux/arm64
+          build-args: SYS_STATS_TAG=${{ needs.fetch-latest-tags.outputs.SYS_STATS_TAG }}
+          cache-from: |
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/base
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/systemstats
+          cache-to: type=local,dest=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/systemstats,mode=max
+          push: false
+
+  build-riven-frontend:
+    needs: [setup, fetch-latest-tags, build-base]
+    runs-on: self-hosted
+    env:
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: env.SKIP_QEMU_SETUP != 'true'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build riven‑frontend‑builder stage
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: riven-frontend-builder
+          platforms: linux/amd64,linux/arm64
+          build-args: RIVEN_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_FRONTEND_TAG }}
+          cache-from: |
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/base
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/riven-frontend
+          cache-to: type=local,dest=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/riven-frontend,mode=max
+          push: false
+
+  build-riven-backend:
+    needs: [setup, fetch-latest-tags, build-base]
+    runs-on: self-hosted
+    env:
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: env.SKIP_QEMU_SETUP != 'true'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build riven‑backend‑builder stage
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: riven-backend-builder
+          platforms: linux/amd64,linux/arm64
+          build-args: RIVEN_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_TAG }}
+          cache-from: |
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/base
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/riven-backend
+          cache-to: type=local,dest=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/riven-backend,mode=max
+          push: false
+
+  build-dmb-frontend:
+    needs: [setup, fetch-latest-tags, build-base]
+    runs-on: self-hosted
+    env:
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: env.SKIP_QEMU_SETUP != 'true'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build dmb‑frontend‑builder stage
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: dmb-frontend-builder
+          platforms: linux/amd64,linux/arm64
+          build-args: DMB_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.DMB_FRONTEND_TAG }}
+          cache-from: |
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/base
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/dmb-frontend
+          cache-to: type=local,dest=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/dmb-frontend,mode=max
+          push: false
+
+  build-plex-debrid:
+    needs: [setup, fetch-latest-tags, build-base]
+    runs-on: self-hosted
+    env:
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: env.SKIP_QEMU_SETUP != 'true'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build plex_debrid‑builder stage
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: plex_debrid-builder
+          platforms: linux/amd64,linux/arm64
+          build-args: PLEX_DEBRID_TAG=${{ needs.fetch-latest-tags.outputs.PLEX_DEBRID_TAG }}
+          cache-from: |
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/base
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/plex-debrid
+          cache-to: type=local,dest=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/plex-debrid,mode=max
+          push: false
+
+  build-cli-debrid:
+    needs: [setup, fetch-latest-tags, build-base]
+    runs-on: self-hosted
+    env:
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: env.SKIP_QEMU_SETUP != 'true'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build cli_debrid‑builder stage
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: cli_debrid-builder
+          platforms: linux/amd64,linux/arm64
+          build-args: CLI_DEBRID_TAG=${{ needs.fetch-latest-tags.outputs.CLI_DEBRID_TAG }}
+          cache-from: |
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/base
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/cli-debrid
+          cache-to: type=local,dest=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/cli-debrid,mode=max
+          push: false
+
+  build-requirements:
+    needs: [setup, fetch-latest-tags, build-base]
+    runs-on: self-hosted
+    env:
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: env.SKIP_QEMU_SETUP != 'true'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build requirements‑builder stage
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: requirements-builder
+          platforms: linux/amd64,linux/arm64
+          cache-from: |
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/base
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/requirements
+          cache-to: type=local,dest=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/requirements,mode=max
+          push: false
+
+  build-and-push:   
+    needs: [setup, fetch-latest-tags, build-base, build-zilean, build-pgadmin, build-systemstats, build-riven-frontend, build-riven-backend, build-dmb-frontend, build-plex-debrid, build-cli-debrid, build-requirements]
+    runs-on: self-hosted
+    env:
+      REPO_NAME: ${{ needs.setup.outputs.REPO_NAME }}
+      REPO_OWNER_LOWER: ${{ needs.setup.outputs.REPO_OWNER_LOWER }}
+      VERSION: ${{ needs.setup.outputs.VERSION }}
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -101,18 +410,6 @@ jobs:
           echo "Disk space before build:"
           df -h
 
-      - name: Extract version and set environment variables
-        id: setup_env_vars
-        run: |
-          VERSION=$(grep -E '^version *= *' pyproject.toml | head -n 1 | cut -d '"' -f2)
-          REPO_OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          REPO_NAME=$(basename "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          BRANCH_NAME=$(echo "${{ github.ref_name }}" | tr '/' '-')
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "REPO_OWNER_LOWER=$REPO_OWNER_LOWER" >> $GITHUB_ENV
-          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
-          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
-
       - name: Determine Docker tags
         id: determine_tags
         run: |
@@ -121,6 +418,15 @@ jobs:
           else
             echo "DOCKER_TAGS=${{ secrets.DOCKER_USERNAME }}/${{ env.REPO_NAME }}:${{ env.BRANCH_NAME }},ghcr.io/${{ env.REPO_OWNER_LOWER }}/${{ env.REPO_NAME }}:${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
           fi
+
+      - name: Select tag for IMAGE_TAG
+        id: select_image_tag
+        shell: bash
+        run: |
+          # ${VAR%%,*}  ==> everything before the first comma
+          IMAGE_TAG="${DOCKER_TAGS%%,*}"
+          echo "Using IMAGE_TAG=$IMAGE_TAG"
+          echo "IMAGE_TAG=$IMAGE_TAG" >> "$GITHUB_ENV"
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -139,13 +445,25 @@ jobs:
         id: build_push
         uses: docker/build-push-action@v6
         env:
-          DOCKER_BUILD_RECORD_UPLOAD: false        
+          DOCKER_TAGS: ${{ env.DOCKER_TAGS }}
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64 #,linux/arm/v7
-          cache-from: type=local,src=/home/docker/buildx-cache/${{ github.repository }}
-          cache-to: type=local,dest=/home/docker/buildx-cache/${{ github.repository }},mode=max
+          target: final-stage
+          platforms: linux/amd64,linux/arm64
+          cache-from: |
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/base
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/final
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/zilean
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/pgadmin
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/systemstats
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/riven-frontend
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/riven-backend
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/dmb-frontend
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/plex-debrid
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/cli-debrid
+            type=local,src=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/requirements
+          cache-to: type=local,dest=/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}/final,mode=max
           tags: ${{ env.DOCKER_TAGS }}
           build-args: |
             PGAGENT_TAG=${{ needs.fetch-latest-tags.outputs.PGAGENT_TAG }}
@@ -160,29 +478,14 @@ jobs:
           sbom: true
           push: true
           
-      - name: Build and Load Single-Platform Image for Version Extraction
-        id: build_load_single
-        uses: docker/build-push-action@v6
-        env:
-          DOCKER_BUILD_RECORD_UPLOAD: false        
-        with:
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64
-          cache-from: type=local,src=/home/docker/buildx-cache/${{ github.repository }}
-          tags: temp-local-image
-          build-args: |
-            PGAGENT_TAG=${{ needs.fetch-latest-tags.outputs.PGAGENT_TAG }}
-            SYS_STATS_TAG=${{ needs.fetch-latest-tags.outputs.SYS_STATS_TAG }}
-            ZILEAN_TAG=${{ needs.fetch-latest-tags.outputs.ZILEAN_TAG }}
-            RIVEN_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_TAG }}
-            RIVEN_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.RIVEN_FRONTEND_TAG }}
-            DMB_FRONTEND_TAG=${{ needs.fetch-latest-tags.outputs.DMB_FRONTEND_TAG }}
-            PLEX_DEBRID_TAG=${{ needs.fetch-latest-tags.outputs.PLEX_DEBRID_TAG }}
-            CLI_DEBRID_TAG=${{ needs.fetch-latest-tags.outputs.CLI_DEBRID_TAG }}
-          load: true 
+      - name: Pull image for version extraction
+        id: pull_image
+        run: |
+          docker pull --platform=linux/amd64 "$IMAGE_TAG"
+          docker tag "$IMAGE_TAG" temp-local-image
 
-      - name: Extract Versions from Built Image
+      - name: Extract Versions from Image
+        id: extract_versions
         run: |
           IMAGE_TAG="temp-local-image"
           echo "Using IMAGE_TAG: $IMAGE_TAG"
@@ -207,6 +510,15 @@ jobs:
           df -h
 
       - name: Add Job Summary for Build
+        id: job_summary
+        env:
+          VERSION: ${{ needs.setup.outputs.VERSION }}
+          DOCKER_TAGS: ${{ env.DOCKER_TAGS }}
+          PSQL_VERSION: ${{ env.PSQL_VERSION }}
+          PGADMIN_VERSION: ${{ env.PGADMIN_VERSION }}
+          NODE_VERSION: ${{ env.NODE_VERSION }}
+          PNPM_VERSION: ${{ env.PNPM_VERSION }}
+          RCLONE_VERSION: ${{ env.RCLONE_VERSION }}
         run: |
           echo "## Build Summary" >> $GITHUB_STEP_SUMMARY
           echo "**Build Version:** \`${{ env.VERSION }}\`" >> $GITHUB_STEP_SUMMARY
@@ -229,37 +541,74 @@ jobs:
           echo "- rclone: \`${{ env.RCLONE_VERSION }}\`" >> $GITHUB_STEP_SUMMARY          
           echo "**Build and Push Status:** ✅ Successful" >> $GITHUB_STEP_SUMMARY
 
+  cleanup-cache:
+    needs: [ setup, build-and-push]
+    runs-on: self-hosted
+    if: always()
+    env:
+      BRANCH_NAME: ${{ needs.setup.outputs.BRANCH_NAME }}
+    steps:
+      - name: Prune every stage cache (keep latest only)
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          ROOT="/home/docker/buildx-cache/${{ github.repository }}/${{ env.BRANCH_NAME }}"
+          LOCK="/var/lock/buildx-cache.lock"
+          export ROOT 
+          flock -x "$LOCK" bash -s <<'CLEAN'
+
+            # walk every stage directory under …/<branch>/
+            for STAGE_DIR in "$ROOT"/*/ ; do
+              [[ -f "${STAGE_DIR}index.json" ]] || continue
+              echo "::group::⏳  Pruning $(basename "$STAGE_DIR")"
+
+              # 1) current manifest digest
+              MANIFEST=$(jq -r '.manifests[0].digest' "${STAGE_DIR}index.json" | sed 's/^sha256://')
+              KEEP=$(mktemp)
+              echo "$MANIFEST" > "$KEEP"
+
+              # 2) config + layer digests referenced by that manifest
+              jq -r '..|.digest?|select(.)' "${STAGE_DIR}blobs/sha256/$MANIFEST" \
+                | sed 's/^sha256://' >> "$KEEP"
+              sort -u "$KEEP" -o "$KEEP"
+
+              # 3) delete every blob not in keep-list
+              find "${STAGE_DIR}blobs/sha256" -type f -printf '%f\n' \
+                | grep -v -F -f "$KEEP" \
+                | xargs -r -I{} rm -f "${STAGE_DIR}blobs/sha256/{}"
+
+              rm "$KEEP"
+              echo "::endgroup::"
+            done
+          CLEAN
+
   release:
-    needs: build-and-push
+    needs: [setup, build-and-push]
     if: github.ref_name == 'master'
     runs-on: ubuntu-latest
     outputs:
       release_exists: ${{ steps.check_release.outputs.release_exists }}
     env:
-      VERSION: ${{ needs.build-and-push.outputs.version }}
-      REPO_OWNER_LOWER: ${{ needs.build-and-push.outputs.repo_owner_lower }}
-      REPO_NAME: ${{ needs.build-and-push.outputs.repo_name }}
+      VERSION: ${{ needs.setup.outputs.VERSION }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Check if Release Exists
         id: check_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ env.VERSION }}
         run: |
             if gh release view "${{ env.VERSION }}" --repo ${{ github.repository }}; then
-              echo "Release already exists for version ${{ needs.build-and-push.outputs.version }}"
+              echo "Release already exists for version ${{ env.VERSION }}"
               echo "release_exists=true" >> $GITHUB_ENV
               echo "release_exists=true" >> $GITHUB_OUTPUT
             else
-              echo "Release does not exist for version ${{ needs.build-and-push.outputs.version }}"
+              echo "Release does not exist for version ${{ env.VERSION }}"
               echo "release_exists=false" >> $GITHUB_ENV
               echo "release_exists=false" >> $GITHUB_OUTPUT
             fi
       - name: Create Release with CHANGELOG Notes
-        if: env.release_exists == 'false'
+        if: steps.check_release.outputs.release_exists == 'false'
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -276,14 +625,14 @@ jobs:
         run: |
           echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
           echo "**Release Version:** \`${{ env.VERSION }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "**Release Status:** ${{ env.release_exists == 'false' && '✅ Created' || '⚠️ Skipped (Already Exists)' }}" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ env.release_exists }}" == "false" ]; then
+          echo "**Release Status:** ${{ steps.check_release.outputs.release_exists == 'false' && '✅ Created' || '⚠️ Skipped (Already Exists)' }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.check_release.outputs.release_exists }}" == "false" ]; then
             echo "**Release Notes:**" >> $GITHUB_STEP_SUMMARY
             sed -n '/^## \[[0-9]\+\.[0-9]\+\.[0-9]\+\](/,$p' CHANGELOG.md | sed -n '1!{/^## \[/q;p}' >> $GITHUB_STEP_SUMMARY
           fi
 
   announce:
-    needs: [release, build-and-push]
+    needs: [release, build-and-push, setup]
     if: needs.release.outputs.release_exists == 'false' && github.ref_name == 'master'
     runs-on: ubuntu-latest
     steps:
@@ -292,7 +641,7 @@ jobs:
       - name: Post announcement to Discord
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          VERSION: ${{ needs.build-and-push.outputs.version }}
+          VERSION: ${{ needs.setup.outputs.VERSION }}
         run: |
           RELEASE_NOTES=$(sed -n '/^## \[[0-9]\+\.[0-9]\+\.[0-9]\+\](/,$p' CHANGELOG.md | sed -n '1!{/^## \[/q;p}')
           ANNOUNCEMENT_BODY="<@&1360241608649605240> 🚀 **New Release: Version [${{ env.VERSION }}]**${RELEASE_NOTES}"
