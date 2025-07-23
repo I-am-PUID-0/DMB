@@ -43,6 +43,9 @@
         "github_username": {
           "type": "string"
         },
+        "onboarding_completed": {
+          "type": "boolean"
+        },
         "api_service": {
           "type": "object",
           "properties": {
@@ -184,6 +187,8 @@
         "plex_token",
         "plex_address",
         "github_token",
+        "github_username",
+        "onboarding_completed",
         "api_service",
         "frontend"
       ]
@@ -747,10 +752,7 @@
           "type": "string"
         },
         "command": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         }
       },
       "required": [
@@ -777,6 +779,9 @@
               "properties": {
                 "enabled": {
                   "type": "boolean"
+                },
+                "core_service": {
+                  "type": "string"
                 },
                 "process_name": {
                   "type": "string"
@@ -829,6 +834,7 @@
               },
               "required": [
                 "enabled",
+                "core_service",
                 "process_name",
                 "suppress_logging",
                 "log_level",
@@ -1022,6 +1028,9 @@
         "auto_update_interval": {
           "type": "number"
         },
+        "origin": {
+          "type": "string"
+        },
         "clear_on_update": {
           "type": "boolean"
         },
@@ -1065,6 +1074,7 @@
         "port",
         "auto_update",
         "auto_update_interval",
+        "origin",
         "clear_on_update",
         "exclude_dirs",
         "platforms",
@@ -1245,6 +1255,9 @@
                 "enabled": {
                   "type": "boolean"
                 },
+                "core_service": {
+                  "type": "string"
+                },
                 "process_name": {
                   "type": "string"
                 },
@@ -1308,6 +1321,7 @@
               },
               "required": [
                 "enabled",
+                "core_service",
                 "process_name",
                 "repo_owner",
                 "repo_name",

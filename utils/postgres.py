@@ -404,7 +404,7 @@ def postgres_role_exists(
         role_exists = cur.fetchone() is not None
         cur.close()
         conn.close()
-        return role_exists
+        return role_exists, None
     except Exception as e:
         return False, f"Error checking if role '{postgres_user}' exists: {e}"
 

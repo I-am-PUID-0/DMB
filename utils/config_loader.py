@@ -261,7 +261,7 @@ class ConfigManager:
             config = self.get(key)
         return config
 
-    def set(self, key, value, section=None):
+    def set(self, section, key, value):
         if section:
             if section not in self.config:
                 self.config[section] = {}

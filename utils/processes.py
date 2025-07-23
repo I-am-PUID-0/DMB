@@ -152,7 +152,6 @@ class ProcessHandler:
                 process_static_list.extend(enabled_rclone_processes)
 
             skip_preexec = process_name in process_static_list
-
             process = subprocess.Popen(
                 command,
                 stdout=subprocess.PIPE,

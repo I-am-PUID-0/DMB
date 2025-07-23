@@ -133,9 +133,7 @@ services:
       - /home/username/docker/DMB/config:/config                     ## Location of configuration files. If a Zurg config.yml and/or Zurg app is placed here, it will be used to override the default configuration and/or app used at startup.
       - /home/username/docker/DMB/log:/log                           ## Location for logs
       - /home/username/docker/DMB/Zurg/RD:/zurg/RD                   ## Location for Zurg RealDebrid active configuration
-      - /home/username/docker/DMB/Zurg/mnt:/data:rshared             ## Location for rclone mount to host
       - /home/username/docker/DMB/Riven/data:/riven/backend/data     ## Location for Riven backend data
-      - /home/username/docker/DMB/Riven/mnt:/mnt                     ## Location for Riven symlinks
       - /home/username/docker/DMB/PostgreSQL/data:/postgres_data     ## Location for PostgreSQL database
       - /home/username/docker/DMB/pgAdmin4/data:/pgadmin/data        ## Location for pgAdmin 4 data
       - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data
@@ -143,13 +141,11 @@ services:
       - /home/username/docker/DMB/cli_debrid:/cli_debrid/data        ## Location for cli_debrid data
       - /home/username/docker/DMB/phalanx_db:/phalanx_db/data        ## Location for phalanx_db data
       - /home/username/docker/DMB/decypharr:/decypharr               ## Location for decypharr data
+      - /home/username/docker/DUMB/mnt/debrid:/mnt/debrid:rshared    ## Location for all symlinks and rclone mounts     
     environment:
       - TZ=
       - PUID=
       - PGID=
-      - DMB_LOG_LEVEL=INFO
-      - ZURG_INSTANCES_REALDEBRID_API_KEY=
-      - RIVEN_FRONTEND_ENV_ORIGIN=http://0.0.0.0:3000               ## See Riven documentation for more details
     # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address
     ports:
       - "3005:3005"                                                 ## DMB Frontend
@@ -187,8 +183,7 @@ services:
     volumes:
       - /home/username/docker/plex/library:/config
       - /home/username/docker/plex/transcode:/transcode
-      - /home/username/docker/DMB/Zurg/mnt:/data            ## rclone mount location from DMB must be shared to Plex container. Don't add to plex library
-      - /home/username/docker/DMB/Riven/mnt:/mnt            ## Riven symlink location from DMB must be shared to Plex container. Add to plex library
+      - /home/username/docker/DMB/mnt:/mnt                  ## mount location from DMB must be shared to Plex container. Add the symlinks directories to the Plex Libraries 
     environment:
       - TZ=
       - PLEX_UID=                                           ## Same as PUID
@@ -215,13 +210,11 @@ The environment variables are set via the `-e` parameter or via the docker-compo
 Value of this parameter is listed as `<VARIABLE_NAME>=<Value>`
 
 Variables required by DMB:
-| Variable                            | Default               | Description                                                                                                               | Required for DMB |
-| ----------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| `PUID`                              | `1000`                | Your User ID                                                                                                              | ✔️             |
-| `PGID`                              | `1000`                | Your Group ID                                                                                                             | ✔️             |
-| `TZ`                                | `(null)`              | Your time zone listed as `Area/Location`                                                                                  | ✔️             |
-| `ZURG_INSTANCES_REALDEBRID_API_KEY` | `(null)`              | Enter your Real-Debrid API Token                                                                                          | ✔️             |
-| `RIVEN_FRONTEND_ENV_ORIGIN`         | `http://0.0.0.0:3000` | The IP address used to access the DMB frontend.  Change this to the IP address you use in the browser for Riven Frontend. | ✔️             |
+| Variable                            | Default               | Description                                                                                                               |
+| ----------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `PUID`                              | `1000`                | Your User ID                                                                                                              |
+| `PGID`                              | `1000`                | Your Group ID                                                                                                             |
+| `TZ`                                | `(null)`              | Your time zone listed as `Area/Location`                                                                                  |
 
 See the [.env.example](https://github.com/I-am-PUID-0/DMB/blob/master/.env.example) for more.
 
@@ -255,16 +248,15 @@ format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 | --------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/config`             | rw          | This is where the application stores the rclone.conf, and any files needing persistence. CAUTION: rclone.conf is overwritten upon start/restart of the container. Do NOT use an existing rclone.conf file if you have other rclone services |
 | `/log`                | rw          | This is where the application stores its log files                                                                                                                                                                                          |
-| `/data`               | rshared     | This is where rclone will be mounted.                                                                                                                                                                                                       |
 | `/zurg/RD`            | rw          | This is where Zurg will store the active configuration and data for RealDebrid.                                                                                                                                                             |
-| `/riven/data`         | rw          | This is where Riven will store its data.                                                                                                                                                                                                    |
-| `/riven/mnt`          | rw          | This is where Riven will set its symlinks.                                                                                                                                                                                                  |
+| `/riven/backend/data` | rw          | This is where Riven will store its data.                                                                                                                                                                                                    |
 | `/postgres_data`      | rw          | This is where PostgreSQL will store its data.                                                                                                                                                                                               |
 | `/pgadmin/data`       | rw          | This is where pgAdmin 4 will store its data.                                                                                                                                                                                                |
 | `/plex_debrid/config` | rw          | This is where plex_debrid will store its data.                                                                                                                                                                                              |
 | `/cli_debrid/data`    | rw          | This is where cli_debrid will store its data.                                                                                                                                                                                               |
 | `/phalanx_db/data`    | rw          | This is where phalanx_db will store its data.                                                                                                                                                                                               |
 | `/decypharr`          | rw          | This is where decypharr will store its data.                                                                                                                                                                                                |
+| `/mnt/debrid`         | rshared     | This is where the symlinks and rclone mounts will be stored                                                                                                                                                                                 |
 
 ## 📝 TODO
 

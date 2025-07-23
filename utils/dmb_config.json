@@ -13,6 +13,7 @@
         "plex_address": "",
         "github_token": "",
         "github_username": "",
+        "onboarding_completed": false,
         "api_service": {
             "enabled": true,
             "process_name": "DMB API",
@@ -197,7 +198,7 @@
         "env": {}
     },
     "postgres": {
-        "enabled": true,
+        "enabled": false,
         "process_name": "PostgreSQL",
         "suppress_logging": false,
         "log_level": "INFO",
@@ -233,7 +234,7 @@
         "env": {}
     },
     "pgadmin": {
-        "enabled": true,
+        "enabled": false,
         "process_name": "pgAdmin4",
         "config_dir": "/pgadmin/data",
         "config_file": "/pgadmin/data/config_local.py",
@@ -242,19 +243,20 @@
         "default_server": "0.0.0.0",
         "setup_email": "DMB@DMB.DMB",
         "setup_password": "postgres",
-        "command": []
+        "command": ""
     },
     "rclone": {
         "instances": {
             "RealDebrid": {
-                "enabled": true,
+                "enabled": false,
+                "core_service": "",
                 "process_name": "rclone w/ RealDebrid",
                 "suppress_logging": false,
                 "log_level": "INFO",
                 "key_type": "RealDebrid",
                 "zurg_enabled": true,
                 "decypharr_enabled": false,
-                "mount_dir": "/data",
+                "mount_dir": "/mnt/debrid",
                 "mount_name": "rclone_RD",
                 "cache_dir": "/cache",
                 "config_dir": "/config",
@@ -267,7 +269,7 @@
         }
     },
     "riven_backend": {
-        "enabled": true,
+        "enabled": false,
         "process_name": "Riven Backend",
         "repo_owner": "rivenmedia",
         "repo_name": "riven",
@@ -281,7 +283,7 @@
         "port": 8080,
         "auto_update": false,
         "auto_update_interval": 24,
-        "symlink_library_path": "/mnt",
+        "symlink_library_path": "/mnt/debrid/riven_symlinks",
         "clear_on_update": true,
         "exclude_dirs": [
             "/riven/backend/data"
@@ -302,10 +304,10 @@
         "config_dir": "/riven/backend",
         "config_file": "/riven/backend/data/settings.json",
         "env": {},
-        "wait_for_dir": "/data/rclone_RD/__all__"
+        "wait_for_dir": ""
     },
     "riven_frontend": {
-        "enabled": true,
+        "enabled": false,
         "process_name": "Riven Frontend",
         "repo_owner": "rivenmedia",
         "repo_name": "riven-frontend",
@@ -319,6 +321,7 @@
         "port": 3000,
         "auto_update": false,
         "auto_update_interval": 24,
+        "origin": "",
         "clear_on_update": true,
         "exclude_dirs": [],
         "platforms": [
@@ -329,14 +332,10 @@
             "build"
         ],
         "config_dir": "/riven/frontend",
-        "env": {
-            "ORIGIN": "http://0.0.0.0:{port}",
-            "PORT": "{port}",
-            "HOST": "{host}"
-        }
+        "env": {}
     },
     "zilean": {
-        "enabled": true,
+        "enabled": false,
         "process_name": "Zilean",
         "repo_owner": "iPromKnight",
         "repo_name": "zilean",
@@ -383,7 +382,8 @@
     "zurg": {
         "instances": {
             "RealDebrid": {
-                "enabled": true,
+                "enabled": false,
+                "core_service": "",
                 "process_name": "Zurg w/ RealDebrid",
                 "repo_owner": "debridmediamanager",
                 "repo_name": "zurg-testing",
@@ -394,7 +394,7 @@
                 "host": "127.0.0.1",
                 "port": 9090,
                 "auto_update": false,
-                "auto_update_interval": 1,
+                "auto_update_interval": 24,
                 "clear_on_update": false,
                 "exclude_dirs": [
                     "/zurg/RD"

@@ -3,7 +3,7 @@ from utils.config_loader import CONFIG_MANAGER
 from utils.global_logger import logger
 from utils.download import Downloader
 from utils.versions import Versions
-from utils.user_management import chown_recursive
+from utils.user_management import chown_recursive, chown_single
 import yaml, os, shutil, random, subprocess, re, glob
 
 user_id = CONFIG_MANAGER.get("puid")
@@ -255,6 +255,24 @@ def setup_project(process_handler, process_name):
                 os.path.join(config["config_dir"], "config/server.json"),
             )
 
+            frontend_host = config.get("host") or "0.0.0.0"
+            frontend_port = config.get("port") or 3000
+            origin = config.get("origin") or "http://localhost:3000"
+
+            logger.debug(
+                f"Setting up Riven Frontend with host: {frontend_host}, port: {frontend_port}, origin: {origin}"
+            )
+
+            existing_env = config.get("env", {}).copy()
+            existing_env.update(
+                {
+                    "ORIGIN": origin,
+                    "HOST": frontend_host,
+                    "PORT": str(frontend_port),
+                }
+            )
+            config["env"] = existing_env
+
         if key == "riven_backend":
             port = str(config.get("port", 8080))
             command = config.get("command", [])
@@ -342,15 +360,14 @@ def setup_decypharr():
     try:
         decypharr_config_dir = config.get("config_dir")
         decypharr_config_file = config.get("config_file")
-        decypharr_binary_file = config.get("binary_file", "decypharr")
+        decypharr_binary_file = "decypharr"
         binary_path = os.path.join(decypharr_config_dir, decypharr_binary_file)
-
         if not os.path.exists(decypharr_config_dir):
             logger.debug(
                 f"Creating Decypharr config directory at {decypharr_config_dir}"
             )
             os.makedirs(decypharr_config_dir, exist_ok=True)
-            chown_recursive(decypharr_config_dir, user_id, group_id)
+        chown_single(decypharr_config_dir, user_id, group_id)
 
         if not os.path.isfile(binary_path):
             logger.warning(
@@ -374,28 +391,24 @@ def setup_decypharr():
             if not success:
                 return False, f"Failed to download Decypharr: {error}"
 
-            if os.path.isfile(binary_path):
-                os.chmod(binary_path, 0o755)
-                logger.debug(f"Marked {binary_path} as executable")
-
             versions.version_write(
                 process_name=config.get("process_name"),
                 key="decypharr",
                 version_path=os.path.join(decypharr_config_dir, "version.txt"),
                 version=release,
             )
-
-        env_vars = {
-            **config.get("env", {}),
-        }
-        config["env"] = env_vars
+        if os.path.isfile(binary_path):
+            os.chmod(binary_path, 0o755)
+            logger.debug(f"Marked {binary_path} as executable")
+        existing_env = config.get("env", {}).copy()
+        existing_env = {}
+        config["env"] = existing_env
 
         if os.path.exists(decypharr_config_file):
             from utils.decypharr_settings import patch_decypharr_config
 
             patch_decypharr_config()
 
-        logger.info("Decypharr setup complete.")
         return True, None
     except Exception as e:
         return False, f"Error during Decypharr setup: {e}"
@@ -584,7 +597,7 @@ def zurg_setup():
                 instance_config_dir = instance["config_dir"]
                 if not os.path.exists(instance_config_dir):
                     logger.debug(
-                        f"Creating Zurg instance {instance} directory: {instance_config_dir}"
+                        f"Creating Zurg instance {key_type} directory: {instance_config_dir}"
                     )
                     os.makedirs(instance_config_dir, exist_ok=True)
                     chown_recursive(
@@ -672,8 +685,10 @@ def zurg_setup():
                 logger.info(
                     f"Zurg instance '{key_type}' configured with port {instance_port}."
                 )
-
                 if not os.path.exists(instance_zurg_binaries):
+                    logger.debug(
+                        f"Zurg binary not found at {instance_zurg_binaries}. Downloading..."
+                    )
                     if instance.get("release_version_enabled"):
                         release_version = instance.get("release_version")
                     else:
@@ -691,7 +706,34 @@ def zurg_setup():
                     if not success:
                         return False, f"Failed to download Zurg: {error}"
                     downloader.set_permissions(instance_zurg_binaries, 0o755)
-
+                elif os.path.exists(instance_zurg_binaries):
+                    logger.debug(f"Zurg binary found at {instance_zurg_binaries}.")
+                    if not instance.get("release_version_enabled"):
+                        current_version, update_info = versions.compare_versions(
+                            process_name=instance["process_name"],
+                            repo_owner=instance["repo_owner"],
+                            repo_name=instance["repo_name"],
+                            instance_name=key_type,
+                            key="zurg",
+                        )
+                        if current_version:
+                            logger.info(
+                                f"Zurg instance '{key_type}' Current version: {update_info.get('current_version', 'unknown')} (latest: {update_info.get('latest_version', 'unknown')})"
+                            )
+                            release_version = "latest"
+                            success, error = downloader.download_release_version(
+                                process_name=instance["process_name"],
+                                key="zurg",
+                                repo_owner=instance["repo_owner"],
+                                repo_name=instance["repo_name"],
+                                release_version=release_version,
+                                target_dir=instance_config_dir,
+                                zip_folder_name=None,
+                                exclude_dirs=instance.get("exclude_dirs", []),
+                            )
+                            if not success:
+                                return False, f"Failed to download Zurg: {error}"
+                            downloader.set_permissions(instance_zurg_binaries, 0o755)
                 logger.info(f"Zurg instance '{key_type}' setup complete.")
                 return True, None
 
@@ -701,6 +743,7 @@ def zurg_setup():
         for key_type, instance in config.get("instances", {}).items():
             if instance.get("enabled"):
                 if not instance.get("api_key"):
+                    logger.error(f"API key not found for Zurg instance {key_type}")
                     raise ValueError(f"API key not found for Zurg instance {key_type}")
                 logger.info(f"Setting up enabled instance: {key_type}")
                 success, error = setup_zurg_instance(instance, key_type)
@@ -864,9 +907,29 @@ def rclone_setup():
         with open(fuse_conf_path, "w") as f:
             f.write(f"{user_allow_other_line}\n")
         logger.debug(f"Created {fuse_conf_path} and added '{user_allow_other_line}'")
-
     except PermissionError:
         return False, "Permission denied while accessing /etc/fuse.conf."
+
+    def load_existing_config(config_file):
+        config_data = {}
+        if os.path.exists(config_file):
+            with open(config_file, "r") as f:
+                lines = f.readlines()
+            section = None
+            for line in lines:
+                line = line.strip()
+                if line.startswith("[") and line.endswith("]"):
+                    section = line[1:-1]
+                    config_data[section] = []
+                elif section and line:
+                    config_data[section].append(line)
+        return config_data
+
+    def write_config(config_file, config_data):
+        with open(config_file, "w") as f:
+            for section, lines in config_data.items():
+                f.write(f"[{section}]\n")
+                f.write("\n".join(lines) + "\n")
 
     try:
 
@@ -875,26 +938,30 @@ def rclone_setup():
                 logger.debug(f"Skipping disabled Rclone instance: {instance_name}")
                 return True, None
 
+            process_name = instance.get("process_name")
+            from utils.dependencies import get_api_state
+
+            api_state = get_api_state()
+            if api_state.get_status(process_name) == "running":
+                logger.info(f"{process_name} is already running. Skipping setup.")
+                return True, None
+
             config_file = instance["config_file"]
             config_dir = instance["config_dir"]
             mount_name = instance["mount_name"]
             mount_dir = instance["mount_dir"]
-
             os.makedirs(config_dir, exist_ok=True)
             logger.info(f"Setting up Rclone instance: {instance_name}")
 
-            if instance.get("zurg_enabled", False) and instance.get(
-                "decypharr_enabled", False
-            ):
+            config_data = load_existing_config(config_file)
+
+            if instance.get("zurg_enabled") and instance.get("decypharr_enabled"):
                 return (
                     False,
                     "Both Zurg and Decypharr cannot be enabled at the same time for Rclone.",
                 )
 
-            elif instance.get("zurg_enabled", False) and not instance.get(
-                "decypharr_enabled", False
-            ):
-
+            if instance.get("zurg_enabled") and not instance.get("decypharr_enabled"):
                 zurg_instance = (
                     CONFIG_MANAGER.get("zurg", {})
                     .get("instances", {})
@@ -903,20 +970,6 @@ def rclone_setup():
                 zurg_user = zurg_instance.get("user", "")
                 zurg_password = zurg_instance.get("password", "")
                 zurg_config_file = instance["zurg_config_file"]
-
-                config_data = {}
-                if os.path.exists(config_file):
-                    with open(config_file, "r") as f:
-                        lines = f.readlines()
-                    section = None
-                    for line in lines:
-                        line = line.strip()
-                        if line.startswith("[") and line.endswith("]"):
-                            section = line[1:-1]
-                            config_data[section] = []
-                        elif section and line:
-                            config_data[section].append(line)
-
                 url = f"http://localhost:{get_port_from_config(zurg_config_file)}/dav/"
 
                 config_data[mount_name] = [
@@ -937,30 +990,22 @@ def rclone_setup():
                         )
                     auth = {"user": zurg_user, "password": zurg_password}
                     instance["wait_for_url"] = [{"url": url, "auth": auth}]
-                    # logger.debug(f"wait_for_url: {instance['wait_for_url']}")
                 else:
                     instance["wait_for_url"] = [{"url": url}]
-                    # logger.debug(f"wait_for_url: {instance['wait_for_url']}")
 
-                with open(config_file, "w") as f:
-                    for section, lines in config_data.items():
-                        f.write(f"[{section}]\n")
-                        f.write("\n".join(lines) + "\n")
-
-            elif instance.get("decypharr_enabled", False) and not instance.get(
-                "zurg_enabled", False
-            ):
+            elif instance.get("decypharr_enabled") and not instance.get("zurg_enabled"):
                 decypharr_config = CONFIG_MANAGER.get("decypharr", {})
-                url = None
-                config_data = {}
-                if instance.get("key_type").lower() == "realdebrid":
+                key_type = instance.get("key_type", "").lower()
+                if key_type == "realdebrid":
                     url = f"http://localhost:{decypharr_config.get('port', 8282)}/webdav/realdebrid"
-                elif instance.get("key_type").lower() == "alldebrid":
+                elif key_type == "alldebrid":
                     url = f"http://localhost:{decypharr_config.get('port', 8282)}/webdav/alldebrid"
-                elif instance.get("key_type").lower() == "debrid link":
+                elif key_type == "debrid link":
                     url = f"http://localhost:{decypharr_config.get('port', 8282)}/webdav/debridlink"
-                elif instance.get("key_type").lower() == "torbox":
+                elif key_type == "torbox":
                     url = f"http://localhost:{decypharr_config.get('port', 8282)}/webdav/torbox"
+                else:
+                    url = ""
 
                 config_data[mount_name] = [
                     "type = webdav",
@@ -969,79 +1014,55 @@ def rclone_setup():
                     "pacer_min_sleep = 0",
                 ]
 
-                with open(config_file, "w") as f:
-                    for section, lines in config_data.items():
-                        f.write(f"[{section}]\n")
-                        f.write("\n".join(lines) + "\n")
+            else:
+                key_type = instance.get("key_type", "").lower()
+                if key_type == "realdebrid":
+                    obscured_password = obscure_password(instance["password"])
+                    config_data[mount_name] = [
+                        "type = webdav",
+                        "url = https://dav.real-debrid.com/",
+                        "vendor = other",
+                        f"user = {instance['username']}",
+                        f"pass = {obscured_password}",
+                    ]
+                elif key_type == "alldebrid":
+                    obscured_password = obscure_password("eeeee")
+                    config_data[mount_name] = [
+                        "type = webdav",
+                        "url = https://webdav.debrid.it/",
+                        "vendor = other",
+                        f"user = {instance['api_key']}",
+                        f"pass = {obscured_password}",
+                    ]
+                elif key_type == "premiumize":
+                    obscured_password = obscure_password(instance["api_key"])
+                    config_data[mount_name] = [
+                        "type = webdav",
+                        "url = davs://webdav.premiumize.me",
+                        "vendor = other",
+                        f"user = {instance['customer_id']}",
+                        f"pass = {obscured_password}",
+                    ]
+                elif key_type == "torbox":
+                    obscured_password = obscure_password(instance["password"])
+                    config_data[mount_name] = [
+                        "type = webdav",
+                        "url = https://webdav.torbox.app",
+                        "vendor = rclone",
+                        f"user = {instance['username']}",
+                        f"pass = {obscured_password}",
+                        "pacer_min_sleep = 15s",
+                    ]
+                elif key_type == "torbox-ftp":
+                    obscured_password = obscure_password(instance["password"])
+                    config_data[mount_name] = [
+                        "type = ftp",
+                        "host = ftp.torbox.app",
+                        f"user = {instance['username']}",
+                        f"pass = {obscured_password}",
+                    ]
 
-            elif not instance.get("zurg_enabled", False) and not instance.get(
-                "decypharr_enabled", False
-            ):
-                config_data = {}
-                if os.path.exists(config_file):
-                    with open(config_file, "r") as f:
-                        lines = f.readlines()
-                    section = None
-                    for line in lines:
-                        line = line.strip()
-                        if line.startswith("[") and line.endswith("]"):
-                            section = line[1:-1]
-                            config_data[section] = []
-                        elif section and line:
-                            config_data[section].append(line)
-
-                if instance.get("key_type"):
-                    key_type = instance["key_type"]
-                    if key_type.lower() == "realdebrid":
-                        obscured_password = obscure_password(instance["password"])
-                        config_data[mount_name] = [
-                            "type = webdav",
-                            "url = https://dav.real-debrid.com/",
-                            "vendor = other",
-                            f"user = {instance['username']}",
-                            f"pass = {obscured_password}",
-                        ]
-                    elif key_type.lower() == "alldebrid":
-                        obscured_password = obscure_password("eeeee")
-                        config_data[mount_name] = [
-                            "type = webdav",
-                            "url = https://webdav.debrid.it/",
-                            "vendor = other",
-                            f"user = {instance['api_key']}",
-                            f"pass = {obscured_password}",
-                        ]
-                    elif key_type.lower() == "premiumize":
-                        obscured_password = obscure_password(instance["api_key"])
-                        config_data[mount_name] = [
-                            "type = webdav",
-                            "url = davs://webdav.premiumize.me",
-                            "vendor = other",
-                            f"user = {instance['customer_id']}",
-                            f"pass = {obscured_password}",
-                        ]
-                    elif key_type.lower() == "torbox":
-                        obscured_password = obscure_password(instance["password"])
-                        config_data[mount_name] = [
-                            "type = webdav",
-                            "url = https://webdav.torbox.app",
-                            "vendor = rclone",
-                            f"user = {instance['username']}",
-                            f"pass = {obscured_password}",
-                            "pacer_min_sleep = 15s",
-                        ]
-                    elif key_type.lower() == "torbox-ftp":
-                        obscured_password = obscure_password(instance["password"])
-                        config_data[mount_name] = [
-                            "type = ftp",
-                            "host = ftp.torbox.app",
-                            f"user = {instance['username']}",
-                            f"pass = {obscured_password}",
-                        ]
-
-                with open(config_file, "w") as f:
-                    for section, lines in config_data.items():
-                        f.write(f"[{section}]\n")
-                        f.write("\n".join(lines) + "\n")
+            write_config(config_file, config_data)
 
             full_path, error = ensure_directory(mount_dir, mount_name)
             if error:
@@ -1072,7 +1093,6 @@ def rclone_setup():
                     f"{mount_name}:",
                     f"{mount_dir}/{mount_name}",
                 ]
-
                 required_flags = {
                     "--config": config_file,
                     "--uid": str(user_id),
@@ -1085,19 +1105,13 @@ def rclone_setup():
                     "--log-file": log_file,
                     "--log-level": log_level,
                 }
-
-                if instance.get("decypharr_enabled", False):
+                if instance.get("decypharr_enabled"):
                     required_flags.update(
-                        {
-                            "--rc": None,
-                            "--rc-addr": ":5572",
-                            "--rc-no-auth": None,
-                        }
+                        {"--rc": None, "--rc-addr": ":5572", "--rc-no-auth": None}
                     )
 
                 existing = instance.get("command", [])
                 parsed_flags = {}
-
                 i = 0
                 while i < len(existing):
                     item = existing[i]
@@ -1113,16 +1127,14 @@ def rclone_setup():
                         else:
                             parsed_flags[item] = None
                     i += 1
-
                 for key, value in required_flags.items():
                     parsed_flags[key] = value
 
-                space_style = {"--rc-addr"}
                 final_cmd = base_cmd
                 for key, value in parsed_flags.items():
                     if value is None:
                         final_cmd.append(key)
-                    elif key in space_style:
+                    elif key in {"--rc-addr"}:
                         final_cmd.extend([key, value])
                     else:
                         final_cmd.append(f"{key}={value}")
@@ -1133,11 +1145,9 @@ def rclone_setup():
                 )
 
             update_or_generate_command(instance)
-
             from utils.riven_settings import parse_config_keys
 
             parse_config_keys(CONFIG_MANAGER.config)
-
             logger.info(f"Rclone instance '{instance_name}' has been set up.")
             return True, None
 

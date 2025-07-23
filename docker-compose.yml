@@ -10,9 +10,7 @@ services:
       - /home/username/docker/DMB/config:/config                     ## Location of configuration files. If a Zurg config.yml and/or Zurg app is placed here, it will be used to override the default configuration and/or app used at startup.
       - /home/username/docker/DMB/log:/log                           ## Location for logs
       - /home/username/docker/DMB/Zurg/RD:/zurg/RD                   ## Location for Zurg RealDebrid active configuration
-      - /home/username/docker/DMB/Zurg/mnt:/data:rshared             ## Location for rclone mount to host
       - /home/username/docker/DMB/Riven/data:/riven/backend/data     ## Location for Riven backend data
-      - /home/username/docker/DMB/Riven/mnt:/mnt                     ## Location for Riven symlinks
       - /home/username/docker/DMB/PostgreSQL/data:/postgres_data     ## Location for PostgreSQL database
       - /home/username/docker/DMB/pgAdmin4/data:/pgadmin/data        ## Location for pgAdmin 4 data
       - /home/username/docker/DMB/Zilean/data:/zilean/app/data       ## Location for Zilean data
@@ -20,13 +18,11 @@ services:
       - /home/username/docker/DMB/cli_debrid:/cli_debrid/data        ## Location for cli_debrid data
       - /home/username/docker/DMB/phalanx_db:/phalanx_db/data        ## Location for phalanx_db data
       - /home/username/docker/DMB/decypharr:/decypharr               ## Location for decypharr data
+      - /home/username/docker/DUMB/mnt/debrid:/mnt/debrid:rshared    ## Location for all symlinks and rclone mounts     
     environment:
       - TZ=
       - PUID=
       - PGID=
-      - DMB_LOG_LEVEL=INFO
-      - ZURG_INSTANCES_REALDEBRID_API_KEY=
-      - RIVEN_FRONTEND_ENV_ORIGIN=http://0.0.0.0:3000               ## See Riven documentation for more details
     # network_mode: container:gluetun                               ## Example to attach to gluetun vpn container if realdebrid blocks IP address
     ports:
       - "3005:3005"                                                 ## DMB Frontend
