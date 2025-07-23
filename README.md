@@ -183,7 +183,7 @@ services:
     volumes:
       - /home/username/docker/plex/library:/config
       - /home/username/docker/plex/transcode:/transcode
-      - /home/username/docker/DMB/mnt:/mnt                  ## mount location from DMB must be shared to Plex container. Add the symlinks directories to the Plex Libraries 
+      - /home/username/docker/DUMB/mnt/debrid:/mnt                  ## mount location from DMB must be shared to Plex container. Add the symlinks directories to the Plex Libraries 
     environment:
       - TZ=
       - PLEX_UID=                                           ## Same as PUID
