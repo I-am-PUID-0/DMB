@@ -141,7 +141,7 @@ services:
       - /home/username/docker/DMB/cli_debrid:/cli_debrid/data        ## Location for cli_debrid data
       - /home/username/docker/DMB/phalanx_db:/phalanx_db/data        ## Location for phalanx_db data
       - /home/username/docker/DMB/decypharr:/decypharr               ## Location for decypharr data
-      - /home/username/docker/DUMB/mnt/debrid:/mnt/debrid:rshared    ## Location for all symlinks and rclone mounts     
+      - /home/username/docker/DMB/mnt/debrid:/mnt/debrid:rshared    ## Location for all symlinks and rclone mounts     
     environment:
       - TZ=
       - PUID=
@@ -183,7 +183,7 @@ services:
     volumes:
       - /home/username/docker/plex/library:/config
       - /home/username/docker/plex/transcode:/transcode
-      - /home/username/docker/DUMB/mnt/debrid:/mnt/debrid   ## mount location from DMB must be shared to Plex container. Add the symlinks directories to the Plex Libraries 
+      - /home/username/docker/DMB/mnt/debrid:/mnt/debrid   ## mount location from DMB must be shared to Plex container. Add the symlinks directories to the Plex Libraries 
     environment:
       - TZ=
       - PLEX_UID=                                           ## Same as PUID
