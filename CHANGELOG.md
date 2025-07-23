@@ -1,5 +1,41 @@
 # Changelog
 
+## [6.15.0](https://github.com/I-am-PUID-0/DMB/compare/6.14.0...6.15.0) (2025-07-23)
+
+
+### ✨ Features
+
+* **api:** expand API functionality ([245d996](https://github.com/I-am-PUID-0/DMB/commit/245d9966dfd36820de918632f52bc64ba04464c9))
+* **config:** add origin field to config ([245d996](https://github.com/I-am-PUID-0/DMB/commit/245d9966dfd36820de918632f52bc64ba04464c9))
+* **config:** enhance service management ([245d996](https://github.com/I-am-PUID-0/DMB/commit/245d9966dfd36820de918632f52bc64ba04464c9))
+
+
+### 🐛 Bug Fixes
+
+* **decypharr:** handle missing config file gracefully ([245d996](https://github.com/I-am-PUID-0/DMB/commit/245d9966dfd36820de918632f52bc64ba04464c9))
+* **rclone:** prevent overwriting config with multiple instances ([245d996](https://github.com/I-am-PUID-0/DMB/commit/245d9966dfd36820de918632f52bc64ba04464c9))
+* **zurg:** add version comparison during setup ([245d996](https://github.com/I-am-PUID-0/DMB/commit/245d9966dfd36820de918632f52bc64ba04464c9))
+
+
+### 🤡 Other Changes
+
+* **deps:** update backend dependencies ([245d996](https://github.com/I-am-PUID-0/DMB/commit/245d9966dfd36820de918632f52bc64ba04464c9))
+
+
+### 📖 Documentation
+
+* **readme:** Update readme.md ([#181](https://github.com/I-am-PUID-0/DMB/issues/181)) ([15e9dfb](https://github.com/I-am-PUID-0/DMB/commit/15e9dfb9869f080552722092742ff874ec8d400e))
+
+
+### 🛠️ Refactors
+
+* **rclone:** streamline setup logic and reduce redundancy ([245d996](https://github.com/I-am-PUID-0/DMB/commit/245d9966dfd36820de918632f52bc64ba04464c9))
+
+
+### 🛠️ Build System
+
+* **docker:** Refactor Dockerfile to consolidate base image and streamline build stages ([d386289](https://github.com/I-am-PUID-0/DMB/commit/d38628994b08c6be631660dfbcd68c9769397d70))
+
 ## [6.14.0](https://github.com/I-am-PUID-0/DMB/compare/6.13.1...6.14.0) (2025-06-30)
 
 
