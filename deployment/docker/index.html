@@ -780,6 +780,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../../services/decypharr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Decypharr
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../services/cli-debrid/" class="md-nav__link">
         
   
@@ -1733,6 +1755,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../../faq/decypharr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Decypharr
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../faq/cli-debrid/" class="md-nav__link">
         
   
@@ -2221,7 +2265,7 @@ Docker<span class="w"> </span>Compose<span class="w"> </span>version<span class=
 </li>
 <li>
 <p>Create the DMB directories.
-<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>DMB/config<span class="w"> </span>DMB/log<span class="w"> </span>DMB/Zurg/RD<span class="w"> </span>DMB/Zurg/mnt<span class="w"> </span>DMB/Riven/data<span class="w"> </span>DMB/Riven/mnt<span class="w"> </span>DMB/PostgreSQL/data<span class="w"> </span>DMB/pgAdmin4/data<span class="w"> </span>DMB/Zilean/data
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>DMB/config<span class="w"> </span>DMB/log<span class="w"> </span>DMB/Zurg/RD<span class="w"> </span>DMB/Riven/data<span class="w"> </span>DMB/PostgreSQL/data<span class="w"> </span>DMB/pgAdmin4/data<span class="w"> </span>DMB/Zilean/data<span class="w"> </span>DMB/plex_debrid<span class="w"> </span>DMB/decypharr<span class="w"> </span>DMB/cli_debrid<span class="w"> </span>DMB/phalanx_db<span class="w"> </span>DMB/mnt/debrid
 </code></pre></div></p>
 </li>
 </ol>
@@ -2255,14 +2299,10 @@ Docker<span class="w"> </span>Compose<span class="w"> </span>version<span class=
 This should match the exact address you use to access the Riven Frontend from your browser.</p>
 </div>
 <div class="highlight"><pre><span></span><code><span class="nb">read</span><span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;Enter your timezone [UTC]: &quot;</span><span class="w"> </span>TZ<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nv">TZ</span><span class="o">=</span><span class="si">${</span><span class="nv">TZ</span><span class="k">:-</span><span class="nv">UTC</span><span class="si">}</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
-<span class="nb">read</span><span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;Enter your RealDebrid API key: &quot;</span><span class="w"> </span>RD_KEY<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
-<span class="nb">read</span><span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;Enter your Riven Frontend Origin (e.g., http://0.0.0.0:3000): &quot;</span><span class="w"> </span>RIVEN_ORIGIN<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
 sed<span class="w"> </span>-i<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="s2">&quot;s|TZ=|TZ=</span><span class="nv">$TZ</span><span class="s2">|&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="s2">&quot;s|PUID=|PUID=</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="s2">|&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="s2">&quot;s|PGID=|PGID=</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="s2">|&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="s2">&quot;s|ZURG_INSTANCES_REALDEBRID_API_KEY=|ZURG_INSTANCES_REALDEBRID_API_KEY=</span><span class="nv">$RD_KEY</span><span class="s2">|&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="s2">&quot;s|RIVEN_FRONTEND_ENV_ORIGIN=.*|RIVEN_FRONTEND_ENV_ORIGIN=</span><span class="nv">$RIVEN_ORIGIN</span><span class="s2">|&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>docker-compose.yml
 </code></pre></div>
 <hr />

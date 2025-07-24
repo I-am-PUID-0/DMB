@@ -12,13 +12,13 @@
         <meta name="author" content="DMB Team">
       
       
-        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/services/cli-debrid/">
+        <link rel="canonical" href="https://I-am-PUID-0.github.io/docs/services/decypharr/">
       
       
-        <link rel="prev" href="../decypharr/">
+        <link rel="prev" href="../dmb-frontend/">
       
       
-        <link rel="next" href="../cli-battery/">
+        <link rel="next" href="../cli-debrid/">
       
       
       <link rel="icon" href="../../assets/images/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>CLI Debrid - DMB</title>
+        <title>Decypharr - DMB</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cli-debrid-configuration" class="md-skip">
+        <a href="#decypharr-setup-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CLI Debrid
+              Decypharr
             
           </span>
         </div>
@@ -782,28 +782,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../decypharr/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Decypharr
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -820,7 +798,7 @@
           
   
   <span class="md-ellipsis">
-    CLI Debrid
+    Decypharr
     
   </span>
   
@@ -832,7 +810,7 @@
         
   
   <span class="md-ellipsis">
-    CLI Debrid
+    Decypharr
     
   </span>
   
@@ -855,19 +833,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-configuration-in-dmb_configjson" class="md-nav__link">
+  <a href="#-what-is-decypharr" class="md-nav__link">
     <span class="md-ellipsis">
-      📦 Configuration in dmb_config.json
+      💡 What is Decypharr?
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="📦 Configuration in dmb_config.json">
+    <nav class="md-nav" aria-label="💡 What is Decypharr?">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-key-configuration-fields" class="md-nav__link">
+  <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
-      🔍 Key Configuration Fields
+      Key Features
     </span>
   </a>
   
@@ -879,28 +857,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-what-cli-debrid-does" class="md-nav__link">
+  <a href="#-integration-with-dmb" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚙️ What CLI Debrid Does
+      📦 Integration with DMB
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="⚙️ What CLI Debrid Does">
+    <nav class="md-nav" aria-label="📦 Integration with DMB">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-intelligent-automation" class="md-nav__link">
+  <a href="#1-bind-mount-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      🧠 Intelligent Automation
+      1. Bind Mount Setup
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#-supported-features" class="md-nav__link">
+  <a href="#2-configure-root-folders-in-arrs" class="md-nav__link">
     <span class="md-ellipsis">
-      🎛️ Supported Features
+      2. Configure Root Folders in Arrs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-connect-decypharr-to-arrs" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Connect Decypharr to Arrs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-plex-library-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Plex Library Setup
     </span>
   </a>
   
@@ -912,81 +908,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-required-component-cli-battery" class="md-nav__link">
+  <a href="#-how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚡ Required Component: CLI Battery
+      🧠 How It Works
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#-optional-utility-phalanx-db" class="md-nav__link">
+  <a href="#-troubleshooting-tips" class="md-nav__link">
     <span class="md-ellipsis">
-      🧰 Optional Utility: Phalanx DB
+      🛠️ Troubleshooting Tips
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#-mount-considerations" class="md-nav__link">
+  <a href="#-supported-debrid-providers" class="md-nav__link">
     <span class="md-ellipsis">
-      🔁 Mount Considerations
+      🌐 Supported Debrid Providers
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#-zilean-built-in" class="md-nav__link">
+  <a href="#-resources" class="md-nav__link">
     <span class="md-ellipsis">
-      🚀 Zilean Built-in!
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-queues--processing-behind-the-scenes" class="md-nav__link">
-    <span class="md-ellipsis">
-      🧠 Queues &amp; Processing (Behind the Scenes)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-webhook-support" class="md-nav__link">
-    <span class="md-ellipsis">
-      📡 Webhook Support
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-branch--version-targeting" class="md-nav__link">
-    <span class="md-ellipsis">
-      ⚙️ Branch / Version Targeting
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-access" class="md-nav__link">
-    <span class="md-ellipsis">
-      🌐 Access
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-resources" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Resources
+      🔗 Resources
     </span>
   </a>
   
@@ -996,6 +947,28 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli-debrid/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CLI Debrid
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -2078,19 +2051,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-configuration-in-dmb_configjson" class="md-nav__link">
+  <a href="#-what-is-decypharr" class="md-nav__link">
     <span class="md-ellipsis">
-      📦 Configuration in dmb_config.json
+      💡 What is Decypharr?
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="📦 Configuration in dmb_config.json">
+    <nav class="md-nav" aria-label="💡 What is Decypharr?">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-key-configuration-fields" class="md-nav__link">
+  <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
-      🔍 Key Configuration Fields
+      Key Features
     </span>
   </a>
   
@@ -2102,28 +2075,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-what-cli-debrid-does" class="md-nav__link">
+  <a href="#-integration-with-dmb" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚙️ What CLI Debrid Does
+      📦 Integration with DMB
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="⚙️ What CLI Debrid Does">
+    <nav class="md-nav" aria-label="📦 Integration with DMB">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-intelligent-automation" class="md-nav__link">
+  <a href="#1-bind-mount-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      🧠 Intelligent Automation
+      1. Bind Mount Setup
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#-supported-features" class="md-nav__link">
+  <a href="#2-configure-root-folders-in-arrs" class="md-nav__link">
     <span class="md-ellipsis">
-      🎛️ Supported Features
+      2. Configure Root Folders in Arrs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-connect-decypharr-to-arrs" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Connect Decypharr to Arrs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-plex-library-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Plex Library Setup
     </span>
   </a>
   
@@ -2135,81 +2126,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-required-component-cli-battery" class="md-nav__link">
+  <a href="#-how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
-      ⚡ Required Component: CLI Battery
+      🧠 How It Works
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#-optional-utility-phalanx-db" class="md-nav__link">
+  <a href="#-troubleshooting-tips" class="md-nav__link">
     <span class="md-ellipsis">
-      🧰 Optional Utility: Phalanx DB
+      🛠️ Troubleshooting Tips
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#-mount-considerations" class="md-nav__link">
+  <a href="#-supported-debrid-providers" class="md-nav__link">
     <span class="md-ellipsis">
-      🔁 Mount Considerations
+      🌐 Supported Debrid Providers
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#-zilean-built-in" class="md-nav__link">
+  <a href="#-resources" class="md-nav__link">
     <span class="md-ellipsis">
-      🚀 Zilean Built-in!
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-queues--processing-behind-the-scenes" class="md-nav__link">
-    <span class="md-ellipsis">
-      🧠 Queues &amp; Processing (Behind the Scenes)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-webhook-support" class="md-nav__link">
-    <span class="md-ellipsis">
-      📡 Webhook Support
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-branch--version-targeting" class="md-nav__link">
-    <span class="md-ellipsis">
-      ⚙️ Branch / Version Targeting
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#-access" class="md-nav__link">
-    <span class="md-ellipsis">
-      🌐 Access
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#additional-resources" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Resources
+      🔗 Resources
     </span>
   </a>
   
@@ -2234,221 +2180,96 @@
   
 
 
-<h1 id="cli-debrid-configuration">CLI Debrid Configuration<a class="headerlink" href="#cli-debrid-configuration" title="Permanent link">#</a></h1>
-<p><strong>CLI Debrid</strong> is a lightweight, Python-based downloader (streaming link creator) and media automation system designed to integrate tightly with Real-Debrid, Trakt, Plex, and various scraping services. It manages media collection intelligently, seeking out higher quality versions of existing content, and automating upgrades based on a defined set of rules and content sources.</p>
-<p>It operates within the <strong>DMB</strong> ecosystem and relies on:</p>
+<h1 id="decypharr-setup-guide">Decypharr Setup Guide<a class="headerlink" href="#decypharr-setup-guide" title="Permanent link">#</a></h1>
+<p>Decypharr is a self-hosted, open-source torrent client with integrated support for multiple Debrid services. It provides a familiar interface for torrent management that mimics Qbittorrent, while offering native compatibility with Sonarr, Radarr, and other *Arr applications. Written in Go, it includes powerful tools for automation, organization, and repair.</p>
+<hr />
+<h2 id="-what-is-decypharr">💡 What is Decypharr?<a class="headerlink" href="#-what-is-decypharr" title="Permanent link">#</a></h2>
+<p>Decypharr combines the power of Qbittorrent with the flexibility of Debrid services to streamline your media automation workflow. It provides a mock Qbittorrent API that can be consumed by Sonarr, Radarr, Lidarr, and similar apps, making it a drop-in replacement for torrent clients.</p>
+<h3 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">#</a></h3>
 <ul>
-<li><a href="../cli-battery/">CLI Battery</a> (required) for metadata services and background processing</li>
-<li><a href="../phalanx-db/">Phalanx DB</a> (optional) for decentralized metadata storage and sharing </li>
+<li>✅ Mock Qbittorrent API for Sonarr, Radarr, Lidarr, etc.</li>
+<li>🖥 Full-featured UI for managing torrents</li>
+<li>🌐 Proxy filtering for un-cached Debrid torrents</li>
+<li>🔁 Multiple Debrid service support (Real Debrid, Torbox, Debrid Link, All Debrid)</li>
+<li>📂 WebDAV server per Debrid provider for mounting remote files</li>
+<li>🔧 Repair Worker for missing files or symlinks</li>
 </ul>
 <hr />
-<h2 id="-configuration-in-dmb_configjson">📦 Configuration in <code>dmb_config.json</code><a class="headerlink" href="#-configuration-in-dmb_configjson" title="Permanent link">#</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;cli_debrid&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CLI Debrid&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;repo_owner&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;godver3&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;repo_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cli_debrid&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;release_version_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;release_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v0.6.07&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;branch_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;branch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;suppress_logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;auto_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;auto_update_interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;clear_on_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;exclude_dirs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;/cli_debrid/data&quot;</span>
-<span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;platforms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;python&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;/cli_debrid/venv/bin/python&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;main.py&quot;</span>
-<span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;config_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;config_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/config/config.json&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;log_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/logs/debug.log&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;USER_CONFIG&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/config/&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;USER_LOGS&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/logs/&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;USER_DB_CONTENT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/db_content/&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;CLI_DEBRID_PORT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{port}&quot;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">},</span>
+<h2 id="-integration-with-dmb">📦 Integration with DMB<a class="headerlink" href="#-integration-with-dmb" title="Permanent link">#</a></h2>
+<p>To successfully run Decypharr with DMB, the following configuration and mounting steps must be completed:</p>
+<h3 id="1-bind-mount-setup">1. Bind Mount Setup<a class="headerlink" href="#1-bind-mount-setup" title="Permanent link">#</a></h3>
+<p>In both your <code>DMB</code> and <code>arrs</code> docker-compose files, include the following bind mounts (replace <code>...</code> with the full host path to your DMB bind mount):</p>
+<p><strong>DMB Compose</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">tmpfs</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.../DMB/mnt/debrid:/mnt/debrid:rshared</span>
 </code></pre></div>
-<h3 id="-key-configuration-fields">🔍 Key Configuration Fields<a class="headerlink" href="#-key-configuration-fields" title="Permanent link">#</a></h3>
-<ul>
-<li><code>enabled</code>: Toggle to run CLI Debrid via DMB.</li>
-<li><code>process_name</code>: Used for display and logs.</li>
-<li><code>repo_owner</code>, <code>repo_name</code>: GitHub repo to use for updates.</li>
-<li><code>release_version_enabled</code>, <code>branch_enabled</code>: Target a specific tag or branch.</li>
-<li><code>log_level</code>, <code>suppress_logging</code>: Logging controls.</li>
-<li><code>port</code>: Flask web interface port.</li>
-<li><code>env</code>: Environment variable configuration used by CLI Debrid.</li>
-<li><code>clear_on_update</code>, <code>exclude_dirs</code>: Clean old files during update while protecting data dirs.</li>
-</ul>
-<hr />
-<h2 id="-what-cli-debrid-does">⚙️ What CLI Debrid Does<a class="headerlink" href="#-what-cli-debrid-does" title="Permanent link">#</a></h2>
-<h3 id="-intelligent-automation">🧠 Intelligent Automation<a class="headerlink" href="#-intelligent-automation" title="Permanent link">#</a></h3>
-<ul>
-<li>Monitors your Plex library or local folder structure (symlinked library)</li>
-<li>Scrapes for content from various sources (Zilean, Jackett, Torrentio, Nyaa, Media Fusion)</li>
-<li>Downloads new or upgraded content using Debrid providers</li>
-<li>Optionally leverages webhook notifications from Overseerr or Zurg to trigger updates</li>
-</ul>
-<h3 id="-supported-features">🎛️ Supported Features<a class="headerlink" href="#-supported-features" title="Permanent link">#</a></h3>
-<ul>
-<li>Content Sources: MDBList, Trakt, Overseerr</li>
-<li>Upgrading: Queue system for quality upgrades</li>
-<li>Web UI: Web dashboard for real-time monitoring and control</li>
-<li>Metadata: Cached locally in the <code>cli_battery</code></li>
-<li>Notifications: Optional support for Discord, Email, Telegram, NTFY</li>
-<li>Scraping Tuning: Manual test interface to evaluate scraper priorities</li>
-</ul>
-<hr />
-<h2 id="-required-component-cli-battery">⚡ Required Component: CLI Battery<a class="headerlink" href="#-required-component-cli-battery" title="Permanent link">#</a></h2>
-<div class="admonition warning">
-<p class="admonition-title">CLI Battery must be running for CLI Debrid to function.</p>
-</div>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;cli_battery&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CLI Battery&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;suppress_logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5001</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;platforms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;python&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;/cli_debrid/venv/bin/python&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;cli_battery/main.py&quot;</span>
-<span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;config_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;config_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/config/settings.json&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;log_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/logs/battery_debug.log&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;USER_CONFIG&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/config/&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;USER_LOGS&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/logs/&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;USER_DB_CONTENT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/cli_debrid/data/db_content/&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;CLI_DEBRID_BATTERY_PORT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{port}&quot;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">},</span>
+<p><strong>Arrs Compose (Sonarr/Radarr)</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.../DMB/mnt/debrid:/mnt/debrid:rslave</span>
 </code></pre></div>
-<p>CLI Battery provides local metadata storage and Trakt integration, acting as the "memory" of CLI Debrid.</p>
-<hr />
-<h2 id="-optional-utility-phalanx-db">🧰 Optional Utility: Phalanx DB<a class="headerlink" href="#-optional-utility-phalanx-db" title="Permanent link">#</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;phalanx_db&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;process_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Phalanx DB&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;repo_owner&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;godver3&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;repo_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;phalanx_db_hyperswarm&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;release_version_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;release_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v0.50&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;branch_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;branch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;suppress_logging&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;log_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8888</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;auto_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;auto_update_interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;clear_on_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;exclude_dirs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;/phalanx_db/data&quot;</span>
-<span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;platforms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pnpm&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;phalanx_db_rest.js&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;config_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/phalanx_db&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
-<span class="p">},</span>
-</code></pre></div>
-<p>Phalanx DB provides distributed metadata storage via Hyperswarm. It is optional but can enhance metadata resilience and syncing.</p>
-<hr />
-<h2 id="-mount-considerations">🔁 Mount Considerations<a class="headerlink" href="#-mount-considerations" title="Permanent link">#</a></h2>
-<p>CLI Debrid can create symlinks to be used in the media server, or if using the rclone mounts directly in the media server it can monitor the Plex libraries for completed items.</p>
-<p>In both cases, ensure the appropriate path for the rclone or zurg mount is used when adding the <code>Original Files Path</code>.</p>
-<div class="admonition note">
-<p class="admonition-title">The <code>Original Files Path</code> is relative to the paths inside the container</p>
-<p>Example: If the rclone <code>mount_dir</code> is set to <code>/data</code>, the rclone <code>mount_name</code> is set to <code>rclone_RD</code>, and you're using <code>zurg_enabled: true</code> for rclone, then you would enter:  </p>
-<p><img alt="Original Files Path" src="../../assets/images/cli_debrid/clid_original_files_path.png" /></p>
-</div>
-<p>As mentioned, CLI Debrid also monitors either the created symlinks or the Plex libraries for completed items.</p>
-<p>As such, it's important to ensure you select the appropriate option for your deployment. </p>
-<div class="admonition note">
-<p class="admonition-title"><code>Symlinked/Local</code> will create symlinks in the user defined path, whereas <code>Plex</code> will monitor the Plex Libraries defined and not create symlinks</p>
-<p><img alt="File Collection Management" src="../../assets/images/cli_debrid/clid_file_collection_management.png" />
-<img alt="Symlinked Files Path" src="../../assets/images/cli_debrid/clid_symlinked_files_path.png" /></p>
-</div>
-<hr />
-<h2 id="-zilean-built-in">🚀 Zilean Built-in!<a class="headerlink" href="#-zilean-built-in" title="Permanent link">#</a></h2>
-<p>With <a href="../zilean/">Zilean</a> enabled in DMB, you can also leverage it with CLI Debrid</p>
-<p><img alt="Add A Scraper" src="../../assets/images/cli_debrid/clid_add_a_scraper_zilean.png" /></p>
-<h2 id="-queues--processing-behind-the-scenes">🧠 Queues &amp; Processing (Behind the Scenes)<a class="headerlink" href="#-queues--processing-behind-the-scenes" title="Permanent link">#</a></h2>
+<blockquote>
+<p>These mounts are required to ensure Decypharr-created symlinks are visible to the Arr containers.</p>
+</blockquote>
+<h3 id="2-configure-root-folders-in-arrs">2. Configure Root Folders in Arrs<a class="headerlink" href="#2-configure-root-folders-in-arrs" title="Permanent link">#</a></h3>
+<p>Inside the Sonarr and Radarr web UI:</p>
 <ul>
-<li><strong>Wanted Queue</strong>: Items identified from your lists that need to be downloaded but haven't been processed by the scraper yet. Shows the time the item was last scraped. If within 24 hours of scraping items will remain in the Wanted queue.</li>
-<li><strong>Scraping Queue</strong>: Items actively being searched for download sources (torrents/magnets).</li>
-<li><strong>Adding Queue</strong>: Items for which a source has been found and are being added to your debrid service</li>
+<li>Navigate to <strong>Settings &gt; Media Management &gt; Root Folders</strong></li>
 <li>
-<p><strong>Checking Queue</strong>: Monitoring items for presence locally or in Plex. </p>
-<ul>
-<li>
-<p><strong>Cached</strong>: Available in debrid cache and ready to use. </p>
+<p>Add the following paths:</p>
 </li>
 <li>
-<p><strong>Downloading</strong>: Currently being downloaded with progress shown; grouped if multiple files. </p>
+<p><strong>Radarr</strong>: <code>/mnt/debrid/decypharr_symlinks/movies</code></p>
 </li>
-<li>
-<p><strong>Filenames</strong>: Can be toggled to show specific files being processed</p>
-</li>
+<li><strong>Sonarr</strong>: <code>/mnt/debrid/decypharr_symlinks/shows</code></li>
 </ul>
-</li>
-<li>
-<p><strong>Unreleased</strong>: Items identified but waiting for their release date before processing continues. Displays the relevant release date(s). Items requiring a physical release will indicate this.</p>
-</li>
-<li><strong>Blacklisting</strong>: Items that have been explicitly marked to be ignored by the application.</li>
-<li><strong>Upgrading Queue</strong>: Items that are being considered for Upgrading. They have been collected and now for 24 hours cli_debrid will try to find upgrades once an hour.</li>
-<li><strong>Final Check</strong>: Items for which initial scraping attempts failed. These items wait for a configured delay (defined in settings) before one last search attempt is automatically triggered. Shows when the item entered this waiting period. If the final search is successful, the item moves to Adding. If it fails again, the item is typically moved to Blacklisted.</li>
-<li><strong>Pending Uncached</strong>: Items associated with uncached torrents that would take your account over its limit wait in the Pending Uncached queue until your download limit returns to normal.</li>
-<li><strong>Sleeping Queue</strong>: Items that cli_debrid failed to find. Shows a 'Wake Count' indicating how many times the item has been retried.</li>
+<blockquote>
+<p>These directories are managed by Decypharr and must be used for proper operation.</p>
+</blockquote>
+<h3 id="3-connect-decypharr-to-arrs">3. Connect Decypharr to Arrs<a class="headerlink" href="#3-connect-decypharr-to-arrs" title="Permanent link">#</a></h3>
+<p>Follow the <a href="https://sirrobot01.github.io/decypharr/usage/#connecting-to-sonarrradarr">official usage guide</a> for step-by-step instructions on connecting your Radarr and Sonarr instances to Decypharr.</p>
+<blockquote>
+<p>This includes setting the correct API keys and ensuring URL paths match the container environments.</p>
+</blockquote>
+<h3 id="4-plex-library-setup">4. Plex Library Setup<a class="headerlink" href="#4-plex-library-setup" title="Permanent link">#</a></h3>
+<p>In Plex, add the Decypharr symlink folders as library sources:</p>
+<ul>
+<li><strong>Movies Library</strong>: <code>/mnt/debrid/decypharr_symlinks/movies</code></li>
+<li><strong>TV Shows Library</strong>: <code>/mnt/debrid/decypharr_symlinks/shows</code></li>
 </ul>
-<p>All queues are managed on scheduled intervals.</p>
+<blockquote>
+<p>This ensures Plex indexes files processed and renamed by Decypharr, enabling clean and consistent playback.</p>
+</blockquote>
 <hr />
-<h2 id="-webhook-support">📡 Webhook Support<a class="headerlink" href="#-webhook-support" title="Permanent link">#</a></h2>
-<p>CLI Debrid can listen for:</p>
+<h2 id="-how-it-works">🧠 How It Works<a class="headerlink" href="#-how-it-works" title="Permanent link">#</a></h2>
+<p>Decypharr acts as both a torrent manager and a renaming/organizing engine:</p>
 <ul>
-<li><strong>Overseerr Webhooks</strong>: Add content when users request it</li>
-<li><strong>Zurg Webhooks</strong>: React to completed downloads (Symlink mode)</li>
-</ul>
-<p>Example Zurg update hook:</p>
-<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
-<span class="nv">webhook_url</span><span class="o">=</span><span class="s2">&quot;http://localhost:5000/webhook/rclone&quot;</span>
-<span class="k">for</span><span class="w"> </span>arg<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
-<span class="k">do</span>
-<span class="w">  </span><span class="nv">encoded</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$arg</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import sys, urllib.parse as ul; print(ul.quote(sys.stdin.read()))&quot;</span><span class="k">)</span>
-<span class="w">  </span>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$webhook_url</span><span class="s2">?file=</span><span class="nv">$encoded</span><span class="s2">&quot;</span>
-<span class="k">done</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Webhook update complete.&quot;</span>
-</code></pre></div>
-<h2 id="-branch--version-targeting">⚙️ Branch / Version Targeting<a class="headerlink" href="#-branch--version-targeting" title="Permanent link">#</a></h2>
-<p>You can control which version or branch is deployed by setting:</p>
-<ul>
-<li><code>branch_enabled: true</code> and specifying a <code>branch</code></li>
-<li>or <code>release_version_enabled: true</code> and specifying a <code>release_version</code></li>
+<li>Handles torrent links via Debrid services</li>
+<li>Mimics Qbittorrent API for seamless *Arr integration</li>
+<li>Renames and organizes files into structured symlink folders</li>
+<li>Provides a Web UI and WebDAV endpoints for remote management</li>
+<li>Ensures all changes propagate cleanly between containers using <code>rshared</code>/<code>rslave</code></li>
 </ul>
 <hr />
-<h2 id="-access">🌐 Access<a class="headerlink" href="#-access" title="Permanent link">#</a></h2>
+<h2 id="-troubleshooting-tips">🛠️ Troubleshooting Tips<a class="headerlink" href="#-troubleshooting-tips" title="Permanent link">#</a></h2>
 <ul>
-<li>Navigate to: <code>http://&lt;host&gt;:&lt;port&gt;</code> <ul>
-<li>default port <code>5000</code></li>
-</ul>
-</li>
+<li>Ensure the bind mounts are correct and both containers see the same <code>/mnt/debrid</code> structure</li>
+<li>Make sure Decypharr has permission to write to and create symlinks in the target directory</li>
+<li>If media doesn't appear in Plex, check that the symlink folders are scanned and indexed</li>
+<li>Use <code>docker inspect</code> to verify correct mount propagation between DMB and Arrs</li>
 </ul>
 <hr />
-<hr />
-<h2 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">#</a></h2>
+<h2 id="-supported-debrid-providers">🌐 Supported Debrid Providers<a class="headerlink" href="#-supported-debrid-providers" title="Permanent link">#</a></h2>
 <ul>
-<li><a href="https://github.com/godver3/cli_debrid">CLI Debrid GitHub</a></li>
-<li><a href="https://github.com/godver3/cli_debrid/tree/main/cli_battery">CLI Battery GitHub</a></li>
-<li><a href="https://github.com/godver3/phalanx_db_hyperswarm">Phalanx DB GitHub</a></li>
-<li><a href="https://discord.gg/jAmqZJCZJ4">Join the CLI Debrid Community on Discord</a></li>
+<li><a href="https://real-debrid.com">Real Debrid</a></li>
+<li><a href="https://www.torbox.net">Torbox</a></li>
+<li><a href="https://debrid-link.fr">Debrid Link</a></li>
+<li><a href="https://alldebrid.com">All Debrid</a></li>
+</ul>
+<hr />
+<h2 id="-resources">🔗 Resources<a class="headerlink" href="#-resources" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="https://github.com/sirrobot01/decypharr">Decypharr GitHub</a></li>
+<li><a href="https://sirrobot01.github.io/decypharr/">Decypharr Docs</a></li>
 </ul>
 
 
