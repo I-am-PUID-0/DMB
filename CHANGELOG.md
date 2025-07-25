@@ -1,5 +1,20 @@
 # Changelog
 
+## [6.15.1](https://github.com/I-am-PUID-0/DMB/compare/6.15.0...6.15.1) (2025-07-25)
+
+
+### 🐛 Bug Fixes
+
+* **config:** fixes null strings in config ([e20d29a](https://github.com/I-am-PUID-0/DMB/commit/e20d29af26de00b3030af32a07a08448d6e7f9ad)), closes [#192](https://github.com/I-am-PUID-0/DMB/issues/192)
+* **docs:** correct mount path in README for DMB data directories ([e262e84](https://github.com/I-am-PUID-0/DMB/commit/e262e84f4ab7767b0bbd988574dc28adf731d3e8))
+* **docs:** update mount path in README for DMB to reflect correct directory ([3193030](https://github.com/I-am-PUID-0/DMB/commit/3193030dc66622b650cbda42d2cc0a608b694da6))
+* **docs:** update mount path in README for Plex container integration ([09807ca](https://github.com/I-am-PUID-0/DMB/commit/09807ca358467e9796c435f1ef52f11cd48d6862))
+
+
+### 🚀 CI/CD Pipeline
+
+* **devcontainer:** add bind mount for decypharr in devcontainer configuration ([3193030](https://github.com/I-am-PUID-0/DMB/commit/3193030dc66622b650cbda42d2cc0a608b694da6))
+
 ## [6.15.0](https://github.com/I-am-PUID-0/DMB/compare/6.14.0...6.15.0) (2025-07-23)
 
 
