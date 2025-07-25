@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.15.2](https://github.com/I-am-PUID-0/DMB/compare/6.15.1...6.15.2) (2025-07-25)
+
+
+### 🛠️ Refactors
+
+* **process:** refactor service start/stop/restart ([cd9d21e](https://github.com/I-am-PUID-0/DMB/commit/cd9d21eb52f459f5cf33aca924d4f74696563dc0))
+
 ## [6.15.1](https://github.com/I-am-PUID-0/DMB/compare/6.15.0...6.15.1) (2025-07-25)
 
 
