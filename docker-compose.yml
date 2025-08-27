@@ -18,7 +18,7 @@ services:
       - /home/username/docker/DMB/cli_debrid:/cli_debrid/data        ## Location for cli_debrid data
       - /home/username/docker/DMB/phalanx_db:/phalanx_db/data        ## Location for phalanx_db data
       - /home/username/docker/DMB/decypharr:/decypharr               ## Location for decypharr data
-      - /home/username/docker/DUMB/mnt/debrid:/mnt/debrid:rshared    ## Location for all symlinks and rclone mounts     
+      - /home/username/docker/DMB/mnt/debrid:/mnt/debrid:rshared     ## Location for all symlinks and rclone mounts     
     environment:
       - TZ=
       - PUID=
