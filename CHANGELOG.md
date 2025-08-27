@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.15.3](https://github.com/I-am-PUID-0/DMB/compare/6.15.2...6.15.3) (2025-08-27)
+
+
+### 🐛 Bug Fixes
+
+* **docker:** fix compose reference to DUMB project ([#204](https://github.com/I-am-PUID-0/DMB/issues/204)) ([07b17c2](https://github.com/I-am-PUID-0/DMB/commit/07b17c24b4e8b171016dcc995b6ffad2a7144792))
+
 ## [6.15.2](https://github.com/I-am-PUID-0/DMB/compare/6.15.1...6.15.2) (2025-07-25)
 
 
